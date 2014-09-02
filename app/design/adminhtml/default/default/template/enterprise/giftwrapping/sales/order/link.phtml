@@ -28,8 +28,8 @@
 <?php if ($this->canDisplayGiftWrappingForItem()): ?>
 <div class="gift-options-tooltip-content no-display">
     <?php if ($this->getDesign()): ?>
-        <strong><?php echo $this->helper('enterprise_giftwrapping')->__('Gift Wrapping Design')?></strong>:
-        <?php echo $this->getDesign() ?>
+        <div><strong><?php echo $this->helper('enterprise_giftwrapping')->__('Gift Wrapping Design')?></strong>:</div>
+        <div><?php echo $this->getDesign() ?></div>
     <?php endif; ?>
 </div>
 <?php endif; ?>

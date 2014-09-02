@@ -47,6 +47,11 @@ class Enterprise_GiftWrapping_Model_Total_Quote_Tax_Giftwrapping extends Mage_Sa
     protected $_taxCalculationModel;
 
     /**
+     * @var array
+     */
+    protected $_request;
+
+    /**
      * @var float
      */
     protected $_rate;
@@ -64,6 +69,58 @@ class Enterprise_GiftWrapping_Model_Total_Quote_Tax_Giftwrapping extends Mage_Sa
         $this->setCode('tax_giftwrapping');
         $this->_taxCalculationModel = Mage::getSingleton('tax/calculation');
         $this->_helper = Mage::helper('enterprise_giftwrapping');
+    }
+
+    /**
+     * Collect applied tax rates information on address level
+     *
+     * @param Mage_Sales_Model_Quote_Address $address
+     * @param array $applied
+     * @param float $amount
+     * @param float $baseAmount
+     * @param float $rate
+     * @return Enterprise_GiftWrapping_Model_Total_Quote_Tax_Giftwrapping
+     */
+    protected function _saveAppliedTaxes($address, $applied, $amount, $baseAmount, $rate)
+    {
+        $previouslyAppliedTaxes = $address->getAppliedTaxes();
+        $process = count($previouslyAppliedTaxes);
+
+        foreach ($applied as $row) {
+            if ($row['percent'] == 0) {
+                continue;
+            }
+            if (!isset($previouslyAppliedTaxes[$row['id']])) {
+                $row['process']     = $process;
+                $row['amount']      = 0;
+                $row['base_amount'] = 0;
+                $previouslyAppliedTaxes[$row['id']] = $row;
+            }
+
+            if (!is_null($row['percent'])) {
+                $row['percent'] = $row['percent'] ? $row['percent'] : 1;
+                $rate = $rate ? $rate : 1;
+
+                $appliedAmount     = $amount/$rate * $row['percent'];
+                $baseAppliedAmount = $baseAmount/$rate * $row['percent'];
+            } else {
+                $appliedAmount     = 0;
+                $baseAppliedAmount = 0;
+                foreach ($row['rates'] as $rate) {
+                    $appliedAmount      += $rate['amount'];
+                    $baseAppliedAmount  += $rate['base_amount'];
+                }
+            }
+
+            if ($appliedAmount || $previouslyAppliedTaxes[$row['id']]['amount']) {
+                $previouslyAppliedTaxes[$row['id']]['amount']      += $appliedAmount;
+                $previouslyAppliedTaxes[$row['id']]['base_amount'] += $baseAppliedAmount;
+            } else {
+                unset($previouslyAppliedTaxes[$row['id']]);
+            }
+        }
+        $address->setAppliedTaxes($previouslyAppliedTaxes);
+        return $this;
     }
 
     /**
@@ -92,12 +149,10 @@ class Enterprise_GiftWrapping_Model_Total_Quote_Tax_Giftwrapping extends Mage_Sa
             ->_collectWrappingForQuote($address)
             ->_collectPrintedCard($address);
 
-        $baseTaxAmount =
-            $address->getGwItemsBaseTaxAmount()
+        $baseTaxAmount = $address->getGwItemsBaseTaxAmount()
             + $address->getGwBaseTaxAmount()
             + $address->getGwPrintedCardBaseTaxAmount();
-        $taxAmount =
-            $address->getGwItemsTaxAmount()
+        $taxAmount = $address->getGwItemsTaxAmount()
             + $address->getGwTaxAmount()
             + $address->getGwPrintedCardTaxAmount();
         $address->setBaseTaxAmount($address->getBaseTaxAmount() + $baseTaxAmount);
@@ -118,8 +173,15 @@ class Enterprise_GiftWrapping_Model_Total_Quote_Tax_Giftwrapping extends Mage_Sa
         $quote->setGwItemsTaxAmount($address->getGwItemsTaxAmount() + $quote->getGwItemsTaxAmount());
         $quote->setGwBaseTaxAmount($address->getGwBaseTaxAmount() + $quote->getGwBaseTaxAmount());
         $quote->setGwTaxAmount($address->getGwTaxAmount() + $quote->getGwTaxAmount());
-        $quote->setGwPrintedCardBaseTaxAmount($address->getGwPrintedCardBaseTaxAmount() + $quote->getGwPrintedCardBaseTaxAmount());
-        $quote->setGwPrintedCardTaxAmount($address->getGwPrintedCardTaxAmount() + $quote->getGwPrintedCardTaxAmount());
+        $quote->setGwPrintedCardBaseTaxAmount(
+            $address->getGwPrintedCardBaseTaxAmount() + $quote->getGwPrintedCardBaseTaxAmount()
+        );
+        $quote->setGwPrintedCardTaxAmount(
+            $address->getGwPrintedCardTaxAmount() + $quote->getGwPrintedCardTaxAmount()
+        );
+
+        $applied = Mage::getSingleton('tax/calculation')->getAppliedRates($this->_request);
+        $this->_saveAppliedTaxes($address, $applied, $taxAmount, $baseTaxAmount, $this->_rate);
 
         return $this;
     }
@@ -200,11 +262,16 @@ class Enterprise_GiftWrapping_Model_Total_Quote_Tax_Giftwrapping extends Mage_Sa
     protected function _initRate($address)
     {
         $store = $address->getQuote()->getStore();
-        $billingAddress  = $address->getQuote()->getBillingAddress();
+        $billingAddress = $address->getQuote()->getBillingAddress();
         $custTaxClassId = $address->getQuote()->getCustomerTaxClassId();
-        $request = $this->_taxCalculationModel->getRateRequest($address, $billingAddress, $custTaxClassId, $store);
-        $request->setProductClassId($this->_helper->getWrappingTaxClass($store));
-        $this->_rate = $this->_taxCalculationModel->getRate($request);
+        $this->_request = $this->_taxCalculationModel->getRateRequest(
+            $address,
+            $billingAddress,
+            $custTaxClassId,
+            $store
+        );
+        $this->_request->setProductClassId($this->_helper->getWrappingTaxClass($store));
+        $this->_rate = $this->_taxCalculationModel->getRate($this->_request);
         return $this;
     }
 

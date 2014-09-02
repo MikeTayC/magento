@@ -186,7 +186,7 @@ class Enterprise_GiftRegistry_Model_Mysql4_Entity extends Mage_Core_Model_Mysql4
         $select = $adapter->select()->from(array('e' => $this->getMainTable()));
         $select->joinInner(
             array('i' => $this->getTable('enterprise_giftregistry/item')),
-            'e.entity_id = i.entity_id AND i.item_id = ' . $itemId,
+            'e.entity_id = i.entity_id AND i.item_id = ' . (int) $itemId,
             array()
         );
         if ($data = $adapter->fetchRow($select)) {

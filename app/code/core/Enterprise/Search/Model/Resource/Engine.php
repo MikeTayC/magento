@@ -198,6 +198,14 @@ class Enterprise_Search_Model_Resource_Engine
      */
     public function cleanIndex($storeId = null, $entityId = null, $entityType = 'product')
     {
+        if ($storeId == Mage_Core_Model_App::ADMIN_STORE_ID) {
+            foreach (Mage::app()->getStores(false) as $store) {
+                $this->cleanIndex($store->getId(), $entityId, $entityType);
+            }
+
+            return $this;
+        }
+
         if (is_null($storeId) && is_null($entityId)) {
             $this->_adapter->deleteDocs(array(), 'all');
         } else if (is_null($storeId) && !is_null($entityId)) {
@@ -210,7 +218,7 @@ class Enterprise_Search_Model_Resource_Engine
                 $entityId = array($entityId);
             }
             foreach ($entityId as $id) {
-                $idsQuery[] = $this->_adapter->getUniqueKey() . ':' . $id;
+                $idsQuery[] = $this->_adapter->getUniqueKey() . ':' . $id . '|' . $storeId;
             }
             $this->_adapter->deleteDocs(array(), array('store_id:' . $storeId . ' AND (' . implode(' OR ', $idsQuery) . ')'));
         }

@@ -77,7 +77,8 @@ class Enterprise_GiftWrapping_Block_Adminhtml_Giftwrapping_Edit extends Mage_Adm
     {
         $wrapping = Mage::registry('current_giftwrapping_model');
         if ($wrapping->getId()) {
-            return Mage::helper('enterprise_giftwrapping')->__('Edit Gift Wrapping "%s"', $wrapping->getDesign());
+            $title = $this->escapeHtml($wrapping->getDesign());
+            return Mage::helper('enterprise_giftwrapping')->__('Edit Gift Wrapping "%s"', $title);
         }
         else {
             return Mage::helper('enterprise_giftwrapping')->__('New Gift Wrapping');

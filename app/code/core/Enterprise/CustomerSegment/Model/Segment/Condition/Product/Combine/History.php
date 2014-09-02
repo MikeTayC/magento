@@ -30,6 +30,13 @@
 class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Combine_History
     extends Enterprise_CustomerSegment_Model_Condition_Combine_Abstract
 {
+    /**
+     * Flag of using History condition (for conditions of Product_Attribute)
+     *
+     * @var bool
+     */
+    protected $_combineHistory = true;
+
     const VIEWED    = 'viewed_history';
     const ORDERED   = 'ordered_history';
 
@@ -171,6 +178,20 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Combine_History
     protected function _getRequiredValidation()
     {
         return ($this->getOperator() == '==');
+    }
+
+    /**
+     * Get SQL select for matching customer to segment condition
+     *
+     * @param $customer
+     * @param $website
+     * @return Varien_Db_Select
+     */
+    public function getConditionsSql($customer, $website)
+    {
+        $select = parent::getConditionsSql($customer, $website);
+
+        return $this->_getRequiredValidation() ? $select : "IF(({$select}),NULL,1)";
     }
 
     /**

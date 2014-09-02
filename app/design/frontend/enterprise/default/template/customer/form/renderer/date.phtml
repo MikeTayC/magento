@@ -61,13 +61,14 @@
         <input type="hidden" id="<?php echo $this->getHtmlId('full')?>" name="<?php echo $this->getFieldName()?>" />
     </span>
 
-    <div class="validation-advice" id="<?php echo $this->getHtmlId('advice')?>" style="opacity:0.999999; display:none;"></div>
+    <div class="validation-advice" id="<?php echo $this->getHtmlId('date-advice')?>" style="opacity:0.999999; display:none;"></div>
     <?php if ($_message = $this->getAdditionalDescription()) : ?>
     <div class="validation-advice"><?php echo $_message; ?></div>
     <?php endif; ?>
 </div>
 <script type="text/javascript">
 //<![CDATA[
-    new Varien.DateElement('id', '<?php echo $this->getHtmlId('')?>', <?php echo ($this->isRequired() ? 'true' : 'false'); ?>, '<?php echo $this->getDateFormat() ?>');
+    var dateRange = new Varien.dateRangeDate('id', '<?php echo $this->getHtmlId('')?>', <?php echo ($this->isRequired() ? 'true' : 'false'); ?>, '<?php echo $this->getDateFormat() ?>');
+    dateRange.setDateRange(<?php echo $this->getMinDateRange()?>, <?php echo $this->getMaxDateRange()?>);
 //]]>
 </script>

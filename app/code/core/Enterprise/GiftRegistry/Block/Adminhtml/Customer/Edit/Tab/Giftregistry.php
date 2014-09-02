@@ -66,7 +66,9 @@ class Enterprise_GiftRegistry_Block_Adminhtml_Customer_Edit_Tab_Giftregistry
     public function canShowTab()
     {
         $customer = Mage::registry('current_customer');
-        return $customer->getId() && Mage::helper('enterprise_giftregistry')->isEnabled();
+        return $customer->getId()
+           && Mage::helper('enterprise_giftregistry')->isEnabled()
+           && Mage::getSingleton('admin/session')->isAllowed('customer/enterprise_giftregistry');
     }
 
     /**

@@ -126,7 +126,8 @@ class Enterprise_Customer_Adminhtml_Customer_AttributeController
                 return;
             }
             if ($attributeObject->getEntityTypeId() != $this->_getEntityType()->getId()) {
-                $this->_getSession()->addError(Mage::helper('enterprise_customer')->__('You cannot edit this attribute.'));
+                $this->_getSession()->addError(
+                    Mage::helper('enterprise_customer')->__('You cannot edit this attribute.'));
                 $this->_redirect('*/*/');
                 return;
             }
@@ -178,6 +179,42 @@ class Enterprise_Customer_Adminhtml_Customer_AttributeController
     }
 
     /**
+     * Filter post data
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function _filterPostData($data)
+    {
+        if ($data) {
+            /* @var $helper Enterprise_Customer_Helper_Data */
+            $helper = Mage::helper('enterprise_customer');
+            //labels
+            foreach ($data['frontend_label'] as & $value) {
+                if ($value) {
+                    $value = $helper->stripTags($value);
+                }
+            }
+            //options
+            if (!empty($data['option']['value'])) {
+                foreach ($data['option']['value'] as &$options) {
+                    foreach ($options as &$label) {
+                        $label = $helper->stripTags($label);
+                    }
+                }
+            }
+            //default value
+            if (!empty($data['default_value_text'])) {
+                $data['default_value_text'] = $helper->stripTags($data['default_value_text']);
+            }
+            if (!empty($data['default_value_textarea'])) {
+                $data['default_value_textarea'] = $helper->stripTags($data['default_value_textarea']);
+            }
+        }
+        return $data;
+    }
+
+    /**
      * Save attribute action
      *
      */
@@ -189,6 +226,8 @@ class Enterprise_Customer_Adminhtml_Customer_AttributeController
             $attributeObject = $this->_initAttribute();
             /* @var $helper Enterprise_Customer_Helper_Data */
             $helper = Mage::helper('enterprise_customer');
+
+            $data = $this->_filterPostData($data);
 
             $attributeId = $this->getRequest()->getParam('attribute_id');
             if ($attributeId) {
@@ -227,7 +266,8 @@ class Enterprise_Customer_Adminhtml_Customer_AttributeController
             $defaultValueField = $helper->getAttributeDefaultValueByInput($data['frontend_input']);
             if ($defaultValueField) {
                 $scopeKeyPrefix = ($this->getRequest()->getParam('website') ? 'scope_' : '');
-                $data[$scopeKeyPrefix . 'default_value'] = $this->getRequest()->getParam($scopeKeyPrefix . $defaultValueField);
+                $data[$scopeKeyPrefix . 'default_value'] = $helper->stripTags(
+                    $this->getRequest()->getParam($scopeKeyPrefix . $defaultValueField));
             }
 
             $data['entity_type_id']     = $this->_getEntityType()->getId();

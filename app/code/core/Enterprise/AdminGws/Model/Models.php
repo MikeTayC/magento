@@ -201,14 +201,21 @@ class Enterprise_AdminGws_Model_Models extends Enterprise_AdminGws_Model_Observe
             $model->setUpsellReadonly(true);
             $model->setWebsitesReadonly(true);
             $model->lockAttribute('website_ids');
-            $model->setCategoriesReadonly(true);
             $model->setOptionsReadonly(true);
             $model->setCompositeReadonly(true);
             $model->setDownloadableReadonly(true);
             $model->setGiftCardReadonly(true);
             $model->setIsDeleteable(false);
             $model->setIsDuplicable(false);
-            if (!$this->_role->hasStoreAccess($model->getStoreId())) {
+
+            foreach ($model->getCategoryCollection() as $category) {
+                $path = implode("/", array_reverse($category->getPathIds()));
+                if(!$this->_role->hasExclusiveCategoryAccess($path)) {
+                    $model->setCategoriesReadonly(true);
+                }
+            }
+
+            if (!$this->_role->hasStoreAccess($model->getStoreIds())) {
                 $model->setIsReadonly(true);
             }
         } else {
@@ -307,6 +314,38 @@ class Enterprise_AdminGws_Model_Models extends Enterprise_AdminGws_Model_Observe
     {
         // deleting only in exclusive mode
         if (!$this->_role->hasExclusiveAccess($model->getWebsiteIds())) {
+            $this->_throwDelete();
+        }
+    }
+
+    /**
+     * Catalog Product Review before save
+     *
+     * @param  Mage_Review_Model_Review
+     */
+    public function catalogProductReviewSaveBefore($model){
+        $reviewStores = $model->getStores();
+        $storeIds = $this->_role->getStoreIds();
+
+        $allowedIds = array_intersect($reviewStores, $storeIds);
+
+        if (empty($allowedIds)) {
+            $this->_throwSave();
+        }
+    }
+
+    /**
+     * Catalog Product Review before delete
+     *
+     * @param  Mage_Review_Model_Review
+     */
+    public function catalogProductReviewDeleteBefore($model){
+        $reviewStores = $model->getStores();
+        $storeIds = $this->_role->getStoreIds();
+
+        $allowedIds = array_intersect($reviewStores, $storeIds);
+
+        if (empty($allowedIds)) {
             $this->_throwDelete();
         }
     }

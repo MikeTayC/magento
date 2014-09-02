@@ -133,6 +133,15 @@ class Enterprise_Cms_Adminhtml_Cms_Page_RevisionController extends Enterprise_Cm
             $revision->setData($data)
                 ->setUserId(Mage::getSingleton('admin/session')->getUser()->getId());
 
+            if (!$this->_validatePostData($data)) {
+                $this->_redirect('*/*/' . $this->getRequest()->getParam('back'),
+                    array(
+                        'page_id' => $revision->getPageId(),
+                        'revision_id' => $revision->getId()
+                    ));
+                return;
+            }
+
             // try to save it
             try {
                 // save the data

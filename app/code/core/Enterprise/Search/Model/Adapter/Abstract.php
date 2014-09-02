@@ -577,20 +577,22 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      */
     protected function _prepareSuggestionsQueryResponse($response)
     {
-        $arrayResponse = $this->_objectToArray($response->spellcheck->suggestions);
         $suggestions = array();
-        if (is_array($arrayResponse)) {
-            foreach ($arrayResponse as $item) {
-                if (isset($item['suggestion']) && is_array($item['suggestion'])) {
-                    foreach ($item['suggestion'] as $suggestion) {
-                        $suggestions[] = $suggestion;
+
+        if (array_key_exists('spellcheck', $response) && array_key_exists('suggestions', $response->spellcheck)) {
+            $arrayResponse = $this->_objectToArray($response->spellcheck->suggestions);
+            if (is_array($arrayResponse)) {
+                foreach ($arrayResponse as $item) {
+                    if (isset($item['suggestion']) && is_array($item['suggestion']) && !empty($item['suggestion'])) {
+                        $suggestions = array_merge($suggestions, $item['suggestion']);
                     }
                 }
             }
-        }
-        // It is assumed that the frequency corresponds to the number of results
-        if (count($suggestions)) {
-            usort($suggestions, array(get_class($this), 'sortSuggestions'));
+
+            // It is assumed that the frequency corresponds to the number of results
+            if (count($suggestions)) {
+                usort($suggestions, array(get_class($this), 'sortSuggestions'));
+            }
         }
 
         return $suggestions;
@@ -621,9 +623,9 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
     /**
      * Callback function for sort search suggestions
      *
-     * @param array $a
-     * @param array $b
-     * @return boolean
+     * @param   array $a
+     * @param   array $b
+     * @return  int
      */
     public static function sortSuggestions($a, $b)
     {
@@ -686,18 +688,17 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      */
     protected function _filterIndexData($data, $localeCode = null)
     {
-        if (!is_array($data)) {
+        if (empty($data) || !is_array($data)) {
             return array();
         }
-        if (empty($data)) {
-            return array();
-        }
+
         //$data = array_intersect_key($data, array_flip($this->_usedFields));
         foreach ($data as $code => $value) {
             if( !in_array($code, $this->_usedFields) && strpos($code, 'fulltext') !== 0 ) {
                 unset($data[$code]);
             }
         }
+
         $languageCode = $this->_getLanguageCodeByLocaleCode($localeCode);
         if ($languageCode) {
             foreach ($data as $key => $value) {
@@ -707,6 +708,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
                 }
             }
         }
+
         return $data;
     }
 
@@ -832,8 +834,8 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
     /**
      * Convert facet results object to an array
      *
-     * @param object $object
-     * @return array
+     * @param   object|array $object
+     * @return  array
      */
     protected function _facetObjectToArray($object)
     {
@@ -846,9 +848,8 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
         }
 
         $res = array();
-
         foreach ($object['facet_fields'] as $attr => $val) {
-            foreach ($val as $key => $value) {
+            foreach ((array)$val as $key => $value) {
                 $res[$attr][$key] = $value;
             }
         }
@@ -861,6 +862,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
                 $res[$attrArray[0]][$attrArray[1]] = $val;
             }
         }
+
         return $res;
     }
 }

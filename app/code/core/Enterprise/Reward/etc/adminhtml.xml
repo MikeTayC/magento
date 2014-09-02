@@ -38,16 +38,20 @@
                                 <title>Manage Balances</title>
                                 <sort_order>10</sort_order>
                             </balance>
-                            <rates translate="title">
-                                <title>Manage Rates</title>
-                                <sort_order>20</sort_order>
-                            </rates>
                             <affect translate="title">
                                 <title>Can Spend Reward Points when Creating Orders</title>
                                 <sort_order>30</sort_order>
                             </affect>
                         </children>
                     </enterprise_reward>
+                    <customer>
+                        <children>
+                            <rates translate="title">
+                                <title>Reward Exchange Rates</title>
+                                <sort_order>80</sort_order>
+                            </rates>
+                        </children>
+                    </customer>
                     <system>
                         <children>
                             <config>
@@ -75,7 +79,7 @@
                         <module>Enterprise_Reward</module>
                         <config>enterprise_reward/general/is_enabled</config>
                     </depends>
-                    <resource>enterprise_reward/rates</resource>
+                    <resource>customer/rates</resource>
                 </reward>
             </children>
         </customer>

@@ -117,6 +117,7 @@ class Enterprise_Logging_Block_Adminhtml_Index_Grid extends Mage_Adminhtml_Block
             'header'    => Mage::helper('enterprise_logging')->__('Username'),
             'index'     => 'user',
             'type'      => 'text',
+            'escape'    => true,
             'sortable'  => false,
             'filter'    => 'enterprise_logging/adminhtml_grid_filter_user',
             'width'     => 150,

@@ -82,7 +82,7 @@ class Enterprise_GiftWrapping_Block_Adminhtml_Order_View_Abstract extends Mage_C
         $data = array();
         foreach ($this->getDesignCollection()->getItems() as $item) {
             $temp['path'] = $item->getImageUrl();
-            $temp['design'] = $item->getDesign();
+            $temp['design'] = $this->escapeHtml($item->getDesign());
             $data[$item->getId()] = $temp;
         }
        return new Varien_Object($data);

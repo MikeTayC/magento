@@ -28,7 +28,8 @@ require_once 'Enterprise/Staging/controllers/Adminhtml/Staging/ManageController.
 /**
  * Staging Manage controller
  */
-class Enterprise_Staging_Adminhtml_Staging_BackupController extends Enterprise_Staging_Adminhtml_Staging_ManageController
+class Enterprise_Staging_Adminhtml_Staging_BackupController
+    extends Enterprise_Staging_Adminhtml_Staging_ManageController
 {
     /**
      * Initialize staging backup from request parameters
@@ -224,5 +225,15 @@ class Enterprise_Staging_Adminhtml_Staging_BackupController extends Enterprise_S
         } else {
             $this->_redirect('*/*/');
         }
+    }
+
+    /**
+     * Check current user permission on resource and privilege
+     *
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('system/enterprise_staging/staging_backup');
     }
 }

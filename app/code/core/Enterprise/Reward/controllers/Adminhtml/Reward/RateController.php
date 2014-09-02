@@ -196,7 +196,11 @@ class Enterprise_Reward_Adminhtml_Reward_RateController extends Mage_Adminhtml_C
               }
         } else {
             $rate       = $this->_initRate();
-            $isRateUnique = $rate->getIsRateUniqueToCurrent($post['website_id'], $post['customer_group_id'], $post['direction']);
+            $isRateUnique = $rate->getIsRateUniqueToCurrent(
+                $post['website_id'],
+                $post['customer_group_id'],
+                $post['direction']
+            );
 
             if (!$isRateUnique) {
                 $message = $this->__('Rate with the same website, customer group and direction or covering rate already exists.');
@@ -220,7 +224,7 @@ class Enterprise_Reward_Adminhtml_Reward_RateController extends Mage_Adminhtml_C
      */
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('enterprise_reward/rates');
+        return Mage::getSingleton('admin/session')->isAllowed('customer/rates');
     }
 }
 

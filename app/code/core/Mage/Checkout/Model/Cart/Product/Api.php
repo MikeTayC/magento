@@ -1,13 +1,13 @@
 <?php
 /**
- * Magento Enterprise Edition
+ * Magento
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
- * that is bundled with this package in the file LICENSE_EE.txt.
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
  * to license@magentocommerce.com so we can send you a copy immediately.
@@ -21,7 +21,7 @@
  * @category    Mage
  * @package     Mage_Checkout
  * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -84,7 +84,7 @@ class Mage_Checkout_Model_Cart_Product_Api extends Mage_Checkout_Model_Api_Resou
                 if (is_string($result)) {
                     Mage::throwException($result);
                 }
-            } catch( Exception $e) {
+            } catch (Exception $e) {
                 $errors[] = $e->getMessage();
             }
         }
@@ -120,6 +120,7 @@ class Mage_Checkout_Model_Cart_Product_Api extends Mage_Checkout_Model_Api_Resou
             $this->_fault('invalid_product_data');
         }
 
+        $errors = array();
         foreach ($productsData as $productItem) {
             if (isset($productItem['product_id'])) {
                 $productByItem = $this->_getProduct($productItem['product_id'], $store, "id");
@@ -130,14 +131,18 @@ class Mage_Checkout_Model_Cart_Product_Api extends Mage_Checkout_Model_Api_Resou
             }
 
             /** @var $quoteItem Mage_Sales_Model_Quote_Item */
-            $quoteItem = $quote->getItemByProduct($productByItem);
-            if ($quoteItem === false) {
+            $quoteItem = $this->_getQuoteItemByProduct($quote, $productByItem, $this->_getProductRequest($productItem));
+            if (is_null($quoteItem->getId())) {
                 continue;
             }
 
             if ($productItem['qty'] > 0) {
                 $quoteItem->setQty($productItem['qty']);
             }
+        }
+
+        if (!empty($errors)) {
+            $this->_fault("update_product_fault", implode(PHP_EOL, $errors));
         }
 
         try {
@@ -177,11 +182,10 @@ class Mage_Checkout_Model_Cart_Product_Api extends Mage_Checkout_Model_Api_Resou
             }
 
             /** @var $quoteItem Mage_Sales_Model_Quote_Item */
-            $quoteItem = $quote->getItemByProduct($productByItem);
-            if ($quoteItem === false) {
+            $quoteItem = $this->_getQuoteItemByProduct($quote, $productByItem, $this->_getProductRequest($productItem));
+            if (is_null($quoteItem->getId())) {
                 continue;
             }
-
             $quote->removeItem($quoteItem->getId());
         }
 
@@ -270,7 +274,8 @@ class Mage_Checkout_Model_Cart_Product_Api extends Mage_Checkout_Model_Api_Resou
                 continue;
             }
 
-            $quoteItem = $quote->getItemByProduct($productByItem);
+            /** @var $quoteItem Mage_Sales_Model_Quote_Item */
+            $quoteItem = $this->_getQuoteItemByProduct($quote, $productByItem, $this->_getProductRequest($productItem));
             if($quoteItem->getId()){
                 $customerQuote->addItem($quoteItem);
                 $quote->removeItem($quoteItem->getId());

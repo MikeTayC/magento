@@ -42,7 +42,7 @@ class Enterprise_GiftCardAccount_Model_Observer
                 $args = array(
                     'amount'=>$card['ba'],
                     'giftcardaccount_id'=>$card['i'],
-                    'order'=>$order,
+                    'order'=>$order
                 );
 
                 Mage::dispatchEvent('enterprise_giftcardaccount_charge', $args);
@@ -512,6 +512,38 @@ class Enterprise_GiftCardAccount_Model_Observer
 
         foreach ($orders as $order) {
             $this->_revertGiftCardsForOrder($order);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Return funds to store credit
+     *
+     * @param   Varien_Event_Observer $observer
+     * @return  Enterprise_GiftCardAccount_Model_Observer
+     */
+    public function returnFundsToStoreCredit(Varien_Event_Observer $observer)
+    {
+        /** @var Mage_Sales_Model_Order $order */
+        $order = $observer->getEvent()->getOrder();
+
+        $cards = Mage::helper('enterprise_giftcardaccount')->getCards($order);
+        if (is_array($cards)) {
+            $balance = 0;
+            foreach ($cards as $card) {
+                $balance += $card['ba'];
+            }
+
+            if ($balance > 0) {
+                Mage::getModel('enterprise_customerbalance/balance')
+                    ->setCustomerId($order->getCustomerId())
+                    ->setWebsiteId(Mage::app()->getStore($order->getStoreId())->getWebsiteId())
+                    ->setAmountDelta($balance)
+                    ->setHistoryAction(Enterprise_CustomerBalance_Model_Balance_History::ACTION_REVERTED)
+                    ->setOrder($order)
+                    ->save();
+            }
         }
 
         return $this;

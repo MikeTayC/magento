@@ -172,7 +172,10 @@ class Enterprise_Customer_Helper_Data extends Mage_Core_Helper_Abstract
             'date'          => array(
                 'label'             => Mage::helper('enterprise_customer')->__('Date'),
                 'manage_options'    => false,
-                'validate_types'    => array(),
+                'validate_types'    => array(
+                    'date_range_min',
+                    'date_range_max'
+                ),
                 'validate_filters'  => array(
                     'date'
                 ),
@@ -300,7 +303,9 @@ class Enterprise_Customer_Helper_Data extends Mage_Core_Helper_Abstract
             'default_value_text'     => 'website',
             'default_value_yesno'    => 'website',
             'default_value_date'     => 'website',
-            'default_value_textarea' => 'website'
+            'default_value_textarea' => 'website',
+            'date_range_min'         => 'website',
+            'date_range_max'         => 'website'
         );
     }
 
@@ -337,6 +342,15 @@ class Enterprise_Customer_Helper_Data extends Mage_Core_Helper_Abstract
             foreach ($inputTypes[$inputType]['validate_types'] as $validateType) {
                 if (!empty($data[$validateType])) {
                     $rules[$validateType] = $data[$validateType];
+                }
+            }
+            //transform date validate rules to timestamp
+            if ($inputType === 'date') {
+                foreach(array('date_range_min', 'date_range_max') as $dateRangeBorder) {
+                    if (isset($rules[$dateRangeBorder])) {
+                        $date = new Zend_Date($rules[$dateRangeBorder], $this->getDateFormat());
+                        $rules[$dateRangeBorder] = $date->getTimestamp();
+                    }
                 }
             }
             if (!empty($inputTypes[$inputType]['validate_filters']) && !empty($data['input_validation'])) {
@@ -433,5 +447,15 @@ class Enterprise_Customer_Helper_Data extends Mage_Core_Helper_Abstract
     public function getCustomerAddressUserDefinedAttributeCodes()
     {
         return $this->_getUserDefinedAttributeCodes('customer_address');
+    }
+
+    /**
+     * return date format
+     *
+     * @return string
+     */
+    public function getDateFormat()
+    {
+        return Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT);
     }
 }

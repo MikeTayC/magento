@@ -156,12 +156,10 @@ class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
                         if (!in_array($localeCode, $default[$langCode])) {
                             $default[$langCode][] = $localeCode;
                         }
-                    }
-                    elseif ($default[$langCode] != $localeCode) {
+                    } elseif ($default[$langCode] != $localeCode) {
                         $default[$langCode] = array($default[$langCode], $localeCode);
                     }
-                }
-                else {
+                } else {
                     $default[$langCode] = $localeCode;
                 }
             }
@@ -232,8 +230,7 @@ class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
                     if (in_array($localeCode, $locales)) {
                         $this->_languageCode[$localeCode] = $code;
                     }
-                }
-                elseif ($localeCode == $locales) {
+                } elseif ($localeCode == $locales) {
                     $this->_languageCode[$localeCode] = $code;
                 }
             }
@@ -252,9 +249,11 @@ class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getSearchParam($collection, $attribute, $value)
     {
-        if (empty($value) ||
-            (isset($value['from']) && empty($value['from']) &&
-            isset($value['to']) && empty($value['to']))) {
+        if (empty($value)
+            || (isset($value['from']) && empty($value['from'])
+                && isset($value['to']) && empty($value['to'])
+            )
+        ) {
             return false;
         }
 
@@ -360,12 +359,7 @@ class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
     public function getTaxInfluence()
     {
         if (is_null($this->_taxInfluence)) {
-            $taxCondition = Mage::helper('tax')->getPriceTaxSql('price', 'tax');
-            if ($taxCondition) {
-                $this->_taxInfluence = true;
-            } else {
-                $this->_taxInfluence = false;
-            }
+            $this->_taxInfluence = (bool) Mage::helper('tax')->getPriceTaxSql('price', 'tax');
         }
 
         return $this->_taxInfluence;
@@ -374,14 +368,14 @@ class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Check if search engine can be used for catalog navigation
      *
-     * @param bool $catalog - define if checking availability for catalog navigation or search result navigation
-     * @return bool
+     * @param   bool $isCatalog - define if checking availability for catalog navigation or search result navigation
+     * @return  bool
      */
-    public function getIsEngineAvailableForNavigation($catalog = true)
+    public function getIsEngineAvailableForNavigation($isCatalog = true)
     {
         if (is_null($this->_isEngineAvailableForNavigation)) {
             $this->_isEngineAvailableForNavigation = $this->isActiveEngine()
-                && ($this->getSearchConfigData('solr_server_use_in_catalog_navigation') || !$catalog)
+                && ($this->getSearchConfigData('solr_server_use_in_catalog_navigation') || !$isCatalog)
                 && !$this->getTaxInfluence();
         }
 

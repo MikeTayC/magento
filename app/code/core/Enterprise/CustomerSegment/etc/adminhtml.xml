@@ -50,9 +50,9 @@
                             </customers>
                         </children>
                     </report>
-          </children>
-        </admin>
-      </resources>
+                </children>
+            </admin>
+        </resources>
     </acl>
     <menu>
         <customer>

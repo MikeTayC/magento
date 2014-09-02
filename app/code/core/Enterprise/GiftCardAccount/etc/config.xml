@@ -374,6 +374,7 @@
                 </enterprise_giftcardaccount>
             </updates>
         </layout>
+
         <translate>
             <modules>
                 <Enterprise_GiftCardAccount>
@@ -383,6 +384,17 @@
                 </Enterprise_GiftCardAccount>
             </modules>
         </translate>
+
+        <events>
+            <order_cancel_after>
+                <observers>
+                    <enterprise_giftcardaccount>
+                        <class>enterprise_giftcardaccount/observer</class>
+                        <method>returnFundsToStoreCredit</method>
+                    </enterprise_giftcardaccount>
+                </observers>
+            </order_cancel_after>
+        </events>
     </adminhtml>
 
     <default>

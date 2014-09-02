@@ -99,4 +99,16 @@ class Enterprise_Search_Model_Observer
                 ->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
         }
     }
+
+    /**
+     * Reset search engine if it is enabled for catalog navigation
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function resetCurrentCatalogLayer(Varien_Event_Observer $observer)
+    {
+        if (Mage::helper('enterprise_search')->getIsEngineAvailableForNavigation()) {
+            Mage::register('current_layer', Mage::getSingleton('enterprise_search/catalog_layer'));
+        }
+    }
 }

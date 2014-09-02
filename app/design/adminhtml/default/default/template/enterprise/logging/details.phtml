@@ -23,6 +23,7 @@
  * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+/** @var $this Enterprise_Logging_Block_Adminhtml_Details */
 ?>
 <div class="content-header">
     <table cellspacing="0">
@@ -53,13 +54,12 @@ $event = $this->getCurrentEvent();
                             $eventInfo = $this->getEventInfo();
                             if (is_bool($eventInfo)) {
                                 echo ($dataArray ? 'true' : 'false');
-                            }
-                            elseif (is_array($eventInfo)) {
+                            } elseif (is_array($eventInfo)) {
                                 if (isset($eventInfo['general'])) {
                                     if (!is_array($eventInfo['general'])) {
                                         $eventInfo['general'] = array($eventInfo['general']);
                                     }
-                                    echo implode(', ', $eventInfo['general']);
+                                    echo $this->escapeHtml(implode(', ', $eventInfo['general']));
                                 }
                          ?>
                          <?php if (isset($eventInfo['additional'])): ?><br /><?php endif; ?>
@@ -67,13 +67,12 @@ $event = $this->getCurrentEvent();
                                 if (isset($eventInfo['additional'])) {
                                     foreach ($eventInfo['additional'] as $modelName => $modelsData) {
                                         foreach ($modelsData as $mdoelId => $data) {
-                                            echo implode(', ', $data);
+                                            echo $this->escapeHtml(implode(', ', $data));
                                         }
                                     }
                                 }
-                            }
-                            else {
-                                echo $eventInfo;
+                            } else {
+                                echo $this->escapeHtml($eventInfo);
                             }
                         ?>
                         </td>
@@ -92,9 +91,9 @@ $event = $this->getCurrentEvent();
                         <th><?php echo $this->__('Admin User Name'); ?></th>
                         <td>
                         <?php if ($this->getEventUser()){ ?>
-                        <a href="<?php echo $this->getUrl('adminhtml/permissions_user/edit', array('user_id' => $event->getUserId())); ?>"><?php echo $event->getUser(); ?></a>
+                        <a href="<?php echo $this->getUrl('adminhtml/permissions_user/edit', array('user_id' => $event->getUserId())); ?>"><?php echo $this->escapeHtml($event->getUser()); ?></a>
                         <?php } else { ?>
-                        <?php echo $event->getUser(); ?>
+                        <?php echo $this->escapeHtml($event->getUser()); ?>
                         <?php } ?>
                         </td>
                     </tr>

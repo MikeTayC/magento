@@ -27,6 +27,13 @@
 abstract class Enterprise_CustomerSegment_Model_Condition_Combine_Abstract extends Mage_Rule_Model_Condition_Combine
 {
     /**
+     * Flag of using History condition (for conditions of Product_Attribute)
+     *
+     * @var bool
+     */
+    protected $_combineHistory = false;
+
+    /**
      * Get array of event names where segment with such conditions combine can be matched
      *
      * @return array
@@ -152,21 +159,25 @@ abstract class Enterprise_CustomerSegment_Model_Condition_Combine_Abstract exten
         /**
          * Process combine subfilters. Subfilters are part of base select which cah be affected by children.
          */
+        $subfilters = array();
         $subfilterMap = $this->_getSubfilterMap();
         if ($subfilterMap) {
             foreach ($this->getConditions() as $condition) {
                 $subfilterType = $condition->getSubfilterType();
                 if (isset($subfilterMap[$subfilterType])) {
+                    $condition->setCombineHistory($this->_combineHistory);
                     $subfilter = $condition->getSubfilterSql($subfilterMap[$subfilterType], $required, $website);
                     if ($subfilter) {
-                        $select->$whereFunction($subfilter);
+                        $subfilters[] = $subfilter;
                         $gotConditions = true;
                     }
                 }
             }
         }
 
-        if (!$gotConditions) {
+        if ($gotConditions) {
+            $select->where(implode(($this->getAggregator() == 'all') ? ' AND ' : ' OR ', $subfilters));
+        } else {
             $select->where('1=1');
         }
 

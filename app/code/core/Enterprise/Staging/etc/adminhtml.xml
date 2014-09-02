@@ -64,17 +64,17 @@
                                 <sort_order>21</sort_order>
                                 <children>
                                     <staging_grid>
-                                        <title>Staging Websites</title>
+                                         <title>Staging Websites</title>
                                          <sort_order>10</sort_order>
                                          <action>adminhtml/staging_manage/index</action>
                                     </staging_grid>
                                     <staging_backup>
-                                        <title>Backups</title>
+                                         <title>Backups</title>
                                          <sort_order>20</sort_order>
                                          <action>adminhtml/staging_backup/index</action>
                                     </staging_backup>
                                     <staging_log>
-                                        <title>Log</title>
+                                         <title>Log</title>
                                          <sort_order>30</sort_order>
                                          <action>adminhtml/staging_log/index</action>
                                     </staging_log>

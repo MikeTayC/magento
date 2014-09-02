@@ -524,10 +524,15 @@ class Enterprise_GiftRegistry_IndexController extends Mage_Core_Controller_Front
                     }
                 }
 
-                $data = Mage::helper('enterprise_giftregistry')->filterDatesByFormat($data, $model->getDateFieldArray());
+                $data = Mage::helper('enterprise_giftregistry')->filterDatesByFormat(
+                    $data,
+                    $model->getDateFieldArray()
+                );
+                $data = $this->_filterPost($data);
+                $this->getRequest()->setPost($data);
                 $model->importData($data, $isAddAction);
 
-                $registrantsPost = $this->getRequest()->getParam('registrant');
+                $registrantsPost = $this->getRequest()->getPost('registrant');
                 $persons = array();
                 if (is_array($registrantsPost)) {
                     foreach  ($registrantsPost as $index => $registrant) {
@@ -656,5 +661,28 @@ class Enterprise_GiftRegistry_IndexController extends Mage_Core_Controller_Front
             }
         }
         return $entity;
+    }
+
+     /**
+     * Strip tags from received data
+     *
+     * @param  string|array $data
+     * @return mixed
+     */
+    protected function _filterPost($data)
+    {
+        if (!is_array($data)) {
+            return strip_tags($data);
+        }
+        foreach ($data as &$field) {
+            if (!empty($field)) {
+                if (!is_array($field)) {
+                    $field = strip_tags($field);
+                } else {
+                    $field = $this->_filterPost($field);
+                }
+            }
+        }
+        return $data;
     }
 }

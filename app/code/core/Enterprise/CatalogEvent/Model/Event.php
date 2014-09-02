@@ -156,11 +156,12 @@ class Enterprise_CatalogEvent_Model_Event extends Mage_Core_Model_Abstract
     /**
      * Set event image
      *
-     * @param string|null|Varien_File_Uploader $value
+     * @param string|null|Mage_Core_Model_File_Uploader $value
      * @return Enterprise_CatalogEvent_Model_Event
      */
     public function setImage($value)
     {
+        //in the current version should be used instance of Mage_Core_Model_File_Uploader
         if ($value instanceof Varien_File_Uploader) {
             $value->save(Mage::getBaseDir('media') . DS
                          . strtr(self::IMAGE_PATH, '/', DS));

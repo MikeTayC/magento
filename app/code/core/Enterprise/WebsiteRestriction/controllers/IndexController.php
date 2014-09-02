@@ -76,7 +76,9 @@ class Enterprise_WebsiteRestriction_IndexController extends Mage_Core_Controller
             Mage::register('restriction_landing_page', $page);
 
             if ($page->getCustomTheme()) {
-                if (Mage::app()->getLocale()->isStoreDateInInterval(null, $page->getCustomThemeFrom(), $page->getCustomThemeTo())) {
+                if (Mage::app()->getLocale()
+                    ->isStoreDateInInterval(null, $page->getCustomThemeFrom(), $page->getCustomThemeTo())
+                ) {
                     list($package, $theme) = explode('/', $page->getCustomTheme());
                     Mage::getSingleton('core/design_package')
                         ->setPackageName($package)

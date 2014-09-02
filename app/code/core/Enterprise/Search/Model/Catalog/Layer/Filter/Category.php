@@ -41,13 +41,12 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Category extends Mage_Catalog
      */
     protected function _getItemsData()
     {
-        $key = $this->getLayer()->getStateKey().'_SUBCATEGORIES';
-        $data = $this->getLayer()->getCacheData($key);
+        $key    = $this->getLayer()->getStateKey() . '_SUBCATEGORIES';
+        $data   = $this->getLayer()->getCacheData($key);
 
         if ($data === null) {
-            $category   = $this->getCategory();
-
             /** @var $category Mage_Catalog_Model_Categeory */
+            $category   = $this->getCategory();
             $categories = $category->getChildrenCategories();
 
             $productCollection = $this->getLayer()->getProductCollection();
@@ -62,14 +61,16 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Category extends Mage_Catalog
                 } else {
                     $category->setProductCount(0);
                 }
+
                 if ($category->getIsActive() && $category->getProductCount()) {
                     $data[] = array(
-                        'label' => Mage::helper('core')->htmlEscape($category->getName()),
+                        'label' => Mage::helper('core')->escapeHtml($category->getName()),
                         'value' => $categoryId,
                         'count' => $category->getProductCount(),
                     );
                 }
             }
+
             $tags = $this->getLayer()->getStateTags();
             $this->getLayer()->getAggregator()->saveCacheData($data, $key, $tags);
         }
@@ -89,31 +90,20 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Category extends Mage_Catalog
         $filter = (int) $request->getParam($this->getRequestVar());
         if ($filter) {
             $this->_categoryId = $filter;
-        }
 
-        $category = $this->getCategory();
-        if (!Mage::registry('current_category_filter')) {
-            Mage::register('current_category_filter', $category);
-        }
+            if (!Mage::registry('current_category_filter')) {
+                Mage::register('current_category_filter', $this->getCategory());
+            }
 
-        if (!$filter) {
-            $this->addCategoryFilter($category, null);
-            return $this;
-        }
+            $this->_appliedCategory = Mage::getModel('catalog/category')
+                ->setStoreId(Mage::app()->getStore()->getId())
+                ->load($filter);
 
-        $this->_appliedCategory = Mage::getModel('catalog/category')
-            ->setStoreId(Mage::app()->getStore()->getId())
-            ->load($filter);
-
-        if ($this->_isValidCategory($this->_appliedCategory)) {
-            /*
-            $this->getLayer()->getProductCollection()
-                ->addCategoryFilter($this->_appliedCategory);
-            */
-            $this->addCategoryFilter($this->_appliedCategory, $filter);
-            $this->getLayer()->getState()->addFilter(
-                $this->_createItem($this->_appliedCategory->getName(), $filter)
-            );
+            if ($this->_isValidCategory($this->_appliedCategory)) {
+                $this->getLayer()->getState()->addFilter(
+                    $this->_createItem($this->_appliedCategory->getName(), $filter)
+                );
+            }
         }
 
         return $this;
@@ -129,7 +119,7 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Category extends Mage_Catalog
         $category = $this->getCategory();
         $childrenCategories = $category->getChildrenCategories();
 
-        $useFlat = (bool)Mage::getStoreConfig('catalog/frontend/flat_catalog_category');
+        $useFlat = (bool) Mage::getStoreConfig('catalog/frontend/flat_catalog_category');
         $categories = ($useFlat)
             ? array_keys($childrenCategories)
             : array_keys($childrenCategories->toArray());
@@ -142,18 +132,16 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Category extends Mage_Catalog
     /**
      * Apply category filter to product collection
      *
-     * @param object $category
-     * @param Mage_Catalog_Model_Layer_Filter_Category $filter
+     * @deprecated after 1.10.0.2
      *
-     * @return Mage_Catalog_Model_Resource_Eav_Mysql4_Layer_Filter_Attribute
+     * @param   Mage_Catalog_Model_Category $category
+     * @param   Mage_Catalog_Model_Layer_Filter_Category $filter
+     * @return  Enterprise_Search_Model_Catalog_Layer_Filter_Category
      */
     public function addCategoryFilter($category, $filter)
     {
         $productCollection = $this->getLayer()->getProductCollection();
-        $value = array(
-            'categories' => $category->getId()
-        );
-        $productCollection->addFqFilter($value);
+        $productCollection->addFqFilter(array('categories' => $category->getId()));
 
         return $this;
     }

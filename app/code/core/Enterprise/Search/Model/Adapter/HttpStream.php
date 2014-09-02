@@ -167,11 +167,20 @@ class Enterprise_Search_Model_Adapter_HttpStream extends Enterprise_Search_Model
         /**
          * Suggestions search
          */
-        $useSpellcheckSearch = (isset($params['solr_params']['spellcheck']) && $params['solr_params']['spellcheck'] == 'true');
+        $useSpellcheckSearch = (
+            isset($params['solr_params']['spellcheck'])
+            && $params['solr_params']['spellcheck'] == 'true'
+        );
+
         if ($useSpellcheckSearch) {
-            $spellcheckCount = (isset($params['solr_params']['spellcheck.count']) && $params['solr_params']['spellcheck.count'])
-                ? $params['solr_params']['spellcheck.count']
-                : self::DEFAULT_SPELLCHECK_COUNT;
+            if (isset($params['solr_params']['spellcheck.count'])
+                && (int) $params['solr_params']['spellcheck.count'] > 0
+            ) {
+                $spellcheckCount = (int) $params['solr_params']['spellcheck.count'];
+            } else {
+                $spellcheckCount = self::DEFAULT_SPELLCHECK_COUNT;
+            }
+
             $_params['solr_params'] += array(
                 'spellcheck.collate'         => 'true',
                 'spellcheck.dictionary'      => 'magento_spell' . $languageSuffix,
@@ -224,7 +233,7 @@ class Enterprise_Search_Model_Adapter_HttpStream extends Enterprise_Search_Model
                 if ($useSpellcheckSearch) {
                     $resultSuggestions = $this->_prepareSuggestionsQueryResponse($data);
                     /* Calc results count for each suggestion */
-                    if (isset($params['spellcheck_result_counts']) && $params['spellcheck_result_counts'] == true
+                    if (isset($params['spellcheck_result_counts']) && $params['spellcheck_result_counts']
                         && count($resultSuggestions)
                         && $spellcheckCount > 0
                     ) {

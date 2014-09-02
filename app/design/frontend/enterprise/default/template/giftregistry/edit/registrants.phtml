@@ -142,10 +142,10 @@ $i = 0;
     addRegistrant();
     <?php foreach ($registrant as $field => $value) : ?>
         <?php if (!is_array($value)) : ?>
-            setFieldById(<?php echo "'registrant:$field$i', '$value'" ?>);
+            setFieldById(<?php echo '"registrant:'.$field.$i.'", "'.addslashes($value).'"' ?>);
         <?php else : ?>
             <?php foreach ($value as $customId => $customValue) : ?>
-                setFieldById(<?php echo "'registrant:custom:$customId$i', '$customValue'" ?>);
+                setFieldById(<?php echo '"registrant:custom:'.$customId.$i.'", "'.addslashes($customValue).'"' ?>);
             <?php endforeach;?>
         <?php endif; ?>
     <?php endforeach; ?>

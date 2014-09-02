@@ -30,7 +30,8 @@
  * @category   Enterprise
  * @package    Enterprise_CustomerSegment
  */
-class Enterprise_CustomerSegment_Adminhtml_Report_Customer_CustomersegmentController extends Mage_Adminhtml_Controller_Action
+class Enterprise_CustomerSegment_Adminhtml_Report_Customer_CustomersegmentController
+    extends Mage_Adminhtml_Controller_Action
 {
     /**
      * Admin session
@@ -153,7 +154,8 @@ class Enterprise_CustomerSegment_Adminhtml_Report_Customer_CustomersegmentContro
                 if ($segments) {
                     Mage::getSingleton('adminhtml/session')->addNotice(
                         $this->__('Viewing combined "%s" report from segments: %s.',
-                            Mage::helper('enterprise_customersegment')->getViewModeLabel($this->_getAdminSession()->getViewMode()),
+                            Mage::helper('enterprise_customersegment')
+                                ->getViewModeLabel($this->_getAdminSession()->getViewMode()),
                             implode(', ',$segments)
                         )
                     );
@@ -235,7 +237,8 @@ class Enterprise_CustomerSegment_Adminhtml_Report_Customer_CustomersegmentContro
         if (!$this->_initSegment(false)) {
             return;
         }
-        $grid = $this->getLayout()->createBlock('enterprise_customersegment/adminhtml_report_customer_segment_detail_grid');
+        $grid = $this->getLayout()
+            ->createBlock('enterprise_customersegment/adminhtml_report_customer_segment_detail_grid');
         $this->getResponse()->setBody($grid->toHtml());
     }
 
@@ -250,5 +253,16 @@ class Enterprise_CustomerSegment_Adminhtml_Report_Customer_CustomersegmentContro
             $this->_adminSession = Mage::getModel('admin/session');
         }
         return $this->_adminSession;
+    }
+
+    /**
+     * Check the permission to run it
+     *
+     * @return boolean
+     */
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('customer/customersegment') &&
+            Mage::helper('enterprise_customersegment')->isEnabled();
     }
 }

@@ -70,7 +70,8 @@ class Enterprise_GiftRegistry_Adminhtml_Giftregistry_CustomerController extends 
                 'active_tab' => 'giftregistry'
             ));
         } catch (Exception $e) {
-            Mage::getSingleton('adminhtml/session')->addError($this->__('An error occurred while editing gift registry.'));
+            Mage::getSingleton('adminhtml/session')
+                ->addError($this->__('An error occurred while editing gift registry.'));
             Mage::logException($e);
             $this->_redirect('*/customer/edit', array(
                 'id'         => $this->getRequest()->getParam('customer'),
@@ -103,7 +104,8 @@ class Enterprise_GiftRegistry_Adminhtml_Giftregistry_CustomerController extends 
                 $this->_redirect('*/*/edit', array('id' => $model->getId()));
                 return;
             } catch (Exception $e) {
-                Mage::getSingleton('adminhtml/session')->addError($this->__('Failed to add shopping cart items to gift registry.'));
+                Mage::getSingleton('adminhtml/session')
+                    ->addError($this->__('Failed to add shopping cart items to gift registry.'));
                 Mage::logException($e);
             }
         }
@@ -137,7 +139,8 @@ class Enterprise_GiftRegistry_Adminhtml_Giftregistry_CustomerController extends 
                     }
                 }
                 if ($updatedCount) {
-                    Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Gift registry items have been updated.'));
+                    Mage::getSingleton('adminhtml/session')
+                        ->addSuccess($this->__('Gift registry items have been updated.'));
                 }
             } catch (Mage_Core_Exception $e) {
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
@@ -174,7 +177,9 @@ class Enterprise_GiftRegistry_Adminhtml_Giftregistry_CustomerController extends 
                 $failedCount = 0;
                 foreach ($emails as $email) {
                     if (!empty($email)) {
-                        if ($model->sendShareRegistryEmail($email, $storeId, $this->getRequest()->getParam('message'))) {
+                        if ($model->sendShareRegistryEmail($email, $storeId, $this->getRequest()
+                            ->getParam('message'))
+                        ) {
                             $sentCount++;
                         } else {
                             $failedCount++;
@@ -194,7 +199,8 @@ class Enterprise_GiftRegistry_Adminhtml_Giftregistry_CustomerController extends 
                 $this->_getSession()->addSuccess($this->__('%d email(s) were sent.', $sentCount));
             }
             if ($failedCount) {
-                $this->_getSession()->addError($this->__('Failed to send %1$d of %2$d email(s).', $failedCount, count($emailsForSend)));
+                $this->_getSession()
+                    ->addError($this->__('Failed to send %1$d of %2$d email(s).', $failedCount, count($emailsForSend)));
             }
         }
         $this->_redirect('*/*/edit', array('id' => $model->getId()));
@@ -209,7 +215,8 @@ class Enterprise_GiftRegistry_Adminhtml_Giftregistry_CustomerController extends 
             $model = $this->_initEntity();
             $customerId = $model->getCustomerId();
             $model->delete();
-            Mage::getSingleton('adminhtml/session')->addSuccess($this->__('The gift registry entity has been deleted.'));
+            Mage::getSingleton('adminhtml/session')
+                ->addSuccess($this->__('The gift registry entity has been deleted.'));
         }
         catch (Mage_Core_Exception $e) {
             Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
@@ -220,5 +227,15 @@ class Enterprise_GiftRegistry_Adminhtml_Giftregistry_CustomerController extends 
             Mage::logException($e);
         }
         $this->_redirect('*/customer/edit', array('id' => $customerId, 'active_tab' => 'giftregistry'));
+    }
+
+    /**
+     * Check the permission
+     *
+     * @return boolean
+     */
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('customer/enterprise_giftregistry');
     }
 }

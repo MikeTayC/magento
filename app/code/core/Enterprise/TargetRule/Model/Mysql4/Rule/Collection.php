@@ -72,7 +72,7 @@ class Enterprise_TargetRule_Model_Mysql4_Rule_Collection extends Mage_Core_Model
      * @param string $direction
      * @return Enterprise_TargetRule_Model_Mysql4_Rule_Collection
      */
-    public function setPriorityOrder($direction = self::SORT_ORDER_DESC)
+    public function setPriorityOrder($direction = self::SORT_ORDER_ASC)
     {
         $this->setOrder('sort_order', $direction);
         return $this;

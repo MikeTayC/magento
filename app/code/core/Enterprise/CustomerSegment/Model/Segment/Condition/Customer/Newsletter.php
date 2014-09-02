@@ -43,6 +43,25 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Newsletter
     }
 
     /**
+     * Set data with filtering
+     *
+     * @param mixed $key
+     * @param mixed $value
+     * @return Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Newsletter
+     */
+    public function setData($key, $value = null)
+    {
+        //filter key "value"
+        if (is_array($key) && isset($key['value']) && $key['value'] !== null) {
+            $key['value'] = (int) $key['value'];
+        } elseif ($key == 'value' && $value !== null) {
+            $value = (int) $value;
+        }
+
+        return parent::setData($key, $value);
+    }
+
+    /**
      * Get array of event names where segment with such conditions combine can be matched
      *
      * @return array
@@ -111,7 +130,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Newsletter
     public function getConditionsSql($customer, $website)
     {
         $table = $this->getResource()->getTable('newsletter/subscriber');
-        $value = $this->getValue();
+        $value = (int) $this->getValue();
 
         $select = $this->getResource()->createSelect()
             ->from(array('main' => $table), array(new Zend_Db_Expr($value)))

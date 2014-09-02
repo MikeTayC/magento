@@ -37,18 +37,24 @@
             <block type="enterprise_giftwrapping/checkout_options" name="checkout.options" template="giftwrapping/checkout/options.phtml" />
         </reference>
     </checkout_multishipping_shipping>
-    
-     <checkout_onepage_review>
+
+    <checkout_onepage_review>
         <reference name="additional.product.info">
             <block type="enterprise_giftwrapping/product_info" name="giftwrapping.product.info" template="giftwrapping/product/info.phtml" />
         </reference>
     </checkout_onepage_review>
-    
-     <checkout_multishipping_overview>
+
+    <checkout_multishipping_overview>
         <reference name="additional.product.info">
             <block type="enterprise_giftwrapping/product_info" name="giftwrapping.product.info" template="giftwrapping/product/info.phtml" />
         </reference>
     </checkout_multishipping_overview>
+
+    <paypal_express_review>
+        <reference name="additional.product.info">
+            <block type="enterprise_giftwrapping/product_info" name="giftwrapping.product.info" template="giftwrapping/product/info.phtml" />
+        </reference>
+    </paypal_express_review>
 
     <sales_order_view>
         <reference name="additional.product.info">
@@ -58,46 +64,94 @@
             <block type="enterprise_giftwrapping/sales_totals" name="giftwrapping" />
         </reference>
     </sales_order_view>
+
     <sales_order_print>
+         <reference name="additional.product.info">
+            <block type="enterprise_giftwrapping/product_info" name="giftwrapping.product.info" template="giftwrapping/product/info.phtml" />
+        </reference>
         <reference name="order_totals">
             <block type="enterprise_giftwrapping/sales_totals" name="giftwrapping" />
         </reference>
     </sales_order_print>
+
     <sales_email_order_items>
+         <reference name="additional.product.info">
+            <block type="enterprise_giftwrapping/product_info" name="giftwrapping.product.info" template="giftwrapping/product/info.phtml" />
+        </reference>
         <reference name="order_totals">
             <block type="enterprise_giftwrapping/sales_totals" name="giftwrapping" />
         </reference>
     </sales_email_order_items>
 
     <sales_order_invoice>
+         <reference name="additional.product.info">
+            <block type="enterprise_giftwrapping/product_info" name="giftwrapping.product.info" template="giftwrapping/product/info.phtml" />
+        </reference>
         <reference name="invoice_totals">
             <block type="enterprise_giftwrapping/sales_totals" name="giftwrapping" />
         </reference>
     </sales_order_invoice>
+
     <sales_order_printinvoice>
+         <reference name="additional.product.info">
+            <block type="enterprise_giftwrapping/product_info" name="giftwrapping.product.info" template="giftwrapping/product/info.phtml" />
+        </reference>
         <reference name="invoice_totals">
             <block type="enterprise_giftwrapping/sales_totals" name="giftwrapping" />
         </reference>
     </sales_order_printinvoice>
+
     <sales_email_order_invoice_items>
+         <reference name="additional.product.info">
+            <block type="enterprise_giftwrapping/product_info" name="giftwrapping.product.info" template="giftwrapping/product/info.phtml" />
+        </reference>
         <reference name="invoice_totals">
             <block type="enterprise_giftwrapping/sales_totals" name="giftwrapping" />
         </reference>
     </sales_email_order_invoice_items>
 
     <sales_order_creditmemo>
+        <reference name="additional.product.info">
+            <block type="enterprise_giftwrapping/product_info" name="giftwrapping.product.info" template="giftwrapping/product/info.phtml" />
+        </reference>
         <reference name="creditmemo_totals">
             <block type="enterprise_giftwrapping/sales_totals" name="giftwrapping" />
         </reference>
     </sales_order_creditmemo>
+
     <sales_order_printcreditmemo>
+        <reference name="additional.product.info">
+            <block type="enterprise_giftwrapping/product_info" name="giftwrapping.product.info" template="giftwrapping/product/info.phtml" />
+        </reference>
         <reference name="creditmemo_totals">
             <block type="enterprise_giftwrapping/sales_totals" name="giftwrapping" />
         </reference>
     </sales_order_printcreditmemo>
+
     <sales_email_order_creditmemo_items>
+        <reference name="additional.product.info">
+            <block type="enterprise_giftwrapping/product_info" name="giftwrapping.product.info" template="giftwrapping/product/info.phtml" />
+        </reference>
         <reference name="creditmemo_totals">
             <block type="enterprise_giftwrapping/sales_totals" name="giftwrapping" />
         </reference>
     </sales_email_order_creditmemo_items>
+
+    <sales_order_shipment>
+        <reference name="additional.product.info">
+            <block type="enterprise_giftwrapping/product_info" name="giftwrapping.product.info" template="giftwrapping/product/info.phtml" />
+        </reference>
+    </sales_order_shipment>
+
+    <sales_order_printshipment>
+        <reference name="additional.product.info">
+            <block type="enterprise_giftwrapping/product_info" name="giftwrapping.product.info" template="giftwrapping/product/info.phtml" />
+        </reference>
+    </sales_order_printshipment>
+
+    <sales_email_order_shipment_items>
+        <reference name="additional.product.info">
+            <block type="enterprise_giftwrapping/product_info" name="giftwrapping.product.info" template="giftwrapping/product/info.phtml" />
+        </reference>
+    </sales_email_order_shipment_items>
 </layout>

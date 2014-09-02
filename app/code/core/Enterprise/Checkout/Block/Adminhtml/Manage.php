@@ -116,7 +116,9 @@ class Enterprise_Checkout_Block_Adminhtml_Manage extends Mage_Adminhtml_Block_Wi
      */
     public function getHeaderText()
     {
-        return Mage::helper('enterprise_checkout')->__('Shopping Cart for %s in %s', $this->_getCustomer()->getName(), $this->_getStore()->getName());
+        $customer = $this->escapeHtml($this->_getCustomer()->getName());
+        $store = $this->escapeHtml($this->_getStore()->getName());
+        return Mage::helper('enterprise_checkout')->__('Shopping Cart for %s in %s', $customer, $store);
     }
 
     /**

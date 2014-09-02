@@ -942,4 +942,28 @@ class Enterprise_Reward_Model_Observer
             );
         }
     }
+
+    /**
+     * Return reward points
+     *
+     * @param   Varien_Event_Observer $observer
+     * @return  Enterprise_Reward_Model_Observer
+     */
+    public function returnRewardPoints(Varien_Event_Observer $observer)
+    {
+        /** @var Mage_Sales_Model_Order $order */
+        $order = $observer->getEvent()->getOrder();
+
+        if ($order->getRewardPointsBalance() > 0) {
+            Mage::getModel('enterprise_reward/reward')
+                ->setCustomerId($order->getCustomerId())
+                ->setWebsiteId(Mage::app()->getStore($order->getStoreId())->getWebsiteId())
+                ->setPointsDelta($order->getRewardPointsBalance())
+                ->setAction(Enterprise_Reward_Model_Reward::REWARD_ACTION_REVERT)
+                ->setActionEntity($order)
+                ->updateRewardPoints();
+        }
+
+        return $this;
+    }
 }

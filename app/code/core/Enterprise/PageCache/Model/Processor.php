@@ -35,6 +35,8 @@ class Enterprise_PageCache_Model_Processor
     const REQUEST_ID_PREFIX             = 'REQEST_';
     const CACHE_TAG                     = 'FPC';  // Full Page Cache, minimize
     const DESIGN_EXCEPTION_KEY          = 'FPC_DESIGN_EXCEPTION_CACHE';
+    const CACHE_SIZE_KEY                = 'FPC_CACHE_SIZE_CAHCE_KEY';
+    const XML_PATH_CACHE_MAX_SIZE       = 'system/page_cache/max_cache_size';
 
     /**
      * @deprecated after 1.8.0.0 - moved to Enterprise_PageCache_Model_Container_Viewedproducts
@@ -70,9 +72,26 @@ class Enterprise_PageCache_Model_Processor
     protected $_metaData = null;
 
     /**
+     * Flag whether design exception value presents in cache
+     * It always must be present (maybe serialized empty value)
+     * @var boolean
+     */
+    protected $_designExceptionExistsInCache = false;
+
+    /**
      * Class constructor
      */
     public function __construct()
+    {
+        $this->_createRequestIds();
+        $this->_requestTags     = array(self::CACHE_TAG);
+    }
+
+    /**
+     * Populate request ids
+     * @return Enterprise_PageCache_Model_Processor
+     */
+    protected function _createRequestIds()
     {
         $uri = $this->_getFullPageUrl();
 
@@ -102,7 +121,25 @@ class Enterprise_PageCache_Model_Processor
 
         $this->_requestId       = $uri;
         $this->_requestCacheId  = $this->prepareCacheId($this->_requestId);
-        $this->_requestTags     = array(self::CACHE_TAG);
+
+        return $this;
+    }
+
+    /**
+     * Refresh values of request ids
+     *
+     * Some parts of $this->_requestId and $this->_requestCacheId might be changed in runtime
+     * E.g. we may not know about design package
+     * But during cache save we need this data to be actual
+     *
+     * @return Enterprise_PageCache_Model_Processor
+     */
+    public function refreshRequestIds()
+    {
+        if (!$this->_designExceptionExistsInCache) {
+            $this->_createRequestIds();
+        }
+        return $this;
     }
 
     /**
@@ -117,6 +154,8 @@ class Enterprise_PageCache_Model_Processor
 
         if (!$exceptions) {
             return false;
+        } else {
+            $this->_designExceptionExistsInCache = true;
         }
 
         $rules = @unserialize($exceptions);
@@ -188,6 +227,11 @@ class Enterprise_PageCache_Model_Processor
      */
     public function extractContent($content)
     {
+        if (!$this->_designExceptionExistsInCache) {
+            //no design exception value - error
+            //must be at least empty value
+            return false;
+        }
         if (!$content && $this->isAllowed()) {
 
             $subprocessorClass = $this->getMetadata('cache_subprocessor');
@@ -362,7 +406,8 @@ class Enterprise_PageCache_Model_Processor
      * @param Zend_Controller_Response_Http $response
      * @return Enterprise_PageCache_Model_Processor
      */
-    public function processRequestResponse(Zend_Controller_Request_Http $request, Zend_Controller_Response_Http $response)
+    public function processRequestResponse(Zend_Controller_Request_Http $request,
+        Zend_Controller_Response_Http $response)
     {
         /**
          * Basic validation for request processing
@@ -383,7 +428,24 @@ class Enterprise_PageCache_Model_Processor
                 if (function_exists('gzcompress')) {
                     $content = gzcompress($content);
                 }
+
+                $contentSize = strlen($content);
+                $currentStorageSize = (int) Mage::app()->loadCache(self::CACHE_SIZE_KEY);
+
+                $maxSizeInBytes = Mage::getStoreConfig(self::XML_PATH_CACHE_MAX_SIZE) * 1024 * 1024;
+
+                if ($currentStorageSize >= $maxSizeInBytes) {
+                    Mage::app()->getCacheInstance()->invalidateType('full_page');
+                    return $this;
+                }
+
                 Mage::app()->saveCache($content, $cacheId, $this->getRequestTags());
+
+                Mage::app()->saveCache(
+                    $currentStorageSize + $contentSize,
+                    self::CACHE_SIZE_KEY,
+                    $this->getRequestTags()
+                );
 
                 // save response headers
                 $this->setMetadata('response_headers', $response->getHeaders());
@@ -451,7 +513,8 @@ class Enterprise_PageCache_Model_Processor
             if (is_array($configuration[$module]) && isset($configuration[$module][$controller])) {
                 $model = $configuration[$module][$controller];
                 $action = $request->getActionName();
-                if (is_array($configuration[$module][$controller]) && isset($configuration[$module][$controller][$action])) {
+                if (is_array($configuration[$module][$controller])
+                        && isset($configuration[$module][$controller][$action])) {
                     $model = $configuration[$module][$controller][$action];
                 }
             }

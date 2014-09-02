@@ -65,7 +65,8 @@ class Enterprise_GiftWrapping_Model_Wrapping extends Mage_Core_Model_Abstract
     protected function _beforeSave()
     {
         if (Mage::app()->isSingleStoreMode()) {
-            $this->setData('website_ids', array_keys(Mage::getSingleton('adminhtml/system_store')->getWebsiteOptionHash()));
+            $this->setData('website_ids', array_keys(
+                Mage::getSingleton('adminhtml/system_store')->getWebsiteOptionHash()));
         }
         if ($this->hasTmpImage()) {
             $baseImageName = $this->getTmpImage();
@@ -142,11 +143,12 @@ class Enterprise_GiftWrapping_Model_Wrapping extends Mage_Core_Model_Abstract
     /**
      * Set wrapping image
      *
-     * @param string|null|Varien_File_Uploader $value
+     * @param string|null|Mage_Core_Model_File_Uploader $value
      * @return Enterprise_GiftWrapping_Model_Wrapping
      */
     public function setImage($value)
     {
+        //in the current version should be used instance of Mage_Core_Model_File_Uploader
         if ($value instanceof Varien_File_Uploader) {
             $value->save($this->_getImageFolderAbsolutePath());
             $value = $value->getUploadedFileName();
@@ -166,7 +168,7 @@ class Enterprise_GiftWrapping_Model_Wrapping extends Mage_Core_Model_Abstract
     {
         $isUploaded = true;
         try {
-            $uploader = new Varien_File_Uploader($imageFieldName);
+            $uploader = new Mage_Core_Model_File_Uploader($imageFieldName);
             $uploader->setAllowedExtensions(array('jpg','jpeg','gif','png'));
             $uploader->setAllowRenameFiles(true);
             $uploader->setAllowCreateFolders(true);
@@ -187,11 +189,12 @@ class Enterprise_GiftWrapping_Model_Wrapping extends Mage_Core_Model_Abstract
     /**
      * Set temporary wrapping image
      *
-     * @param string|null|Varien_File_Uploader $value
+     * @param string|null|Mage_Core_Model_File_Uploader $value
      * @return Enterprise_GiftWrapping_Model_Wrapping
      */
     public function setTmpImage($value)
     {
+        //in the current version should be used instance of Mage_Core_Model_File_Uploader
         if ($value instanceof Varien_File_Uploader) {
             // Delete previous temporary image if exists
             $this->unsTmpImage();

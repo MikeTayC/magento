@@ -38,6 +38,25 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Sales_Salesamount
     }
 
     /**
+     * Set data with filtering
+     *
+     * @param mixed $key
+     * @param mixed $value
+     * @return Enterprise_CustomerSegment_Model_Segment_Condition_Sales_Salesamount
+     */
+    public function setData($key, $value = null)
+    {
+        //filter key "value"
+        if (is_array($key) && isset($key['value']) && $key['value'] !== null) {
+            $key['value'] = (float) $key['value'];
+        } elseif ($key == 'value' && $value !== null) {
+            $value = (float) $value;
+        }
+
+        return parent::setData($key, $value);
+    }
+
+    /**
      * Get array of event names where segment with such conditions combine can be matched
      *
      * @return array
@@ -73,10 +92,11 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Sales_Salesamount
         $select = $this->getResource()->createSelect();
 
         $operator = $this->getResource()->getSqlOperator($this->getOperator());
+        $value = (float) $this->getValue();
         if ($this->getAttribute() == 'total') {
-            $result = "IF (IF(SUM(order.base_grand_total), SUM(order.base_grand_total), 0) {$operator} {$this->getValue()}, 1, 0)";
+            $result = "IF (IF(SUM(order.base_grand_total), SUM(order.base_grand_total), 0) {$operator} $value, 1, 0)";
         } else {
-            $result = "IF (IF(AVG(order.base_grand_total), AVG(order.base_grand_total), 0) {$operator} {$this->getValue()}, 1, 0)";
+            $result = "IF (IF(AVG(order.base_grand_total), AVG(order.base_grand_total), 0) {$operator} $value, 1, 0)";
         }
 
         $select->from(

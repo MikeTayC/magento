@@ -51,7 +51,7 @@ class Enterprise_Logging_Block_Adminhtml_Grid_Renderer_Details
                     if (!is_array($dataArray['general'])) {
                         $dataArray['general'] = array($dataArray['general']);
                     }
-                    $html = implode(', ', $dataArray['general']);
+                    $html = $this->escapeHtml(implode(', ', $dataArray['general']));
                 }
                 /**
                  *  [additional] => Array
@@ -77,7 +77,7 @@ class Enterprise_Logging_Block_Adminhtml_Grid_Renderer_Details
                     $html .= '<br /><br />';
                     foreach ($dataArray['additional'] as $modelName => $modelsData) {
                         foreach ($modelsData as $mdoelId => $data) {
-                            $html .= implode(', ', $data);
+                            $html .= $this->escapeHtml(implode(', ', $data));
                         }
                     }
                 }

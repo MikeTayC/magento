@@ -58,7 +58,7 @@ class Enterprise_Customer_Block_Adminhtml_Customer_Address_Attribute_Edit_Tab_Ge
      */
     protected function _prepareForm()
     {
-    parent::_prepareForm();
+        parent::_prepareForm();
 
         $attribute  = $this->getAttributeObject();
         $form       = $this->getForm();
@@ -140,6 +140,22 @@ class Enterprise_Customer_Block_Adminhtml_Customer_Address_Attribute_Edit_Tab_Ge
             'title'     => Mage::helper('enterprise_customer')->__('Input/Output Filter'),
             'values'    => array('' => Mage::helper('enterprise_customer')->__('None')),
         ));
+
+        $fieldset->addField('date_range_min', 'date', array(
+            'name'      => 'date_range_min',
+            'label'     => Mage::helper('enterprise_customer')->__('Minimal value'),
+            'title'     => Mage::helper('enterprise_customer')->__('Minimal value'),
+            'image'     => $this->getSkinUrl('images/grid-cal.gif'),
+            'format'    => $helper->getDateFormat()
+        ), 'default_value_date');
+
+        $fieldset->addField('date_range_max', 'date', array(
+            'name'      => 'date_range_max',
+            'label'     => Mage::helper('enterprise_customer')->__('Maximum value'),
+            'title'     => Mage::helper('enterprise_customer')->__('Maximum value'),
+            'image'     => $this->getSkinUrl('images/grid-cal.gif'),
+            'format'    => $helper->getDateFormat()
+        ), 'date_range_min');
 
         $yesnoSource = Mage::getModel('adminhtml/system_config_source_yesno')->toOptionArray();
 

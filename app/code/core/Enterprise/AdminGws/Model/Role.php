@@ -30,7 +30,11 @@
  */
 class Enterprise_AdminGws_Model_Role extends Varien_Object
 {
-    /* @var Mage_Admin_Model_adminRoles */
+    /**
+     * Store ACL role model instance
+     *
+     * @var Mage_Admin_Model_Roles
+     */
     protected $_adminRole;
 
     /**
@@ -99,7 +103,7 @@ class Enterprise_AdminGws_Model_Role extends Varien_Object
      * Check whether GWS permissions are applicable
      *
      * True if all permissions are allowed or core
-     * admin role model is not defined yeat. So in result we can't restrict some
+     * admin role model is not defined yet. So in result we can't restrict some
      * low level functionality.
      *
      * @return bool

@@ -35,6 +35,8 @@ class Enterprise_GiftWrapping_Block_Checkout_Options extends Mage_Core_Block_Tem
 {
     protected $_designCollection;
 
+    protected $_giftWrappingAvailable = false;
+
     /**
      * Gift wrapping collection
      *
@@ -330,10 +332,21 @@ class Enterprise_GiftWrapping_Block_Checkout_Options extends Mage_Core_Block_Tem
      */
     public function canDisplayGiftWrapping()
     {
+        $cartItems      = Mage::getModel('checkout/cart')->getItems();
+        $productModel   = Mage::getModel('catalog/product');
+        foreach ($cartItems as $item) {
+            $product = $productModel->load($item->getProductId());
+            if ($product->getGiftWrappingAvailable()) {
+                $this->_giftWrappingAvailable = true;
+                continue;
+            }
+        }
+
         $canDisplay = $this->getAllowForOrder()
             || $this->getAllowForItems()
             || $this->getAllowPrintedCard()
-            || $this->getAllowGiftReceipt();
+            || $this->getAllowGiftReceipt()
+            || $this->_giftWrappingAvailable;
         return $canDisplay;
     }
 

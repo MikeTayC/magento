@@ -327,6 +327,7 @@
             <page_cache>
                 <allowed_depth>1</allowed_depth>
                 <multicurrency>1</multicurrency>
+                <max_cache_size>1024</max_cache_size>
             </page_cache>
             <page_crawl>
                 <enable>0</enable>

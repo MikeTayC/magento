@@ -44,8 +44,8 @@ class Enterprise_Search_Model_Resource_Index extends Mage_CatalogSearch_Model_My
     /**
      * Update category'es products indexes
      *
-     * @param array $productIds
-     * @return Enterprise_Search_Model_Resource_Index
+     * @param   array $productIds
+     * @return  Enterprise_Search_Model_Resource_Index
      */
     public function updateCategoryIndexData($productIds)
     {
@@ -79,10 +79,10 @@ class Enterprise_Search_Model_Resource_Index extends Mage_CatalogSearch_Model_My
     /**
      * Return array of category, position and visibility data by products
      *
-     * @param int $storeId
-     * @param array $productIds
-     * @param bool $visibility      add visibility data to result
-     * @return array
+     * @param   int $storeId
+     * @param   array $productIds
+     * @param   bool $visibility      add visibility data to result
+     * @return  array
      */
     protected function _getCatalogCategoryData($storeId, $productIds, $visibility = true)
     {
@@ -129,8 +129,8 @@ class Enterprise_Search_Model_Resource_Index extends Mage_CatalogSearch_Model_My
     /**
      * Return array of price data per customer and website by products
      *
-     * @param null | array $productIds
-     * @return array
+     * @param   null|array $productIds
+     * @return  array
      */
     protected function _getCatalogProductPriceData($productIds = null)
     {
@@ -161,11 +161,11 @@ class Enterprise_Search_Model_Resource_Index extends Mage_CatalogSearch_Model_My
      *
      * @see Mage_CatalogSearch_Model_Mysql4_Fulltext->_getSearchableProducts()
      *
-     * @param array $index
-     * @param int $storeId
-     * @param array | null $productIds
+     * @param   array $index
+     * @param   int $storeId
+     * @param   array|null $productIds
      *
-     * @return array
+     * @return  array
      */
     public function addAdvancedIndex($index, $storeId, $productIds = null)
     {
@@ -203,8 +203,8 @@ class Enterprise_Search_Model_Resource_Index extends Mage_CatalogSearch_Model_My
     /**
      * Retrieve moved categories product ids
      *
-     * @param int $categoryId
-     * @return array
+     * @param   int $categoryId
+     * @return  array
      */
     public function getMovedCategoryProductIds($categoryId)
     {

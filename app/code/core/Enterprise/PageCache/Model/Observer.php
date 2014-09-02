@@ -26,6 +26,11 @@
 
 class Enterprise_PageCache_Model_Observer
 {
+    /*
+     * Design exception key
+     */
+    const XML_PATH_DESIGN_EXCEPTION = 'design/package/ua_regexp';
+
     /**
      * @var Enterprise_PageCache_Model_Processor
      */
@@ -66,6 +71,7 @@ class Enterprise_PageCache_Model_Observer
         $frontController = $observer->getEvent()->getFront();
         $request = $frontController->getRequest();
         $response = $frontController->getResponse();
+        $this->_saveDesignException();
         $this->_processor->processRequestResponse($request, $response);
         return $this;
     }
@@ -98,6 +104,28 @@ class Enterprise_PageCache_Model_Observer
             Mage::app()->getCacheInstance()->banUse(Mage_Core_Block_Abstract::CACHE_GROUP); // disable blocks cache
         }
         $this->_getCookie()->updateCustomerCookies();
+        return $this;
+    }
+
+    /**
+     * Checks whether exists design exception value in cache.
+     * If not, gets it from config and puts into cache
+     *
+     * @return Enterprise_PageCache_Model_Observer
+     */
+    protected function _saveDesignException()
+    {
+        if (!$this->isCacheEnabled()) {
+            return $this;
+        }
+        $cacheId = Enterprise_PageCache_Model_Processor::DESIGN_EXCEPTION_KEY;
+
+        $exception = Mage::app()->loadCache($cacheId);
+        if (!$exception) {
+            $exception = Mage::getStoreConfig(self::XML_PATH_DESIGN_EXCEPTION);
+            Mage::app()->saveCache($exception, $cacheId);
+            $this->_processor->refreshRequestIds();
+        }
         return $this;
     }
 
@@ -450,8 +478,7 @@ class Enterprise_PageCache_Model_Observer
     public function registerDesignExceptionsChange(Varien_Event_Observer $observer)
     {
         $object = $observer->getDataObject();
-        Mage::app()->saveCache($object->getValue(), Enterprise_PageCache_Model_Processor::DESIGN_EXCEPTION_KEY,
-            array(Enterprise_PageCache_Model_Processor::CACHE_TAG));
+        Mage::app()->saveCache($object->getValue(), Enterprise_PageCache_Model_Processor::DESIGN_EXCEPTION_KEY);
         return $this;
     }
 

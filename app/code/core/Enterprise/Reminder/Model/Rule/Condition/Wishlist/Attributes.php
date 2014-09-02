@@ -161,8 +161,9 @@ class Enterprise_Reminder_Model_Rule_Condition_Wishlist_Attributes
                 ->where($condition);
             $condition = 'main.entity_id IN (' . $categorySelect . ')';
         } elseif ($attribute->isStatic()) {
+            $attrCol = $select->getAdapter()->quoteColumnAs('main.' . $attribute->getAttributeCode(), null);
             $condition = $this->getResource()->createConditionSql(
-                "main.{$attribute->getAttributeCode()}", $this->getOperator(), $this->getValue()
+                $attrCol, $this->getOperator(), $this->getValue()
             );
         } else {
             $select->where('main.attribute_id = ?', $attribute->getId());

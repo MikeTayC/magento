@@ -163,7 +163,7 @@ class Enterprise_CatalogEvent_Adminhtml_Catalog_EventController extends Mage_Adm
 
         $isUploaded = true;
         try {
-            $uploader = new Varien_File_Uploader('image');
+            $uploader = new Mage_Core_Model_File_Uploader('image');
             $uploader->setAllowedExtensions(array('jpg','jpeg','gif','png'));
             $uploader->setAllowRenameFiles(true);
             $uploader->setAllowCreateFolders(true);

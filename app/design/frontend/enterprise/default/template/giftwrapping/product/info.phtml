@@ -23,11 +23,13 @@
  * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
+/** @var $this Enterprise_GiftWrapping_Block_Product_Info */
 ?>
 
 <?php if ($this->getGiftWrappingInfo()) : ?>
 <dl class="item-options">
     <dt><?php echo $this->__('Gift Wrapping'); ?></dt>
-    <dd><?php echo $this->__('Design'); ?> : <?php echo $this->getGiftWrappingInfo()->getDesign(); ?></dd>
+    <dd><?php echo $this->__('Design'); ?> : <?php echo $this->escapeHtml($this->getGiftWrappingInfo()->getDesign()); ?></dd>
 </dl>
 <?php endif; ?>

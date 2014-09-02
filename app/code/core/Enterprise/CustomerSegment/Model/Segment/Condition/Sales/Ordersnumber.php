@@ -39,6 +39,25 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Sales_Ordersnumber
     }
 
     /**
+     * Set data with filtering
+     *
+     * @param mixed $key
+     * @param mixed $value
+     * @return Enterprise_CustomerSegment_Model_Segment_Condition_Sales_Ordersnumber
+     */
+    public function setData($key, $value = null)
+    {
+        //filter key "value"
+        if (is_array($key) && isset($key['value']) && $key['value'] !== null) {
+            $key['value'] = (int) $key['value'];
+        } elseif ($key == 'value' && $value !== null) {
+            $value = (int) $value;
+        }
+
+        return parent::setData($key, $value);
+    }
+
+    /**
      * Get array of event names where segment with such conditions combine can be matched
      *
      * @return array
@@ -85,7 +104,8 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Sales_Ordersnumber
         $select = $this->getResource()->createSelect();
         $operator = $this->getResource()->getSqlOperator($this->getOperator());
 
-        $result = "IF (COUNT(*) {$operator} {$this->getValue()}, 1, 0)";
+        $value = $select->getAdapter()->quote($this->getValue());
+        $result = "IF (COUNT(*) {$operator} $value, 1, 0)";
         $select->from(
             array('order' => $this->getResource()->getTable('sales/order')),
             array(new Zend_Db_Expr($result))

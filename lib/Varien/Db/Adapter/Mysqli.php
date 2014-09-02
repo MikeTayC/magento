@@ -84,25 +84,31 @@ class Varien_Db_Adapter_Mysqli extends Zend_Db_Adapter_Mysqli
         $this->_connection->query("SET SQL_MODE=''");
     }
 
+    /**
+     * Run RAW Query
+     *
+     * @param string $sql
+     * @return Zend_Db_Statement_Interface
+     */
     public function raw_query($sql)
     {
+        $timeoutMessage = 'SQLSTATE[HY000]: General error: 1205 Lock wait timeout exceeded; try restarting transaction';
+        $tries = 0;
         do {
             $retry = false;
-            $tries = 0;
             try {
                 $this->clear_result();
                 $result = $this->getConnection()->query($sql);
                 $this->clear_result();
-            }
-            catch (Exception $e) {
-                if ($e->getMessage()=='SQLSTATE[HY000]: General error: 1205 Lock wait timeout exceeded; try restarting transaction') {
+            } catch (Exception $e) {
+                if ($tries < 10 && $e->getMessage() == $timeoutMessage) {
                     $retry = true;
+                    $tries++;
                 } else {
                     throw $e;
                 }
-                $tries++;
             }
-        } while ($retry && $tries<10);
+        } while ($retry);
 
         return $result;
     }
@@ -165,8 +171,7 @@ class Varien_Db_Adapter_Mysqli extends Zend_Db_Adapter_Mysqli
         while ($this->getConnection()->next_result()) {
             if ($result = $this->getConnection()->store_result()) {
                 $result->free_result();
-            }
-            elseif($this->getConnection()->error) {
+            } elseif($this->getConnection()->error) {
                 throw new Zend_Db_Adapter_Mysqli_Exception('clear_result: '.$this->getConnection()->error);
             }
         }
@@ -203,7 +208,8 @@ class Varien_Db_Adapter_Mysqli extends Zend_Db_Adapter_Mysqli
      * @param string $onUpdate
      * @param string $onDelete
      */
-    public function addConstraint($fkName, $tableName, $keyName, $refTableName, $refKeyName, $onDelete = 'cascade', $onUpdate = 'cascade')
+    public function addConstraint($fkName, $tableName, $keyName, $refTableName,
+        $refKeyName, $onDelete = 'cascade', $onUpdate = 'cascade')
     {
         if (substr($fkName, 0, 3) != 'FK_') {
             $fkName = 'FK_' . $fkName;

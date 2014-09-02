@@ -109,7 +109,7 @@ class Enterprise_CatalogEvent_Model_Mysql4_Event_Collection extends Mage_Core_Mo
         if ($field == 'category_name' && $this->_categoryDataAdded) {
             $field = 'category_position';
         }
-        return parent::_setOrder($field, $direction, $unshift);
+        return parent::setOrder($field, $direction, $unshift);
     }
 
     /**
@@ -121,13 +121,24 @@ class Enterprise_CatalogEvent_Model_Mysql4_Event_Collection extends Mage_Core_Mo
     {
         if (!$this->_categoryDataAdded) {
              $this->getSelect()
-                ->joinLeft(array('category' => $this->getTable('catalog/category')), 'category.entity_id = main_table.category_id', array('category_position' => 'position'))
-                ->joinLeft(array('category_name_attribute' => $this->getTable('eav/attribute')), 'category_name_attribute.entity_type_id = category.entity_type_id
-                    AND category_name_attribute.attribute_code = \'name\'', array())
-                ->joinLeft(array('category_varchar' => $this->getTable('catalog/category') . '_varchar'), 'category_varchar.entity_id = category.entity_id
+                ->joinLeft(
+                    array('category' => $this->getTable('catalog/category')),
+                    'category.entity_id = main_table.category_id',
+                    array('category_position' => 'position')
+                )
+                ->joinLeft(
+                    array('category_name_attribute' => $this->getTable('eav/attribute')),
+                    'category_name_attribute.entity_type_id = category.entity_type_id
+                    AND category_name_attribute.attribute_code = \'name\'',
+                    array()
+                )
+                ->joinLeft(
+                    array('category_varchar' => $this->getTable('catalog/category') . '_varchar'),
+                    'category_varchar.entity_id = category.entity_id
                     AND category_varchar.attribute_id = category_name_attribute.attribute_id
-                    AND category_varchar.store_id = 0
-                ', array('category_name' => 'value'));
+                    AND category_varchar.store_id = 0',
+                    array('category_name' => 'value')
+                );
             $this->_map['fields']['category_name'] = 'category_varchar.value';
             $this->_map['fields']['category_position'] = 'category.position';
             $this->_categoryDataAdded = true;

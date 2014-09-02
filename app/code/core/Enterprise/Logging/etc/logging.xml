@@ -1232,7 +1232,7 @@
     </sales_agreement>
 
     <api_roles translate="label">
-        <label>Webservices Api Roles</label>
+        <label>Webservices API Roles</label>
         <expected_models>
             <api__roles/>
         </expected_models>
@@ -1709,7 +1709,7 @@
             </adminhtml_cache_flushAll>
         </actions>
     </cache_management>
-    
+
     <paypal_settlement_reports translate="label">
         <label>PayPal Settlement Reports</label>
         <actions>

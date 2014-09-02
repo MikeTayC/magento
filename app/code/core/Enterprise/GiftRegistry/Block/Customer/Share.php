@@ -39,9 +39,8 @@ class Enterprise_GiftRegistry_Block_Customer_Share
      */
     public function getFormHeader()
     {
-        return Mage::helper('enterprise_giftregistry')->__("Share '%s' Gift Registry",
-            $this->getEntity()->getTitle()
-        );
+        $formHeader  = $this->escapeHtml($this->getEntity()->getTitle());
+        return Mage::helper('enterprise_giftregistry')->__("Share '%s' Gift Registry", $formHeader);
     }
 
     /**

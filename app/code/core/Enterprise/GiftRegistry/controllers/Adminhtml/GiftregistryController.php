@@ -126,16 +126,42 @@ class Enterprise_GiftRegistry_Adminhtml_GiftregistryController extends Mage_Admi
     }
 
     /**
+     * Filter post data
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function _filterPostData($data)
+    {
+        $helper = $this->_getHelper();
+        $data['type']['label'] = $helper->stripTags($data['type']['label']);
+        if (!empty($data['attributes']['registry'])) {
+            foreach ($data['attributes']['registry'] as &$regItem) {
+                $regItem['label'] = $helper->stripTags($regItem['label']);
+                if (!empty($regItem['options'])) {
+                    foreach ($regItem['options'] as &$option) {
+                        $option['label'] = $helper->stripTags($option['label']);
+                    }
+                }
+            }
+        }
+        return $data;
+    }
+
+    /**
      * Save gift registry type
      */
     public function saveAction()
     {
         if ($data = $this->getRequest()->getPost()) {
+            //filtering
+            $data = $this->_filterPostData($data);
             try {
                 $model = $this->_initType();
                 $model->loadPost($data);
                 $model->save();
-                Mage::getSingleton('adminhtml/session')->addSuccess($this->__('The gift registry type has been saved.'));
+                Mage::getSingleton('adminhtml/session')
+                        ->addSuccess($this->__('The gift registry type has been saved.'));
 
                 if ($redirectBack = $this->getRequest()->getParam('back', false)) {
                     $this->_redirect('*/*/edit', array('id' => $model->getId(), 'store' => $model->getStoreId()));

@@ -96,4 +96,15 @@ class Enterprise_Pbridge_Adminhtml_PbridgeController extends Mage_Adminhtml_Cont
         $this->_initActionLayout();
         $this->renderLayout();
     }
+
+    /**
+     * Check current user permission on resource and privilege
+     *
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('sales/order');
+    }
+
 }

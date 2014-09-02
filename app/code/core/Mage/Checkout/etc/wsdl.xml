@@ -224,8 +224,8 @@
                     <element name="sku" type="xsd:string" minOccurs="0"/>
                     <element name="qty" type="xsd:double" minOccurs="0"/>
                     <element name="options" type="typens:associativeArray" minOccurs="0"/>
-                    <element name="bundle_options" type="typens:associativeArray" minOccurs="0"/>
-                    <element name="bundle_options_qty" type="typens:associativeArray" minOccurs="0"/>
+                    <element name="bundle_option" type="typens:associativeArray" minOccurs="0"/>
+                    <element name="bundle_option_qty" type="typens:associativeArray" minOccurs="0"/>
                     <element name="links" type="typens:ArrayOfString" minOccurs="0"/>
                 </all>
             </complexType>
@@ -337,7 +337,7 @@
         <part name="licenses" type="typens:ArrayOfString"/>
     </message>
     <message name="shoppingCartOrderResponse">
-        <part name="result" type="xsd:boolean"/>
+        <part name="result" type="xsd:string"/>
     </message>
     <message name="shoppingCartInfoRequest">
         <part name="sessionId" type="xsd:string"/>

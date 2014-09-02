@@ -101,7 +101,8 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
      */
     public function limitCustomers($collection)
     {
-        $collection->addAttributeToFilter('website_id', array('website_id' => array('in' => $this->_role->getRelevantWebsiteIds())));
+        $collection->addAttributeToFilter('website_id',
+                          array('website_id' => array('in' => $this->_role->getRelevantWebsiteIds())));
     }
 
     /**
@@ -112,6 +113,16 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
     public function limitReviews($collection)
     {
         $collection->addStoreFilter($this->_role->getStoreIds());
+    }
+
+    /**
+     * Limit product reviews collection
+     *
+     * @param Mage_Review_Model_Mysql4_Review_Product_Collection
+     */
+    public function limitProductReviews($collection)
+    {
+        $collection->setStoreFilter($this->_role->getStoreIds());
     }
 
     /**
@@ -305,16 +316,6 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
     }
 
     /**
-     * Limit customer segment collection
-     *
-     * @param Enterprise_CustomerSegment_Model_Mysql4_Segment_Collection $collection
-     */
-    public function limitCustomerSegments($collection)
-    {
-        $collection->addWebsiteFilter($this->_role->getRelevantWebsiteIds());
-    }
-
-    /**
      * Apply websites filter on collection used in notify stock rss
      *
      * @param Varien_Event_Observer $observer
@@ -341,6 +342,26 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
     }
 
     /**
+     * Limit product reports
+     *
+     * @param  Mage_Reports_Model_Mysql4_Product_Collection $collection
+     */
+    public function limitProductReports($collection)
+    {
+        $collection->addStoreRestrictions($this->_role->getStoreIds(), $this->_role->getRelevantWebsiteIds());
+    }
+
+    /**
+     * Limit customer segment collection
+     *
+     * @param Enterprise_CustomerSegment_Model_Mysql4_Segment_Collection $collection
+     */
+    public function limitCustomerSegments($collection)
+    {
+        $collection->addWebsiteFilter($this->_role->getRelevantWebsiteIds());
+    }
+
+    /**
      * Limit GiftRegistry Entity collection
      *
      * @param Enterprise_GiftRegistry_Model_Mysql4_Entity_Collection $collection
@@ -348,5 +369,15 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
     public function limitGiftRegistryEntityWebsites($collection)
     {
         $collection->addWebsiteFilter($this->_role->getRelevantWebsiteIds());
+    }
+
+    /**
+     * Limit bestsellers collection
+     *
+     * @param Mage_Sales_Model_Mysql4_Report_Bestsellers_Collection $collection
+     */
+    public function limitBestsellersCollection($collection)
+    {
+        $collection->addStoreRestrictions($this->_role->getStoreIds());
     }
 }

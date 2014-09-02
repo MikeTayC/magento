@@ -76,7 +76,7 @@
                 </setup>
             </enterprise_search_setup>
         </resources>
-        
+
     </global>
 
     <admin>
@@ -146,6 +146,16 @@
                 </enterprise_search>
             </updates>
         </layout>
+        <events>
+            <catalog_controller_category_init_after>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>resetCurrentCatalogLayer</method>
+                    </enterprise_search>
+                </observers>
+            </catalog_controller_category_init_after>
+        </events>
         <translate>
             <modules>
                 <Enterprise_Search>

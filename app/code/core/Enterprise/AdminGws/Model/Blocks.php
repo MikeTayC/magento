@@ -310,8 +310,7 @@ class Enterprise_AdminGws_Model_Blocks extends Enterprise_AdminGws_Model_Observe
         $setDisabled = false;
         if (!$this->_role->getIsWebsiteLevel()) {
             $setDisabled = true;
-        }
-        else {
+        } else {
             $categoryId = $observer->getEvent()->getBlock()->getEvent()->getCategoryId();
             $path = Mage::getResourceModel('catalog/category')->getCategoryPathById($categoryId);
             if (!$this->_role->hasExclusiveCategoryAccess($path)) {
@@ -348,6 +347,25 @@ class Enterprise_AdminGws_Model_Blocks extends Enterprise_AdminGws_Model_Observe
     public function catalogProductMassUpdateWebsites($observer)
     {
         $observer->getEvent()->getBlock()->setWebsitesReadonly(!$this->_role->getIsWebsiteLevel());
+    }
+
+    /**
+     * Remove 'delete' button for store-level roles on Catalog Product page
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_AdminGws_Model_Blocks
+     */
+    public function catalogProductPrepareMassaction($observer)
+    {
+        if ($this->_role->getIsStoreLevel()) {
+            $massBlock = $observer->getEvent()->getBlock()->getMassactionBlock();
+            /* @var $massBlock Mage_Adminhtml_Block_Widget_Grid_Massaction */
+            if ($massBlock) {
+                $massBlock->removeItem('delete');
+            }
+        }
+
+        return $this;
     }
 
     /**
@@ -968,7 +986,9 @@ class Enterprise_AdminGws_Model_Blocks extends Enterprise_AdminGws_Model_Observe
                     if ($parentDenied || !$node['page_id']) {
                         $nodesAssoc[$nodeId]['append_denied'] = $parentDenied;
                     } else {
-                        $nodesAssoc[$nodeId]['append_denied'] = !$this->_role->hasStoreAccess($node['assigned_to_stores']);
+                        $nodesAssoc[$nodeId]['append_denied'] = !$this->_role->hasStoreAccess(
+                            $node['assigned_to_stores']
+                        );
                     }
                 }
                 $block->setNodes(array_values($nodesAssoc));

@@ -23,6 +23,8 @@
  * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
+/** @var $this Enterprise_GiftWrapping_Block_Adminhtml_Order_View_Info */
 ?>
 <?php if ($this->canDisplayGiftWrapping()): ?>
 <div class="box-right" id="wrapping-order-container">
@@ -32,7 +34,7 @@
         <fieldset>
             <?php if ($this->getOrderInfo()->getDesign()): ?>
             <div class="gift-wrapping-form">
-                <?php echo $this->__('Gift Wrapping Design') ?>: <span><?php echo $this->getOrderInfo()->getDesign(); ?></span>
+                <?php echo $this->__('Gift Wrapping Design') ?>: <span><?php echo $this->escapeHtml($this->getOrderInfo()->getDesign()); ?></span>
                 <div class="gift-wrapping-design">
                     <?php if ($this->getOrderInfo()->getPath()): ?>
                         <img id="image-box" class="image-box" height="75" width="75" alt="" src="<?php echo $this->getOrderInfo()->getPath(); ?>"/>

@@ -45,7 +45,7 @@
         <input type="hidden" name="error_url" value="<?php echo $this->getErrorUrl() ?>" />
         <ul class="form-list">
             <li class="fields">
-                <?php echo $this->getLayout()->createBlock('customer/widget_name')->setObject($this->getAddress()->getFirstname() ? $this->getAddress() : $this->getCustomer())->toHtml() ?>
+                <?php echo $this->getNameBlockHtml() ?>
             </li>
             <li>
                 <label for="company"><?php echo $this->__('Company') ?></label>

@@ -80,19 +80,19 @@ document.observe("dom:loaded", function() {
 <?php if (is_array($formDataPost)) : ?>
     <?php foreach ($formDataPost as $name => $value) : ?>
         <?php if (!is_array($value)) : ?>
-            setFieldByName(<?php echo "'$name', '$value'" ?>);
+            setFieldByName(<?php echo '"'.$name.'", "'.addslashes($value).'"' ?>);
         <?php else : ?>
             <?php foreach ($value as $name2 => $value2) : ?>
                 <?php if (!is_array($value2)) : ?>
-                    setFieldByName(<?php echo '\'' . $name . '[' . $name2 . ']\', "' . $value2. '"'?>);
+                    setFieldByName(<?php echo '"'.$name.'['.$name2.']", "'.addslashes($value2).'"' ?>);
                 <?php else : ?>
                     <?php foreach ($value2 as $name3 => $value3) : ?>
                         <?php if (!is_array($value3)) : ?>
-                            setFieldByName(<?php echo '\'' . $name . '[' . $name2 . '][' .  $name3 . ']\', "' . $value3. '"' ?>);
+                            setFieldByName(<?php echo '"'.$name.'['.$name2.']['.$name3.']", "'.addslashes($value3).'"' ?>);
                         <?php else : ?>
                             <?php foreach ($value3 as $name4 => $value4) : ?>
                                 <?php if (!is_array($value4)) : ?>
-                                    setFieldByName(<?php echo '\'' . $name . '[' . $name2 . '][' .  $name3  . '][' . $name4 . ']\', "' . $value4. '"'?>);
+                                    setFieldByName(<?php echo '"'.$name.'['.$name2.']['.$name3.']['.$name4.']", "'.addslashes($value4).'"' ?>);
                                 <?php endif; ?>
                             <?php endforeach; ?>
                          <?php endif; ?>

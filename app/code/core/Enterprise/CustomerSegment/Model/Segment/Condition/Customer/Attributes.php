@@ -345,6 +345,8 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Attributes
                 $select->where('main.attribute_id = ?', $attribute->getId());
                 $field = 'main.value';
             }
+            $field = $select->getAdapter()->quoteColumnAs($field, null);
+
             if ($attribute->getFrontendInput() == 'date') {
                 $value    = $this->getDateValue();
                 $operator = $this->getDateOperator();

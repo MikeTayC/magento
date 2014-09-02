@@ -32,13 +32,50 @@
  * @package    Enterprise_Search
  * @author     Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Search_Model_Indexer
+class Enterprise_Search_Model_Indexer_Indexer
 {
+    /**
+     * Change indexes status to defined
+     *
+     * @param   string|array $indexList
+     * @param   string $status
+     * @return  Enterprise_Search_Model_Indexer_Indexer
+     */
+    protected function _changeIndexesStatus($indexList, $status)
+    {
+        $indexer = Mage::getSingleton('index/indexer');
+
+        if (!is_array($indexList)) {
+            $indexList = array($indexList);
+        }
+
+        foreach ($indexList as $index) {
+            $indexer->getProcessByCode($index)
+                ->changeStatus($status);
+        }
+
+        return $this;
+    }
+
     public function reindexAll()
     {
         $helper = Mage::helper('enterprise_search');
         if ($helper->isThirdPartSearchEngine() && $helper->isActiveEngine()) {
+            $indexList = array('catalogsearch_fulltext', 'catalog_category_product');
+
+            /* Change indexes status to running */
+            $this->_changeIndexesStatus(
+                $indexList,
+                Mage_Index_Model_Process::STATUS_RUNNING
+            );
+
             Mage::getSingleton('catalogsearch/indexer_fulltext')->reindexAll();
+
+            /* Refresh indexes status after reindex process is completed */
+            $this->_changeIndexesStatus(
+                $indexList,
+                Mage_Index_Model_Process::STATUS_PENDING
+            );
         }
     }
 }

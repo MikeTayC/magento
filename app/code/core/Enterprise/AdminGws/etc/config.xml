@@ -325,8 +325,11 @@
                         <customer_attributes>admin/customer/attributes</customer_attributes>
                     </store_level>
                 </acl_deny>
-<!-- all callbacks support absoulute naming with factory_classname::method, for example enterprise_admingws/collections::limitStores -->
+                <!-- all callbacks support absolute naming with factory_classname::method -->
+                <!-- for example enterprise_admingws/collections::limitStores -->
                 <collection_load_before>
+                    <sales__report_bestsellers_collection>limitBestsellersCollection</sales__report_bestsellers_collection>
+                    <reports__product_collection>limitProductReports</reports__product_collection>
                     <core__store_collection>limitStores</core__store_collection>
                     <core__website_collection>limitWebsites</core__website_collection>
                     <core__store_group_collection>limitStoreGroups</core__store_group_collection>
@@ -374,6 +377,7 @@
                     <enterprise_reward__reward_history_collection>limitRewardHistoryWebsites</enterprise_reward__reward_history_collection>
                     <enterprise_reward__reward_collection>limitRewardBalanceWebsites</enterprise_reward__reward_collection>
                     <enterprise_giftregistry__entity_collection>limitGiftRegistryEntityWebsites</enterprise_giftregistry__entity_collection>
+                    <review__review_product_collection>limitProductReviews</review__review_product_collection>
                 </collection_load_before>
                 <model_save_before>
                     <cms__page>cmsPageSaveBefore</cms__page>
@@ -404,6 +408,7 @@
                     <enterprise_giftcardaccount__giftcardaccount>giftCardAccountSaveBefore</enterprise_giftcardaccount__giftcardaccount>
                     <enterprise_customersegment__segment>customerSegmentSaveBefore</enterprise_customersegment__segment>
                     <enterprise_giftregistry__type>giftRegistryTypeSaveBefore</enterprise_giftregistry__type>
+                    <review__review>catalogProductReviewSaveBefore</review__review>
                 </model_save_before>
                 <model_delete_before>
                     <cms__page>cmsPageDeleteBefore</cms__page>
@@ -428,6 +433,7 @@
                     <enterprise_giftcardaccount__giftcardaccount>giftCardAccountDeleteBefore</enterprise_giftcardaccount__giftcardaccount>
                     <enterprise_customersegment__segment>customerSegmentDeleteBefore</enterprise_customersegment__segment>
                     <enterprise_giftregistry__type>giftRegistryTypeDeleteBefore</enterprise_giftregistry__type>
+                    <review__review>catalogProductReviewDeleteBefore</review__review>
                 </model_delete_before>
                 <model_load_after>
                     <catalog__product>catalogProductLoadAfter</catalog__product>
@@ -524,10 +530,14 @@
                     <adminhtml__catalog_product_attribute__delete>validateCatalogProductAttributeActions</adminhtml__catalog_product_attribute__delete>
                     <adminhtml__catalog_product_attribute__save>validateCatalogProductAttributeActions</adminhtml__catalog_product_attribute__save>
                     <adminhtml__catalog_product_attribute__edit>validateCatalogProductAttributeCreateAction</adminhtml__catalog_product_attribute__edit>
+                    <adminhtml__catalog_product__massDelete>catalogProductMassDeleteAction</adminhtml__catalog_product__massDelete>
 
                     <adminhtml__catalog_product_set__add>validateAttributeSetActions</adminhtml__catalog_product_set__add>
                     <adminhtml__catalog_product_set__save>validateAttributeSetActions</adminhtml__catalog_product_set__save>
                     <adminhtml__catalog_product_set__delete>validateAttributeSetActions</adminhtml__catalog_product_set__delete>
+                    <adminhtml__catalog_product_review__edit>validateCatalogProductReview</adminhtml__catalog_product_review__edit>
+                    <adminhtml__catalog_product_review__save>validateCatalogProductReview</adminhtml__catalog_product_review__save>
+                    <adminhtml__catalog_product_review__delete>validateCatalogProductReview</adminhtml__catalog_product_review__delete>
                     <adminhtml__staging_manage__merge>blockStagingAction</adminhtml__staging_manage__merge>
                     <adminhtml__staging_manage__mergePost>blockStagingAction</adminhtml__staging_manage__mergePost>
                     <adminhtml__staging_manage__save>blockStagingAction</adminhtml__staging_manage__save>
@@ -580,6 +590,7 @@
                     <adminhtml__catalog_category_edit_form>widgetCatalogEventCategoryEditButtons</adminhtml__catalog_category_edit_form>
                     <adminhtml__newsletter_queue_edit_form>setIsRequiredSubscribersFromFieldForNewsletterQueueForm</adminhtml__newsletter_queue_edit_form>
                     <adminhtml__catalog_product_edit_action_attribute_tab_websites>catalogProductMassUpdateWebsites</adminhtml__catalog_product_edit_action_attribute_tab_websites>
+                    <adminhtml__catalog_product_grid__preparemassaction>catalogProductPrepareMassaction</adminhtml__catalog_product_grid__preparemassaction>
                     <adminhtml__promo_catalog>removePromoCatalogButtons</adminhtml__promo_catalog>
                     <adminhtml__promo_quote>removePromoQuoteButtons</adminhtml__promo_quote>
                     <adminhtml__cms_page_edit>removeCmsPageButtons</adminhtml__cms_page_edit>

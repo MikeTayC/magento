@@ -1740,6 +1740,8 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .opc .step { padding:20px; min-height:300px; font-size:12px; background:#fcfcfc; border-top:0; }
 .opc .step .tool-tip { right:10px; }
 .opc .order-review {}
+.opc .order-review .authentication { margin:0 auto; width:570px; }
+.opc .order-review .warning-message { color:#222; font-weight:bold; text-align:center; padding:10px 10px 0; }
 
 /* Steps */
 .opc .form-alt .input-box { width:695px; }

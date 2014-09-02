@@ -34,15 +34,6 @@
 class Enterprise_Search_Block_Catalog_Layer_View extends Mage_Catalog_Block_Layer_View
 {
     /**
-     * Internal constructor
-     */
-    protected function _construct()
-    {
-        parent::_construct();
-        Mage::register('current_layer', $this->getLayer());
-    }
-
-    /**
      * Initialize blocks names
      */
     protected function _initBlocks()

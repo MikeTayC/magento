@@ -181,6 +181,20 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Combine_List
     }
 
     /**
+     * Get SQL select for matching customer to segment condition
+     *
+     * @param $customer
+     * @param $website
+     * @return Varien_Db_Select
+     */
+    public function getConditionsSql($customer, $website)
+    {
+        $select = parent::getConditionsSql($customer, $website);
+
+        return $this->_getRequiredValidation() ? $select : "IF(({$select}),NULL,1)";
+    }
+
+    /**
      * Get field names map for subfilter conditions
      *
      * @return array

@@ -156,7 +156,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Attributes
 
         if ($attribute->getAttributeCode() == 'category_ids') {
             $condition = $resource->createConditionSql(
-                'cat.category_id', $this->getOperator(), explode(',', $this->getValue())
+                'cat.category_id', $this->getOperator(), $this->getValue()
             );
             $categorySelect = $resource->createSelect();
             $categorySelect->from(array('cat'=>$resource->getTable('catalog/category_product')), 'product_id')
@@ -169,16 +169,21 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Attributes
         } else {
             $select->where('main.attribute_id = ?', $attribute->getId());
             $select->join(
-                    array('store'=> $this->getResource()->getTable('core/store')),
-                    'main.store_id=store.store_id',
-                    array())
+                array('store'=> $this->getResource()->getTable('core/store')),
+                'main.store_id=store.store_id',
+                array())
                 ->where('store.website_id IN(?)', array(0, $website));
             $condition = $this->getResource()->createConditionSql(
                 'main.value', $this->getOperator(), $this->getValue()
             );
         }
         $select->where($condition);
-        $inOperator = ($requireValid ? 'IN' : 'NOT IN');
-        return sprintf("%s %s (%s)", $fieldName, $inOperator, $select);
+        $select->where('main.entity_id = '.$fieldName);
+        $inOperator = ($requireValid ? 'EXISTS' : 'NOT EXISTS');
+        if ($this->getCombineHistory()) {
+            // when used as a child of History condition - "EXISTS" always set to "EXISTS"
+            $inOperator = 'EXISTS';
+        }
+        return sprintf("%s (%s)", $inOperator, $select);
     }
 }

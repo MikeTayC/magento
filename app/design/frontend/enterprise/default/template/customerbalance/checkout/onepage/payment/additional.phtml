@@ -51,10 +51,12 @@
 
     if (customerBalanceSubstracted) {
         quoteBaseGrandTotal += <?php echo (float)$this->getQuote()->getBaseCustomerBalanceAmountUsed(); ?>;
+        checkQuoteBaseGrandTotal = quoteBaseGrandTotal;
         customerBalanceSubstracted = false;
     }
 
     Payment.prototype.switchCustomerBalanceCheckbox = function() {
+
         if (!customerBalanceSubstracted && $('use_customer_balance').checked) {
             quoteBaseGrandTotal -= <?php echo (float)$this->getBalance(); ?>;
             customerBalanceSubstracted = true;
@@ -65,9 +67,10 @@
             customerBalanceSubstracted = false;
             checkQuoteBaseGrandTotal = quoteBaseGrandTotal;
         }
-        if ((checkQuoteBaseGrandTotal < 0.0001 || checkQuoteBaseGrandTotal > 0.0001) && quoteBaseGrandTotal == 0) {
+        if (((checkQuoteBaseGrandTotal < 0.0001 || checkQuoteBaseGrandTotal > 0.0001) && quoteBaseGrandTotal == 0) || (quoteBaseGrandTotal > checkQuoteBaseGrandTotal)) {
             quoteBaseGrandTotal = checkQuoteBaseGrandTotal;
         }
+
         if (quoteBaseGrandTotal < 0.0001) {
             var elements = Form.getElements(this.form);
             for (var i=0; i<elements.length; i++) {

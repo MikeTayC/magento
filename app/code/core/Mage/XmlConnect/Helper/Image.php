@@ -1,13 +1,13 @@
 <?php
 /**
- * Magento Enterprise Edition
+ * Magento
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
- * that is bundled with this package in the file LICENSE_EE.txt.
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
  * to license@magentocommerce.com so we can send you a copy immediately.
@@ -21,7 +21,7 @@
  * @category    Mage
  * @package     Mage_XmlConnect
  * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 class Mage_XmlConnect_Helper_Image extends Mage_Core_Helper_Abstract
@@ -62,6 +62,7 @@ class Mage_XmlConnect_Helper_Image extends Mage_Core_Helper_Abstract
      * @var array|null
      */
     protected $_confPaths = null;
+
     /**
      * Process uploaded file
      * setup filenames to the configuration
@@ -75,10 +76,11 @@ class Mage_XmlConnect_Helper_Image extends Mage_Core_Helper_Abstract
         $uploadedFilename = '';
         $uploadDir = $this->getOriginalSizeUploadDir();
 
-        $this->_forcedConvertPng($field);
-
         try {
-            $uploader = new Varien_File_Uploader($field);
+            $this->_forcedConvertPng($field);
+
+            /** @var $uploader Mage_Core_Model_File_Uploader */
+            $uploader = Mage::getModel('core/file_uploader', $field);
             $uploader->setAllowedExtensions(array('jpg', 'jpeg', 'gif', 'png'));
             $uploader->setAllowRenameFiles(true);
             $uploader->save($uploadDir);
@@ -88,7 +90,9 @@ class Mage_XmlConnect_Helper_Image extends Mage_Core_Helper_Abstract
             /**
              * Hard coded exception catch
              */
-            if ($e->getMessage() == 'Disallowed file type.') {
+            if (!strlen($_FILES[$field]['tmp_name'])) {
+                Mage::throwException(Mage::helper('xmlconnect')->__('File can\'t be uploaded.'));
+            } elseif ($e->getMessage() == 'Disallowed file type.') {
                 $filename = $_FILES[$field]['name'];
                 Mage::throwException(Mage::helper('xmlconnect')->__('Error while uploading file "%s". Disallowed file type. Only "jpg", "jpeg", "gif", "png" are allowed.', $filename));
             } else {
@@ -111,6 +115,7 @@ class Mage_XmlConnect_Helper_Image extends Mage_Core_Helper_Abstract
     /**
      * Return correct system filename for current screenSize
      *
+     * @throws Mage_Core_Exception
      * @param string $fieldPath
      * @param string $fileName
      * @param string $default
@@ -341,6 +346,68 @@ class Mage_XmlConnect_Helper_Image extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Return the filesystem path to XmlConnect media files
+     *
+     * @param string $path Right part of the path
+     * @return string
+     */
+    public function getMediaPath($path = '')
+    {
+        $path = trim($path);
+        $result = Mage::getBaseDir('media') . DS . 'xmlconnect';
+
+        if (!empty($path)) {
+            if (strpos($path, DS) === 0) {
+                $path = substr($path, 1);
+            }
+            $result .= DS . $path;
+        }
+        return $result;
+    }
+
+    /**
+     * Return Url for media image
+     *
+     * @param string $image
+     * @return string
+     */
+    public function getMediaUrl($image = '')
+    {
+        $image = trim($image);
+        $result = Mage::getBaseUrl('media') . 'xmlconnect';
+
+        if (!empty($image)) {
+            if (strpos($image, '/') === 0) {
+                $image = substr($image, 1);
+            }
+            $result .= '/' . $image;
+        }
+        return $result;
+    }
+
+    /**
+     * Return URL for default design image
+     *
+     * @param string $image
+     * @return string
+     */
+    public function getDefaultDesignUrl($image = '')
+    {
+        return $this->getSkinImagesUrl($this->getDefaultDesignSuffixAsUrl($image));
+    }
+
+    /**
+     * Return suffix as URL for default design image
+     *
+     * @param string $image
+     * @return string
+     */
+    public function getDefaultDesignSuffixAsUrl($image = '')
+    {
+        return 'design_default/' . trim(ltrim($image, '/'));
+    }
+
+    /**
      * Retrieve thumbnail image url
      *
      * @param int $width
@@ -348,15 +415,13 @@ class Mage_XmlConnect_Helper_Image extends Mage_Core_Helper_Abstract
      */
     public function getCustomSizeImageUrl($imageUrl, $width = 100, $height = 100)
     {
-        $customDirRoot = Mage::getBaseDir('media') . DS . 'xmlconnect' . DS . 'custom';
         $screenSize = $width . 'x' . $height;
-        $customDir = $customDirRoot . DS . $screenSize;
+        $customDir = $this->getMediaPath('custom' . DS . $screenSize);
         $this->_verifyDirExist($customDir);
         $imageUrl = explode('/', $imageUrl);
         $file = $imageUrl[count($imageUrl)-1];
         $filePath = $this->getDefaultSizeUploadDir() . DS . $file;
-
-        if (!file_exists($customDir . $file)) {
+        if (!file_exists($customDir . DS . $file)) {
             $image = new Varien_Image($filePath);
             $widthOriginal = $image->getOriginalWidth();
             $heightOriginal = $image->getOriginalHeight();
@@ -379,7 +444,7 @@ class Mage_XmlConnect_Helper_Image extends Mage_Core_Helper_Abstract
                 $image->save($customDir, basename($file));
             }
         }
-        return Mage::getBaseUrl('media') . "xmlconnect/custom/{$screenSize}/" . basename($file);
+        return $this->getMediaUrl("custom/{$screenSize}/" . basename($file));
     }
 
     /**
@@ -575,9 +640,7 @@ class Mage_XmlConnect_Helper_Image extends Mage_Core_Helper_Abstract
     public function getCustomSizeUploadDir($screenSize)
     {
         $screenSize = $this->filterScreenSize($screenSize);
-        $customDirRoot = Mage::getBaseDir('media') . DS . 'xmlconnect' . DS . 'custom';
-        $this->_verifyDirExist($customDirRoot);
-        $customDir = $customDirRoot . DS .$screenSize;
+        $customDir = $this->getMediaPath('custom' . DS .$screenSize);
         $this->_verifyDirExist($customDir);
         return $customDir;
     }
@@ -589,7 +652,7 @@ class Mage_XmlConnect_Helper_Image extends Mage_Core_Helper_Abstract
      */
     public function getOriginalSizeUploadDir()
     {
-        $dir = Mage::getBaseDir('media') . DS . 'xmlconnect' . DS . 'original';
+        $dir = $this->getMediaPath('original');
         $this->_verifyDirExist($dir);
         return $dir;
     }
@@ -601,7 +664,7 @@ class Mage_XmlConnect_Helper_Image extends Mage_Core_Helper_Abstract
      */
     public function getOldUploadDir()
     {
-        $dir = Mage::getBaseDir('media') . DS . 'xmlconnect';
+        $dir = $this->getMediaPath();
         $this->_verifyDirExist($dir);
         return $dir;
     }

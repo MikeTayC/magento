@@ -560,13 +560,10 @@ class Enterprise_Reward_Model_Reward extends Mage_Core_Model_Abstract
      */
     public function isEnoughPointsToCoverAmount($amount)
     {
-        $result = false;
-        if ($this->getId()) {
-            if ($this->getCurrencyAmount() >= $amount) {
-                $result = true;
-            }
+        if ($this->getId() && $this->getCurrencyAmount() >= $amount) {
+            return true;
         }
-        return $result;
+        return false;
     }
 
     /**
@@ -579,16 +576,19 @@ class Enterprise_Reward_Model_Reward extends Mage_Core_Model_Abstract
     public function getPointsEquivalent($amount)
     {
         $points = 0;
-        if ($amount) {
-            $ratePointsCount = $this->getRateToCurrency()->getPoints();
-            $rateCurrencyAmount = $this->getRateToCurrency()->getCurrencyAmount();
-            if ($rateCurrencyAmount > 0) {
-                $delta = $amount / $rateCurrencyAmount;
-                if ($delta > 0) {
-                    $points = $ratePointsCount * ceil($delta);
-                }
+        if (!$amount) {
+            return $points;
+        }
+
+        $ratePointsCount = $this->getRateToCurrency()->getPoints();
+        $rateCurrencyAmount = $this->getRateToCurrency()->getCurrencyAmount();
+        if ($rateCurrencyAmount > 0) {
+            $delta = $amount / $rateCurrencyAmount;
+            if ($delta > 0) {
+                $points = $ratePointsCount * ceil($delta);
             }
         }
+
         return $points;
     }
 
