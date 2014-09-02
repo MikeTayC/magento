@@ -3,6 +3,7 @@
 "An order cannot be created in disallowed store.","Een bestelling kan niet worden geplaatst in niet-toegestane winkel"
 "Custom","Aangepast"
 "None","Geen"
+"Not enough permissions to delete this item(s): %s.","Niet genoeg toestemmingen om dit item te kunnen verwijderen: %s."
 "Not enough permissions to delete this item.","Niet genoeg bevoegdheid om dit item te verwijderen"
 "Not enough permissions to save specified Combination of Store Scopes.","Niet genoeg bevoegdheid om een specifieke combinatie van winkelbereiken op te slaan"
 "Not enough permissions to save this item.","Niet genoeg bevoegdheid om dit item op te slaan"

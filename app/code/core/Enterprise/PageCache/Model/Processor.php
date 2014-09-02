@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -89,6 +89,12 @@ class Enterprise_PageCache_Model_Processor
     protected $_requestProcessor = null;
 
     /**
+     * subprocessor model
+     * @var mixed
+     */
+    protected $_subprocessor;
+
+    /**
      * Class constructor
      */
     public function __construct()
@@ -124,6 +130,12 @@ class Enterprise_PageCache_Model_Processor
             }
             if (isset($_COOKIE[Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER_LOGGED_IN])) {
                 $uri .= '_' . $_COOKIE[Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER_LOGGED_IN];
+            }
+            if (isset($_COOKIE[Enterprise_PageCache_Model_Cookie::CUSTOMER_SEGMENT_IDS])) {
+                $uri .= '_' . $_COOKIE[Enterprise_PageCache_Model_Cookie::CUSTOMER_SEGMENT_IDS];
+            }
+            if (isset($_COOKIE[Enterprise_PageCache_Model_Cookie::IS_USER_ALLOWED_SAVE_COOKIE])) {
+                $uri .= '_' . $_COOKIE[Enterprise_PageCache_Model_Cookie::IS_USER_ALLOWED_SAVE_COOKIE];
             }
             $designPackage = $this->_getDesignPackage();
 
@@ -244,6 +256,9 @@ class Enterprise_PageCache_Model_Processor
         if (isset($_GET['no_cache'])) {
             return false;
         }
+        if (isset($_GET[Mage_Core_Model_Session_Abstract::SESSION_ID_QUERY_PARAM])) {
+            return false;
+        }
         if (!Mage::app()->useCache('full_page')) {
             return false;
         }
@@ -255,7 +270,7 @@ class Enterprise_PageCache_Model_Processor
      * Get page content from cache storage
      *
      * @param string $content
-     * @return string | false
+     * @return string|false
      */
     public function extractContent($content)
     {
@@ -279,7 +294,6 @@ class Enterprise_PageCache_Model_Processor
             return false;
         }
         if (!$content && $this->isAllowed()) {
-
             $subprocessorClass = $this->getMetadata('cache_subprocessor');
             if (!$subprocessorClass) {
                 return $content;
@@ -289,6 +303,7 @@ class Enterprise_PageCache_Model_Processor
              * @var Enterprise_PageCache_Model_Processor_Default
              */
             $subprocessor = new $subprocessorClass;
+            $this->setSubprocessor($subprocessor);
             $cacheId = $this->prepareCacheId($subprocessor->getPageIdWithoutApp($this));
 
             $content = $cacheInstance->load($cacheId);
@@ -350,25 +365,7 @@ class Enterprise_PageCache_Model_Processor
      */
     protected function _processContent($content)
     {
-        $placeholders = array();
-        preg_match_all(
-            Enterprise_PageCache_Model_Container_Placeholder::HTML_NAME_PATTERN,
-            $content, $placeholders, PREG_PATTERN_ORDER
-        );
-        $placeholders = array_unique($placeholders[1]);
-        $containers   = array();
-        foreach ($placeholders as $definition) {
-            $placeholder= new Enterprise_PageCache_Model_Container_Placeholder($definition);
-            $container  = $placeholder->getContainerClass();
-            if (!$container) {
-                continue;
-            }
-            $container  = new $container($placeholder);
-            $container->setProcessor($this);
-            if (!$container->applyWithoutApp($content)) {
-                $containers[] = $container;
-            }
-        }
+        $containers = $this->_processContainers($content);
         $isProcessed = empty($containers);
         // renew session cookie
         $sessionInfo = Enterprise_PageCache_Model_Cache::getCacheInstance()->load($this->getSessionInfoCacheId());
@@ -395,7 +392,7 @@ class Enterprise_PageCache_Model_Processor
          * restore session_id in content whether content is completely processed or not
          */
         $sidCookieName = $this->getMetadata('sid_cookie_name');
-        $sidCookieValue = ($sidCookieName && isset($_COOKIE[$sidCookieName]) ? $_COOKIE[$sidCookieName] : '');
+        $sidCookieValue = $sidCookieName && isset($_COOKIE[$sidCookieName]) ? $_COOKIE[$sidCookieName] : '';
         Enterprise_PageCache_Helper_Url::restoreSid($content, $sidCookieValue);
 
         if ($isProcessed) {
@@ -411,15 +408,52 @@ class Enterprise_PageCache_Model_Processor
 
             // restore original routing info
             $routingInfo = array(
-                    'aliases'              => $this->getMetadata('routing_aliases'),
-                    'requested_route'      => $this->getMetadata('routing_requested_route'),
-                    'requested_controller' => $this->getMetadata('routing_requested_controller'),
-                    'requested_action'     => $this->getMetadata('routing_requested_action')
-                );
+                'aliases'              => $this->getMetadata('routing_aliases'),
+                'requested_route'      => $this->getMetadata('routing_requested_route'),
+                'requested_controller' => $this->getMetadata('routing_requested_controller'),
+                'requested_action'     => $this->getMetadata('routing_requested_action')
+            );
 
             Mage::app()->getRequest()->setRoutingInfo($routingInfo);
             return false;
         }
+    }
+
+    /**
+     * Process Containers
+     *
+     * @param $content
+     * @return array
+     */
+    protected function _processContainers(&$content)
+    {
+        $placeholders = array();
+        preg_match_all(
+            Enterprise_PageCache_Model_Container_Placeholder::HTML_NAME_PATTERN,
+            $content, $placeholders, PREG_PATTERN_ORDER
+        );
+        $placeholders = array_unique($placeholders[1]);
+        $containers = array();
+        foreach ($placeholders as $definition) {
+            $placeholder = new Enterprise_PageCache_Model_Container_Placeholder($definition);
+            $container = $placeholder->getContainerClass();
+            if (!$container) {
+                continue;
+            }
+
+            $container = new $container($placeholder);
+            $container->setProcessor($this);
+            if (!$container->applyWithoutApp($content)) {
+                $containers[] = $container;
+            } else {
+                preg_match($placeholder->getPattern(), $content, $matches);
+                if (array_key_exists(1,$matches)) {
+                    $containers = array_merge($this->_processContainers($matches[1]), $containers);
+                    $content = preg_replace($placeholder->getPattern(), str_replace('$', '\\$', $matches[1]), $content);
+                }
+            }
+        }
+        return $containers;
     }
 
     /**
@@ -520,7 +554,15 @@ class Enterprise_PageCache_Model_Processor
 
                 $this->setMetadata('sid_cookie_name', Mage::getSingleton('core/session')->getSessionName());
 
+                Mage::dispatchEvent('pagecache_processor_metadata_before_save', array('processor' => $this));
+
                 $this->_saveMetadata();
+            }
+
+            if (isset($_GET[Mage_Core_Model_Session_Abstract::SESSION_ID_QUERY_PARAM])) {
+                Mage::getSingleton('enterprise_pagecache/cookie')->updateCustomerCookies();
+                Mage::getModel('enterprise_pagecache/observer')->updateCustomerProductIndex();
+
             }
         }
         return $this;
@@ -678,5 +720,25 @@ class Enterprise_PageCache_Model_Processor
             }
             $this->_metaData = (empty($cacheMetadata) || !is_array($cacheMetadata)) ? array() : $cacheMetadata;
         }
+    }
+
+    /**
+     * Set subprocessor
+     *
+     * @param mixed $subprocessor
+     */
+    public function setSubprocessor($subprocessor)
+    {
+        $this->_subprocessor = $subprocessor;
+    }
+
+    /**
+     * Get subprocessor
+     *
+     * @return mixed
+     */
+    public function getSubprocessor()
+    {
+        return $this->_subprocessor;
     }
 }

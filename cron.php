@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -37,6 +37,8 @@ $_SERVER['SCRIPT_NAME'] = str_replace(basename(__FILE__), 'index.php', $_SERVER[
 $_SERVER['SCRIPT_FILENAME'] = str_replace(basename(__FILE__), 'index.php', $_SERVER['SCRIPT_FILENAME']);
 
 Mage::app('admin')->setUseSessionInUrl(false);
+
+umask(0);
 
 try {
     Mage::getConfig()->init()->loadEventObservers('crontab');

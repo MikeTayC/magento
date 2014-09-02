@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -32,7 +32,7 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
     /**
      * @var null|Enterprise_PageCache_Model_Processor
      */
-    protected $_processor = null;
+    protected $_processor;
 
     /**
      * Placeholder instance
@@ -54,7 +54,7 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
     /**
      * Get container individual cache id
      *
-     * @return string | false
+     * @return string|false
      */
     protected function _getCacheId()
     {
@@ -70,17 +70,19 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
     public function applyWithoutApp(&$content)
     {
         $cacheId = $this->_getCacheId();
-        if ($cacheId !== false) {
-            $block = $this->_loadCache($cacheId);
-            if ($block !== false) {
-                $block = Enterprise_PageCache_Helper_Url::replaceUenc($block);
-                $this->_applyToContent($content, $block);
-            } else {
-                return false;
-            }
-        } else {
+
+        if ($cacheId === false) {
             $this->_applyToContent($content, '');
+            return true;
         }
+
+        $block = $this->_loadCache($cacheId);
+        if ($block === false) {
+            return false;
+        }
+
+        $block = Enterprise_PageCache_Helper_Url::replaceUenc($block);
+        $this->_applyToContent($content, $block);
         return true;
     }
 
@@ -93,18 +95,25 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
     public function applyInApp(&$content)
     {
         $blockContent = $this->_renderBlock();
-        if ($blockContent !== false) {
-            if (Mage::getStoreConfig(Enterprise_PageCache_Model_Processor::XML_PATH_CACHE_DEBUG)){
-                $debugBlock = new Enterprise_PageCache_Block_Debug;
-                $debugBlock->setDynamicBlockContent($blockContent);
-                $this->_applyToContent($content, $debugBlock->toHtml());
-            } else {
-                $this->_applyToContent($content, $blockContent);
-            }
-            $this->saveCache($blockContent);
-            return true;
+        if ($blockContent === false) {
+            return false;
         }
-        return false;
+
+        if (Mage::getStoreConfig(Enterprise_PageCache_Model_Processor::XML_PATH_CACHE_DEBUG)) {
+            $debugBlock = new Enterprise_PageCache_Block_Debug();
+            $debugBlock->setDynamicBlockContent($blockContent);
+            $this->_applyToContent($content, $debugBlock->toHtml());
+        } else {
+            $this->_applyToContent($content, $blockContent);
+        }
+
+        $subprocessor = $this->_processor->getSubprocessor();
+        if ($subprocessor) {
+            $contentWithOutNestedBlocks = $subprocessor->replaceContentToPlaceholderReplacer($blockContent);
+        }
+
+        $this->saveCache($contentWithOutNestedBlocks);
+        return true;
     }
 
     /**
@@ -133,7 +142,7 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
     }
 
     /**
-     * Relace conainer placeholder in content on container content
+     * Replace container placeholder in content on container content
      *
      * @param string $content
      * @param string $containerContent
@@ -148,7 +157,7 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
      * Load cached data by cache id
      *
      * @param string $id
-     * @return string | false
+     * @return string|false
      */
     protected function _loadCache($id)
     {
@@ -161,6 +170,8 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
      * @param string $data
      * @param string $id
      * @param array $tags
+     * @param null|int $lifetime
+     * @return Enterprise_PageCache_Model_Container_Abstract
      */
     protected function _saveCache($data, $id, $tags = array(), $lifetime = null)
     {
@@ -239,5 +250,34 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
 
         return $this->_processor
             ->getMetadata(Enterprise_PageCache_Model_Processor_Product::METADATA_PRODUCT_ID);
+    }
+
+    /**
+     * Get current request id
+     *
+     * @return string|null
+     */
+    protected function _getRequestId()
+    {
+        if (!$this->_processor) {
+            return null;
+        }
+
+        return $this->_processor->getRequestId();
+    }
+
+    /**
+     * Get Place Holder Block
+     *
+     * @return Mage_Core_Block_Abstract
+     */
+    protected function _getPlaceHolderBlock()
+    {
+        $blockName = $this->_placeholder->getAttribute('block');
+        $block = new $blockName;
+        $block->setTemplate($this->_placeholder->getAttribute('template'));
+        $block->setLayout(Mage::app()->getLayout());
+        $block->setSkipRenderTag(true);
+        return $block;
     }
 }

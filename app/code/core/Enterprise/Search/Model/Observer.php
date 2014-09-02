@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -121,6 +121,9 @@ class Enterprise_Search_Model_Observer
             return;
         }
 
+        /*
+         * Index needs to be optimized if all products were affected
+         */
         $productIds = $observer->getEvent()->getProductIds();
         if (is_null($productIds)) {
             $engine->setIndexNeedsOptimization();
@@ -150,6 +153,47 @@ class Enterprise_Search_Model_Observer
         } else {
             $engine->commitChanges();
         }
+
+        /**
+         * Cleaning MAXPRICE cache
+         */
+        $cacheTag = Mage::getSingleton('enterprise_search/catalog_layer_filter_price')->getCacheTag();
+        Mage::app()->cleanCache(array($cacheTag));
+    }
+
+    /**
+     * Store searchable attributes at adapter to avoid new collection load there
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function storeSearchableAttributes(Varien_Event_Observer $observer)
+    {
+        $engine     = $observer->getEvent()->getEngine();
+        $attributes = $observer->getEvent()->getAttributes();
+        if (!$engine || !$attributes || !Mage::helper('enterprise_search')->isThirdPartyEngineAvailable()) {
+            return;
+        }
+
+        foreach ($attributes as $attribute) {
+            if (!$attribute->usesSource()) {
+                continue;
+            }
+
+            $optionCollection = Mage::getResourceModel('eav/entity_attribute_option_collection')
+                ->setAttributeFilter($attribute->getAttributeId())
+                ->setPositionOrder(Varien_Db_Select::SQL_ASC, true)
+                ->load();
+
+            $optionsOrder = array();
+            foreach ($optionCollection as $option) {
+                $optionsOrder[] = $option->getOptionId();
+            }
+            $optionsOrder = array_flip($optionsOrder);
+
+            $attribute->setOptionsOrder($optionsOrder);
+        }
+
+        $engine->storeSearchableAttributes($attributes);
     }
 
     /**
@@ -213,6 +257,30 @@ class Enterprise_Search_Model_Observer
     {
         if (Mage::helper('enterprise_search')->getIsEngineAvailableForNavigation(false)) {
             Mage::register('current_layer', Mage::getSingleton('enterprise_search/search_layer'));
+        }
+    }
+
+    /**
+     * Reindex data after price reindex
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function runFulltextReindexAfterPriceReindex(Varien_Event_Observer $observer)
+    {
+        if (!Mage::helper('enterprise_search')->isThirdPartyEngineAvailable()) {
+            return;
+        }
+
+        /* @var Enterprise_Search_Model_Indexer_Indexer $indexer */
+        $indexer = Mage::getSingleton('index/indexer')->getProcessByCode('catalogsearch_fulltext');
+        if (empty($indexer)) {
+            return;
+        }
+
+        if ('process' == strtolower(Mage::app()->getRequest()->getControllerName())) {
+            $indexer->reindexAll();
+        } else {
+            $indexer->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
         }
     }
 }

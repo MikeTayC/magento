@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -34,6 +34,11 @@
  */
 class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model_Method_Abstract
 {
+    /**
+     * Config path for system default country
+     */
+    const XML_CONFIG_PATH_DEFAULT_COUNTRY = 'general/country/default';
+
     /**
      * Payment code name
      *
@@ -89,7 +94,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
     /**
      * Check whether payment method can be used
      *
-     * @param Mage_Sales_Model_Quote
+     * @param Mage_Sales_Model_Quote $quote
      * @return bool
      */
     public function isAvailable($quote = null)
@@ -113,8 +118,9 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
             'method_instance' => $this->getOriginalMethodInstance(),
             'quote'           => $quote,
         ));
+        $usingPbridge = $this->getOriginalMethodInstance()->getConfigData('using_pbridge', $storeId);
         return $checkResult->isAvailable && Mage::helper('enterprise_pbridge')->isEnabled($storeId)
-            && $this->getOriginalMethodInstance()->getConfigData('using_pbridge', $storeId);
+            && $usingPbridge;
     }
 
     /**
@@ -165,7 +171,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
     /**
      * Retrieve Payment Bridge response from the Info instance additional data storage
      *
-     * @param string $param OPTIONAL
+     * @param string $key
      * @return mixed
      */
     public function getPbridgeResponse($key = null)
@@ -224,6 +230,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
     /**
      * To check billing country is allowed for the payment method
      *
+     * @param string $country
      * @return bool
      */
     public function canUseForCountry($country)
@@ -243,7 +250,8 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
     /**
      * Authorize
      *
-     * @param   Varien_Object $orderPayment
+     * @param   Varien_Object $payment
+     * @param   float $amount
      * @return  Mage_Payment_Model_Abstract
      */
     public function authorize(Varien_Object $payment, $amount)
@@ -265,6 +273,13 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
         ;
 
         $request->setData('billing_address', $this->_getAddressInfo($order->getBillingAddress()));
+        if ($order->getCustomer() && $order->getCustomer()->getId()) {
+            $email = $order->getCustomerEmail();
+            $id = $order->getCustomer()->getId();
+            $request->setData('customer_id',
+                Mage::helper('enterprise_pbridge')->getCustomerIdentifierByEmail($id, $order->getStore()->getId())
+            );
+        }
 
         if (!$order->getIsVirtual()) {
             $request->setData('shipping_address', $this->_getAddressInfo($order->getShippingAddress()));
@@ -277,14 +292,21 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
 
         $this->_importResultToPayment($payment, $apiResponse);
 
+        if (isset($apiResponse['fraud']) && (bool)$apiResponse['fraud']) {
+            $message = Mage::helper('enterprise_pbridge')->__('Merchant review is required for further processing.');
+            $payment->getOrder()->setState(
+                  Mage_Sales_Model_Order::STATE_PROCESSING,
+                  Mage_Sales_Model_Order::STATUS_FRAUD,
+                  $message
+            );
+        }
         return $apiResponse;
-
     }
 
     /**
      * Cancel payment
      *
-     * @param   Varien_Object $invoicePayment
+     * @param   Varien_Object $payment
      * @return  Mage_Payment_Model_Abstract
      */
     public function cancel(Varien_Object $payment)
@@ -296,7 +318,8 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
     /**
      * Capture payment
      *
-     * @param   Varien_Object $orderPayment
+     * @param   Varien_Object $payment
+     * @param   float $amount
      * @return  Mage_Payment_Model_Abstract
      */
     public function capture(Varien_Object $payment, $amount)
@@ -320,13 +343,24 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
 
         $api = $this->_getApi()->doCapture($request);
         $this->_importResultToPayment($payment, $api->getResponse());
-        return $api->getResponse();
+        $apiResponse = $api->getResponse();
+
+        if (isset($apiResponse['fraud']) && (bool)$apiResponse['fraud']) {
+            $message = Mage::helper('enterprise_pbridge')->__('Merchant review is required for further processing.');
+            $payment->getOrder()->setState(
+                  Mage_Sales_Model_Order::STATE_PROCESSING,
+                  Mage_Sales_Model_Order::STATUS_FRAUD,
+                  $message
+            );
+        }
+        return $apiResponse;
     }
 
     /**
      * Refund money
      *
-     * @param   Varien_Object $invoicePayment
+     * @param   Varien_Object $payment
+     * @param   float $amount
      * @return  Mage_Payment_Model_Abstract
      */
     public function refund(Varien_Object $payment, $amount)
@@ -346,8 +380,10 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
             ;
 
             $canRefundMore = $order->canCreditmemo(); // TODO: fix this to be able to create multiple refunds
-            $isFullRefund = !$canRefundMore
-                && (0 == ((float)$order->getBaseTotalOnlineRefunded() + (float)$order->getBaseTotalOfflineRefunded()));
+            $allRefunds = (float)$amount
+                + (float)$order->getBaseTotalOnlineRefunded()
+                + (float)$order->getBaseTotalOfflineRefunded();
+            $isFullRefund = !$canRefundMore && (0 == (float)$order->getBaseGrandTotal() - $allRefunds);
             $request->setData('is_full_refund', (int)$isFullRefund);
 
             $api = $this->_getApi()->doRefund($request);
@@ -363,7 +399,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
     /**
      * Void payment
      *
-     * @param   Varien_Object $invoicePayment
+     * @param   Varien_Object $payment
      * @return  Mage_Payment_Model_Abstract
      */
     public function void(Varien_Object $payment)
@@ -386,7 +422,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
     /**
      * Create address request data
      *
-     * @param $address
+     * @param Mage_Sales_Model_Order_Address $address
      * @return array
      */
     protected function _getAddressInfo($address)
@@ -411,6 +447,16 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
         }
 
         return $result;
+    }
+
+    /**
+     * Public wrapper for _getAddressInfo
+     * @param  Mage_Sales_Model_Order_Address $address
+     * @return array
+     */
+    public function getAddressInfo($address)
+    {
+        return $this->_getAddressInfo($address);
     }
 
     /**
@@ -443,8 +489,9 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
     protected function _importResultToPayment(Mage_Sales_Model_Order_Payment $payment, $apiResponse)
     {
         if (!empty($apiResponse['gateway_transaction_id'])) {
-            $payment->setPreparedMessage(Mage::helper('enterprise_pbridge')->__('Original gateway transaction id: #%s.',
-                $apiResponse['gateway_transaction_id']));
+            $payment->setPreparedMessage(
+                Mage::helper('enterprise_pbridge')->__('Original gateway transaction id: #%s.', $apiResponse['gateway_transaction_id'])
+            );
         }
 
         if (isset($apiResponse['transaction_id'])) {
@@ -461,7 +508,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
     protected function _getApiRequest()
     {
         $request = new Varien_Object();
-        $request->setCountryCode(Mage::helper('core')->getDefaultCountry());
+        $request->setCountryCode(Mage::getStoreConfig(self::XML_CONFIG_PATH_DEFAULT_COUNTRY));
         $request->setClientIdentifier($this->_getCustomerIdentifier());
 
         return $request;

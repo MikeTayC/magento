@@ -21,14 +21,14 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_Cms>
-            <version>1.11.0.0</version>
+            <version>1.11.0.3</version>
         </Enterprise_Cms>
     </modules>
     <global>
@@ -89,6 +89,14 @@
                     </enterprise_cms>
                 </observers>
             </cms_controller_router_match_before>
+            <page_block_html_topmenu_gethtml_before>
+                <observers>
+                    <enterprise_cms_add_topmenu_items>
+                        <class>enterprise_cms/observer</class>
+                        <method>addCmsToTopmenuItems</method>
+                    </enterprise_cms_add_topmenu_items>
+                </observers>
+            </page_block_html_topmenu_gethtml_before>
         </events>
         <enterprise_cms>
             <hierarchy>
@@ -173,6 +181,22 @@
                     </enterprise_cms>
                 </observers>
             </admin_user_delete_after>
+            <website_delete_after>
+                <observers>
+                    <enterprise_cms>
+                        <class>enterprise_cms/observer</class>
+                        <method>deleteWebsite</method>
+                    </enterprise_cms>
+                </observers>
+            </website_delete_after>
+            <store_delete_after>
+                <observers>
+                    <enterprise_cms>
+                        <class>enterprise_cms/observer</class>
+                        <method>deleteStore</method>
+                    </enterprise_cms>
+                </observers>
+            </store_delete_after>
             <cms_page_get_available_statuses>
                 <observers>
                     <enterprise_cms>
@@ -216,7 +240,6 @@
             <hierarchy>
                 <enabled>1</enabled>
                 <metadata_enabled>1</metadata_enabled>
-                <lock_timeout>180</lock_timeout>
                 <menu_layout>content</menu_layout>
             </hierarchy>
             <content>

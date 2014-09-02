@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -31,7 +31,10 @@
  * @category   Enterprise
  * @package    Enterprise_TargetRule
  */
-class Enterprise_TargetRule_Block_Adminhtml_Targetrule_Edit_Tab_Actions extends Mage_Adminhtml_Block_Widget_Form
+class Enterprise_TargetRule_Block_Adminhtml_Targetrule_Edit_Tab_Actions
+    extends Mage_Adminhtml_Block_Widget_Form
+    implements Mage_Adminhtml_Block_Widget_Tab_Interface
+
 {
     /**
      * Prepare target rule actions form before rendering HTML
@@ -69,5 +72,45 @@ class Enterprise_TargetRule_Block_Adminhtml_Targetrule_Edit_Tab_Actions extends 
         $this->setForm($form);
 
         return parent::_prepareForm();
+    }
+
+    /**
+     * Retrieve Tab label
+     *
+     * @return string
+     */
+    public function getTabLabel()
+    {
+        return Mage::helper('enterprise_targetrule')->__('Products to Display');
+    }
+
+    /**
+     * Retrieve Tab title
+     *
+     * @return string
+     */
+    public function getTabTitle()
+    {
+        return Mage::helper('enterprise_targetrule')->__('Products to Display');
+    }
+
+    /**
+     * Check is can show tab
+     *
+     * @return bool
+     */
+    public function canShowTab()
+    {
+        return true;
+    }
+
+    /**
+     * Check tab is hidden
+     *
+     * @return bool
+     */
+    public function isHidden()
+    {
+        return false;
     }
 }

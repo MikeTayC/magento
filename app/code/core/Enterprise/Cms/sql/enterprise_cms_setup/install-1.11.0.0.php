@@ -20,10 +20,9 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
-
 /* @var $installer Enterprise_Cms_Model_Resource_Setup */
 $installer = $this;
 $installer->startSetup();
@@ -138,7 +137,13 @@ $table = $installer->getConnection()
     ->addForeignKey($installer->getFkName('enterprise_cms/page_revision', 'user_id', 'admin/user', 'user_id'),
         'user_id', $installer->getTable('admin/user'), 'user_id',
         Varien_Db_Ddl_Table::ACTION_SET_NULL, Varien_Db_Ddl_Table::ACTION_CASCADE)
-    ->addForeignKey($installer->getFkName('enterprise_cms/page_revision', 'version_id', 'enterprise_cms/page_version', 'version_id'),
+    ->addForeignKey(
+        $installer->getFkName(
+            'enterprise_cms/page_revision',
+            'version_id',
+            'enterprise_cms/page_version',
+            'version_id'
+        ),
         'version_id', $installer->getTable('enterprise_cms/page_version'), 'version_id',
         Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE)
     ->setComment('Enterprise Cms Page Revision');
@@ -210,7 +215,12 @@ $table = $installer->getConnection()
         ), 'Request Url')
     ->addColumn('xpath', Varien_Db_Ddl_Table::TYPE_TEXT, 255, array(
         ), 'Xpath')
-    ->addIndex($installer->getIdxName('enterprise_cms/hierarchy_node', array('request_url'), Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE),
+    ->addIndex(
+        $installer->getIdxName(
+            'enterprise_cms/hierarchy_node',
+            array('request_url'),
+            Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE
+        ),
         array('request_url'), array('type' => Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE))
     ->addIndex($installer->getIdxName('enterprise_cms/hierarchy_node', array('parent_node_id')),
         array('parent_node_id'))
@@ -219,7 +229,13 @@ $table = $installer->getConnection()
     ->addForeignKey($installer->getFkName('enterprise_cms/hierarchy_node', 'page_id', 'cms/page', 'page_id'),
         'page_id', $installer->getTable('cms/page'), 'page_id',
         Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE)
-    ->addForeignKey($installer->getFkName('enterprise_cms/hierarchy_node', 'parent_node_id', 'enterprise_cms/hierarchy_node', 'node_id'),
+    ->addForeignKey(
+        $installer->getFkName(
+            'enterprise_cms/hierarchy_node',
+            'parent_node_id',
+            'enterprise_cms/hierarchy_node',
+            'node_id'
+        ),
         'parent_node_id', $installer->getTable('enterprise_cms/hierarchy_node'), 'node_id',
         Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE)
     ->setComment('Enterprise Cms Hierarchy Node');
@@ -288,7 +304,13 @@ $table = $installer->getConnection()
         ), 'Menu Ordered')
     ->addColumn('menu_list_type', Varien_Db_Ddl_Table::TYPE_TEXT, 50, array(
         ), 'Menu List Type')
-    ->addForeignKey($installer->getFkName('enterprise_cms/hierarchy_metadata', 'node_id', 'enterprise_cms/hierarchy_node', 'node_id'),
+    ->addForeignKey(
+        $installer->getFkName(
+            'enterprise_cms/hierarchy_metadata',
+            'node_id',
+            'enterprise_cms/hierarchy_node',
+            'node_id'
+        ),
         'node_id', $installer->getTable('enterprise_cms/hierarchy_node'), 'node_id',
         Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE)
     ->setComment('Enterprise Cms Hierarchy Metadata');

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -39,6 +39,9 @@ class Enterprise_Cms_Helper_Hierarchy extends Mage_Core_Helper_Abstract
     const METADATA_VISIBILITY_PARENT    = '0';
     const METADATA_VISIBILITY_YES       = '1';
     const METADATA_VISIBILITY_NO        = '2';
+
+    const SCOPE_PREFIX_STORE            = 'store_';
+    const SCOPE_PREFIX_WEBSITE          = 'website_';
 
     /**
      * Check is Enabled Hierarchy Functionality
@@ -83,6 +86,8 @@ class Enterprise_Cms_Helper_Hierarchy extends Mage_Core_Helper_Abstract
             'menu_levels_down',
             'menu_ordered',
             'menu_list_type',
+            'top_menu_visibility',
+            'top_menu_excluded'
         );
     }
 
@@ -189,5 +194,29 @@ class Enterprise_Cms_Helper_Hierarchy extends Mage_Core_Helper_Abstract
                          'menu_visibility' => array('0' => $menuDefault));
 
         return isset($default[$field][$value]) ? $default[$field][$value] : null;
+    }
+
+    /**
+     * Get parent scope and scopeId
+     *
+     * @param string $scope
+     * @param int $scopeId
+     * @return array|null
+     */
+    public function getParentScope($scope, $scopeId)
+    {
+        if ($scope === Enterprise_Cms_Model_Hierarchy_Node::NODE_SCOPE_STORE) {
+            return array(
+                Enterprise_Cms_Model_Hierarchy_Node::NODE_SCOPE_WEBSITE,
+                Mage::app()->getStore($scopeId)->getWebsiteId(),
+            );
+        } elseif ($scope === Enterprise_Cms_Model_Hierarchy_Node::NODE_SCOPE_WEBSITE) {
+            return array(
+                Enterprise_Cms_Model_Hierarchy_Node::NODE_SCOPE_DEFAULT,
+                Enterprise_Cms_Model_Hierarchy_Node::NODE_SCOPE_DEFAULT_ID,
+            );
+        }
+
+        return null;
     }
 }

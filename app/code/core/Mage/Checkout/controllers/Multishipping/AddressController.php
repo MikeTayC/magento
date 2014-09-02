@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -89,7 +89,7 @@ class Mage_Checkout_Multishipping_AddressController extends Mage_Core_Controller
         if (count($this->_getCheckout()->getCustomer()->getAddresses()) == 1) {
             $this->_getCheckout()->reset();
         }
-        $this->_redirect('*/multishipping/');
+        $this->_redirect('*/multishipping/addresses');
     }
 
     public function editShippingAction()

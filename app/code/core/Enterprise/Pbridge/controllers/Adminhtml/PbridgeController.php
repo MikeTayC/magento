@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -105,5 +105,4 @@ class Enterprise_Pbridge_Adminhtml_PbridgeController extends Mage_Adminhtml_Cont
     {
         return Mage::getSingleton('admin/session')->isAllowed('sales/order');
     }
-
 }

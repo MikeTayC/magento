@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -30,6 +30,9 @@
  *
  * @todo extend from Mage_Core_Model_Session_Abstract
  *
+ * @method null|bool getCookieShouldBeReceived()
+ * @method Mage_Core_Model_Session setCookieShouldBeReceived(bool $flag)
+ * @method Mage_Core_Model_Session unsCookieShouldBeReceived()
  */
 class Mage_Core_Model_Session extends Mage_Core_Model_Session_Abstract
 {

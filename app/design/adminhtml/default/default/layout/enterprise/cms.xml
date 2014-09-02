@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -130,10 +130,11 @@
         </reference>
         <reference name="content">
             <block type="enterprise_cms/adminhtml_cms_hierarchy_edit" name="enterprise_cms_hierarchy_edit_tree">
+                <block type="enterprise_cms/adminhtml_cms_hierarchy_manage" name="hierarchy_manage" template="enterprise/cms/hierarchy/manage.phtml" />
                 <block type="enterprise_cms/adminhtml_cms_hierarchy_edit_form_grid" name="cms_page_grid" />
             </block>
         </reference>
-        <block type="adminhtml/store_switcher" name="store_switcher" />
+        <block type="enterprise_cms/adminhtml_scope_switcher" name="scope_switcher" template="enterprise/cms/hierarchy/scope/switcher.phtml" />
     </adminhtml_cms_hierarchy_index>
 
 <!--

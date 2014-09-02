@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Persistent
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -200,6 +200,62 @@
                     </enterprise_persistent>
                 </observers>
             </controller_action_predispatch_wishlist_index_updateItemOptions>
+            <controller_action_predispatch_wishlist_index_createwishlist>
+                <observers>
+                    <enterprise_persistent>
+                        <class>enterprise_persistent/observer</class>
+                        <method>emulateWishlist</method>
+                    </enterprise_persistent>
+                </observers>
+            </controller_action_predispatch_wishlist_index_createwishlist>
+            <controller_action_predispatch_wishlist_index_editwishlist>
+                <observers>
+                    <enterprise_persistent>
+                        <class>enterprise_persistent/observer</class>
+                        <method>emulateWishlist</method>
+                    </enterprise_persistent>
+                </observers>
+            </controller_action_predispatch_wishlist_index_editwishlist>
+            <controller_action_predispatch_wishlist_index_deletewishlist>
+                <observers>
+                    <enterprise_persistent>
+                        <class>enterprise_persistent/observer</class>
+                        <method>emulateWishlist</method>
+                    </enterprise_persistent>
+                </observers>
+            </controller_action_predispatch_wishlist_index_deletewishlist>
+            <controller_action_predispatch_wishlist_index_copyitem>
+                <observers>
+                    <enterprise_persistent>
+                        <class>enterprise_persistent/observer</class>
+                        <method>emulateWishlist</method>
+                    </enterprise_persistent>
+                </observers>
+            </controller_action_predispatch_wishlist_index_copyitem>
+            <controller_action_predispatch_wishlist_index_copyitems>
+                <observers>
+                    <enterprise_persistent>
+                        <class>enterprise_persistent/observer</class>
+                        <method>emulateWishlist</method>
+                    </enterprise_persistent>
+                </observers>
+            </controller_action_predispatch_wishlist_index_copyitems>
+            <controller_action_predispatch_wishlist_index_moveitems>
+                <observers>
+                    <enterprise_persistent>
+                        <class>enterprise_persistent/observer</class>
+                        <method>emulateWishlist</method>
+                    </enterprise_persistent>
+                </observers>
+            </controller_action_predispatch_wishlist_index_moveitems>
+            <controller_action_predispatch_wishlist_index_moveitem>
+                <observers>
+                    <enterprise_persistent>
+                        <class>enterprise_persistent/observer</class>
+                        <method>emulateWishlist</method>
+                    </enterprise_persistent>
+                </observers>
+            </controller_action_predispatch_wishlist_index_moveitem>
             <sales_quote_save_before>
                 <observers>
                     <enterprise_persistent>

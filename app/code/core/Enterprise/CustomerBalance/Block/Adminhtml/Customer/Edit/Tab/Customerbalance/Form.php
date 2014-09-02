@@ -20,11 +20,12 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
-class Enterprise_CustomerBalance_Block_Adminhtml_Customer_Edit_Tab_Customerbalance_Form extends Mage_Adminhtml_Block_Widget_Form
+class Enterprise_CustomerBalance_Block_Adminhtml_Customer_Edit_Tab_Customerbalance_Form extends
+    Mage_Adminhtml_Block_Widget_Form
 {
     protected function _prepareForm()
     {
@@ -45,7 +46,7 @@ class Enterprise_CustomerBalance_Block_Adminhtml_Customer_Edit_Tab_Customerbalan
                 'name'     => 'website_id',
                 'label'    => Mage::helper('enterprise_customerbalance')->__('Website'),
                 'title'    => Mage::helper('enterprise_customerbalance')->__('Website'),
-                'values'   => Mage::getModel('adminhtml/system_store')->getWebsiteValuesForForm(),
+                'values'   => Mage::getSingleton('adminhtml/system_store')->getWebsiteValuesForForm(),
                 'onchange' => 'updateEmailWebsites()',
             ));
         }
@@ -73,11 +74,13 @@ class Enterprise_CustomerBalance_Block_Adminhtml_Customer_Edit_Tab_Customerbalan
                 . '</script>'
         ));
 
-        $fieldset->addField('store_id', 'select', array(
+        $field = $fieldset->addField('store_id', 'select', array(
             'name'     => 'store_id',
             'label'    => Mage::helper('enterprise_customerbalance')->__('Send Email Notification From the Following Store View'),
             'title'    => Mage::helper('enterprise_customerbalance')->__('Send Email Notification From the Following Store View'),
         ));
+        $renderer = $this->getLayout()->createBlock('adminhtml/store_switcher_form_renderer_fieldset_element');
+        $field->setRenderer($renderer);
 
         $fieldset->addField('comment', 'text', array(
             'name'     => 'comment',

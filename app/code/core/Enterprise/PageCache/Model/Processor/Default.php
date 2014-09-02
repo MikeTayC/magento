@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -57,15 +57,15 @@ class Enterprise_PageCache_Model_Processor_Default
         return true;
     }
 
+
     /**
-     * Prepare response body before caching
+     * Replace block content to placeholder replacer
      *
-     * @param Zend_Controller_Response_Http $response
+     * @param string $content
      * @return string
      */
-    public function prepareContent(Zend_Controller_Response_Http $response)
+    public function replaceContentToPlaceholderReplacer($content)
     {
-        $content = $response->getBody();
         $placeholders = array();
         preg_match_all(
             Enterprise_PageCache_Model_Container_Placeholder::HTML_NAME_PATTERN,
@@ -89,6 +89,17 @@ class Enterprise_PageCache_Model_Processor_Default
     }
 
     /**
+     * Prepare response body before caching
+     *
+     * @param Zend_Controller_Response_Http $response
+     * @return string
+     */
+    public function prepareContent(Zend_Controller_Response_Http $response)
+    {
+        return $this->replaceContentToPlaceholderReplacer($response->getBody());
+    }
+
+    /**
      * Retrieve placeholder replacer
      *
      * @param array $matches Matches by preg_replace_callback
@@ -103,6 +114,7 @@ class Enterprise_PageCache_Model_Processor_Default
          */
         if ($container && !Mage::getIsDeveloperMode()) {
             $container = new $container($this->_placeholder);
+            $container->setProcessor(Mage::getSingleton('enterprise_pagecache/processor'));
             $blockContent = $matches[1];
             $container->saveCache($blockContent);
         }

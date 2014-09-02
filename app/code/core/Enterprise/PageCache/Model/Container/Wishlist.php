@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -36,7 +36,8 @@ class Enterprise_PageCache_Model_Container_Wishlist extends Enterprise_PageCache
      */
     protected function _getIdentifier()
     {
-        return $this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_WISHLIST, '')
+        return $this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_WISHLIST_ITEMS, '')
+            . $this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_WISHLIST, '')
             . ($this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER_GROUP, ''));
     }
 

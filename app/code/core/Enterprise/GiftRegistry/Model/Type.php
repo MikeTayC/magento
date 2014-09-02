@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -57,9 +57,9 @@ class Enterprise_GiftRegistry_Model_Type extends Mage_Core_Model_Abstract
     protected function _beforeSave()
     {
         if (!$this->hasStoreId() && !$this->getStoreId()) {
+            $this->_cleanupData();
             $xmlModel = Mage::getModel('enterprise_giftregistry/attribute_processor');
             $this->setMetaXml($xmlModel->processData($this));
-            $this->_cleanupData();
         }
 
         parent::_beforeSave();
@@ -188,14 +188,16 @@ class Enterprise_GiftRegistry_Model_Type extends Mage_Core_Model_Abstract
                             $optionsToSave = array();
                             foreach ($attribute['options'] as $option) {
                                 if ($option['is_deleted']) {
-                                  $this->_getResource()->deleteAttributeStoreData($this->getId(), $attribute['code'], $option['code']);
+                                  $this->_getResource()->deleteAttributeStoreData(
+                                      $this->getId(), $attribute['code'], $option['code']
+                                  );
                                 } else {
                                     $optionsToSave[] = $option;
                                 }
                             }
                             $attribute['options'] = $optionsToSave;
                         }
-                        $attributesToSave[$group] = $attribute;
+                        $attributesToSave[$group][] = $attribute;
                     }
                 }
                 $this->setAttributes($attributesToSave);

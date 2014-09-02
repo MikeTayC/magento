@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -74,7 +74,7 @@ class Enterprise_Search_Model_Resource_Collection
     /**
      * Store engine instance
      *
-     * @var object
+     * @var Enterprise_Search_Model_Resource_Engine
      */
     protected $_engine = null;
 
@@ -127,10 +127,6 @@ class Enterprise_Search_Model_Resource_Collection
      * @var int|bool
      */
     protected $_storedPageSize = false;
-
-
-
-
 
     /**
      * Load faceted data if not loaded
@@ -263,6 +259,7 @@ class Enterprise_Search_Model_Resource_Collection
     {
         $result = $this->_searchQueryFilters;
         $result['query_text'] = $this->_searchQueryText;
+
         return $result;
     }
 
@@ -303,8 +300,8 @@ class Enterprise_Search_Model_Resource_Collection
      */
     public function addCategoryFilter(Mage_Catalog_Model_Category $category)
     {
-        $this->addFqFilter(array('categories' => $category->getId()));
-
+        $this->addFqFilter(array('category_ids' => $category->getId()));
+        parent::addCategoryFilter($category);
         return $this;
     }
 
@@ -379,6 +376,7 @@ class Enterprise_Search_Model_Resource_Collection
 
             if ($needToLoadFacetedData) {
                 $this->_facetedData = $result['faceted_data'];
+                $this->_facetedDataIsLoaded = true;
             }
         }
 
@@ -438,16 +436,13 @@ class Enterprise_Search_Model_Resource_Collection
             if ($searchSuggestionsEnabled) {
                 $params['solr_params']['spellcheck'] = 'true';
                 $searchSuggestionsCount = (int) $helper->getSolrConfigData('server_suggestion_count');
-                if ($searchSuggestionsCount < 1) {
-                    $searchSuggestionsCount = 1;
-                }
                 $params['solr_params']['spellcheck.count']  = $searchSuggestionsCount;
                 $params['spellcheck_result_counts']         = (bool) $helper->getSolrConfigData(
                     'server_suggestion_count_results_enabled');
             }
 
             $result = $this->_engine->getIdsByQuery($query, $params);
-            if ($searchSuggestionsEnabled) {
+            if ($searchSuggestionsEnabled && !empty($result['suggestions_data'])) {
                 $this->_suggestionsData = $result['suggestions_data'];
             }
 
@@ -534,9 +529,7 @@ class Enterprise_Search_Model_Resource_Collection
     public function setVisibility($visibility)
     {
         if (is_array($visibility)) {
-            foreach ($visibility as $visibilityId) {
-                $this->addFqFilter(array('visibility' => $visibilityId));
-            }
+            $this->addFqFilter(array('visibility' => $visibility));
         }
 
         return $this;
@@ -588,5 +581,59 @@ class Enterprise_Search_Model_Resource_Collection
         }
 
         return $this;
+    }
+
+    /**
+     * Get prices from search results
+     *
+     * @param   null|float $lowerPrice
+     * @param   null|float $upperPrice
+     * @param   null|int   $limit
+     * @param   null|int   $offset
+     * @param   boolean    $getCount
+     * @param   string     $sort
+     * @return  array
+     */
+    public function getPriceData($lowerPrice = null, $upperPrice = null,
+        $limit = null, $offset = null, $getCount = false, $sort = 'asc')
+    {
+        list($query, $params) = $this->_prepareBaseParams();
+        $priceField = $this->_engine->getSearchEngineFieldName('price');
+        $conditions = null;
+        if (!is_null($lowerPrice) || !is_null($upperPrice)) {
+            $conditions = array();
+            $conditions['from'] = is_null($lowerPrice) ? 0 : $lowerPrice;
+            $conditions['to'] = is_null($upperPrice) ? '' : $upperPrice;
+        }
+        if (!$getCount) {
+            $params['fields'] = $priceField;
+            $params['sort_by'] = array(array('price' => $sort));
+            if (!is_null($limit)) {
+                $params['limit'] = $limit;
+            }
+            if (!is_null($offset)) {
+                $params['offset'] = $offset;
+            }
+            if (!is_null($conditions)) {
+                $params['filters'][$priceField] = $conditions;
+            }
+        } else {
+            $params['solr_params']['facet'] = 'on';
+            if (is_null($conditions)) {
+                $conditions = array('from' => 0, 'to' => '');
+            }
+            $params['facet'][$priceField] = array($conditions);
+        }
+
+        $data = $this->_engine->getResultForRequest($query, $params);
+        if ($getCount) {
+            return array_shift($data['faceted_data'][$priceField]);
+        }
+        $result = array();
+        foreach ($data['ids'] as $value) {
+            $result[] = (float)$value[$priceField];
+        }
+
+        return ($sort == 'asc') ? $result : array_reverse($result);
     }
 }

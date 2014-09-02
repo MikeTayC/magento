@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -37,9 +37,9 @@
     </checkout_cart_index>
 
     <wishlist_index_index>
-        <block type="enterprise_giftregistry/wishlist_view" name="giftregistry.customer.wishlist" template="giftregistry/wishlist/view.phtml">
-            <block type="wishlist/customer_wishlist_item_options" name="customer.wishlist.item.options" as="item_options"/>
-        </block>
+        <reference name="customer.wishlist.item.info">
+            <block type="enterprise_giftregistry/wishlist_item_column_registry" name="customer.wishlist.item.giftregistry" template="giftregistry/wishlist/item/column/registry.phtml"></block>
+        </reference>
     </wishlist_index_index>
 
     <enterprise_giftregistry_index_index>

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -64,9 +64,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Paypaluk_Pro extends Mage_PaypalUk
     {
         if ($this->_pbridgeMethodInstance === null) {
             $this->_pbridgeMethodInstance = Mage::helper('payment')->getMethodInstance('pbridge');
-            if ($this->_pbridgeMethodInstance) {
-                $this->_pbridgeMethodInstance->setOriginalMethodInstance($this->_pbridgePaymentMethod);
-            }
+            $this->_pbridgeMethodInstance->setOriginalMethodInstance($this->_pbridgePaymentMethod);
         }
         return $this->_pbridgeMethodInstance;
     }
@@ -156,18 +154,17 @@ class Enterprise_Pbridge_Model_Payment_Method_Paypaluk_Pro extends Mage_PaypalUk
     protected function _importCaptureResultToPayment($api, $payment)
     {
         $payment->setTransactionId($api->getTransactionId())->setIsTransactionClosed(false);
-        $payment->setPreparedMessage(Mage::helper('enterprise_pbridge')->__(
-            'Payflow PNREF: #%s.',
-            $api->getData(self::TRANSPORT_PAYFLOW_TXN_ID)
-        ));
+        $payment->setPreparedMessage(
+            Mage::helper('enterprise_pbridge')->__('Payflow PNREF: #%s.', $api->getData(self::TRANSPORT_PAYFLOW_TXN_ID))
+        );
         Mage::getModel('paypal/info')->importToPayment($api, $payment);
     }
 
     /**
      * Import refund results to payment
      *
-     * @param Mage_Paypal_Model_Api_Nvp
-     * @param Mage_Sales_Model_Order_Payment
+     * @param Mage_Paypal_Model_Api_Nvp $api
+     * @param Mage_Sales_Model_Order_Payment $payment
      * @param bool $canRefundMore
      */
     protected function _importRefundResultToPayment($api, $payment, $canRefundMore)
@@ -177,10 +174,9 @@ class Enterprise_Pbridge_Model_Payment_Method_Paypaluk_Pro extends Mage_PaypalUk
                 ->setShouldCloseParentTransaction(!$canRefundMore)
                 ->setTransactionAdditionalInfo(self::TRANSPORT_PAYFLOW_TXN_ID, $api->getPayflowTrxid());
 
-        $payment->setPreparedMessage(Mage::helper('enterprise_pbridge')->__(
-            'Payflow PNREF: #%s.',
-            $api->getData(self::TRANSPORT_PAYFLOW_TXN_ID)
-        ));
+        $payment->setPreparedMessage(
+            Mage::helper('enterprise_pbridge')->__('Payflow PNREF: #%s.', $api->getData(self::TRANSPORT_PAYFLOW_TXN_ID))
+        );
         Mage::getModel('paypal/info')->importToPayment($api, $payment);
     }
 }

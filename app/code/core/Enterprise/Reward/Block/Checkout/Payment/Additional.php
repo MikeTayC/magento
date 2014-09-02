@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -83,20 +83,21 @@ class Enterprise_Reward_Block_Checkout_Payment_Additional extends Mage_Core_Bloc
 
     /**
      * Return true if customer can use his reward points.
-     * In case if currency amount of his points more then 0 and has minimum limit of points
+     * In case if currency amount of his points is more than zero and
+     * is not contrary to the Minimum Reward Points Balance to Be Able to Redeem limit.
      *
-     * @return boolean
+     * @return bool
      */
     public function getCanUseRewardPoints()
     {
-        if (!Mage::helper('enterprise_reward')->getHasRates()
-            || !Mage::helper('enterprise_reward')->isEnabledOnFront()) {
+        /** @var $helper Enterprise_Reward_Helper_Data */
+        $helper = Mage::helper('enterprise_reward');
+        if (!$helper->getHasRates() || !$helper->isEnabledOnFront()) {
             return false;
         }
-        $minPointsToUse = Mage::helper('enterprise_reward')
-            ->getGeneralConfig('min_points_balance', (int)Mage::app()->getWebsite()->getId());
-        $canUseRewadPoints = ($this->getPointsBalance() >= $minPointsToUse) ? true : false;
-        return (boolean)(((float)$this->getCurrencyAmount() > 0) && $canUseRewadPoints);
+
+        $minPointsToUse = $helper->getGeneralConfig('min_points_balance', (int)Mage::app()->getWebsite()->getId());
+        return (float)$this->getCurrencyAmount() > 0 && $this->getPointsBalance() >= $minPointsToUse;
     }
 
     /**
@@ -122,11 +123,11 @@ class Enterprise_Reward_Block_Checkout_Payment_Additional extends Mage_Core_Bloc
     /**
      * Check if customer has enough points to cover total
      *
-     * @return boolean
+     * @return bool
      */
     public function isEnoughPoints()
     {
-        $baseGrandTotal = $this->getQuote()->getBaseGrandTotal()+$this->getQuote()->getBaseRewardCurrencyAmount();
+        $baseGrandTotal = $this->getQuote()->getBaseGrandTotal() + $this->getQuote()->getBaseRewardCurrencyAmount();
         return $this->getReward()->isEnoughPointsToCoverAmount($baseGrandTotal);
     }
 }

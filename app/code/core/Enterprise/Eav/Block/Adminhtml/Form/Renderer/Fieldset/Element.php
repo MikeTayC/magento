@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Eav
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -104,11 +104,11 @@ class Enterprise_Eav_Block_Adminhtml_Form_Renderer_Fieldset_Element
         }
 
         if ($element->getScope() == 'global' || $element->getScope() === null) {
-            $html = Mage::helper('enterprise_eav')->__('[GLOBAL]');
-        } else if ($element->getScope() == 'website') {
-            $html = Mage::helper('enterprise_eav')->__('[WEBSITE]');
-        } else if ($element->getScope() == 'store') {
-            $html = Mage::helper('enterprise_eav')->__('[STORE VIEW]');
+            $html = Mage::helper('adminhtml')->__('[GLOBAL]');
+        } elseif ($element->getScope() == 'website') {
+            $html = Mage::helper('adminhtml')->__('[WEBSITE]');
+        } elseif ($element->getScope() == 'store') {
+            $html = Mage::helper('adminhtml')->__('[STORE VIEW]');
         }
 
         return $html;

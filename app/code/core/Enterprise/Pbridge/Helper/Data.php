@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -40,6 +40,13 @@ class Enterprise_Pbridge_Helper_Data extends Mage_Core_Helper_Abstract
      * @var string
      */
     const PAYMENT_GATEWAY_FORM_ACTION = 'GatewayForm';
+
+    /**
+     * Payment Bridge action name to fetch Payment Bridge Saved Payment (Credit Card) profiles
+     *
+     * @var string
+     */
+    const PAYMENT_GATEWAY_PAYMENT_PROFILE_ACTION = 'ManageSavedPayment';
 
     /**
      * Payment Bridge payment methods available for the current merchant
@@ -73,11 +80,23 @@ class Enterprise_Pbridge_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Check if Payment Bridge Magento Module is enabled in configuration
      *
+     * @param Mage_Core_Model_Store $store
      * @return boolean
      */
     public function isEnabled($store = null)
     {
         return (bool)Mage::getStoreConfigFlag('payment/pbridge/active', $store) && $this->isAvailable($store);
+    }
+
+    /**
+     * Check if Payment Bridge supports Payment Profiles
+     *
+     * @param Mage_Core_Model_Store $store
+     * @return boolean
+     */
+    public function arePaymentProfilesEnables($store = null)
+    {
+        return (bool)Mage::getStoreConfigFlag('payment/pbridge/profilestatus', $store) && $this->isEnabled($store);
     }
 
     /**
@@ -108,6 +127,27 @@ class Enterprise_Pbridge_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Generate identifier based on email or ID
+     *
+     * @param string $email Customer e-mail or customer ID
+     * @param int $storeId
+     * @return null|string
+     */
+    public function getCustomerIdentifierByEmail($email, $storeId = null)
+    {
+        if (is_null($storeId)) {
+            $storeId = Mage::app()->getStore()->getId();
+        }
+
+        $merchantCode = Mage::getStoreConfig('payment/pbridge/merchantcode', $storeId);
+        $uniqueId = Mage::getStoreConfig('payment/pbridge/uniquekey');
+        if ($uniqueId) {
+            $uniqueId .= '@';
+        }
+        return md5($uniqueId . $email . '@' . $merchantCode);
+    }
+
+    /**
      * Prepare and return Payment Bridge request url with parameters if passed.
      * Encrypt parameters by default.
      *
@@ -123,7 +163,7 @@ class Enterprise_Pbridge_Helper_Data extends Mage_Core_Helper_Abstract
 
         if (!empty($params)) {
             if ($encryptParams) {
-                $params = array('data' => $this->encrypt(serialize($params)));
+                $params = array('data' => $this->encrypt(json_encode($params)));
             }
         }
 
@@ -148,6 +188,8 @@ class Enterprise_Pbridge_Helper_Data extends Mage_Core_Helper_Abstract
         ), $params);
 
         $params['merchant_key']  = trim(Mage::getStoreConfig('payment/pbridge/merchantkey', $this->_storeId));
+
+        $params['scope'] = Mage::app()->getStore()->isAdmin() ? 'backend' : 'frontend';
 
         return $params;
     }
@@ -181,8 +223,24 @@ class Enterprise_Pbridge_Helper_Data extends Mage_Core_Helper_Abstract
             $this->setStoreId($quote->getStoreId());
         }
 
-        $params = $this->getRequestParams($params, $quote);
+        $params = $this->getRequestParams($params);
         $params['action'] = self::PAYMENT_GATEWAY_FORM_ACTION;
+        return $this->_prepareRequestUrl($params, true);
+    }
+
+    /**
+     * Return Payment Bridge target URL to display Credit card profiles
+     *
+     * @param array $params Additional URL query params
+     * @return string
+     */
+    public function getPaymentProfileUrl(array $params = array())
+    {
+        $params = $this->getRequestParams($params);
+        $params['action'] = self::PAYMENT_GATEWAY_PAYMENT_PROFILE_ACTION;
+        $customer = Mage::getSingleton('customer/session')->getCustomer();
+        $params['customer_name'] = $customer->getName();
+        $params['customer_email'] = $customer->getEmail();
         return $this->_prepareRequestUrl($params, true);
     }
 
@@ -193,9 +251,9 @@ class Enterprise_Pbridge_Helper_Data extends Mage_Core_Helper_Abstract
      * @param array $params
      * @return string
      */
-    public function getRequestUrl()
+    public function getRequestUrl($params = array())
     {
-        return $this->_prepareRequestUrl();
+        return $this->_prepareRequestUrl($params);
     }
 
     /**
@@ -242,9 +300,10 @@ class Enterprise_Pbridge_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getPbridgeParams()
     {
-        $data = unserialize($this->decrypt($this->_getRequest()->getParam('data', '')));
+        $decryptData = $this->decrypt($this->_getRequest()->getParam('data', ''));
+        $data = json_decode($decryptData, true);
         $data = array(
-            'original_payment_method' => isset($data['original_payment_method']) ? $data['original_payment_method'] : null,
+            'original_payment_method' => isset($data['original_payment_method'])?$data['original_payment_method']:null,
             'token'                   => isset($data['token']) ? $data['token'] : null,
             'cc_last4'                => isset($data['cc_last4']) ? $data['cc_last4'] : null,
             'cc_type'                 => isset($data['cc_type']) ? $data['cc_type'] : null,
@@ -268,7 +327,6 @@ class Enterprise_Pbridge_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Return base bridge URL
      *
-     * @param int $storeId
      * @return string
      */
     public function getBridgeBaseUrl()

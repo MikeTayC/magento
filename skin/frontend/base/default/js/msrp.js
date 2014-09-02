@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     base_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 if (!window.Catalog) {
@@ -199,8 +199,10 @@ Catalog.Map = {
                 var productField = $('map-popup-product-id');
                 productField.value = this.product_id;
                 $(cartButton).show();
+                $$('.additional-addtocart-box').invoke('show');
             } else {
                 $(cartButton).hide();
+                $$('.additional-addtocart-box').invoke('hide');
             }
 
             //Horizontal line

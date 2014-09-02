@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -29,7 +29,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 class Enterprise_PageCache_Model_Container_Banner
@@ -122,7 +122,8 @@ class Enterprise_PageCache_Model_Container_Banner
         return 'CONTAINER_BANNER_'
             . md5($this->_placeholder->getAttribute('cache_id')
             . '_' . $this->_getIdentifier())
-            . '_' . implode(',', $this->_bannersSelected);
+            . '_' . implode(',', $this->_bannersSelected)
+            . '_' .  $this->_getCookieValue(Enterprise_PageCache_Model_Cookie::CUSTOMER_SEGMENT_IDS, '');
     }
 
     /**
@@ -227,9 +228,8 @@ class Enterprise_PageCache_Model_Container_Banner
      */
     protected function _renderBlock()
     {
+        $block = $this->_getPlaceHolderBlock();
         $placeholder = $this->_placeholder;
-        $block = $placeholder->getAttribute('block');
-        $block = new $block;
 
         $parameters = array('name', 'types', 'display_mode', 'rotate', 'banner_ids', 'unique_id');
         foreach ($parameters as $parameter) {

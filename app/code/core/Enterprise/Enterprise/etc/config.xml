@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Enterprise
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -86,10 +86,15 @@
                 <default_keywords>Magento, Varien, E-commerce</default_keywords>
             </head>
             <footer>
-                <copyright>&amp;copy; 2011 Magento Enterprise Edition Demo Store. All Rights Reserved.</copyright>
+                <copyright>&amp;copy; 2012 Magento Enterprise Edition Demo Store. All Rights Reserved.</copyright>
             </footer>
         </design>
         <system>
+            <media_storage_configuration>
+                <allowed_resources>
+                    <enterprise_folder>enterprise</enterprise_folder>
+                </allowed_resources>
+            </media_storage_configuration>
             <adminnotification>
                 <feed_url>notifications.magentocommerce.com/enterprise/notifications.rss</feed_url>
             </adminnotification>

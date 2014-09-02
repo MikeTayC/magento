@@ -21,11 +21,19 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <logging>
+    <actions>
+        <apply_coupon translate="label" module="enterprise_checkout">
+            <label>Apply Coupon</label>
+        </apply_coupon>
+        <add_to_cart translate="label" module="enterprise_checkout">
+            <label>Add To Cart</label>
+        </add_to_cart>
+    </actions>
     <enterprise_checkout translate="label">
         <label>Shopping Cart Management</label>
         <actions>
@@ -36,7 +44,7 @@
                 </expected_models>
             </adminhtml_checkout_index>
             <adminhtml_checkout_applyCoupon>
-                <action>apply coupon</action>
+                <action>apply_coupon</action>
                 <expected_models>
                     <sales__quote/>
                 </expected_models>
@@ -49,7 +57,7 @@
                 </expected_models>
             </adminhtml_checkout_updateItems>
             <adminhtml_checkout_addToCart>
-                <action>add to cart</action>
+                <action>add_to_cart</action>
                 <expected_models>
                     <sales__quote_item>
                     <additional_data>

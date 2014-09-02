@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -34,4 +34,17 @@
  */
 class Enterprise_Pbridge_Block_Checkout_Payment_Ogone extends Enterprise_Pbridge_Block_Payment_Form_Abstract
 {
+    /**
+     * Whether to include billing parameters in Payment Bridge source URL
+     *
+     * @var bool
+     */
+    protected $_sendBilling = true;
+
+    /**
+     * Whether to include shipping parameters in Payment Bridge source URL
+     *
+     * @var bool
+     */
+    protected $_sendShipping = true;
 }

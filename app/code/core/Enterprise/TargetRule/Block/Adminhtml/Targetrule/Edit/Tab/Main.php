@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -31,7 +31,9 @@
  * @package    Enterprise_TargetRule
  * @author     Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_TargetRule_Block_Adminhtml_Targetrule_Edit_Tab_Main extends Mage_Adminhtml_Block_Widget_Form
+class Enterprise_TargetRule_Block_Adminhtml_Targetrule_Edit_Tab_Main
+    extends Mage_Adminhtml_Block_Widget_Form
+    implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     /**
      * Prepare Mail Target Rule Edit form
@@ -42,8 +44,8 @@ class Enterprise_TargetRule_Block_Adminhtml_Targetrule_Edit_Tab_Main extends Mag
     {
         /* @var $model Enterprise_TargetRule_Model_Rule */
         $model = Mage::registry('current_target_rule');
-
         $form = new Varien_Data_Form();
+
 
         $form->setHtmlIdPrefix('rule_');
 
@@ -111,6 +113,10 @@ class Enterprise_TargetRule_Block_Adminhtml_Targetrule_Edit_Tab_Main extends Mag
             'note'  => Mage::helper('enterprise_targetrule')->__('Maximum number of products that can be matched by this Rule. Capped to 20.'),
         ));
 
+
+        Mage::dispatchEvent('targetrule_edit_tab_main_after_prepare_form', array('model' => $model, 'form' => $form,
+            'block' => $this));
+
         $form->setValues($model->getData());
 
         if ($model->isReadonly()) {
@@ -122,5 +128,45 @@ class Enterprise_TargetRule_Block_Adminhtml_Targetrule_Edit_Tab_Main extends Mag
         $this->setForm($form);
 
         return parent::_prepareForm();
+    }
+
+    /**
+     * Retrieve Tab label
+     *
+     * @return string
+     */
+    public function getTabLabel()
+    {
+        return Mage::helper('enterprise_targetrule')->__('Rule Information');
+    }
+
+    /**
+     * Retrieve Tab title
+     *
+     * @return string
+     */
+    public function getTabTitle()
+    {
+        return Mage::helper('enterprise_targetrule')->__('Rule Information');
+    }
+
+    /**
+     * Check is can show tab
+     *
+     * @return bool
+     */
+    public function canShowTab()
+    {
+        return true;
+    }
+
+    /**
+     * Check tab is hidden
+     *
+     * @return bool
+     */
+    public function isHidden()
+    {
+        return false;
     }
 }

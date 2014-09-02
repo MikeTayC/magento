@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Banner
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -93,7 +93,7 @@ class Enterprise_Banner_Block_Adminhtml_Banner_Edit_Tab_Content extends Mage_Adm
         $storeContents = $banner->getStoreContents();
         $model = Mage::registry('current_banner');
 
-        Mage::dispatchEvent('adminhtml_banner_edit_tab_content_before_prepare_form', 
+        Mage::dispatchEvent('adminhtml_banner_edit_tab_content_before_prepare_form',
             array('model' => $model, 'form' => $form)
         );
 
@@ -108,7 +108,8 @@ class Enterprise_Banner_Block_Adminhtml_Banner_Edit_Tab_Content extends Mage_Adm
             'required'  => false,
             'label'    => Mage::helper('enterprise_banner')->__('Banner Default Content for All Store Views'),
             'onclick'   => "$('store_default_content').toggle();
-                $('" . $form->getHtmlIdPrefix() . "store_default_content').disabled = !$('" . $form->getHtmlIdPrefix() . "store_default_content').disabled;",
+                $('" . $form->getHtmlIdPrefix() . "store_default_content').disabled = !$('"
+                . $form->getHtmlIdPrefix() . "store_default_content').disabled;",
             'checked'   => isset($storeContents[0]) ? false : (!$model->getId() ? false : true),
             'after_element_html' => '<label for="' . $form->getHtmlIdPrefix()
                 . 'store_0_content_use">'
@@ -129,7 +130,8 @@ class Enterprise_Banner_Block_Adminhtml_Banner_Edit_Tab_Content extends Mage_Adm
             'container_id' => 'store_default_content',
             'after_element_html' =>
                 '<script type="text/javascript">' .
-                ((bool)$model->getIsReadonly() || ($model->getCanSaveAllStoreViewsContent() === false) ? '$(\'buttons' . $form->getHtmlIdPrefix() . 'store_default_content\').hide(); ' : '') .
+                ((bool)$model->getIsReadonly() || ($model->getCanSaveAllStoreViewsContent() === false)
+                    ? '$(\'buttons' . $form->getHtmlIdPrefix() . 'store_default_content\').hide(); ' : '') .
                 (isset($storeContents[0]) ? '' : (!$model->getId() ? '' : '$(\'store_default_content\').hide();')) .
                 '</script>',
         ));
@@ -140,6 +142,8 @@ class Enterprise_Banner_Block_Adminhtml_Banner_Edit_Tab_Content extends Mage_Adm
             'class'  => $fieldsetHtmlClass,
             'table_class' => 'form-list stores-tree',
         ));
+        $renderer = $this->getLayout()->createBlock('adminhtml/store_switcher_form_renderer_fieldset');
+        $fieldset->setRenderer($renderer);
         $wysiwygConfig->setUseContainer(true);
         foreach (Mage::app()->getWebsites() as $website) {
             $fieldset->addField("w_{$website->getId()}_label", 'note', array(
@@ -163,7 +167,9 @@ class Enterprise_Banner_Block_Adminhtml_Banner_Edit_Tab_Content extends Mage_Adm
                         'name'      => 'store_contents_not_use['.$store->getId().']',
                         'required'  => false,
                         'label'     => $store->getName(),
-                        'onclick'   => "$('{$contentFieldId}').toggle(); $('" . $form->getHtmlIdPrefix() . $contentFieldId . "').disabled = !$('" . $form->getHtmlIdPrefix() . $contentFieldId . "').disabled;",
+                        'onclick'   => "$('{$contentFieldId}').toggle(); $('" . $form->getHtmlIdPrefix()
+                            . $contentFieldId . "').disabled = !$('" . $form->getHtmlIdPrefix() . $contentFieldId
+                            . "').disabled;",
                         'checked'   => $storeContent ? false : true,
                         'after_element_html' => '<label for="' . $form->getHtmlIdPrefix()
                             . 'store_' . $store->getId() .'_content_use">'
@@ -183,8 +189,8 @@ class Enterprise_Banner_Block_Adminhtml_Banner_Edit_Tab_Content extends Mage_Adm
                         'wysiwyg'      => false,
                         'after_element_html' =>
                             '<script type="text/javascript">' .
-                            ((bool)$model->getIsReadonly() ? '$(\'buttons' . $form->getHtmlIdPrefix() . $contentFieldId . '\').hide(); ' : '') .
-                            ($storeContent ? '' : '$(\'' . $contentFieldId . '\').hide();') .
+                            ((bool)$model->getIsReadonly() ? '$(\'buttons' . $form->getHtmlIdPrefix() . $contentFieldId
+                            . '\').hide(); ' : '') . ($storeContent ? '' : '$(\'' . $contentFieldId . '\').hide();') .
                             '</script>',
                     ));
                 }

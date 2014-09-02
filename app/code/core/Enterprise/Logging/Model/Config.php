@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -145,6 +145,28 @@ class Enterprise_Logging_Model_Config
             asort($this->_labels);
         }
         return $this->_labels;
+    }
+
+    /**
+     * Get logging action translated label
+     *
+     * @param string $action
+     * @return string
+     */
+    public function getActionLabel($action)
+    {
+        $xpath = 'actions/' . $action . '/label';
+        $actionLabelNode = $this->_xmlConfig->getNode($xpath);
+
+        if (!$actionLabelNode) {
+            return $action;
+        }
+
+        $label = (string)$actionLabelNode;
+        $module = $actionLabelNode->getParent()->getAttribute('module');
+        $helper = $module ? Mage::helper($module) : Mage::helper('enterprise_logging');
+
+        return $helper->__($label);
     }
 
     /**

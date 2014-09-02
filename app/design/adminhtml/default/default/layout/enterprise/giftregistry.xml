@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -53,4 +53,11 @@
             <block type="enterprise_giftregistry/adminhtml_customer_edit" name="giftregistry_customer_edit"></block>
         </reference> 
    </adminhtml_giftregistry_customer_edit>
+   
+   <adminhtml_giftregistry_customer_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="enterprise_giftregistry/adminhtml_customer_grid" name="adminhtml.giftregistry.customer.grid"/>
+        </block>
+    </adminhtml_giftregistry_customer_grid>
+    
 </layout>

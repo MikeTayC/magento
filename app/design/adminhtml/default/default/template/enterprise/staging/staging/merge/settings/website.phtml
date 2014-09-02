@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -68,7 +68,7 @@
                     <span class="hor-scroll">
                         <span class="a-center">
                             <button onclick="<?php echo $this->getJsObjectName() ?>.stagingMerge(); return false;" class="staging-mapper-add-website-btn button">
-                                <span><?php echo $this->__('Merge Now') ?></span>
+                                <span><span><span><?php echo $this->__('Merge Now') ?></span></span></span>
                             </button>
                         </span>
                     </span>
@@ -76,7 +76,7 @@
                     <span class="hor-scroll">
                         <span class="a-center">
                             <button onclick="<?php echo $this->getJsObjectName() ?>.stagingMerge( {merge_later: 1} ); return false;" class="staging-mapper-add-website-btn button">
-                                <span><?php echo $this->__('Schedule Merge') ?></span>
+                                <span><span><span><?php echo $this->__('Schedule Merge') ?></span></span></span>
                             </button>
                         </span>
                         <span>
@@ -149,13 +149,13 @@
                 <td class="mapper-select">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->__('Store: '); ?>&nbsp;&nbsp;&nbsp;
                     {{store_to_select}}
                 </td>
-                <td><button class="button" onclick="<?php echo $this->getJsObjectName() ?>.removeStoreMap(this); return false;"><span><?php echo $this->__('Remove'); ?></span></button></td>
+                <td><button class="button" onclick="<?php echo $this->getJsObjectName() ?>.removeStoreMap(this); return false;"><span><span><span><?php echo $this->__('Remove'); ?></span></span></span></button></td>
             </tr>
             <tr id="<?php echo $this->getId() ?>_store_add_btn_template" style="display: none;">
                 <td></td>
                 <td></td>
                 <td>
-                    <button class="staging-mapper-add-store-btn button disabled" disabled="disabled" onclick="<?php echo $this->getJsObjectName() ?>.addStoreMap(this); return false;"><span><?php echo $this->__('Add new store view map'); ?></span></button>
+                    <button class="staging-mapper-add-store-btn button disabled" disabled="disabled" onclick="<?php echo $this->getJsObjectName() ?>.addStoreMap(this); return false;"><span><span><span><?php echo $this->__('Add new store view map'); ?></span></span></span></button>
                 </td>
             </tr>
         </tbody>

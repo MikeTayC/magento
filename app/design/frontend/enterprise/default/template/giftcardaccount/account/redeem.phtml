@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -60,6 +60,9 @@
     //<![CDATA[
     var giftcardForm = new VarienForm('giftcard-form');
     function giftCardAccountLookupBalance() {
+        if (giftcardForm.validator && !giftcardForm.validator.validate()) {
+            return false;
+        }
         new Ajax.Updater('giftcard_balance_lookup', '<?php echo Mage::getUrl('enterprise_giftcardaccount/cart/quickCheck', array('_secure' => true)) ?>', {
             onCreate: function() {
                 $('gc-please-wait').show()

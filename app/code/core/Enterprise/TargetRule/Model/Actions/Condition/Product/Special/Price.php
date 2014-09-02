@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -81,9 +81,7 @@ class Enterprise_TargetRule_Model_Actions_Condition_Product_Special_Price
     public function asHtml()
     {
         return $this->getTypeElementHtml()
-            . Mage::helper('enterprise_targetrule')->__('Product Price is %s %s%% of Matched Product(s) Price',
-                $this->getOperatorElementHtml(),
-                $this->getValueElementHtml())
+            . Mage::helper('enterprise_targetrule')->__('Product Price is %s %s%% of Matched Product(s) Price', $this->getOperatorElementHtml(), $this->getValueElementHtml())
             . $this->getRemoveLinkHtml();
     }
 

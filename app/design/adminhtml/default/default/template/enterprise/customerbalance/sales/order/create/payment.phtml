@@ -20,11 +20,11 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
-<?php if ($this->getBalance()): ?>
+<?php if ($this->canUseCustomerBalance()): ?>
     <input id="p_method_use_customerbalance" value="1" name="payment[use_customer_balance]" type="checkbox" title="<?php echo $this->__('Store Credit') ?>" onclick="" <?php if ($this->getUseCustomerBalance()): ?>checked<?php endif; ?> />
     <label for="p_method_use_customerbalance"><?php echo $this->__('Use Store Credit (%s available)', $this->formatPrice($this->getBalance())) ?></label>
     <script type="text/javascript">

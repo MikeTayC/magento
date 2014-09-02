@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -88,12 +88,12 @@ class Enterprise_GiftCardAccount_Model_Api extends Mage_Api_Model_Resource_Abstr
     /**
      * Retrieve full information
      *
-     * @param integer $giftcardId
+     * @param integer $giftcardAccountId
      * @return array
      */
-    public function info($giftcardId)
+    public function info($giftcardAccountId)
     {
-        $model = $this->_init($giftcardId);
+        $model = $this->_init($giftcardAccountId);
 
         $result = $this->_getEntityInfo($model);
         $result['is_redeemable'] = $model->getIsRedeemable();
@@ -156,14 +156,14 @@ class Enterprise_GiftCardAccount_Model_Api extends Mage_Api_Model_Resource_Abstr
      * Update GitCard Account
      *
      * @param integer $giftcardAccountId
-     * @param array $data
+     * @param array $giftcardData
      * @return bool
      */
-    public function update($giftcardAccountId, $data)
+    public function update($giftcardAccountId, $giftcardData)
     {
         $model = $this->_init($giftcardAccountId);
         $updateData = array();
-        foreach ((array)$data as $field=> $value) {
+        foreach ((array)$giftcardData as $field=> $value) {
             if (in_array($field, $this->_updateAllowedAttributes)) {
                 if (isset($this->_mapAttributes[$field])) {
                     $field = $this->_mapAttributes[$field];

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -104,10 +104,7 @@ class Enterprise_Reminder_Model_Rule_Condition_Wishlist
     public function asHtml()
     {
         return $this->getTypeElementHtml()
-            . Mage::helper('enterprise_reminder')->__('Wishlist is not empty and abandoned %s %s days and %s of these conditions match:',
-                $this->getOperatorElementHtml(),
-                $this->getValueElementHtml(),
-                $this->getAggregatorElement()->getHtml())
+            . Mage::helper('enterprise_reminder')->__('Wishlist is not empty and abandoned %s %s days and %s of these conditions match:', $this->getOperatorElementHtml(), $this->getValueElementHtml(), $this->getAggregatorElement()->getHtml())
             . $this->getRemoveLinkHtml();
     }
 

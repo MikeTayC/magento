@@ -21,25 +21,13 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Persistent
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <instances>
         <blocks>
-            <wishlist_link>
-                <name_in_layout>wishlist_link</name_in_layout>
-                <class>enterprise_persistent/observer</class>
-                <method>initWishlist</method>
-                <block_type>Mage_Wishlist_Block_Links</block_type>
-            </wishlist_link>
-            <wishlist_sidebar>
-                <name_in_layout>wishlist_sidebar</name_in_layout>
-                <class>enterprise_persistent/observer</class>
-                <method>initWishlistSidebar</method>
-                <!-- block_type>Mage_Wishlist_Block_Customer_Sidebar</block_type-->
-            </wishlist_sidebar>
             <reorder_sidebar>
                 <name_in_layout>sale.reorder.sidebar</name_in_layout>
                 <class>enterprise_persistent/observer</class>

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -41,5 +41,18 @@ class Enterprise_Reward_Model_Resource_Reward_Rate_Collection extends Mage_Core_
     protected function _construct()
     {
         $this->_init('enterprise_reward/reward_rate');
+    }
+
+    /**
+     * Add filter by website id
+     *
+     * @param integer|array $websiteId
+     * @return Enterprise_Reward_Model_Resource_Reward_Rate_Collection
+     */
+    public function addWebsiteFilter($websiteId)
+    {
+        $websiteId = array_merge((array)$websiteId, array(0));
+        $this->getSelect()->where('main_table.website_id IN (?)', $websiteId);
+        return $this;
     }
 }

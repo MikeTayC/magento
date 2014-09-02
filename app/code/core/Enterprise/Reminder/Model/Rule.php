@@ -20,12 +20,12 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
- * Reminder rules processing model
+ * Reminder Rule data model
  *
  * @method Enterprise_Reminder_Model_Resource_Rule _getResource()
  * @method Enterprise_Reminder_Model_Resource_Rule getResource()
@@ -56,17 +56,17 @@
  * @package     Enterprise_Reminder
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Rule
+class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Abstract
 {
     const XML_PATH_EMAIL_TEMPLATE  = 'enterprise_reminder_email_template';
 
     /**
-     * Contains data defined per store view, will be used in email templates as variables
+     * Store template data defined per store view, will be used in email templates as variables
      */
     protected $_storeData = array();
 
     /**
-     * Intialize model
+     * Init resource model
      *
      * @return void
      */
@@ -77,22 +77,18 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Rule
     }
 
     /**
-     * Perform actions after object load
+     * Set template, label and description data per store
      *
      * @return Enterprise_Reminder_Model_Rule
      */
     protected function _afterLoad()
     {
-        Mage_Core_Model_Abstract::_afterLoad();
-        $conditionsArr = unserialize($this->getConditionsSerialized());
-        if (!empty($conditionsArr) && is_array($conditionsArr)) {
-            $this->getConditions()->loadArray($conditionsArr);
-        }
+        parent::_afterLoad();
 
         $storeData = $this->_getResource()->getStoreData($this->getId());
         $defaultTemplate = self::XML_PATH_EMAIL_TEMPLATE;
 
-        foreach($storeData as $data) {
+        foreach ($storeData as $data) {
             $template = (empty($data['template_id'])) ? $defaultTemplate : $data['template_id'];
             $this->setData('store_template_' . $data['store_id'], $template);
             $this->setData('store_label_' . $data['store_id'], $data['label']);
@@ -103,7 +99,9 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Rule
     }
 
     /**
-     * Perform actions before object save.
+     * Set aggregated conditions SQL and reset sales rule Id if applicable
+     *
+     * @return Enterprise_Reminder_Model_Rule
      */
     protected function _beforeSave()
     {
@@ -114,21 +112,13 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Rule
         if (!$this->getSalesruleId()) {
             $this->setSalesruleId(null);
         }
-        parent::_beforeSave();
-    }
 
-    /**
-     * Live website ids data as is
-     *
-     * @return Enterprise_Reminder_Model_Rule
-     */
-    protected function _prepareWebsiteIds()
-    {
+        parent::_beforeSave();
         return $this;
     }
 
     /**
-     * Return conditions instance
+     * Getter for rule combine conditions instance
      *
      * @return Enterprise_Reminder_Model_Rule_Condition_Combine
      */
@@ -138,16 +128,13 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Rule
     }
 
     /**
-     * Get rule associated website ids
+     * Getter for rule actions collection instance
      *
-     * @return array
+     * @return Mage_Rule_Model_Action_Collection
      */
-    public function getWebsiteIds()
+    public function getActionsInstance()
     {
-        if (!$this->hasData('website_ids')) {
-            $this->setData('website_ids', $this->_getResource()->getWebsiteIds($this->getId()));
-        }
-        return $this->_getData('website_ids');
+        return Mage::getModel('rule/action_collection');
     }
 
     /**
@@ -157,6 +144,7 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Rule
      */
     public function sendReminderEmails()
     {
+        /** @var $mail Mage_Core_Model_Email_Template */
         $mail = Mage::getModel('core/email_template');
 
         /* @var $translate Mage_Core_Model_Translate */
@@ -171,7 +159,6 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Rule
         $recipients = $this->_getResource()->getCustomersForNotification($limit, $this->getRuleId());
 
         foreach ($recipients as $recipient) {
-
             /* @var $customer Mage_Customer_Model_Customer */
             $customer = Mage::getModel('customer/customer')->load($recipient['customer_id']);
             if (!$customer || !$customer->getId()) {
@@ -193,11 +180,11 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Rule
             $coupon = Mage::getModel('salesrule/coupon')->load($recipient['coupon_id']);
 
             $templateVars = array(
-                'store' => $store,
-                'customer' => $customer,
+                'store'          => $store,
+                'coupon'         => $coupon,
+                'customer'       => $customer,
                 'promotion_name' => $storeData['label'],
-                'promotion_description' => $storeData['description'],
-                'coupon' => $coupon
+                'promotion_description' => $storeData['description']
             );
 
             $mail->setDesignConfig(array('area' => 'frontend', 'store' => $store->getId()));
@@ -211,26 +198,24 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Rule
                 $this->_getResource()->updateFailedEmailsCounter($recipient['rule_id'], $customer->getId());
             }
         }
-
         $translate->setTranslateInline(true);
+
         return $this;
     }
 
     /**
-     * Match customers and assign coupons
+     * Match customers for current rule and assign coupons
      *
      * @return Enterprise_Reminder_Model_Observer
      */
     protected function _matchCustomers()
     {
-        $threshold = Mage::helper('enterprise_reminder')->getSendFailureThreshold();
-
+        $threshold   = Mage::helper('enterprise_reminder')->getSendFailureThreshold();
         $currentDate = Mage::getModel('core/date')->date('Y-m-d');
-        $rules = $this->getCollection()->addDateFilter($currentDate)
-            ->addIsActiveFilter(1);
+        $rules       = $this->getCollection()->addDateFilter($currentDate)->addIsActiveFilter(1);
 
-        if ($ruleId = $this->getRuleId()) {
-            $rules->addRuleFilter($ruleId);
+        if ($this->getRuleId()) {
+            $rules->addRuleFilter($this->getRuleId());
         }
 
         foreach ($rules as $rule) {
@@ -253,10 +238,11 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Rule
     }
 
     /**
-     * Return store data
+     * Retrieve store template data
      *
      * @param int $ruleId
      * @param int $storeId
+     *
      * @return array|false
      */
     public function getStoreData($ruleId, $storeId)
@@ -272,6 +258,41 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Rule
                 return false;
             }
         }
+
         return $this->_storeData[$ruleId][$storeId];
+    }
+
+    /**
+     * Detaches Sales Rule from all Email Remainder Rules that uses it
+     *
+     * @param int $salesRuleId
+     * @return Enterprise_Reminder_Model_Rule
+     */
+    public function detachSalesRule($salesRuleId)
+    {
+        $this->getResource()->detachSalesRule($salesRuleId);
+        return $this;
+    }
+
+    /**
+     * Retrieve active from date.
+     * Implemented for backwards compatibility with old property called "active_from"
+     *
+     * @return string
+     */
+    public function getActiveFrom()
+    {
+        return $this->getData('from_date');
+    }
+
+    /**
+     * Retrieve active to date.
+     * Implemented for backwards compatibility with old property called "active_to"
+     *
+     * @return string
+     */
+    public function getActiveTo()
+    {
+        return $this->getData('to_date');
     }
 }

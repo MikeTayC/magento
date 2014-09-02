@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -85,61 +85,33 @@ class Enterprise_Search_Model_Resource_Advanced extends Mage_Core_Model_Resource
      */
     protected function _getSearchParam($collection, $attribute, $value)
     {
-        if (empty($value)
-            || (isset($value['from']) && empty($value['from'])
-            && isset($value['to']) && empty($value['to']))
+        if ((!is_string($value) && empty($value))
+            || (is_string($value) && strlen(trim($value)) == 0)
+            || (is_array($value)
+                && isset($value['from'])
+                && empty($value['from'])
+                && isset($value['to'])
+                && empty($value['to']))
         ) {
-            return false;
+            return array();
         }
 
-        $localeCode = Mage::app()->getStore()->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE);
-        $languageSuffix = Mage::helper('enterprise_search')->getLanguageSuffix($localeCode);
-
-        $field = $attribute->getAttributeCode();
-        $backendType = $attribute->getBackendType();
-        $frontendInput = $attribute->getFrontendInput();
-
-        if ($frontendInput == 'multiselect') {
-            $field = 'attr_multi_'. $field;
-        } elseif ($frontendInput == 'select' || $frontendInput == 'boolean') {
-            $field = 'attr_select_'. $field;
-        } elseif ($backendType == 'decimal') {
-            $field = 'attr_decimal_'. $field;
-        } elseif ($backendType == 'datetime') {
-            $field = 'attr_datetime_'. $field;
-            $dateFormat = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT);
-            $invalidDateMessage = Mage::helper('enterprise_search')->__('Specified date is invalid.');
-            if (is_array($value)) {
-                foreach ($value as &$val) {
-                    if (!is_empty_date($val)) {
-                        if (!Zend_Date::isDate($val, $dateFormat)) {
-                            Mage::throwException($invalidDateMessage);
-                        }
-                        $date = new Zend_Date($val, $dateFormat);
-                        $val = $date->toString(Zend_Date::ISO_8601) . 'Z';
-                    }
-                }
-            } else {
-                if (!is_empty_date($value)) {
-                    if (!Zend_Date::isDate($value, $dateFormat)) {
-                        Mage::throwException($invalidDateMessage);
-                    }
-                    $date = new Zend_Date($value, $dateFormat);
-                    $value = array($date->toString(Zend_Date::ISO_8601) . 'Z');
-                }
-            }
-        } elseif (in_array($backendType, $this->_textFieldTypes)) {
-            $field .= $languageSuffix;
+        if (!is_array($value)) {
+            $value = array($value);
         }
 
-        if ($attribute->usesSource()) {
-            $attribute->setStoreId(
-                Mage::app()->getStore()->getId()
-            );
+        $field = Mage::getResourceSingleton('enterprise_search/engine')
+                ->getSearchEngineFieldName($attribute, 'nav');
 
+        if ($attribute->getBackendType() == 'datetime') {
+            $format = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT);
             foreach ($value as &$val) {
-                $val = $attribute->getSource()->getOptionText($val);
+                if (!is_empty_date($val)) {
+                    $date = new Zend_Date($val, $format);
+                    $val = $date->toString(Zend_Date::ISO_8601) . 'Z';
+                }
             }
+            unset($val);
         }
 
         if (empty($value)) {
@@ -162,7 +134,9 @@ class Enterprise_Search_Model_Resource_Advanced extends Mage_Core_Model_Resource
     public function addRatedPriceFilter($collection, $attribute, $value, $rate = 1)
     {
         $collection->addPriceData();
-        $collection->addSearchParam(array('price' => $value));
+        $fieldName = Mage::getResourceSingleton('enterprise_search/engine')
+                ->getSearchEngineFieldName($attribute);
+        $collection->addSearchParam(array($fieldName => $value));
 
         return true;
     }

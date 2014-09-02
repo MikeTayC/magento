@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -86,9 +86,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Sales_Ordersnumber
     public function asHtml()
     {
         return $this->getTypeElementHtml()
-            . Mage::helper('enterprise_customersegment')->__('Number of Orders %s %s while %s of these Conditions match:',
-                $this->getOperatorElementHtml(), $this->getValueElementHtml(),
-                $this->getAggregatorElement()->getHtml())
+            . Mage::helper('enterprise_customersegment')->__('Number of Orders %s %s while %s of these Conditions match:', $this->getOperatorElementHtml(), $this->getValueElementHtml(), $this->getAggregatorElement()->getHtml())
             . $this->getRemoveLinkHtml();
     }
 

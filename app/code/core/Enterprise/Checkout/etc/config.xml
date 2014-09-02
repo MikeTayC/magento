@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -35,7 +35,11 @@
         <models>
             <enterprise_checkout>
                 <class>Enterprise_Checkout_Model</class>
+                <resourceModel>enterprise_checkout_resource</resourceModel>
             </enterprise_checkout>
+            <enterprise_checkout_resource>
+                <class>Enterprise_Checkout_Model_Resource</class>
+            </enterprise_checkout_resource>
         </models>
         <blocks>
             <enterprise_checkout>
@@ -76,5 +80,72 @@
                 </Enterprise_Checkout>
             </modules>
         </translate>
+        <events>
+            <adminhtml_sales_order_create_process_data_before>
+                <observers>
+                    <addBySku>
+                        <class>enterprise_checkout/observer</class>
+                        <method>addBySku</method>
+                    </addBySku>
+                    <uploadSkuCsv>
+                        <class>enterprise_checkout/observer</class>
+                        <method>uploadSkuCsv</method>
+                    </uploadSkuCsv>
+                </observers>
+            </adminhtml_sales_order_create_process_data_before>
+        </events>
     </adminhtml>
+    <frontend>
+        <routers>
+            <checkout>
+                <args>
+                    <modules>
+                        <enterprise_checkout before="Mage_Checkout">Enterprise_Checkout</enterprise_checkout>
+                    </modules>
+                </args>
+            </checkout>
+            <enterprise_checkout>
+                <use>standard</use>
+                <args>
+                    <module>Enterprise_Checkout</module>
+                    <frontName>customer_order</frontName>
+                </args>
+            </enterprise_checkout>
+        </routers>
+        <events>
+            <controller_action_layout_load_before>
+                <observers>
+                    <enterprise_checkout>
+                        <class>enterprise_checkout/observer</class>
+                        <method>createSkuErrorHandleLayout</method>
+                    </enterprise_checkout>
+                </observers>
+            </controller_action_layout_load_before>
+            <controller_action_layout_generate_blocks_before>
+                <observers>
+                    <enterprise_checkout>
+                        <class>enterprise_checkout/observer</class>
+                        <method>collectTotalsFailedItems</method>
+                    </enterprise_checkout>
+                </observers>
+            </controller_action_layout_generate_blocks_before>
+            <core_block_abstract_to_html_before>
+                <observers>
+                    <enterprise_checkout>
+                        <class>enterprise_checkout/observer</class>
+                        <method>addCartLink</method>
+                    </enterprise_checkout>
+                </observers>
+            </core_block_abstract_to_html_before>
+        </events>
+        <translate>
+            <modules>
+                <Enterprise_Checkout>
+                    <files>
+                        <default>Enterprise_Checkout.csv</default>
+                    </files>
+                </Enterprise_Checkout>
+            </modules>
+        </translate>
+    </frontend>
 </config>

@@ -21,14 +21,14 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_GiftWrapping>
-             <version>1.11.0.0</version>
+             <version>1.11.0.0.1</version>
         </Enterprise_GiftWrapping>
     </modules>
 
@@ -91,7 +91,7 @@
                 <totals>
                     <giftwrapping>
                         <class>enterprise_giftwrapping/total_invoice_giftwrapping</class>
-                        <after>subtotal</after>
+                        <after>cost_total</after>
                     </giftwrapping>
                     <tax_giftwrapping>
                         <class>enterprise_giftwrapping/total_invoice_tax_giftwrapping</class>
@@ -337,6 +337,13 @@
     </adminhtml>
 
     <default>
+        <system>
+            <media_storage_configuration>
+                <allowed_resources>
+                    <giftwrapping_folder>wrapping</giftwrapping_folder>
+                </allowed_resources>
+            </media_storage_configuration>
+        </system>
         <sales>
             <gift_options>
                 <wrapping_allow_order>1</wrapping_allow_order>

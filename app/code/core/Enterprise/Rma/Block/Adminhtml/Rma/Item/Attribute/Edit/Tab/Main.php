@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -78,8 +78,9 @@ class Enterprise_Rma_Block_Adminhtml_Rma_Item_Attribute_Edit_Tab_Main
         // add limitation to attribute code
         // customer attribute code can have prefix "rma_item_" and its length must be max length minus prefix length
         $element      = $form->getElement('attribute_code');
-        $element->setNote(Mage::helper('eav')->__('For internal use. Must be unique with no spaces. Maximum length of attribute code must be less then %s symbols',
-            Mage_Eav_Model_Entity_Attribute::ATTRIBUTE_CODE_MAX_LENGTH));
+        $element->setNote(
+            Mage::helper('eav')->__('For internal use. Must be unique with no spaces. Maximum length of attribute code must be less then %s symbols', Mage_Eav_Model_Entity_Attribute::ATTRIBUTE_CODE_MAX_LENGTH)
+        );
 
         $fieldset->addField('multiline_count', 'text', array(
             'name'      => 'multiline_count',

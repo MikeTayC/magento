@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Customer
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -52,11 +52,11 @@ class Enterprise_Customer_Helper_Address extends Enterprise_Eav_Helper_Data
     {
         return array(
             array(
-                'label' => Mage::helper('enterprise_customer/address')->__('Customer Address Registration'),
+                'label' => Mage::helper('enterprise_customer')->__('Customer Address Registration'),
                 'value' => 'customer_register_address'
             ),
             array(
-                'label' => Mage::helper('enterprise_customer/address')->__('Customer Account Address'),
+                'label' => Mage::helper('enterprise_customer')->__('Customer Account Address'),
                 'value' => 'customer_address_edit'
             ),
         );

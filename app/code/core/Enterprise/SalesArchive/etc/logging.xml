@@ -21,11 +21,19 @@
  *
  * @category    Enterprise
  * @package     Enterprise_SalesArchive
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <logging>
+    <actions>
+        <massAdd translate="label" module="enterprise_salesarchive">
+            <label>Mass Add</label>
+        </massAdd>
+        <add translate="label" module="enterprise_salesarchive">
+            <label>Add</label>
+        </add>
+    </actions>
     <enterprise_salesarchive translate="label">
         <label>Sales Archive</label>
         <expected_models>

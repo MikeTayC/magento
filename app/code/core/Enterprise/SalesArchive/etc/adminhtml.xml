@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_SalesArchive
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -41,21 +41,21 @@
                             <action>adminhtml/sales_archive/orders</action>
                             <sort_order>10</sort_order>
                         </orders>
-                        
+
                         <invoices translate="title" module="enterprise_salesarchive">
                             <title>Invoices</title>
                             <action>adminhtml/sales_archive/invoices</action>
                             <sort_order>20</sort_order>
                         </invoices>
-                        
+
                         <shipments translate="title" module="enterprise_salesarchive">
                             <title>Shipments</title>
                             <action>adminhtml/sales_archive/shipments</action>
                             <sort_order>30</sort_order>
                         </shipments>
-                        
+
                         <creditmemos translate="title" module="enterprise_salesarchive">
-                            <title>Creditmemos</title>
+                            <title>Credit Memos</title>
                             <action>adminhtml/sales_archive/creditmemos</action>
                             <sort_order>40</sort_order>
                         </creditmemos>
@@ -91,7 +91,7 @@
                                         <title>Shipments</title>
                                     </shipments>
                                     <creditmemos translate="title">
-                                        <title>Creditmemos</title>
+                                        <title>Credit Memos</title>
                                     </creditmemos>
                                  </children>
                             </archive>

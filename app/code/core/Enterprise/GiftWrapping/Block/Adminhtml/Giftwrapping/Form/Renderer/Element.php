@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -110,13 +110,11 @@ class Enterprise_GiftWrapping_Block_Adminhtml_Giftwrapping_Form_Renderer_Element
             return $html;
         }
         if ($element->getScope() == 'global' || $element->getScope() === null) {
-            $html.= '[GLOBAL]';
-        }
-        elseif ($element->getScope() == 'website') {
-            $html.= '[WEBSITE]';
-        }
-        elseif ($element->getScope() == 'store') {
-            $html.= '[STORE VIEW]';
+            $html .= Mage::helper('adminhtml')->__('[GLOBAL]');
+        } elseif ($element->getScope() == 'website') {
+            $html .= Mage::helper('adminhtml')->__('[WEBSITE]');
+        } elseif ($element->getScope() == 'store') {
+            $html .= Mage::helper('adminhtml')->__('[STORE VIEW]');
         }
 
         return $html;

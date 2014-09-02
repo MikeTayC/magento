@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -60,7 +60,7 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Products
     /**
      * Return items collection
      *
-     * @return Mage_Core_Model_Mysql4_Collection_Abstract
+     * @return Mage_Core_Model_Resource_Db_Collection_Abstract
      */
     public function getItemsCollection()
     {
@@ -70,10 +70,14 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Products
                 ->setStore($this->_getStore())
                 ->addAttributeToSelect($attributes)
                 ->addAttributeToSelect('sku')
-                ->addAttributeToFilter('type_id',
-                    array_keys(Mage::getConfig()->getNode('adminhtml/sales/order/create/available_product_types')->asArray())
-                )
+                ->addAttributeToFilter(
+                    'type_id',
+                    array_keys(
+                        Mage::getConfig()->getNode('adminhtml/sales/order/create/available_product_types')->asArray()
+                    )
+                )->addAttributeToFilter('status', Mage_Catalog_Model_Product_Status::STATUS_ENABLED)
                 ->addStoreFilter($this->_getStore());
+            Mage::getSingleton('cataloginventory/stock_status')->addIsInStockFilterToCollection($collection);
             Mage::getSingleton('catalog/product_status')->addSaleableFilterToCollection($collection);
             $this->setData('items_collection', $collection);
         }
@@ -111,7 +115,7 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Products
             'type'      => 'currency',
             'column_css_class' => 'price',
             'currency_code' => $this->_getStore()->getCurrentCurrencyCode(),
-            'rate'      => $this->_getStore()->getBaseCurrency()->getRate($this->_getStore()->getCurrentCurrencyCode()),
+            'rate' => $this->_getStore()->getBaseCurrency()->getRate($this->_getStore()->getCurrentCurrencyCode()),
             'index'     => 'price',
             'renderer'  => 'adminhtml/sales_order_create_search_grid_renderer_price'
         ));

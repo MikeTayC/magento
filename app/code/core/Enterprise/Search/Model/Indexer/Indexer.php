@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -75,7 +75,7 @@ class Enterprise_Search_Model_Indexer_Indexer
     public function reindexAll()
     {
         $helper = Mage::helper('enterprise_search');
-        if ($helper->isThirdPartSearchEngine() && $helper->isActiveEngine()) {
+        if ($helper->isThirdPartyEngineAvailable()) {
             /* Change index status to running */
             $indexProcess = Mage::getSingleton('index/indexer')->getProcessByCode('catalogsearch_fulltext');
             if ($indexProcess) {

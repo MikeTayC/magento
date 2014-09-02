@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_ImportExport
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -388,11 +388,9 @@ class Enterprise_ImportExport_Model_Scheduled_Operation extends Mage_Core_Model_
         $fileName = $operation->getScheduledFileName() . '.' . $fileInfo['file_format'];
         $result   = $fs->write($fileName, $fileContent);
         if (!$result) {
-            Mage::throwException(Mage::helper('enterprise_importexport')->__('Unable to write file "%s" to "%s" with "%s" driver',
-                $fileName,
-                $fileInfo['file_path'],
-                $fileInfo['server_type']
-            ));
+            Mage::throwException(
+                Mage::helper('enterprise_importexport')->__('Unable to write file "%s" to "%s" with "%s" driver', $fileName, $fileInfo['file_path'], $fileInfo['server_type'])
+            );
         }
         $operation->addLogComment(Mage::helper('enterprise_importexport')->__('Save file content'));
 

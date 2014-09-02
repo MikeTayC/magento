@@ -20,13 +20,14 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
 <?php
-/* @var $this Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Edit_Form */
+/* @var $this Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form */
 ?>
+<?php $treeNodes = $this->getNodesJson(); ?>
 <div class="cms-hierarchy">
     <?php echo $this->getStoreSwitcherHtml() ?>
     <table cellspacing="0" width="100%">
@@ -34,6 +35,13 @@
         <col width="50%" />
         <tr>
             <td class="col-left">
+                <?php echo $this->getParentBlock()->getChildHtml('hierarchy_manage') ?>
+                <?php if ($this->getData('current_scope') != Enterprise_Cms_Model_Hierarchy_Node::NODE_SCOPE_DEFAULT): ?>
+                <span class="cms-scope">
+                    <input type="checkbox" name="use_default_scope" id="use_default_scope" <?php echo $this->getData('use_default_scope') ? 'checked="checked"' : '' ?> onchange="hierarchyNodes.useDefaultScope()" />
+                    <label for="use_default_scope"><?php echo Mage::helper('enterprise_cms')->__('Use Parent Node\'s Hierarchy') ?></label>
+                </span>
+                <?php endif; ?>
                 <div id="tree-container" class="cms-tree tree x-tree"></div>
             </td>
             <td class="col-right">
@@ -57,8 +65,16 @@
         var ee = e.browserEvent || e;
         return ee.target ? Event.element(ee) : null;
     };
+
+    function deleteCurrentHierarchy()
+    {
+        if (confirm(<?php echo json_encode(Mage::helper('enterprise_cms')->__("Are you sure you want to delete current hierarchy?")); ?>)) {
+            document.location = '<?php echo $this->getDeleteHierarchyUrl() ?>';
+        }
+    }
+
     hierarchyNodes = {
-        nodes: <?php echo $this->getNodesJson()?>,
+        nodes: <?php echo $treeNodes ?>,
         removedNodes: $A(),
         initialize: function(){
             this.increment = 0;
@@ -81,16 +97,84 @@
             });
             this.tree.setRootNode(this.treeRoot);
             this.createNodes();
-            this.tree.getSelectionModel().addListener('selectionchange', this.onNodeSelect.bind(this));
+            this.tree.addListener('click', this.onNodeClick.bind(this));
             this.tree.addListener('beforeappend', this.onNodeAppend.bind(this));
+            this.tree.addListener('beforenodedrop', this.onNodeMove.bind(this));
             this.tree.render();
             this.treeRoot.select();
+            this.onNodeClick(this.treeRoot);
             this.dataModification = false;
             this.lastChangedNode = null;
             this.menuListTypes = <?php echo $this->getListModesJson() ?>;
 
             $('node_label').removeClassName('required-entry');
             $('node_identifier').removeClassName('required-entry');
+            this.useDefaultScope();
+        },
+
+        treeNodesDisabler: function (node){
+            if (hierarchyNodes.isDefaultScope()) {
+                if (node.attributes.cls.indexOf(' disallowed') == -1) {
+                    node.attributes.cls += ' disallowed';
+                }
+            } else {
+                if (node.id.indexOf('_') == -1 && <?php echo $this->getData('use_default_scope') ? '1' : '0' ?>) {
+                    var newNodeId = '_' + hierarchyNodes.increment;
+                    if ($('node_id').value && $('node_id').value == node.id) {
+                        $('node_id').value = newNodeId;
+                    }
+                    hierarchyNodes.tree.unregisterNode(node);
+                    node.id = newNodeId;
+                    hierarchyNodes.tree.registerNode(node);
+                    hierarchyNodes.increment++;
+                }
+                node.attributes.cls = node.attributes.cls.replace(' disallowed', '');
+            }
+            node.childNodes.each(function (nod) { hierarchyNodes.treeNodesDisabler(nod)});
+        },
+
+        isDefaultScope: function(){
+            if ($('use_default_scope') !== null && $('use_default_scope').checked) {
+                return 1;
+            }
+            return 0;
+        },
+
+        useDefaultScope: function(){
+            // Disable tree nodes, that wasn't shown yet
+            this.treeRoot.childNodes.each(function (node) {
+                hierarchyNodes.treeNodesDisabler(node);
+            });
+            // Buttons that should be disabled
+            var buttons = new Array('new_node_button', 'delete_node_button', 'cancel_node_button',
+                                    'save_node_button', 'add_cms_pages'
+                                );
+
+            if (this.isDefaultScope()) {
+                // Disabling visible tree nodes
+                $$('.x-tree-node-el').each(function (item) {
+                    item.addClassName('disallowed');
+                });
+                buttons.each(function (name) {
+                    $(name).addClassName('disabled');
+                })
+                // Disabling all inputs, that is placed in form
+                $('<?php echo $this->getForm()->getId() ?>').getElements('input').each(function (item) {
+                    item.disabled = 'disabled';
+                });
+            } else {
+                // Enable visible tree nodes
+                $$('.x-tree-node-el').each(function (item) {
+                    item.removeClassName('disallowed');
+                });
+                buttons.each(function (name) {
+                    $(name).removeClassName('disabled');
+                })
+                // Enabling all inputs, that is placed in form
+                $('<?php echo $this->getForm()->getId() ?>').getElements('input').each(function (item) {
+                    item.disabled = false;
+                });
+            }
         },
 
         createNodes: function(){
@@ -114,7 +198,7 @@
                     cls: cssClass,
                     expanded: false,
                     allowDrop: true,
-                    allowDrag: <?php echo ($this->canDragNodes()) ? 'true' : 'false' ?>
+                    allowDrag: true
                 });
 
                 // Add metadata
@@ -155,14 +239,12 @@
             };
         },
 
-        onNodeSelect: function(model, node){
-
+        onNodeClick: function(node) {
             if ($('node_id').value) {
                 this.saveNodePage();
             }
 
             if (this.lastChangedNode) {
-                //this.lastChangedNode.ui.removeClass('modified');
                 this.lastChangedNode = null;
             }
 
@@ -176,7 +258,7 @@
             }
             $('node_prop_container').show();
 
-            var isTreeNode = (node.parentNode.id == '_root');
+            var isTreeNode = node.parentNode.id == '_root';
 
             <?php if (Mage::helper('enterprise_cms/hierarchy')->isMetadataEnabled()) : ?>
             if (isTreeNode) {
@@ -191,7 +273,7 @@
             <?php endif; ?>
 
             $('node_id').value = node.id;
-            $('node_page_id').value = node.attributes.page_id;
+            $('node_page_id').value = node.attributes.page_id || '';
 
             // Assign node attributes to form elements, change some of them based on node properties
             this.renderMetadata(node);
@@ -205,12 +287,25 @@
                 : '<?php echo $this->getNodeFieldsetLegend()?>';
 
             // prepare preview link
-            var nodeUrlInfo = this.getNodePreviewUrlInfo(node);
-            if (nodeUrlInfo != false) {
-                $('node_preview').up(1).show();
-                $('node_preview').writeAttribute('target', '_blank');
-                $('node_preview').writeAttribute('href', nodeUrlInfo.url);
-                $('node_preview').innerHTML = nodeUrlInfo.path;
+            Validation.add('IsEmpty', '', function(v) {
+                return  (v == '' || (v == null) || (v.length == 0) || /^\s+$/.test(v));
+            });
+
+            var nodeValue = $('node_id').value,
+                isNodeSaved = Validation.get('IsEmpty').test(nodeValue)
+                    || (!isNaN(parseNumber(nodeValue)) && !/^\s+$/.test(parseNumber(nodeValue))),
+                isStoreViewLevel = $('store') && $('store').value;
+
+            if (isStoreViewLevel && isNodeSaved) {
+                var nodeUrlInfo = this.getNodePreviewUrlInfo(node);
+                if (nodeUrlInfo != false) {
+                    $('node_preview').up(1).show();
+                    $('node_preview').writeAttribute('target', '_blank');
+                    $('node_preview').writeAttribute('href', nodeUrlInfo.url);
+                    $('node_preview').innerHTML = nodeUrlInfo.path;
+                }
+            } else {
+                $('node_preview').up(1).hide();
             }
 
             if (!hasPageId) {
@@ -232,15 +327,28 @@
             this.pageGridLoad();
         },
 
-        onNodeAppend: function(tree,parent,node){
-            var identifier = node.attributes.identifier;
-            for(var i=0, l = parent.childNodes.length; i < l; i++) {
-                if (identifier == parent.childNodes[i].attributes.identifier) {
+        onNodeAppend: function(tree, parent, node){
+            if (!parent || !node) {
+                return false;
+            }
+
+            var currentId = node.id,
+                currentUrlKey = node.attributes.identifier;
+
+            for (var i=0, l = parent.childNodes.length; i < l; i++) {
+                var comparedNode = parent.childNodes[i];
+                if (comparedNode.id != currentId && comparedNode.attributes.identifier == currentUrlKey) {
                     alert('<?php echo $this->jsQuoteEscape($this->__('This page cannot be added, because a node or page with the same URL Key already exists in this tree part.'))?>');
                     return false;
                 }
             }
             return true;
+        },
+
+        onNodeMove: function(e){
+            if (e.point == "above" || e.point == "below") {
+                return this.onNodeAppend(e.tree, e.target.parentNode, e.dropNode)
+            }
         },
 
         pageGridRowClick: function(container, evt){
@@ -254,6 +362,9 @@
         },
 
         pageGridAddSelected: function(){
+            if ($('add_cms_pages').hasClassName('disabled')) {
+                return false;
+            }
             var rows = $$('#cms_page_grid .grid table tbody tr');
             rows.each(function(tr){
                 var checkbox = tr.down('.checkbox');
@@ -311,7 +422,16 @@
         },
 
         save: function(){
-            this.saveNodePage();
+            $('use_default_scope_property').value = parseInt(this.isDefaultScope());
+            if (this.isDefaultScope()) {
+                $('use_default_scope').checked = false;
+                this.useDefaultScope();
+            }
+
+            if (this.saveNodePage() == false) {
+                return;
+            }
+
             //if (this.dataModification) {
             //    if (!confirm('<?php echo Mage::helper('enterprise_cms')->__('There are unsaved node data. Are you sure you want to proceed?') ?>')) {
             //        return;
@@ -366,16 +486,18 @@
         },
 
         newNodePage: function(){
-            this.saveNodePage();
+            if ($('new_node_button').hasClassName('disabled') || this.saveNodePage() === false) {
+                return false;
+            }
+
             this.nodePropReset();
             $('node_id').value = '';
             $('node_page_id').value = '';
             this._changeNodePropShow(false);
             this.saveButton(true, false, true);
-            //this.tree.getSelectionModel().clearSelections();
 
+            <?php if (Mage::helper('enterprise_cms/hierarchy')->isMetadataEnabled()): ?>
             var selectedNode = this.tree.getSelectionModel().getSelectedNode();
-            <?php if (Mage::helper('enterprise_cms/hierarchy')->isMetadataEnabled()) : ?>
             if (selectedNode.id == '_root') {
                 $('field_meta_first_last').show();
                 $('field_meta_next_previous').show();
@@ -395,13 +517,16 @@
             this.resetFieldSet('pager_fieldset');
             this.resetFieldSet('menu_fieldset');
 
-            // custom reseting for metadata
+            // custom reset for metadata
             this.resetMetadataFieldSet();
 
             this.renderMetadata();
         },
 
         cancelNodePage: function(){
+            if ($('cancel_node_button').hasClassName('disabled')) {
+                return false;
+            }
             this.saveButton(false);
             var selectedNode = this.tree.getSelectionModel().getSelectedNode();
             if (selectedNode && selectedNode.id != '_root') {
@@ -411,30 +536,29 @@
                 $('cancel_node_button').hide();
                 $('node_prop_container').hide();
             }
+            this.dataModification = false;
         },
 
         saveNodePage: function(){
-            if (!this.dataModification) {
+            if (!this.dataModification || $('save_node_button').hasClassName('disabled')) {
                 return;
             }
-            var hasNodeId = $('node_id').value != '';
-            var hasPageId = $('node_page_id').value != '';
 
-            if (!hasPageId) {
-                var isValid = this.nodePropValidate();
-                if (!isValid) {
-                    return;
-                }
+            var hasNodeId = $('node_id').value != '',
+                hasPageId = $('node_page_id').value != '';
+
+            if (!hasPageId && !this.nodePropValidate()) {
+                return false;
             }
 
             if (hasNodeId) {
-                var node_id = $('node_id').value;
-                var node = this.tree.getNodeById(node_id);
+                var node_id = $('node_id').value,
+                    node = this.tree.getNodeById(node_id),
+                    identifier = $('node_identifier').value;
 
-                var identifier = $('node_identifier').value;
                 for(var i=0, l = node.parentNode.childNodes.length; i < l; i++) {
-                    checkNode = node.parentNode.childNodes[i];
-                    if (checkNode.id != node_id && identifier == checkNode.attributes.identifier) {
+                    var comparedNode = node.parentNode.childNodes[i];
+                    if (comparedNode.id != node_id && identifier == comparedNode.attributes.identifier) {
                         alert('<?php echo $this->jsQuoteEscape($this->__('Node with same URL Key already exists.'))?>');
                         return false;
                     }
@@ -479,6 +603,9 @@
         },
 
         deleteNodePage: function(){
+            if ($('delete_node_button').hasClassName('disabled')) {
+                return false;
+            }
             if (!$('node_id').value) {
                 return;
             }
@@ -495,6 +622,12 @@
                 }
 
                 this.pageGridLoad();
+            }
+        },
+
+        checkCheckboxes: function(grid, element, checked) {
+            if (element.disabled) {
+                element.checked = false;
             }
         },
 
@@ -548,7 +681,7 @@
         resetFieldSet: function(id) {
             var elems = Element.select(id, ['select', 'input', 'textarea']);
             elems.each(function (elem) {
-                if($(elem).tagName.toLowerCase() == 'select') {
+                if ($(elem).tagName.toLowerCase() == 'select') {
                     $(elem).selectedIndex = 0;
                 } else {
                     $(elem).value = '';
@@ -558,7 +691,8 @@
 
         resetMetadataFieldSet: function() {
             var defaultValue = '0';
-            var fields = ['meta_first_last','meta_next_previous','meta_cs_enabled','menu_visibility','menu_excluded'];
+            var fields = ['meta_first_last','meta_next_previous','meta_cs_enabled','menu_visibility','menu_excluded',
+                'top_menu_visibility', 'top_menu_excluded'];
             fields.each(function(e) {
                 $(e).value = defaultValue;
             });
@@ -578,9 +712,9 @@
 
                 if (save != undefined) {
                     if (save) {
-                        btn.down('span').update('<?php echo $this->getButtonSaveLabel() ?>');
+                        btn.down(2).update('<?php echo $this->getButtonSaveLabel() ?>');
                     } else {
-                        btn.down('span').update('<?php echo $this->getButtonUpdateLabel() ?>');
+                        btn.down(2).update('<?php echo $this->getButtonUpdateLabel() ?>');
                     }
                 }
             } else {
@@ -595,9 +729,10 @@
                 this.lastChangedNode = node;
             }
             this.dataModification = true;
-            if(!$('node_id').value) {
+            if (!$('node_id').value) {
                 this.saveButton(true, true);
             }
+            editForm.validator.validate();
         },
 
         // Navigation Menu Options List Type onChange callback
@@ -614,7 +749,7 @@
 
             var allowedTypes = this.menuListTypes[listType];
             this.addOptionToSelect('menu_list_type', '', '<?php echo $this->__('Default') ?>');
-            if(allowedTypes) {
+            if (allowedTypes) {
                 Object.keys(allowedTypes).each(function(k) {
                     this.addOptionToSelect('menu_list_type', k, allowedTypes[k]);
                 }.bind(this));
@@ -639,7 +774,9 @@
                 'menu_excluded',
                 'menu_levels_down',
                 'menu_ordered',
-                'menu_list_type'
+                'menu_list_type',
+                'top_menu_visibility',
+                'top_menu_excluded'
             ];
         },
 
@@ -651,12 +788,20 @@
 
         assignNodeMetadataToValues: function(node) {
             this.getMetadataFields().each(function(f) {
-                if ($(f) != undefined) {
+                var element = $(f);
+                if (typeof element != 'undefined') {
                     var value = node.attributes[f] != undefined ? node.attributes[f] : '';
-                    if($(f).tagName.toLowerCase() == 'select') {
-                        $(f).value = value;
+                    if (element.tagName.toLowerCase() == 'select') {
+                        if (typeof element.defaultValue == 'undefined') {
+                            element.defaultValue = element.value;
+                        }
+                        if (value == '') {
+                            element.value = element.defaultValue;
+                        } else {
+                            element.value = value;
+                        }
                     } else {
-                        $(f).value = (value == '0' ? '' : value);
+                        element.value = (value == '0' ? '' : value);
                     }
                 }
             }.bind(this));
@@ -676,12 +821,15 @@
         },
 
         toggleMetadataFieldset: function(switcher, fieldsetId) {
-            if($(fieldsetId) != undefined && $(switcher) != undefined) {
+            if ($(fieldsetId) != undefined && $(switcher) != undefined) {
                 var yes = '1'; // "Yes" value
                 var hidden = $(switcher).value != yes;
                 this.toggleFieldset($(switcher), $(fieldsetId), hidden);
-                if($(switcher).id == 'menu_visibility') {
+                if ($(switcher).id == 'menu_visibility') {
                     $('field_menu_excluded').hide();
+                }
+                if ($(switcher).id == 'top_menu_visibility') {
+                    $('field_top_menu_excluded').hide();
                 }
             }
         },
@@ -689,7 +837,7 @@
         toggleFieldset: function(switcher, container, hidden) {
             var elems = Element.select(container, ['select', 'input', 'textarea', 'button']);
             elems.each(function (elem) {
-                if(elem!=switcher) {
+                if (elem!=switcher) {
                     hidden ? elem.up(1).hide() : elem.up(1).show();
                 };
             });
@@ -710,13 +858,17 @@
             hasChilds ? this.showFieldSet('pager_fieldset') : this.hideFieldSet('pager_fieldset');
 
             var currentParent = (node != undefined ? node.parentNode : this.tree.getSelectionModel().getSelectedNode());
-            var hideMenuParams = (currentParent.id != '_root');
-            this.toggleFieldset(null, 'menu_fieldset', hideMenuParams);
+            var isRootParent = (currentParent.id == '_root');
+            this.toggleFieldset(null, 'menu_fieldset', !isRootParent);
 
-            if (hideMenuParams) {
+            if (!isRootParent) {
                 $('field_menu_excluded').show();
+                $('field_top_menu_excluded').show();
+                $('field_top_menu_visibility').hide();
             } else {
                 $('field_menu_excluded').hide();
+                $('field_top_menu_excluded').hide();
+                $('field_top_menu_visibility').show();
 
                 // render List Type drop-dawn
                 if (node != undefined) {
@@ -732,20 +884,31 @@
                 this.assignNodeMetadataToValues(node);
             }
 
-            if(!hideMenuParams) {
+            if (isRootParent) {
                 this.toggleMetadataFieldset('menu_visibility', 'menu_fieldset');
+                this.toggleMetadataFieldset('top_menu_visibility', 'top_menu_fieldset');
             }
 
             this.toggleMetadataFieldset('pager_visibility', 'pager_fieldset');
+
+            var pagerVisibility = $('pager_visibility');
+            if (isRootParent) {
+                if (pagerVisibility.down().selected) {
+                    pagerVisibility.down(2).selected=true;
+                }
+                pagerVisibility.down().hide();
+            } else {
+                pagerVisibility.down().show();
+            }
         },
 
         addOptionToSelect: function(selectId, optionValue, optionText) {
             // select element not found
-            if($(selectId) == undefined) {
+            if ($(selectId) == undefined) {
                 return false;
             }
             // option already exists
-            if($(selectId).down('option[value="' + optionValue + '"]') != undefined) {
+            if ($(selectId).down('option[value="' + optionValue + '"]') != undefined) {
                 return false;
             }
 
@@ -761,7 +924,7 @@
         removeOptionFromSelect: function (selectId, optionValue) {
             var option = $(selectId).down('option[value="' + optionValue + '"]');
             // option doesn't exist
-            if(option == undefined) {
+            if (option == undefined) {
                 return false;
             }
             option.remove();
@@ -771,10 +934,6 @@
     Ext.onReady(hierarchyNodes.initialize.bind(hierarchyNodes));
     //]]>
 
-    <?php if ($this->isLockedByMe()):?>
-        var timeOut = <?php echo $this->getLockLifetime(); ?> - 60;
-        setTimeout("alert('<?php echo $this->jsQuoteEscape($this->getLockAlertMessage());?>')", timeOut * 1000);
-    <?php endif;?>
     </script>
     <br />
     <div id="cms_page_grid_container">

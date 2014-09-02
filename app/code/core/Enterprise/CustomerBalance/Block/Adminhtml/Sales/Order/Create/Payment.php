@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -123,5 +123,16 @@ extends Mage_Core_Block_Template
                 ->loadByCustomer();
         }
         return $this->_balanceInstance;
+    }
+
+    /**
+     * Whether customer store credit balance could be used
+     *
+     * @return bool
+     */
+    public function canUseCustomerBalance()
+    {
+        $quote = $this->_getOrderCreateModel()->getQuote();
+        return $this->getBalance() && ($quote->getBaseGrandTotal() + $quote->getBaseCustomerBalanceAmountUsed() > 0);
     }
 }

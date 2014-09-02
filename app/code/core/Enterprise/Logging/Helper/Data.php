@@ -20,12 +20,16 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Logging helper
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Logging
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_Logging_Helper_Data extends Mage_Core_Helper_Abstract
 {
@@ -53,5 +57,16 @@ class Enterprise_Logging_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
         return implode($glue, $result);
+    }
+
+    /**
+     * Get translated label by logging action name
+     *
+     * @param string $action
+     * @return string
+     */
+    public function getLoggingActionTranslatedLabel($action)
+    {
+        return Mage::getSingleton('enterprise_logging/config')->getActionLabel($action);
     }
 }

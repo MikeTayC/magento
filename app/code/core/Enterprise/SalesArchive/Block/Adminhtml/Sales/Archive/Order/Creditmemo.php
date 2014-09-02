@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_SalesArchive
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -29,11 +29,12 @@
  *
  */
 
-class Enterprise_SalesArchive_Block_Adminhtml_Sales_Archive_Order_Creditmemo extends Enterprise_SalesArchive_Block_Adminhtml_Sales_Archive_Order_Container
+class Enterprise_SalesArchive_Block_Adminhtml_Sales_Archive_Order_Creditmemo
+    extends Enterprise_SalesArchive_Block_Adminhtml_Sales_Archive_Order_Container
 {
     protected function _construct()
     {
         $this->_controller = 'sales_creditmemo';
-        $this->_headerText = Mage::helper('enterprise_salesarchive')->__('Creditmemos Archive');
+        $this->_headerText = Mage::helper('enterprise_salesarchive')->__('Credit Memos Archive');
     }
 }

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCard
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -163,12 +163,14 @@ class Enterprise_GiftCard_Model_Resource_Indexer_Price extends Mage_Catalog_Mode
 
         $select->group(array('e.entity_id', 'cg.customer_group_id', 'cw.website_id'))
             ->columns(array(
-                'price'         => new Zend_Db_Expr('NULL'),
-                'final_price'   => $priceExpr,
-                'min_price'     => $priceExpr,
-                'max_price'     => new Zend_Db_Expr('NULL'),
-                'tier_price'    => new Zend_Db_Expr('NULL'),
-                'base_tier'     => new Zend_Db_Expr('NULL'),
+                'price'            => new Zend_Db_Expr('NULL'),
+                'final_price'      => $priceExpr,
+                'min_price'        => $priceExpr,
+                'max_price'        => new Zend_Db_Expr('NULL'),
+                'tier_price'       => new Zend_Db_Expr('NULL'),
+                'base_tier'        => new Zend_Db_Expr('NULL'),
+                'group_price'      => new Zend_Db_Expr('NULL'),
+                'base_group_price' => new Zend_Db_Expr('NULL'),
             ));
 
         if (!is_null($entityIds)) {

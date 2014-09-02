@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -68,7 +68,7 @@ abstract class Enterprise_TargetRule_Block_Product_Abstract extends Mage_Catalog
      *
      * @return int
      */
-    abstract public function getType();
+    abstract public function getProductListType();
 
     /**
      * Retrieve Maximum Number Of Product
@@ -133,7 +133,7 @@ abstract class Enterprise_TargetRule_Block_Product_Abstract extends Mage_Catalog
             if ($this->_linkCollection) {
                 // Perform rotation mode
                 $select = $this->_linkCollection->getSelect();
-                $rotationMode = $this->getTargetRuleHelper()->getRotationMode($this->getType());
+                $rotationMode = $this->getTargetRuleHelper()->getRotationMode($this->getProductListType());
                 if ($rotationMode == Enterprise_TargetRule_Model_Rule::ROTATION_SHUFFLE) {
                     Mage::getResourceSingleton('enterprise_targetrule/index')->orderRand($select);
                 } else {
@@ -169,7 +169,7 @@ abstract class Enterprise_TargetRule_Block_Product_Abstract extends Mage_Catalog
      */
     public function isShuffled()
     {
-        $rotationMode = $this->getTargetRuleHelper()->getRotationMode($this->getType());
+        $rotationMode = $this->getTargetRuleHelper()->getRotationMode($this->getProductListType());
         return $rotationMode == Enterprise_TargetRule_Model_Rule::ROTATION_SHUFFLE;
     }
 

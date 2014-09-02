@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -113,7 +113,9 @@ class Enterprise_Staging_Block_Adminhtml_Staging_Edit_Tabs_Website extends Mage_
                     )
                 );
                 if ($stagingWebsite->getStoresCount() > 0) {
-                    $element->setRenderer($this->getLayout()->createBlock('enterprise_staging/adminhtml_widget_form_renderer_fieldset_link'));
+                    $element->setRenderer($this->getLayout()->createBlock(
+                        'enterprise_staging/adminhtml_widget_form_renderer_fieldset_link'
+                    ));
                 }
 
                 $element = $fieldset->addField('staging_website_base_secure_url_'.$_id, 'label',
@@ -124,7 +126,9 @@ class Enterprise_Staging_Block_Adminhtml_Staging_Edit_Tabs_Website extends Mage_
                     )
                 );
                 if ($stagingWebsite->getStoresCount() > 0) {
-                    $element->setRenderer($this->getLayout()->createBlock('enterprise_staging/adminhtml_widget_form_renderer_fieldset_link'));
+                    $element->setRenderer($this->getLayout()->createBlock(
+                        'enterprise_staging/adminhtml_widget_form_renderer_fieldset_link'
+                    ));
                 }
 
                 $fieldset->addField('staging_website_id_'.$_id, 'hidden',
@@ -139,7 +143,8 @@ class Enterprise_Staging_Block_Adminhtml_Staging_Edit_Tabs_Website extends Mage_
                     array(
                         'label'    => Mage::helper('enterprise_staging')->__('Staging Website Code'),
                         'name'     => "websites[{$_id}][code]",
-                        'value'    => Mage::helper('enterprise_staging/website')->generateWebsiteCode($masterWebsite->getCode()),
+                        'value'    =>
+                            Mage::helper('enterprise_staging/website')->generateWebsiteCode($masterWebsite->getCode()),
                         'required' => true
                     )
                 );
@@ -148,7 +153,8 @@ class Enterprise_Staging_Block_Adminhtml_Staging_Edit_Tabs_Website extends Mage_
                     array(
                         'label'    => Mage::helper('enterprise_staging')->__('Staging Website Name'),
                         'name'     => "websites[{$_id}][name]",
-                        'value'    => $masterWebsite->getName() .' '. Mage::helper('enterprise_staging')->__('(Staging Copy)'),
+                        'value'    => $masterWebsite->getName() . ' '
+                            . Mage::helper('enterprise_staging')->__('(Staging Copy)'),
                         'required' => true
                     )
                 );
@@ -182,7 +188,8 @@ class Enterprise_Staging_Block_Adminhtml_Staging_Edit_Tabs_Website extends Mage_
                 'label'     => Mage::helper('enterprise_staging')->__('Frontend Restriction'),
                 'title'     => Mage::helper('enterprise_staging')->__('Frontend Restriction'),
                 'name'      => "websites[{$_id}][visibility]",
-                'value'     => $stagingWebsite ? $stagingWebsite->getVisibility() : Enterprise_Staging_Model_Staging_Config::VISIBILITY_REQUIRE_HTTP_AUTH,
+                'value'     => $stagingWebsite ? $stagingWebsite->getVisibility()
+                    : Enterprise_Staging_Model_Staging_Config::VISIBILITY_REQUIRE_HTTP_AUTH,
                 'options'   => Mage::getSingleton('enterprise_staging/staging_config')->getVisibilityOptionArray()
             ));
 
@@ -202,7 +209,8 @@ class Enterprise_Staging_Block_Adminhtml_Staging_Edit_Tabs_Website extends Mage_
                     'class'    => 'input-text validate-password',
                     'name'     => "websites[{$_id}][master_password]",
                     'required' => true,
-                    'value'    => $stagingWebsite ? Mage::helper('core')->decrypt($stagingWebsite->getMasterPassword()) : ''
+                    'value'    => $stagingWebsite ? Mage::helper('core')->decrypt($stagingWebsite->getMasterPassword())
+                        : ''
                 )
             );
 
@@ -404,7 +412,7 @@ class Enterprise_Staging_Block_Adminhtml_Staging_Edit_Tabs_Website extends Mage_
      */
     protected function _initStoreView($fieldset, $storeView, $stagingWebsite = null)
     {
-        $_shift = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+        $_shift = str_repeat(' ', 6);
         if (!$stagingWebsite) {
             $_id        = $storeView->getId();
             $websiteId  = $storeView->getWebsiteId();

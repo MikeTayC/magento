@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 var AdminRma = new Class.create();
@@ -42,12 +42,9 @@ AdminRma.prototype = {
         this.reloadResponder        = new Object({onComplete: this.doAddSelectedProduct.bind(this)});
     },
 
-    getRowIdByClick : function(event){
-        if ($(event.srcElement) == undefined) {
-            var trElement = Event.findElement(event,'tr');
-        } else {
-            var trElement = $(event.srcElement).up('tr');
-        }
+    getRowIdByClick : function(event) {
+        var trElement = $(event.srcElement) == undefined ? Event.findElement(event, 'tr')
+            : $(event.srcElement).up('tr');
         this.formId = trElement.up('form').id;
         return trElement.down('input.rowId').value;
     },
@@ -73,7 +70,7 @@ AdminRma.prototype = {
         Event.observe($(divId).down('button.ok_button'), 'click', function(){$('rma_reason_container').hide();$('popup-window-mask').hide()});
         $$('input[type="hidden"]').each(function(element){
             if (element.name == 'items[' + itemId + '][reason_other]') {
-                $(divId).down('div#rma_reason_content').innerHTML = element.value;
+                $(divId).down('div#rma_reason_content').innerHTML = element.value.escapeHTML();
             }
         });
         this.showPopup(divId);
@@ -114,36 +111,28 @@ AdminRma.prototype = {
                     }
                 });
 
-                this.addPopupDivButtonsBindnigs(divId);
+                this.addPopupDivButtonsBindings(divId);
                 this.showPopup(divId);
             }.bind(this)
         });
     },
 
-    addPopupDiv: function(response, divId, itemId){
-        if ($('h' + itemId)) {
-            var parentTd = $('h' + itemId).up('td');
-        } else {
-            var parentTd = $('id_'+itemId).childElements().last();
-        }
+    addPopupDiv: function(response, divId, itemId) {
+        var parentTd = $('h' + itemId) ? $('h' + itemId).up('td') : $('id_' + itemId).childElements().last();
         parentTd.insert({
             top: new Element('div', {id: divId}).update(response).addClassName('rma-popup')
         });
     },
 
-    addPopupDivButtonsBindnigs: function(divId) {
+    addPopupDivButtonsBindings: function(divId) {
         Event.observe($(divId).down('button.ok_button'), 'click', this.okButtonClick.bind(this, divId));
         Event.observe($(divId).down('button.cancel_button'), 'click', this.cancelButtonClick.bind(this));
     },
 
     okButtonClick: function(divId) {
-        var itemId = divId.replace('itemDiv_', '');
+        var itemId = divId.replace('itemDiv_', ''),
+            parentTd = $('h' + itemId) ? $('h' + itemId).up('td') : $('id_'+itemId).childElements().last();
 
-        if ($('h' + itemId)) {
-            var parentTd = $('h' + itemId).up('td');
-        } else {
-            var parentTd = $('id_'+itemId).childElements().last();
-        }
         parentTd.descendants().each(function(element) {
             if (element.hasClassName('attrsValues')) {
                 element.remove()
@@ -157,7 +146,6 @@ AdminRma.prototype = {
     },
 
     showPopup: function(divId) {
-        //this.hidePopups();
         $(divId).show().setStyle({
             'marginTop': -$(divId).getDimensions().height / 2 + 'px'
         });
@@ -170,14 +158,13 @@ AdminRma.prototype = {
         $('details_container').childElements().each(Element.hide);
         $$('.rma-popup').each(Element.hide);
         $('popup-window-mask').hide();
-        //this.windowMask.hide();
     },
 
-    itemSplitLineRowClick : function(event){
-        var itemId = this.getRowIdByClick(event);
-        var url = this.loadSplitLineUrl + 'item_id/' + itemId + '?isAjax=true';
+    itemSplitLineRowClick : function(event) {
+        var itemId = this.getRowIdByClick(event),
+            url = this.loadSplitLineUrl + 'item_id/' + itemId + '?isAjax=true',
+            divId = 'grid_result_' + itemId;
 
-        var divId = 'grid_result_' + itemId;
         if ($(divId)) {
             this.splitLine(this, divId, itemId)
         } else {
@@ -189,7 +176,7 @@ AdminRma.prototype = {
                     });
                     $(divId).select('input[type="file"]').each(function(file) {
                         file.name = file.name + '_' + itemId;
-                    })
+                    });
                     this.splitLine(this, divId, itemId);
                 }.bind(this)
             });
@@ -197,38 +184,26 @@ AdminRma.prototype = {
     },
 
     splitLine: function(obj, divId, itemId) {
-        var tr = $(divId).down('tbody').down('tr');
-
-        var trO = $('rma_info_tabs_items_section_content').select('input');
-        var childId = 'h' + itemId;
-        var trOld = trO[0];
-        trO.each(function(child) {
-            if (child.id == childId) {
-                trOld = child;
-            }
-        });
-        if (trOld) {
-            trOld = trOld.up('tr');
-        } else {
+        var hiddenForItem = $('rma_info_tabs_items_section_content').select('#h' + itemId)[0];
+        if (!hiddenForItem) {
             return false;
         }
 
-        var d = new Date();
-        var timeSuffix = d.getTime();
-        trOld.id = 'old_tr_' + timeSuffix;
-        var trId = 'new_tr_' + timeSuffix;
-        trOld.update(tr.innerHTML);
+        var timeSuffix = new Date().getTime(),
+            trSplit = hiddenForItem.up('tr'),
+            trAdded = new Element('tr', {id: 'new_tr_' + timeSuffix,
+                'class': trSplit.hasClassName('even') ? 'pointer' : 'pointer even'
+            });
 
-        var trClass = 'pointer';
-        if (!trOld.hasClassName('even')) {
-            trClass += ' even'
-        }
-        trOld.insert({
-            after: new Element('tr', {id: trId}).addClassName(trClass).insert(tr.innerHTML)
-        })
+        trSplit.id = 'old_tr_' + timeSuffix;
 
-        $(trId).descendants().each(function(element){
-            if ((element.tagName.toLowerCase() == 'input') || (element.tagName.toLowerCase() == 'select')) {
+        // replace <script to avoid evalScripts() execution, <tr>.innerHTML assignment does not work in IE8 properly
+        var escapedHTML = $(divId).down('tbody').down('tr').innerHTML.replace(/<(\/?)script/g, '&lt;$1script');
+        trSplit.update(escapedHTML);
+        trSplit.insert({after: trAdded.insert(escapedHTML)});
+
+        trAdded.descendants().each(function(element){
+            if (element.tagName.toLowerCase() == 'input' || element.tagName.toLowerCase() == 'select') {
                 element.name = element.name.replace('[' + itemId + ']', '[' + itemId + '_' + timeSuffix + ']');
                 if (element.id == 'h' + itemId) {
                     element.id = 'h' + itemId + '_' + timeSuffix;
@@ -237,10 +212,9 @@ AdminRma.prototype = {
                     element.value = '';
                 }
             }
-            if ((element.tagName.toLowerCase() == 'a') && (element.hasClassName('item_split_line'))) {
-                var deleteLink = new Element('a', {href:'#'}).addClassName('item_delete_line').update(obj.deleteLineLabel);
+            if (element.tagName.toLowerCase() == 'a' && element.hasClassName('item_split_line')) {
+                var deleteLink = new Element('a', {href: '#', 'class': 'item_delete_line'}).update(obj.deleteLineLabel);
                 element.replace(deleteLink);
-
             }
         })
 
@@ -256,8 +230,11 @@ AdminRma.prototype = {
                     this.hidePopups();
                     var realThis = this;
                     $(detailsDivId).descendants().each(function(element){
-                        if ((element.tagName.toLowerCase() == 'input') || (element.tagName.toLowerCase() == 'select') || (element.tagName.toLowerCase() == 'textarea')) {
-                            if (!((element.tagName.toLowerCase() == 'input') && (element.type == 'file'))) {
+                        if (element.tagName.toLowerCase() == 'input'
+                            || element.tagName.toLowerCase() == 'select'
+                            || element.tagName.toLowerCase() == 'textarea'
+                        ) {
+                            if (!(element.tagName.toLowerCase() == 'input' && element.type == 'file')) {
                                 element.name = realThis.nameTransformation(element, itemId);
                             }
                         }
@@ -269,8 +246,8 @@ AdminRma.prototype = {
                     $(newDetailsDivId).select('input[type="file"]').each(function(file) {
                         file.name = file.name + '_' + itemId + '_' + timeSuffix;
                     });
-                    this.addPopupDivButtonsBindnigs(detailsDivId);
-                    this.addPopupDivButtonsBindnigs(newDetailsDivId);
+                    this.addPopupDivButtonsBindings(detailsDivId);
+                    this.addPopupDivButtonsBindings(newDetailsDivId);
                 }.bind(this)
             });
         } else {
@@ -279,10 +256,12 @@ AdminRma.prototype = {
                 file.name = file.name + '_' + itemId + '_' + timeSuffix;
             })
         }
-        Event.observe(trOld.down('a.item_details'), 'click', this.itemDetailsRowClick.bind(this));
-        Event.observe(trOld.down('a.item_split_line'), 'click', this.itemSplitLineRowClick.bind(this));
-        Event.observe($(trId).down('a.item_details'), 'click', this.itemDetailsRowClick.bind(this, newDetailsDivId));
-        Event.observe($(trId).down('a.item_delete_line'), 'click', this.deleteRowById.bind(this, trId, newDetailsDivId));
+
+        Event.observe(trSplit.down('a.item_details'), 'click', this.itemDetailsRowClick.bind(this));
+        Event.observe(trSplit.down('a.item_split_line'), 'click', this.itemSplitLineRowClick.bind(this));
+        Event.observe(trAdded.down('a.item_details'), 'click', this.itemDetailsRowClick.bind(this, newDetailsDivId));
+        Event.observe(trAdded.down('a.item_delete_line'), 'click', this.deleteRowById.bind(this, trAdded.id, newDetailsDivId));
+
         var obj = this;
         $$('select.reason').findAll(function(obj) {
            return (obj.name == 'items[' + itemId + '][reason]'
@@ -294,16 +273,12 @@ AdminRma.prototype = {
     },
 
     copyDetailsData: function(detailsDivId, newDetailsDivId, itemId, timeSuffix) {
+        var parentTd = $('h' + itemId) ? $('h' + itemId + '_' + timeSuffix).up('td')
+            : $('id_'+itemId + '_' + timeSuffix).childElements().last(),
+            newDiv = new Element('div', {id: newDetailsDivId, 'class': $(detailsDivId).className});
 
-        if ($('h' + itemId)) {
-            var parentTd = $('h' + itemId + '_' + timeSuffix).up('td');
-        } else {
-            var parentTd = $('id_'+itemId + '_' + timeSuffix).childElements().last();
-        }
-
-        parentTd.insert({
-            top: new Element('div', {id: newDetailsDivId}).update($(detailsDivId).innerHTML).addClassName($(detailsDivId).className)
-        });
+        newDiv.innerHTML = $(detailsDivId).innerHTML; // not update() to avoid evalScripts() execution
+        parentTd.insert({top: newDiv});
 
         $(newDetailsDivId).descendants().each(function(element){
             if ((element.tagName.toLowerCase() == 'input') || (element.tagName.toLowerCase() == 'select')) {
@@ -314,8 +289,8 @@ AdminRma.prototype = {
             }
         })
 
-        this.addPopupDivButtonsBindnigs(detailsDivId);
-        this.addPopupDivButtonsBindnigs(newDetailsDivId);
+        this.addPopupDivButtonsBindings(detailsDivId);
+        this.addPopupDivButtonsBindings(newDetailsDivId);
         this.okButtonClick(newDetailsDivId)
     },
 
@@ -360,7 +335,6 @@ AdminRma.prototype = {
     },
 
     doAddSelectedProduct : function(event) {
-        var order_items_grid_table = $('order_items_grid_table');
         var items = $$('#order_items_grid_table .checkbox');
         var selected_items = [];
         var _rma = this;
@@ -420,28 +394,24 @@ AdminRma.prototype = {
 
         var newRmaItemId = this.newRmaItemId
 
-        var tb;
-        if(tableRma.down('tbody.newRma')) {
-            tb = tableRma.down('tbody.newRma');
-        }else{
-            var tb = new Element('tbody').addClassName('newRma');
+        var tbody = tableRma.down('tbody.newRma');
+        if (!tbody) {
+            tbody = new Element('tbody').addClassName('newRma');
         }
-        var row = new Element('tr',{id: 'id_'+newRmaItemId});
-        row.addClassName(className?'even':'odd');
 
-        var tableRma = $('rma_items_grid_table');
+        var row = new Element('tr', {id: 'id_' + newRmaItemId, 'class': className ? 'even' : 'odd'});
 
-        fieldsProduct.each(function (el,i) {
+        fieldsProduct.each(function(el,i) {
             var column = new Element('td');
             var data = '';
             if (orderItem[el]) {
                 data = orderItem[el];
             } else {
                 data = $('rma_properties_' + el);
-                if (data){
+                if (data) {
                     data = $(data).cloneNode(true);
-                    data.name   = 'items[' + newRmaItemId + '][' + data.name + ']';
-                    data.id     = data.id + '_' + newRmaItemId;
+                    data.name = 'items[' + newRmaItemId + '][' + data.name + ']';
+                    data.id   = data.id + '_' + newRmaItemId;
                     data.addClassName('required-entry');
                 }
             }
@@ -449,8 +419,7 @@ AdminRma.prototype = {
             //adding reason other
             if (el == 'reason') {
                 Event.observe($(data), 'change', rma.reasonChanged.bind(rma));
-
-                data_other = $('rma_properties_reason_other');
+                var data_other = $('rma_properties_reason_other');
                 data_other = $(data_other).cloneNode(true);
                 data_other.name   = 'items[' + newRmaItemId + '][' + data_other.name + ']';
                 data_other.setStyle({display:'none'});
@@ -464,7 +433,6 @@ AdminRma.prototype = {
         Event.observe(deleteLink, 'click', this.deleteRow.bind(this));
         deleteLink.insert($$('label[for="rma_properties_delete_link"]').first().innerHTML);
         column.insert(deleteLink);
-
         column.insert('<span class="separator">|</span>');
 
         var detailsLink = new Element('a', {href:'#'});
@@ -473,7 +441,7 @@ AdminRma.prototype = {
         column.insert(detailsLink);
         column.insert('<input type="hidden" name="items[' + this.newRmaItemId + '][order_item_id]" value="'+orderItem['item_id']+'"/>');
         row.insert(column);
-        tableRma.insert(tb.insert(row));
+        tableRma.insert(tbody.insert(row));
         this.newRmaItemId++;
     },
 
@@ -740,11 +708,9 @@ AdminRma.prototype = {
         var rma = this;
         new Ajax.Request(url, {
             onSuccess: function(transport) {
-                if (transport.responseText.isJSON()) {
-                    var response = transport.responseText.evalJSON();
-                } else {
-                    var response = transport.responseText;
-                }
+                var response = transport.responseText.isJSON() ? transport.responseText.evalJSON()
+                    : transport.responseText;
+
                 packaging = new Packaging(response);
                 packaging.showWindow();
 

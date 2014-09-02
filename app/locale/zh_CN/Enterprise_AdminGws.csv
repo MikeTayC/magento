@@ -3,6 +3,7 @@
 "An order cannot be created in disallowed store.","无法在不允许的店铺中创建订单。"
 "Custom","自定义"
 "None","无"
+"Not enough permissions to delete this item(s): %s.","无删除此项目所需的权限：%s。"
 "Not enough permissions to delete this item.","没有删除该项目所需的权限。"
 "Not enough permissions to save specified Combination of Store Scopes.","没有保存所指定店铺范围组合的权限。"
 "Not enough permissions to save this item.","没有保存该项目所需的权限。"

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -35,9 +35,7 @@ class Enterprise_GiftRegistry_Block_Customer_Items extends Mage_Catalog_Block_Pr
      */
     public function getFormHeader()
     {
-        return Mage::helper('enterprise_giftregistry')->__('View Gift Registry %s',
-            $this->getEntity()->getTitle()
-        );
+        return Mage::helper('enterprise_giftregistry')->__('View Gift Registry %s', $this->getEntity()->getTitle());
     }
 
     /**

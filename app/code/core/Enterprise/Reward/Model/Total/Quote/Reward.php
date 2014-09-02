@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -63,7 +63,7 @@ class Enterprise_Reward_Model_Total_Quote_Reward extends Mage_Sales_Model_Quote_
             $quote->setRewardPointsTotalReseted(true);
         }
 
-        if ($address->getBaseGrandTotal() && $quote->getCustomer()->getId() && $quote->getUseRewardPoints()) {
+        if ($address->getBaseGrandTotal() >= 0 && $quote->getCustomer()->getId() && $quote->getUseRewardPoints()) {
             /* @var $reward Enterprise_Reward_Model_Reward */
             $reward = $quote->getRewardInstance();
             if (!$reward || !$reward->getId()) {

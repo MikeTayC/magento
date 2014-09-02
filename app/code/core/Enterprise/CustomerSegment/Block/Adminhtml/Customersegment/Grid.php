@@ -20,20 +20,22 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
- * Customer Segment grid
+ * Customer Segments Grid
  *
- * @category   Enterprise
- * @package    Enterprise_CustomerSegment
+ * @category Enterprise
+ * @package Enterprise_CustomerSegment
+ * @author Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_CustomerSegment_Block_Adminhtml_Customersegment_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     /**
-     * Intialize grid
+     * Initialize grid
+     * Set sort settings
      */
     public function __construct()
     {
@@ -46,20 +48,24 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Customersegment_Grid extends Ma
     }
 
     /**
-     * Instantiate and prepare collection
+     * Add websites to customer segments collection
+     * Set collection
      *
      * @return Enterprise_CustomerSegment_Block_Adminhtml_Customersegment_Grid
      */
     protected function _prepareCollection()
     {
+        /** @var $collection Enterprise_CustomerSegment_Model_Mysql4_Segment_Collection */
         $collection = Mage::getModel('enterprise_customersegment/segment')->getCollection();
         $collection->addWebsitesToResult();
         $this->setCollection($collection);
-        return parent::_prepareCollection();
+
+        parent::_prepareCollection();
+        return $this;
     }
 
     /**
-     * Prepare columns for grid
+     * Add grid columns
      *
      * @return Enterprise_CustomerSegment_Block_Adminhtml_Customersegment_Grid
      */
@@ -68,14 +74,14 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Customersegment_Grid extends Ma
         // this column is mandatory for the chooser mode. It needs to be first
         $this->addColumn('grid_segment_id', array(
             'header'    => Mage::helper('enterprise_customersegment')->__('ID'),
-            'align'     =>'right',
+            'align'     => 'right',
             'width'     => 50,
             'index'     => 'segment_id',
         ));
 
         $this->addColumn('grid_segment_name', array(
             'header'    => Mage::helper('enterprise_customersegment')->__('Segment Name'),
-            'align'     =>'left',
+            'align'     => 'left',
             'index'     => 'name',
         ));
 
@@ -94,7 +100,7 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Customersegment_Grid extends Ma
         if (!Mage::app()->isSingleStoreMode()) {
             $this->addColumn('grid_segment_website', array(
                 'header'    => Mage::helper('enterprise_customersegment')->__('Website'),
-                'align'     =>'left',
+                'align'     => 'left',
                 'index'     => 'website_ids',
                 'type'      => 'options',
                 'sortable'  => false,
@@ -103,13 +109,15 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Customersegment_Grid extends Ma
             ));
         }
 
-        return parent::_prepareColumns();
+        parent::_prepareColumns();
+        return $this;
     }
 
     /**
-     * Return url for current row
+     * Retrieve row click URL
      *
-     * @param Enterprise_CustomerSegment_Model_Segment $row
+     * @param Varien_Object $row
+     *
      * @return string
      */
     public function getRowUrl($row)
@@ -121,7 +129,7 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Customersegment_Grid extends Ma
     }
 
     /**
-     * Row click javasctipt callback getter
+     * Row click javascript callback getter
      *
      * @return string
      */

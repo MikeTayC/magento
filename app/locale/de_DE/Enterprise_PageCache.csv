@@ -5,3 +5,4 @@
 "Full Page Cache Settings","Cache-Einstellungen für Ganze Seite"
 "Max. Allowed Page Depth","Max. Erlaubte Seitentiefe"
 "Max. Cache Size (Mb)","Max. Cache Größe (Mb) "
+"Note that to fully restrict cookies, full page caching must be disabled as well.","Beachten Sie, dass auch Page-Caching deaktiviert sein muss, um Cookies vollständig einschränken zu können."

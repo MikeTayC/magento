@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -103,6 +103,30 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Combine_History
     }
 
     /**
+     * Set rule instance
+     *
+     * Modify value_option array if needed
+     *
+     * @param Mage_Rule_Model_Rule $rule
+     * @return Enterprise_CustomerSegment_Model_Segment_Condition_Product_Combine_History
+     */
+    public function setRule($rule)
+    {
+        $this->setData('rule', $rule);
+        if ($rule instanceof Enterprise_CustomerSegment_Model_Segment && $rule->getApplyTo() !== null) {
+            $option = $this->loadValueOptions()->getValueOption();
+            $applyTo = $rule->getApplyTo();
+            if (Enterprise_CustomerSegment_Model_Segment::APPLY_TO_VISITORS == $applyTo) {
+                unset($option[self::ORDERED]);
+            } elseif (Enterprise_CustomerSegment_Model_Segment::APPLY_TO_VISITORS_AND_REGISTERED == $applyTo) {
+                $option[self::VIEWED] .= '*';
+            }
+            $this->setValueOption($option);
+        }
+        return $this;
+    }
+
+    /**
      * Get input type for attribute value.
      *
      * @return string
@@ -135,8 +159,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Combine_History
     public function asHtml()
     {
         return $this->getTypeElementHtml()
-            . Mage::helper('enterprise_customersegment')->__('If Product %s %s and matches %s of these Conditions:',
-                $this->getOperatorElementHtml(), $this->getValueElementHtml(), $this->getAggregatorElement()->getHtml())
+            . Mage::helper('enterprise_customersegment')->__('If Product %s %s and matches %s of these Conditions:', $this->getOperatorElementHtml(), $this->getValueElementHtml(), $this->getAggregatorElement()->getHtml())
             . $this->getRemoveLinkHtml();
     }
 
@@ -170,7 +193,12 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Combine_History
                     array('item' => $this->getResource()->getTable('reports/viewed_product_index')),
                     array(new Zend_Db_Expr(1))
                 );
-                $select->where($this->_createCustomerFilter($customer, 'item.customer_id'));
+                if ($customer) {
+                    // Leave ability to check this condition not only by customer_id but also by quote_id
+                    $select->where('item.customer_id = :customer_id OR item.visitor_id = :visitor_id');
+                } else {
+                    $select->where($this->_createCustomerFilter($customer, 'item.customer_id'));
+                }
                 $this->_limitByStoreWebsite($select, $website, 'item.store_id');
                 break;
         }

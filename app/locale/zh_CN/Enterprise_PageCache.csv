@@ -5,3 +5,4 @@
 "Full Page Cache Settings","完整页面缓存设置"
 "Max. Allowed Page Depth","最大允许的页面深度"
 "Max. Cache Size (Mb)","最大缓存容量（Mb)"
+"Note that to fully restrict cookies, full page caching must be disabled as well.","请注意，为了完全限制 Cookie，必须同时禁用全页面缓存。"

@@ -20,12 +20,14 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
 
 <?php $_product = $this->getProduct() ?>
 <?php if ($_product->isSaleable() && $this->hasOptions()):?>
-    <button class="button btn-gr btn-cart" onclick="Enterprise.Bundle.start();" type="button"><span><span><?php echo $this->__('Customize and Add to Gift Registry'); ?></span></span></button>
+    <div>
+        <button class="button btn-gr btn-cart" onclick="Enterprise.Bundle.start();" type="button"><span><span><?php echo $this->__('Customize and Add to Gift Registry'); ?></span></span></button>
+    </div>
 <?php endif;?>

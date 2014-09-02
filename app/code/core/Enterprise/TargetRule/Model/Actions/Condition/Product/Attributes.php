@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -135,14 +135,7 @@ class Enterprise_TargetRule_Model_Actions_Condition_Product_Attributes
      */
     public function asHtml()
     {
-        return Mage::helper('enterprise_targetrule')->__('Product %s%s%s%s%s%s%s',
-            $this->getTypeElementHtml(),
-            $this->getAttributeElementHtml(),
-            $this->getOperatorElementHtml(),
-            $this->getValueTypeElementHtml(),
-            $this->getValueElementHtml(),
-            $this->getRemoveLinkHtml(),
-            $this->getChooserContainerHtml());
+        return Mage::helper('enterprise_targetrule')->__('Product %s%s%s%s%s%s%s', $this->getTypeElementHtml(), $this->getAttributeElementHtml(), $this->getOperatorElementHtml(), $this->getValueTypeElementHtml(), $this->getValueElementHtml(), $this->getRemoveLinkHtml(), $this->getChooserContainerHtml());
     }
 
     /**

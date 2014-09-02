@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -105,7 +105,7 @@
                 <totals>
                     <reward>
                         <class>enterprise_reward/total_quote_reward</class>
-                        <after>wee,discount,tax,tax_subtotal,grand_total</after>
+                        <after>weee,discount,tax,tax_subtotal,grand_total</after>
                         <before>giftcardaccount,customerbalance</before>
                         <renderer>enterprise_reward/checkout_total</renderer>
                     </reward>
@@ -115,6 +115,8 @@
                 <totals>
                     <reward>
                         <class>enterprise_reward/total_invoice_reward</class>
+                        <after>grand_total</after>
+                        <before>giftcardaccount,customerbalance</before>
                     </reward>
                 </totals>
             </order_invoice>
@@ -122,6 +124,7 @@
                 <totals>
                     <reward>
                         <class>enterprise_reward/total_creditmemo_reward</class>
+                        <after>weee,discount,tax,grand_total,customerbalance,giftcardaccount</after>
                     </reward>
                 </totals>
             </order_creditmemo>

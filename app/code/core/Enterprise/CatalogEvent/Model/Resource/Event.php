@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogEvent
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -60,7 +60,7 @@ class Enterprise_CatalogEvent_Model_Resource_Event extends Mage_Core_Model_Resou
         $this->_init('enterprise_catalogevent/event', 'event_id');
         $this->addUniqueField(
             array(
-                'field' => 'category_id' , 
+                'field' => 'category_id' ,
                 'title' => Mage::helper('enterprise_catalogevent')->__('Event for selected category'))
         );
     }
@@ -203,7 +203,7 @@ class Enterprise_CatalogEvent_Model_Resource_Event extends Mage_Core_Model_Resou
         );
 
         $write = $this->_getWriteAdapter();
-        $write->delete($this->getTable('event_image'), $where);
+        $write->delete($this->getTable('enterprise_catalogevent/event_image'), $where);
 
         if ($object->getImage() !== null) {
             $data = array(
@@ -212,7 +212,7 @@ class Enterprise_CatalogEvent_Model_Resource_Event extends Mage_Core_Model_Resou
                     'image'    => $object->getImage()
             );
 
-            $write->insert($this->getTable('event_image'), $data);
+            $write->insert($this->getTable('enterprise_catalogevent/event_image'), $data);
         }
         return parent::_afterSave($object);
     }
@@ -227,7 +227,7 @@ class Enterprise_CatalogEvent_Model_Resource_Event extends Mage_Core_Model_Resou
     {
         $adapter = $this->_getReadAdapter();
         $select = $adapter->select()
-            ->from($this->getTable('event_image'), array(
+            ->from($this->getTable('enterprise_catalogevent/event_image'), array(
                 'type' => $adapter->getCheckSql('store_id = 0', "'default'", "'store'"),
                 'image'
             ))

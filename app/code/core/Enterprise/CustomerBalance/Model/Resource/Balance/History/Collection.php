@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -69,9 +69,7 @@ class Enterprise_CustomerBalance_Model_Resource_Balance_History_Collection
      */
     public function addWebsitesFilter($websiteIds)
     {
-        $this->getSelect()->where(
-            array('b.website_id IN (?)' => $websiteIds)
-        );
+        $this->getSelect()->where('b.website_id IN (?)', $websiteIds);
         return $this;
     }
 

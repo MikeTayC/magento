@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -76,7 +76,7 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Ordered
     /**
      * Prepare customer wishlist product collection
      *
-     * @return Mage_Adminhtml_Block_Customer_Edit_Tab_Wishlist
+     * @return Mage_Core_Model_Resource_Db_Collection_Abstract
      */
     public function getItemsCollection()
     {
@@ -115,12 +115,16 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Ordered
                         ->addAttributeToSelect($attributes)
                         ->addAttributeToSelect('sku')
                         ->addAttributeToFilter('type_id',
-                            array_keys(Mage::getConfig()->getNode('adminhtml/sales/order/create/available_product_types')->asArray())
-                        )
+                            array_keys(
+                                Mage::getConfig()->getNode('adminhtml/sales/order/create/available_product_types')
+                                    ->asArray()
+                            )
+                        )->addAttributeToFilter('status', Mage_Catalog_Model_Product_Status::STATUS_ENABLED)
                         ->addStoreFilter($this->_getStore())
                         ->addIdFilter($productIds);
-                     Mage::getSingleton('catalog/product_status')->addSaleableFilterToCollection($products);
-                     $products->addOptionsToResult();
+                    Mage::getSingleton('cataloginventory/stock_status')->addIsInStockFilterToCollection($products);
+                    Mage::getSingleton('catalog/product_status')->addSaleableFilterToCollection($products);
+                    $products->addOptionsToResult();
 
                     // Set products to items
                     foreach ($collection as $item) {

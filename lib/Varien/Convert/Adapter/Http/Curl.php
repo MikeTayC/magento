@@ -20,7 +20,7 @@
  *
  * @category    Varien
  * @package     Varien_Convert
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -53,6 +53,8 @@ class Varien_Convert_Adapter_Http_Curl extends Varien_Convert_Adapter_Abstract
 
         // read the remote file
         $data = $http->read();
+
+        $http->close();
 
         $data = preg_split('/^\r?$/m', $data, 2);
         $data = trim($data[1]);

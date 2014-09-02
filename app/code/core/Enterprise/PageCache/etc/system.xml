@@ -86,5 +86,16 @@
                 </page_crawl>
             </groups>
         </system>
+        <web>
+            <groups>
+                <cookie>
+                    <fields>
+                        <cookie_restriction translate="comment">
+                            <comment>Note that to fully restrict cookies, full page caching must be disabled as well.</comment>
+                        </cookie_restriction>
+                    </fields>
+                </cookie>
+            </groups>
+        </web>
     </sections>
 </config>

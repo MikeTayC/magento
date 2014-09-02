@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -124,7 +124,9 @@ class Enterprise_Cms_Model_Resource_Hierarchy_Node extends Mage_Core_Model_Resou
                     'menu_excluded',
                     'menu_levels_down',
                     'menu_ordered',
-                    'menu_list_type'
+                    'menu_list_type',
+                    'top_menu_visibility',
+                    'top_menu_excluded'
                 ));
 
         $this->_applyParamFilters($select);
@@ -186,6 +188,10 @@ class Enterprise_Cms_Model_Resource_Hierarchy_Node extends Mage_Core_Model_Resou
         $read = $this->_getReadAdapter();
         if ($url !== null) {
             $select = $this->_getLoadSelect('request_url', $url, $object);
+            if ($object) {
+                $select->where('scope = ?', $object->getScope())
+                    ->where('scope_id = ?', $object->getScopeId());
+            }
             $data = $read->fetchRow($select);
 
             if ($data) {
@@ -267,7 +273,15 @@ class Enterprise_Cms_Model_Resource_Hierarchy_Node extends Mage_Core_Model_Resou
         $select = $this->_getReadAdapter()->select()
             ->from(
                 array('node_table' => $this->getMainTable()),
-                array($this->getIdFieldName(), 'parent_node_id', 'page_id', 'identifier', 'request_url', 'level', 'sort_order'))
+                array(
+                    $this->getIdFieldName(),
+                    'parent_node_id',
+                    'page_id',
+                    'identifier',
+                    'request_url',
+                    'level',
+                    'sort_order'
+                ))
             ->joinLeft(
                 array('page_table' => $this->getTable('cms/page')),
                 'node_table.page_id=page_table.page_id',
@@ -319,9 +333,12 @@ class Enterprise_Cms_Model_Resource_Hierarchy_Node extends Mage_Core_Model_Resou
             }
 
             if ($nodeRow['request_url'] != $requestUrl) {
-                $this->_getWriteAdapter()->update($this->getMainTable(), array(
-                    'request_url' => $requestUrl
-                ), $this->_getWriteAdapter()->quoteInto($this->getIdFieldName() . '=?', $nodeRow[$this->getIdFieldName()]));
+                $this->_getWriteAdapter()->update(
+                    $this->getMainTable(),
+                    array('request_url' => $requestUrl),
+                    $this->_getWriteAdapter()->quoteInto($this->getIdFieldName() . '=?',
+                    $nodeRow[$this->getIdFieldName()])
+                );
             }
 
             if (isset($nodes[$nodeRow[$this->getIdFieldName()]])) {
@@ -581,8 +598,14 @@ class Enterprise_Cms_Model_Resource_Hierarchy_Node extends Mage_Core_Model_Resou
         }
 
         $select = $this->_getLoadSelectWithoutWhere()
-            ->where($where)
-            ->order(array('level', $this->getMainTable() . '.sort_order'));
+            ->where($where);
+
+        if ($object) {
+            $select->where('scope = ?', $object->getScope())
+                ->where('scope_id = ?', $object->getScopeId());
+        }
+
+        $select->order(array('level', $this->getMainTable() . '.sort_order'));
         $nodes = $select->query()->fetchAll();
         $tree = $this->_prepareRelatedStructure($nodes, 0, $tree);
 
@@ -790,5 +813,122 @@ class Enterprise_Cms_Model_Resource_Hierarchy_Node extends Mage_Core_Model_Resou
                 array($this->getIdFieldName() . ' = ? ' => $nodeId));
 
         return $this;
+    }
+
+    /**
+     * Copy Cms Hierarchy to another scope
+     *
+     * @param string $scope
+     * @param int $scopeId
+     * @param Enterprise_Cms_Model_Resource_Hierarchy_Node_Collection $collection
+     * @return Enterprise_Cms_Model_Resource_Hierarchy_Node
+     */
+    public function copyTo($scope, $scopeId, $collection)
+    {
+        // Copy hierarchy
+        /** @var $nodesModel Enterprise_Cms_Model_Hierarchy_Node */
+        $nodesModel = Mage::getModel('enterprise_cms/hierarchy_node', array(
+            'scope' =>  $scope,
+            'scope_id' => $scopeId,
+        ));
+
+        $nodes = array();
+        foreach ($collection as $node) {
+            if ($node->getLevel() == Enterprise_Cms_Model_Hierarchy_Node::NODE_LEVEL_FAKE) {
+                continue;
+            }
+
+            $nodeData = $node->toArray();
+            $nodeData['node_id'] = '_' . $nodeData['node_id'];
+            $nodeData['parent_node_id'] = empty($nodeData['parent_node_id'])
+                ? ''
+                : ('_' . $nodeData['parent_node_id']);
+            if (empty($nodeData['identifier'])) {
+                $nodeData['identifier'] = $nodeData['page_identifier'];
+            }
+            $nodes[] = $nodeData;
+        }
+        $this->beginTransaction();
+        try {
+            $nodesModel->collectTree($nodes, array());
+            $this->addEmptyNode($scope, $scopeId);
+            $this->commit();
+        } catch (Exception $e) {
+            $this->rollBack();
+            throw $e;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Delete Cms Hierarchy of the scope
+     *
+     * @param string $scope
+     * @param int $scopeId
+     * @return Enterprise_Cms_Model_Resource_Hierarchy_Node
+     */
+    public function deleteByScope($scope, $scopeId)
+    {
+        $this->beginTransaction();
+        try {
+            $adapter = $this->_getWriteAdapter();
+            // Delete metadata
+            $adapter->delete($this->getTable('enterprise_cms/hierarchy_metadata'), array(
+                'node_id IN (?)' => $adapter
+                    ->select()
+                    ->from($this->getMainTable(), array('node_id'))
+                    ->where('scope = ?', $scope)
+                    ->where('scope_id = ?', $scopeId)
+            ));
+            // Delete nodes
+            $adapter->delete($this->getMainTable(), array(
+                'scope = ?'    => $scope,
+                'scope_id = ?' => $scopeId,
+            ));
+            $this->commit();
+        } catch (Exception $e) {
+            $this->rollBack();
+        }
+        return $this;
+    }
+
+    /**
+     * Whether the hierarchy is inherited from parent scope
+     *
+     * @param string $scope
+     * @param int $scopeId
+     * @return bool
+     */
+    public function getIsInherited($scope, $scopeId)
+    {
+        $adapter = $this->_getReadAdapter();
+        $select = $adapter
+            ->select()
+            ->from($this->getMainTable())
+            ->where('scope = ?', $scope)
+            ->where('scope_id = ?', $scopeId)
+            ->where('level = ?', Enterprise_Cms_Model_Hierarchy_Node::NODE_LEVEL_FAKE)
+            ->limit(1);
+        return $adapter->fetchRow($select) ? false : true;
+    }
+
+    /**
+     * Adding an empty node, for ability to obtain empty tree hierarhy for specific scope
+     *
+     * @param string $scope
+     * @param int $scopeId
+     */
+    public function addEmptyNode($scope, $scopeId)
+    {
+        if ($scope != Enterprise_Cms_Model_Hierarchy_Node::NODE_SCOPE_DEFAULT &&
+            $this->getIsInherited($scope, $scopeId)
+        ) {
+            $this->_getWriteAdapter()->insert($this->getMainTable(), array(
+                'sort_order' => 0,
+                'scope' => $scope,
+                'scope_id' => $scopeId,
+            ));
+        }
     }
 }

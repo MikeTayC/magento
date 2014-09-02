@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Customer
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -52,19 +52,19 @@ class Enterprise_Customer_Helper_Customer extends Enterprise_Eav_Helper_Data
     {
         return array(
             array(
-                'label' => Mage::helper('enterprise_customer/customer')->__('Customer Checkout Register'),
+                'label' => Mage::helper('enterprise_customer')->__('Customer Checkout Register'),
                 'value' => 'checkout_register'
             ),
             array(
-                'label' => Mage::helper('enterprise_customer/customer')->__('Customer Registration'),
+                'label' => Mage::helper('enterprise_customer')->__('Customer Registration'),
                 'value' => 'customer_account_create'
             ),
             array(
-                'label' => Mage::helper('enterprise_customer/customer')->__('Customer Account Edit'),
+                'label' => Mage::helper('enterprise_customer')->__('Customer Account Edit'),
                 'value' => 'customer_account_edit'
             ),
             array(
-                'label' => Mage::helper('enterprise_customer/customer')->__('Admin Checkout'),
+                'label' => Mage::helper('enterprise_customer')->__('Admin Checkout'),
                 'value' => 'adminhtml_checkout'
             ),
         );

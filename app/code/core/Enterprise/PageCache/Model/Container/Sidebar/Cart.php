@@ -20,20 +20,24 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Cart sidebar container
  */
-class Enterprise_PageCache_Model_Container_Sidebar_Cart extends Enterprise_PageCache_Model_Container_Advanced_Abstract
+class Enterprise_PageCache_Model_Container_Sidebar_Cart extends Enterprise_PageCache_Model_Container_Advanced_Quote
 {
+    /**
+     * @deprecated since 1.12.1.0
+     */
     const CACHE_TAG_PREFIX = 'cartsidebar';
 
     /**
      * Get identifier from cookies
      *
+     * @deprecated since 1.12.1.0
      * @return string
      */
     protected function _getIdentifier()
@@ -43,41 +47,15 @@ class Enterprise_PageCache_Model_Container_Sidebar_Cart extends Enterprise_PageC
     }
 
     /**
-     * Get cache identifier
-     *
-     * @return string
-     */
-    protected function _getCacheId()
-    {
-        return md5(self::CACHE_TAG_PREFIX . $this->_getIdentifier());
-    }
-
-    /**
      * Render block content
      *
      * @return string
      */
     protected function _renderBlock()
     {
-        $block = $this->_placeholder->getAttribute('block');
-        $template = $this->_placeholder->getAttribute('template');
-
-        $block = new $block;
-        $block->setTemplate($template);
-        $block->setLayout(Mage::app()->getLayout());
+        $block = $this->_getPlaceHolderBlock();
         $renders = $this->_placeholder->getAttribute('item_renders');
         $block->deserializeRenders($renders);
-
         return $block->toHtml();
-    }
-
-    /**
-     * Get container individual additional cache id
-     *
-     * @return string | false
-     */
-    protected function _getAdditionalCacheId()
-    {
-        return md5('CONTAINER_SIDEBAR_' . $this->_placeholder->getAttribute('cache_id'));
     }
 }

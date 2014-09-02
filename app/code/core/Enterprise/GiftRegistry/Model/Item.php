@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -379,7 +379,9 @@ class Enterprise_GiftRegistry_Model_Item extends Mage_Core_Model_Abstract
                ->setCode($option->getCode())
                ->setValue($option->getValue())
                ->setItem($this);
-        } elseif (($option instanceof Varien_Object) && !($option instanceof Enterprise_GiftRegistry_Model_Item_Option)) {
+        } elseif (($option instanceof Varien_Object)
+            && !($option instanceof Enterprise_GiftRegistry_Model_Item_Option)
+        ) {
             $option = Mage::getModel('enterprise_giftregistry/item_option')->setData($option->getData())
                ->setProduct($option->getProduct())
                ->setItem($this);
@@ -471,5 +473,27 @@ class Enterprise_GiftRegistry_Model_Item extends Mage_Core_Model_Abstract
     public function getFileDownloadParams()
     {
         return null;
+    }
+
+    /**
+     * Validates and sets quantity for the related product
+     *
+     * @param int|float $quantity New item quantity
+     * @throws Mage_Core_Exception
+     * @return Enterprise_GiftRegistry_Model_Item
+     */
+    public function setQty($quantity)
+    {
+        $quantity = (float)$quantity;
+
+        if (!$this->_getProduct()->getTypeInstance()->canUseQtyDecimals()) {
+            $quantity = round($quantity);
+        }
+
+        if ($quantity <= 0) {
+            $quantity = 1;
+        }
+
+        return $this->setData('qty', $quantity);
     }
 }

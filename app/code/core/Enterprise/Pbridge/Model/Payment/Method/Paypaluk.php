@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -92,9 +92,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Paypaluk extends Mage_PaypalUk_Mod
     {
         if ($this->_pbridgeMethodInstance === null) {
             $this->_pbridgeMethodInstance = Mage::helper('payment')->getMethodInstance('pbridge');
-            if ($this->_pbridgeMethodInstance) {
-                $this->_pbridgeMethodInstance->setOriginalMethodInstance($this);
-            }
+            $this->_pbridgeMethodInstance->setOriginalMethodInstance($this);
         }
         return $this->_pbridgeMethodInstance;
     }
@@ -164,8 +162,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Paypaluk extends Mage_PaypalUk_Mod
      */
     public function isAvailable($quote = null)
     {
-        return $this->getPbridgeMethodInstance() ?
-            $this->getPbridgeMethodInstance()->isDummyMethodAvailable($quote) : false;
+        return $this->getPbridgeMethodInstance()->isDummyMethodAvailable($quote);
     }
 
     /**
@@ -257,23 +254,23 @@ class Enterprise_Pbridge_Model_Payment_Method_Paypaluk extends Mage_PaypalUk_Mod
     /**
      * Import direct payment results to payment
      *
-     * @param Varien_Object
-     * @param Mage_Sales_Model_Order_Payment
+     * @param Varien_Object $api
+     * @param Mage_Sales_Model_Order_Payment $payment
      */
     protected function _importResultToPayment($api, $payment)
     {
         $payment->setTransactionId($api->getTransactionId())->setIsTransactionClosed(0)
             ->setIsTransactionPending($api->getIsPaymentPending());
-        $payment->setPreparedMessage(Mage::helper('enterprise_pbridge')->__(
-            'Payflow PNREF: #%s.',
-            $api->getData(Enterprise_Pbridge_Model_Payment_Method_Paypaluk_Pro::TRANSPORT_PAYFLOW_TXN_ID)
-        ));
+        $payflowTrxid = $api->getData(Enterprise_Pbridge_Model_Payment_Method_Paypaluk_Pro::TRANSPORT_PAYFLOW_TXN_ID);
+        $payment->setPreparedMessage(Mage::helper('enterprise_pbridge')->__('Payflow PNREF: #%s.', $payflowTrxid));
 
         $this->_pro->importPaymentInfo($api, $payment);
     }
 
     /**
      * Disable magento centinel validation for pbridge payment methods
+     *
+     * @return bool
      */
     public function getIsCentinelValidationEnabled()
     {
@@ -283,13 +280,16 @@ class Enterprise_Pbridge_Model_Payment_Method_Paypaluk extends Mage_PaypalUk_Mod
     /**
      * Store id setter, also set storeId to helper
      *
-     * @param int $store
+     * @param int|string|Mage_Code_Model_Store $store
+     *
+     * @return Enterprise_Pbridge_Model_Payment_Method_Paypaluk
      */
     public function setStore($store)
     {
         $this->setData('store', $store);
         Mage::helper('enterprise_pbridge')->setStoreId(is_object($store) ? $store->getId() : $store);
         parent::setStore($store);
+
         return $this;
     }
 }

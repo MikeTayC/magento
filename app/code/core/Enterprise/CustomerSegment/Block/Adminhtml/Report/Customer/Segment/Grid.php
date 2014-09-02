@@ -20,22 +20,22 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
- * Customer Segments grid
+ * Customer Segments Grid
  *
- * @category   Enterprise
- * @package    Enterprise_CustomerSegment
- * @author     Magento Core Team <core@magentocommerce.com>
+ * @category Enterprise
+ * @package Enterprise_CustomerSegment
+ * @author Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Grid
     extends Mage_Adminhtml_Block_Widget_Grid
 {
     /**
-     * Constructor
+     * Set grid Id
      */
     public function __construct()
     {
@@ -44,39 +44,25 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Grid
     }
 
     /**
-     * Prepare report collection
+     * Add websites and customer count to customer segments collection
+     * Set collection
      *
      * @return Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Grid
      */
     protected function _prepareCollection()
     {
+        /** @var $collection Enterprise_CustomerSegment_Model_Mysql4_Segment_Collection */
         $collection = Mage::getModel('enterprise_customersegment/segment')->getCollection();
-        $collection->addCustomerCountToSelect();
-        $collection->addWebsitesToResult();
+        $collection->addCustomerCountToSelect()
+            ->addWebsitesToResult();
         $this->setCollection($collection);
-        return parent::_prepareCollection();
-    }
 
-    /**
-     * Filter number of customers column
-     *
-     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
-     * @return Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Grid
-     */
-    protected function _addColumnFilterToCollection($column)
-    {
-        if ($column->getId() == 'customer_count') {
-            if ($column->getFilter()->getValue() !== null) {
-                $this->getCollection()->addCustomerCountFilter($column->getFilter()->getValue());
-            }
-        } else {
-            parent::_addColumnFilterToCollection($column);
-        }
+        parent::_prepareCollection();
         return $this;
     }
 
     /**
-     * Prepare grid columns
+     * Add grid columns
      *
      * @return Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Grid
      */
@@ -93,7 +79,7 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Grid
 
         $this->addColumn('name', array(
             'header'    => Mage::helper('enterprise_customersegment')->__('Segment Name'),
-            'align'     =>'left',
+            'align'     => 'left',
             'index'     => 'name',
         ));
 
@@ -109,14 +95,16 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Grid
             ),
         ));
 
-        $this->addColumn('website', array(
-            'header'    => Mage::helper('enterprise_customersegment')->__('Website'),
-            'align'     =>'left',
-            'width'     => 200,
-            'index'     => 'website_ids',
-            'type'      => 'options',
-            'options'   => Mage::getSingleton('adminhtml/system_store')->getWebsiteOptionHash()
-        ));
+        if (!Mage::app()->isSingleStoreMode()) {
+            $this->addColumn('website', array(
+                'header'    => Mage::helper('enterprise_customersegment')->__('Website'),
+                'align'     => 'left',
+                'width'     => 200,
+                'index'     => 'website_ids',
+                'type'      => 'options',
+                'options'   => Mage::getSingleton('adminhtml/system_store')->getWebsiteOptionHash()
+            ));
+        }
 
         $this->addColumn('customer_count', array(
             'header'    => Mage::helper('enterprise_customersegment')->__('Number of Customers'),
@@ -128,7 +116,7 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Grid
     }
 
     /**
-     * Prepare massasction
+     * Prepare mass action
      *
      * @return Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Grid
      */
@@ -152,9 +140,10 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Grid
     }
 
     /**
-     * Return url for current row
+     * Retrieve row click URL
      *
-     * @param Enterprise_CustomerSegment_Model_Segment $row
+     * @param Varien_Object $row
+     *
      * @return string
      */
     public function getRowUrl($row)

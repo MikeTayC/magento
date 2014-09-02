@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -52,10 +52,50 @@
 class Enterprise_Cms_Model_Hierarchy_Node extends Mage_Core_Model_Abstract
 {
     /**
+     * Whether the hierarchy is inherited from parent scope
+     *
+     * @var null|bool
+     */
+    protected $_isInherited = null;
+
+    /**
+     * Copy collection cache
+     *
+     * @var array
+     */
+    protected $_copyCollection = null;
+
+    /**
      *
      * @var unknown_type
      */
     protected $_metaNodes = array();
+
+    /**
+     * Node's scope constants
+     */
+    const NODE_SCOPE_DEFAULT    = 'default';
+    const NODE_SCOPE_WEBSITE    = 'website';
+    const NODE_SCOPE_STORE      = 'store';
+    const NODE_SCOPE_DEFAULT_ID = 0;
+
+    /**
+     * The level of root node for appropriate scope
+     */
+    const NODE_LEVEL_FAKE = 0;
+
+    /**
+     * Node's scope
+     * @var string
+     */
+    protected $_scope = self::NODE_SCOPE_DEFAULT;
+
+    /**
+     * Node's scope ID
+     *
+     * @var int
+     */
+    protected $_scopeId = self::NODE_SCOPE_DEFAULT_ID;
 
     /**
      * Meta node's types
@@ -65,6 +105,128 @@ class Enterprise_Cms_Model_Hierarchy_Node extends Mage_Core_Model_Abstract
     const META_NODE_TYPE_FIRST = 'start';
     const META_NODE_TYPE_NEXT = 'next';
     const META_NODE_TYPE_PREVIOUS = 'prev';
+
+    /**
+     * Initialization of nodes model
+     *
+     * @param array $options
+     */
+    public function __construct(array $options = array())
+    {
+        parent::__construct();
+
+        $scope = $scopeId = null;
+        if (array_key_exists('scope', $options)) {
+            $scope = $options['scope'];
+        }
+
+        if (array_key_exists('scope_id', $options)) {
+            $scopeId = $options['scope_id'];
+        }
+
+        $this->setScope($scope);
+
+        $this->setScopeId($scopeId);
+    }
+
+    /**
+     * Set nodes scope
+     *
+     * @param string $scope
+     */
+    public function setScope($scope)
+    {
+        if ($scope == self::NODE_SCOPE_STORE || $scope == self::NODE_SCOPE_WEBSITE) {
+            $this->_scope = $scope;
+        } else {
+            $this->_scope = self::NODE_SCOPE_DEFAULT;
+        }
+    }
+
+    /**
+     * Set nodes scope id
+     *
+     * @param int|string $scopeId
+     */
+    public function setScopeId($scopeId)
+    {
+        /** @var $storeModel Mage_Adminhtml_Model_System_Store */
+        $storeModel = Mage::getSingleton('adminhtml/system_store');
+        $collection = array();
+        if ($this->_scope == self::NODE_SCOPE_STORE) {
+            $collection = $storeModel->getStoreCollection();
+        } elseif ($this->_scope == self::NODE_SCOPE_WEBSITE) {
+            $collection = $storeModel->getWebsiteCollection();
+        }
+
+        $isSet = false;
+        foreach($collection as $scope) {
+            if ($scope->getCode() == $scopeId || $scope->getId() == $scopeId) {
+                $isSet = true;
+                $this->_scopeId = $scope->getId();
+            }
+        }
+
+        if (!$isSet) {
+            $this->_scope = self::NODE_SCOPE_DEFAULT;
+            $this->_scopeId = self::NODE_SCOPE_DEFAULT_ID;
+        }
+    }
+
+    /**
+     * Retrieving nodes for appropriate scope and scope ID.
+     *
+     * @return array
+     */
+    public function getNodesData()
+    {
+        $nodes = array();
+        $collection = $this->getCollection()
+                ->joinCmsPage()
+                ->addCmsPageInStoresColumn()
+                ->joinMetaData()
+                ->applyScope($this->_scope)
+                ->applyScopeId($this->_scopeId)
+                ->setOrderByLevel();
+
+        $this->_isInherited = $this->getIsInherited(true);
+        foreach ($collection as $item) {
+            $this->_isInherited = false;
+            if ($item->getLevel() == self::NODE_LEVEL_FAKE) {
+                continue;
+            }
+            /* @var $item Enterprise_Cms_Model_Hierarchy_Node */
+            $node = array(
+                'node_id'           => $item->getId(),
+                'parent_node_id'    => $item->getParentNodeId(),
+                'label'             => $item->getLabel(),
+                'identifier'        => $item->getIdentifier(),
+                'page_id'           => $item->getPageId()
+            );
+            $nodes[] = Mage::helper('enterprise_cms/hierarchy')->copyMetaData($item->getData(), $node);
+        }
+
+        return $nodes;
+    }
+
+    /**
+     * Retrieving nodes collection for appropriate scope and scope ID.
+     *
+     * @return Enterprise_Cms_Model_Resource_Hierarchy_Node_Collection
+     */
+    public function getNodesCollection()
+    {
+        $nodes = array();
+        $collection = $this->getCollection()
+                ->joinCmsPage()
+                ->addCmsPageInStoresColumn()
+                ->joinMetaData()
+                ->applyScope($this->_scope)
+                ->applyScopeId($this->_scopeId)
+                ->setOrderByLevel();
+
+        return $collection;
+    }
 
     /**
      * Initialize resource model
@@ -122,7 +284,9 @@ class Enterprise_Cms_Model_Hierarchy_Node extends Mage_Core_Model_Abstract
                 'identifier'         => !$pageId ? $v['identifier'] : null,
                 'level'              => intval($v['level']),
                 'sort_order'         => intval($v['sort_order']),
-                'request_url'        => $v['identifier']
+                'request_url'        => $v['identifier'],
+                'scope'              => $this->_scope,
+                'scope_id'           => $this->_scopeId,
             );
 
             $nodes[$parentNodeId][$v['node_id']] = Mage::helper('enterprise_cms/hierarchy')
@@ -138,6 +302,7 @@ class Enterprise_Cms_Model_Hierarchy_Node extends Mage_Core_Model_Abstract
             // recursive node save
             $this->_collectTree($nodes, $this->getId(), $this->getRequestUrl(), $this->getId(), 0);
 
+            $this->_getResource()->addEmptyNode($this->_scope, $this->_scopeId);
             $this->_getResource()->commit();
         } catch (Exception $e) {
             $this->_getResource()->rollBack();
@@ -148,11 +313,24 @@ class Enterprise_Cms_Model_Hierarchy_Node extends Mage_Core_Model_Abstract
     }
 
     /**
+     * Delete Cms Hierarchy of the scope
+     *
+     * @param string $scope
+     * @param int $scopeId
+     * @return Enterprise_Cms_Model_Resource_Hierarchy_Node
+     */
+    public function deleteByScope($scope, $scopeId)
+    {
+        $this->_getResource()->deleteByScope($scope, $scopeId);
+    }
+
+    /**
      * Recursive save nodes
      *
      * @param array $nodes
      * @param int $parentNodeId
      * @param string $path
+     * @param string $xpath
      * @param int $level
      * @return Enterprise_Cms_Model_Hierarchy_Node
      */
@@ -580,5 +758,99 @@ class Enterprise_Cms_Model_Hierarchy_Node extends Mage_Core_Model_Abstract
         //}
 
         return $this;
+    }
+
+    /**
+     * Copy Cms Hierarchy to another scope
+     *
+     * @param string $scope
+     * @param int $scopeId
+     * @return Enterprise_Cms_Model_Hierarchy_Node
+     */
+    public function copyTo($scope, $scopeId)
+    {
+        if ($this->_scope == $scope && $this->_scopeId == $scopeId) {
+            return $this;
+        }
+
+        $this->getResource()->deleteByScope($scope, $scopeId);
+
+        if (!$this->_copyCollection) {
+            $this->_copyCollection = $this->getCollection()
+                ->applyScope($this->_scope)
+                ->applyScopeId($this->_scopeId)
+                ->joinCmsPage()
+                ->joinMetaData();
+        }
+        $this->getResource()->copyTo($scope, $scopeId, $this->_copyCollection);
+        return $this;
+    }
+
+    /**
+     * Whether the hierarchy is inherited from parent scope
+     *
+     * @param bool $soft If true then we will not make requests to the DB and will return true if scope is not default
+     * @return bool
+     */
+    public function getIsInherited($soft = false)
+    {
+        if (is_null($this->_isInherited)) {
+            if ($this->getScope() === self::NODE_SCOPE_DEFAULT) {
+                $this->_isInherited = false;
+            } elseif (!$soft) {
+                $this->_isInherited = $this->getResource()->getIsInherited($this->_scope, $this->_scopeId);
+            } else {
+                return true;
+            }
+        }
+
+        return $this->_isInherited;
+    }
+
+    /**
+     * Get heritage hierarchy
+     *
+     * @return Enterprise_Cms_Model_Hierarchy_Node
+     */
+    public function getHeritage()
+    {
+        if ($this->getIsInherited()) {
+            $helper = Mage::helper('enterprise_cms/hierarchy');
+            $parentScope = $helper->getParentScope($this->_scope, $this->_scopeId);
+            $parentScopeNode = Mage::getModel('enterprise_cms/hierarchy_node', array(
+                'scope' =>  $parentScope[0],
+                'scope_id' => $parentScope[1],
+            ));
+            if ($parentScopeNode->getIsInherited()) {
+                $parentScope = $helper->getParentScope($parentScope[0], $parentScope[1]);
+                $parentScopeNode = Mage::getModel('enterprise_cms/hierarchy_node', array(
+                    'scope' =>  $parentScope[0],
+                    'scope_id' => $parentScope[1],
+                ));
+            }
+            return $parentScopeNode;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get current scope
+     *
+     * @return string
+     */
+    public function getScope()
+    {
+        return $this->_scope;
+    }
+
+    /**
+     * Get current scopeId
+     *
+     * @return int
+     */
+    public function getScopeId()
+    {
+        return $this->_scopeId;
     }
 }

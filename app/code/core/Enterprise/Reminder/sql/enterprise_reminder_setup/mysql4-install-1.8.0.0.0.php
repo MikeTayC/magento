@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -73,7 +73,7 @@ CREATE TABLE `{$this->getTable('enterprise_reminder/coupon')}` (
     `is_active` tinyint(1) unsigned NOT NULL default '1',
     PRIMARY KEY (`rule_id`,`customer_id`),
     KEY `IDX_EE_REMINDER_RULE_COUPON` (`rule_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ");
 
 $installer->run("

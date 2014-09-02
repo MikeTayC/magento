@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCard
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -39,6 +39,7 @@ class Enterprise_GiftCard_Helper_Data extends Mage_Core_Helper_Abstract
         $block = new $className;
         if (Mage::app()->getStore()->isAdmin()) {
             $block->setTemplate('enterprise/giftcard/email/generated.phtml');
+            $block->setArea('adminhtml');
         } else {
             $block->setTemplate('giftcard/email/generated.phtml');
         }

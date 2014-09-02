@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Newsletter
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -445,7 +445,8 @@ class Mage_Newsletter_Model_Subscriber extends Mage_Core_Model_Abstract
                 ->setCustomerId($customer->getId())
                 ->setEmail($customer->getEmail());
         } else {
-            $this->setEmail($customer->getEmail());
+            $this->setStoreId($customer->getStoreId())
+                ->setEmail($customer->getEmail());
         }
 
         $this->save();

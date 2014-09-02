@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -62,7 +62,7 @@ class Enterprise_Rma_Block_Adminhtml_Rma_Edit_Item extends Mage_Adminhtml_Block_
             array('legend'=>Mage::helper('enterprise_rma')->__('RMA Item Details'))
         );
 
-        $fieldset->setProductName($item->getProductAdminName());
+        $fieldset->setProductName($this->escapeHtml($item->getProductAdminName()));
         $okButton = $this->getLayout()->createBlock('adminhtml/widget_button')
             ->setData(array(
                 'label'   => Mage::helper('enterprise_rma')->__('OK'),

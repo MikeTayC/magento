@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -45,10 +45,6 @@
             <block type="adminhtml/store_switcher" name="store_switcher" before="-" />
         </reference>
     </adminhtml_giftwrapping_edit>
-
-    <adminhtml_giftwrapping_orderoptions>
-        <block type="enterprise_giftwrapping/adminhtml_order_create_info_content" name="root" template="enterprise/giftwrapping/order/create/info/content.phtml" />
-    </adminhtml_giftwrapping_orderoptions>
 
     <adminhtml_sales_order_view>
         <reference name="gift_options">
@@ -128,6 +124,12 @@
             <block type="enterprise_giftwrapping/adminhtml_sales_order_create_link" name="giftwrapping_item_info" template="enterprise/giftwrapping/sales/order/link.phtml" />
         </reference>
     </adminhtml_sales_order_create_load_block_items>
+
+    <adminhtml_sales_order_create_load_block_giftwrapping>
+        <reference name="content">
+            <block type="enterprise_giftwrapping/adminhtml_order_create_info_content" name="giftwrapping" template="enterprise/giftwrapping/order/create/info/content.phtml" />
+        </reference>
+    </adminhtml_sales_order_create_load_block_giftwrapping>
 
     <adminhtml_sales_order_invoice_new>
         <reference name="invoice_totals">

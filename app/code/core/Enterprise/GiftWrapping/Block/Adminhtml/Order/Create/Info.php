@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -145,6 +145,8 @@ class Enterprise_GiftWrapping_Block_Adminhtml_Order_Create_Info
 
     /**
      * Get url for ajax to refresh Gift Wrapping block
+     *
+     * @deprecated since 1.12.0.0
      *
      * @return void
      */

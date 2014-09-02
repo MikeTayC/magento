@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 /* @var $this Enterprise_TargetRule_Block_Adminhtml_Product */
@@ -43,7 +43,7 @@
                 <input type="checkbox" id="<?php echo $this->getFieldName('position_limit'); ?>_default" name="product[<?php echo $this->getFieldName('position_limit'); ?>_default]" value="1" onclick="targetruleSetDefault(this, '<?php echo $this->getFieldName('position_limit'); ?>');" class="checkbox" <?php echo $_readonly ?><?php echo $this->isDefault('position_limit') ? 'checked' : ''; ?>/>
                 <label for="<?php echo $this->getFieldName('position_limit'); ?>_default" class="normal"><?php echo Mage::helper('enterprise_targetrule')->__('Use Config Settings') ?></label>
             </td>
-            <td class="value scope-label"><?php echo Mage::helper('enterprise_targetrule')->__('[GLOBAL]') ?></td>
+            <td class="value scope-label"><?php echo Mage::helper('adminhtml')->__('[GLOBAL]') ?></td>
         </tr>
         <tr>
             <td class="label"><label for="<?php echo $this->getFieldName('position_behavior'); ?>"><?php echo Mage::helper('enterprise_targetrule')->__('Position Behavior') ?></label></td>
@@ -58,7 +58,7 @@
             </select>
             <input type="checkbox" id="<?php echo $this->getFieldName('position_behavior'); ?>_default" name="product[<?php echo $this->getFieldName('position_behavior'); ?>_default]" value="1" onclick="targetruleSetDefault(this, '<?php echo $this->getFieldName('position_behavior'); ?>');" class="checkbox" <?php echo $_readonly?><?php echo $this->isDefault('position_behavior') ? 'checked' : ''; ?>/>
             <label for="<?php echo $this->getFieldName('position_behavior'); ?>_default" class="normal"><?php echo Mage::helper('enterprise_targetrule')->__('Use Config Settings') ?></label>
-            <td class="value scope-label"><?php echo Mage::helper('enterprise_targetrule')->__('[GLOBAL]') ?></td>
+            <td class="value scope-label"><?php echo Mage::helper('adminhtml')->__('[GLOBAL]') ?></td>
         </tr>
         </table>
         </div>

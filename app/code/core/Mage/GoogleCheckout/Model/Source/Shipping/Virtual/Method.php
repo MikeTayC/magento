@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_GoogleCheckout
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -29,11 +29,10 @@ class Mage_GoogleCheckout_Model_Source_Shipping_Virtual_Method
 {
     public function toOptionArray()
     {
-        $hlp = Mage::helper('googlecheckout');
         return array(
-            array('value' => 'email', 'label' => $hlp->__('Email delivery')),
-            // array('value'=>'key_url', 'label'=>$hlp->__('Key/URL delivery')),
-            // array('value'=>'description_based', 'label'=>$hlp->__('Description-based delivery')),
+            array('value' => 'email', 'label' => Mage::helper('googlecheckout')->__('Email delivery')),
+            // array('value'=>'key_url', 'label'=> Mage::helper('googlecheckout')->__('Key/URL delivery')),
+            // array('value'=>'description_based', 'label'=> Mage::helper('googlecheckout')->__('Description-based delivery'))
         );
     }
 }

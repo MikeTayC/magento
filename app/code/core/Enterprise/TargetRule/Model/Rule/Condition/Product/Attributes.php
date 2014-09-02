@@ -20,13 +20,13 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 
 class Enterprise_TargetRule_Model_Rule_Condition_Product_Attributes
-    extends Mage_CatalogRule_Model_Rule_Condition_Product
+    extends Mage_Rule_Model_Condition_Product_Abstract
 {
     /**
      * Attribute property that defines whether to use it for target rules
@@ -37,11 +37,12 @@ class Enterprise_TargetRule_Model_Rule_Condition_Product_Attributes
 
     /**
      * Target rule codes that do not allowed to select
+     * Products with status 'disabled' cannot be shown as related/cross-sells/up-sells thus rule code is useless
      *
      * @var array
      */
     protected $_disabledTargetRuleCodes = array(
-        'status' // products with status 'disabled' cannot be shown as related/cross-sells/up-sells thus rule code is useless
+        'status'
     );
 
     /**

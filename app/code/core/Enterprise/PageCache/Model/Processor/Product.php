@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -50,16 +50,17 @@ class Enterprise_PageCache_Model_Processor_Product extends Enterprise_PageCache_
         // save recently viewed product count limit
         $cacheId = $processor->getRecentlyViewedCountCacheId();
         if (!$cacheInstance->getFrontend()->test($cacheId)) {
-            $cacheInstance->save($countLimit, $cacheId);
+            $cacheInstance->save($countLimit, $cacheId, array(Enterprise_PageCache_Model_Processor::CACHE_TAG));
         }
         // save current product id
         $product = Mage::registry('current_product');
         if ($product) {
             $cacheId = $processor->getRequestCacheId() . '_current_product_id';
-            $cacheInstance->save($product->getId(), $cacheId);
+            $cacheInstance->save($product->getId(), $cacheId, array(Enterprise_PageCache_Model_Processor::CACHE_TAG));
             $processor->setMetadata(self::METADATA_PRODUCT_ID, $product->getId());
             Enterprise_PageCache_Model_Cookie::registerViewedProducts($product->getId(), $countLimit);
         }
+
         return parent::prepareContent($response);
     }
 }

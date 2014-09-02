@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -111,8 +111,8 @@ class Enterprise_Staging_Adminhtml_Staging_ManageController extends Mage_Adminht
         }
 
         if ($staging->isStatusProcessing()) {
-            $this->_getSession()->addNotice(Mage::helper('enterprise_staging')
-                ->__('Merge cannot be done now because a merge or rollback is in progress.')
+            $this->_getSession()->addNotice(
+                Mage::helper('enterprise_staging')->__('Merge cannot be done now because a merge or rollback is in progress.')
             );
         }
 
@@ -252,6 +252,14 @@ class Enterprise_Staging_Adminhtml_Staging_ManageController extends Mage_Adminht
                             Mage::helper('enterprise_staging')->__('Please make sure that folder %s exists and is writeable.', $entryPoint->getBaseFolder())
                         );
                     }
+                }
+                $website = current($staging->getWebsites());
+                $website = Mage::getModel('core/website')->load($website['code']);
+                if ($website->getId()) {
+                    $redirectBack = true;
+                    Mage::throwException(
+                        Mage::helper('enterprise_staging')->__('Website with the same code already exists.')
+                    );
                 }
 
                 $staging->getMapperInstance()->setCreateMapData($data);
@@ -395,9 +403,15 @@ class Enterprise_Staging_Adminhtml_Staging_ManageController extends Mage_Adminht
 
                     //convert to internal time
                     $date = Mage::getModel('core/date')->gmtDate(null, $schedulingDate);
+
+                    if (!$date) {
+                        Mage::throwException(Mage::helper('enterprise_staging')->__('Invalid date'));
+                    }
+
                     $staging->setMergeSchedulingDate($date);
 
-                    $originDate = Mage::helper('core')->formatDate($date, 'medium', true);
+                    $originDate = Mage::helper('core')->formatDate(
+                        $date, Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM, true);
                     $staging->setMergeSchedulingOriginDate($originDate);
 
                     $staging->setMergeSchedulingMap(

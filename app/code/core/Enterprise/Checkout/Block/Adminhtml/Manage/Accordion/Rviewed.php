@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -54,7 +54,7 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Rviewed
     /**
      * Prepare customer wishlist product collection
      *
-     * @return Mage_Adminhtml_Block_Customer_Edit_Tab_Wishlist
+     * @return Mage_Core_Model_Resource_Db_Collection_Abstract
      */
     public function getItemsCollection()
     {
@@ -76,8 +76,12 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Rviewed
                     ->addStoreFilter($this->_getStore()->getId())
                     ->addAttributeToSelect($attributes)
                     ->addIdFilter($productIds)
-                    ->load();
-                $productCollection = Mage::helper('adminhtml/sales')->applySalableProductTypesFilter($productCollection);
+                    ->addAttributeToFilter('status', Mage_Catalog_Model_Product_Status::STATUS_ENABLED);
+
+                Mage::getSingleton('cataloginventory/stock_status')
+                    ->addIsInStockFilterToCollection($productCollection);
+                $productCollection = Mage::helper('adminhtml/sales')
+                    ->applySalableProductTypesFilter($productCollection);
                 $productCollection->addOptionsToResult();
             }
             $this->setData('items_collection', $productCollection);

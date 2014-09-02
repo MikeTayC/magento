@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -66,6 +66,8 @@ abstract class Enterprise_PageCache_Model_Container_Advanced_Abstract
      * @param string $data
      * @param string $id
      * @param array $tags
+     * @param null|int $lifetime
+     * @return Enterprise_PageCache_Model_Container_Advanced_Abstract
      */
     protected function _saveCache($data, $id, $tags = array(), $lifetime = null)
     {

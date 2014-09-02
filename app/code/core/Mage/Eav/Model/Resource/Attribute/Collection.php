@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -187,10 +187,10 @@ abstract class Mage_Eav_Model_Resource_Attribute_Collection
     }
 
     /**
-     * Specify attribute entity type filter
-     * Entity type is defined
+     * Specify attribute entity type filter.
+     * Entity type is defined.
      *
-     * @param mixed $type
+     * @param  int $type
      * @return Mage_Eav_Model_Resource_Attribute_Collection
      */
     public function setEntityTypeFilter($type)

@@ -20,14 +20,15 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Period "Last N Days" condition class
  */
-class Enterprise_CustomerSegment_Model_Segment_Condition_Uptodate extends Enterprise_CustomerSegment_Model_Condition_Abstract
+class Enterprise_CustomerSegment_Model_Segment_Condition_Uptodate
+    extends Enterprise_CustomerSegment_Model_Condition_Abstract
 {
     protected $_inputType = 'numeric';
 
@@ -108,8 +109,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Uptodate extends Enterp
     public function asHtml()
     {
         return $this->getTypeElementHtml()
-            . Mage::helper('enterprise_customersegment')->__('Period %s %s Days Up To Date',
-                $this->getOperatorElementHtml(), $this->getValueElementHtml())
+            . Mage::helper('enterprise_customersegment')->__('Period %s %s Days Up To Date', $this->getOperatorElementHtml(), $this->getValueElementHtml())
             . $this->getRemoveLinkHtml();
     }
 

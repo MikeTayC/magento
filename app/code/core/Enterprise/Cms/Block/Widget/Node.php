@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -43,16 +43,22 @@ class Enterprise_Cms_Block_Widget_Node
     protected $_node;
 
     /**
+     * Current Store Id
+     *
+     * @var int
+     */
+    protected $_storeId;
+
+    /**
      * Retrieve specified anchor text
      *
      * @return string
      */
     public function getAnchorText()
     {
-        if ($this->getData('anchor_text')) {
-            return $this->getData('anchor_text');
-        }
-        return $this->_node->getLabel();
+        $value = $this->_getInstanceData('anchor_text');
+
+        return ($value !== false ? $value : $this->_node->getLabel());
     }
 
     /**
@@ -62,10 +68,19 @@ class Enterprise_Cms_Block_Widget_Node
      */
     public function getTitle()
     {
-        if ($this->getData('title')) {
-            return $this->getData('title');
-        }
-        return $this->_node->getLabel();
+        $value = $this->_getInstanceData('title');
+
+        return ($value !== false ? $value : $this->_node->getLabel());
+    }
+
+    /**
+     * Retrieve Node ID
+     *
+     * @return mixed|null
+     */
+    public function getNodeId()
+    {
+        return $this->_getInstanceData('node_id');
     }
 
     /**
@@ -97,5 +112,39 @@ class Enterprise_Cms_Block_Widget_Node
         }
 
         return parent::_toHtml();
+    }
+
+    /**
+     * Retrieve Store Id
+     *
+     * @return int
+     */
+    protected function _getStoreId()
+    {
+        if (null === $this->_storeId) {
+            $this->_storeId = Mage::app()->getStore()->getId();
+        }
+        return $this->_storeId;
+    }
+
+    /**
+     * Retrieve data from instance
+     *
+     * @param string $key
+     * @return bool|mixed
+     */
+    protected function _getInstanceData($key)
+    {
+        $dataKeys = array(
+            $key . '_' . $this->_getStoreId(),
+            $key . '_' . Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID,
+            $key,
+        );
+        foreach($dataKeys as $value) {
+            if ($this->getData($value) !== null) {
+               return $this->getData($value);
+            }
+        }
+        return false;
     }
 }

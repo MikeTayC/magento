@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -80,11 +80,31 @@ abstract class Enterprise_TargetRule_Model_Resource_Index_Abstract extends Mage_
         return Mage::getResourceSingleton('catalog/product');
     }
 
+    public function loadProductIdsBySegmentId($object, $segmentId)
+    {
+        $select = $this->_getReadAdapter()->select()
+            ->from($this->getMainTable(), 'product_ids')
+            ->where('entity_id = :entity_id')
+            ->where('store_id = :store_id')
+            ->where('customer_group_id = :customer_group_id')
+            ->where('customer_segment_id = :customer_segment_id');
+        $bind = array(
+            ':entity_id' => $object->getProduct()->getEntityId(),
+            ':store_id' => $object->getStoreId(),
+            ':customer_group_id' => $object->getCustomerGroupId(),
+            ':customer_segment_id' => $segmentId
+        );
+        $value  = $this->_getReadAdapter()->fetchOne($select, $bind);
+
+        return (!empty($value)) ? explode(',', $value) :array();
+    }
+
     /**
      * Load Product Ids by Index object
      *
      * @param Enterprise_TargetRule_Model_Index $object
      * @return array
+     * @deprecated after 1.12.0.0
      */
     public function loadProductIds($object)
     {
@@ -109,11 +129,34 @@ abstract class Enterprise_TargetRule_Model_Resource_Index_Abstract extends Mage_
     }
 
     /**
+     * Save matched product Ids by customer segments
+     *
+     * @param Enterprise_TargetRule_Model_Index $object
+     * @param int $segmentId
+     * @param string $productIds
+     * @return Enterprise_TargetRule_Model_Resource_Index_Abstract
+     */
+    public function saveResultForCustomerSegments($object, $segmentId, $productIds)
+    {
+        $adapter = $this->_getWriteAdapter();
+        $data    = array(
+            'entity_id' => $object->getProduct()->getEntityId(),
+            'store_id' => $object->getStoreId(),
+            'customer_group_id' => $object->getCustomerGroupId(),
+            'customer_segment_id' => $segmentId,
+            'product_ids' => $productIds,
+        );
+        $adapter->insertOnDuplicate($this->getMainTable(), $data, array('product_ids'));
+        return $this;
+    }
+
+    /**
      * Save matched product Ids
      *
      * @param Enterprise_TargetRule_Model_Index $object
      * @param string $value
      * @return Enterprise_TargetRule_Model_Resource_Index_Abstract
+     * @deprecated after 1.12.0.0
      */
     public function saveResult($object, $value)
     {

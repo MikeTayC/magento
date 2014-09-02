@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -32,8 +32,10 @@
  * @package     Enterprise_Pbridge
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_Model_Authorizenet
+class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Payment_Model_Method_Cc
 {
+    protected $_code  = 'authorizenet';
+
     /**
      * Form block type for the frontend
      *
@@ -56,6 +58,23 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_
     protected $_pbridgeMethodInstance = null;
 
     /**
+     * Availability options
+     */
+    protected $_isGateway               = true;
+    protected $_canAuthorize            = true;
+    protected $_canCapture              = true;
+    protected $_canCapturePartial       = false;
+    protected $_canRefund               = true;
+    protected $_canRefundInvoicePartial = true;
+    protected $_canVoid                 = true;
+    protected $_canUseInternal          = true;
+    protected $_canUseCheckout          = true;
+    protected $_canUseForMultishipping  = true;
+    protected $_canSaveCc = false;
+
+    protected $_allowCurrencyCode = array('USD');
+
+    /**
      * Return that current payment method is dummy
      *
      * @return boolean
@@ -74,9 +93,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_
     {
         if ($this->_pbridgeMethodInstance === null) {
             $this->_pbridgeMethodInstance = Mage::helper('payment')->getMethodInstance('pbridge');
-            if ($this->_pbridgeMethodInstance) {
-                $this->_pbridgeMethodInstance->setOriginalMethodInstance($this);
-            }
+            $this->_pbridgeMethodInstance->setOriginalMethodInstance($this);
         }
         return $this->_pbridgeMethodInstance;
     }
@@ -104,6 +121,35 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_
     public function getTitle()
     {
         return parent::getTitle();
+    }
+
+    /**
+     * Check method for processing with base currency
+     *
+     * @param string $currencyCode
+     * @return boolean
+     */
+    public function canUseForCurrency($currencyCode)
+    {
+        if (!in_array($currencyCode, $this->getAcceptedCurrencyCodes())) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Return array of currency codes supplied by Payment Gateway
+     *
+     * @return array
+     */
+    public function getAcceptedCurrencyCodes()
+    {
+        if (!$this->hasData('_accepted_currency')) {
+            $acceptedCurrencyCodes = $this->_allowCurrencyCode;
+            $acceptedCurrencyCodes[] = $this->getConfigData('currency');
+            $this->setData('_accepted_currency', $acceptedCurrencyCodes);
+        }
+        return $this->_getData('_accepted_currency');
     }
 
     /**
@@ -141,8 +187,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_
      */
     public function isAvailable($quote = null)
     {
-        return $this->getPbridgeMethodInstance() ?
-            $this->getPbridgeMethodInstance()->isDummyMethodAvailable($quote) : false;
+        return $this->getPbridgeMethodInstance()->isDummyMethodAvailable($quote);
     }
 
     /**
@@ -196,7 +241,6 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_
             $response = $this->getPbridgeMethodInstance()->authorize($payment, $amount);
         }
         $payment->addData((array)$response);
-        $payment->setIsTransactionClosed(0);
         return $this;
     }
 
@@ -211,6 +255,8 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_
     {
         $response = $this->getPbridgeMethodInstance()->refund($payment, $amount);
         $payment->addData((array)$response);
+        $payment->setIsTransactionClosed(1);
+        $payment->setShouldCloseParentTransaction($response['is_transaction_closed']);
         return $this;
     }
 
@@ -244,7 +290,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_
 
     public function getIsCentinelValidationEnabled()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -256,28 +302,6 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_
     {
         $this->setData('store', $store);
         Mage::helper('enterprise_pbridge')->setStoreId(is_object($store) ? $store->getId() : $store);
-        return $this;
-    }
-
-    /**
-     * Check refund availability
-     *
-     * @return bool
-     */
-    public function canRefund()
-    {
-         return $this->_canRefund;
-    }
-
-    /**
-     * Set capture transaction ID to invoice for informational purposes
-     * @param Mage_Sales_Model_Order_Invoice $invoice
-     * @param Mage_Sales_Model_Order_Payment $payment
-     * @return Mage_Payment_Model_Method_Abstract
-     */
-    public function processInvoice($invoice, $payment)
-    {
-        $invoice->setTransactionId($payment->getLastTransId());
         return $this;
     }
 }

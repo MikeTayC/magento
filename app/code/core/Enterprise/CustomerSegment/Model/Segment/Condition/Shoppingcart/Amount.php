@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -60,7 +60,8 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Shoppingcart_Amount
     public function getNewChildSelectOptions()
     {
         return array('value' => $this->getType(),
-            'label'=>Mage::helper('enterprise_customersegment')->__('Shopping Cart Total'));
+            'label' => Mage::helper('enterprise_customersegment')->__('Shopping Cart Total'),
+            'available_in_guest_mode' => true);
     }
 
     /**
@@ -82,6 +83,34 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Shoppingcart_Amount
     }
 
     /**
+     * Set rule instance
+     *
+     * Modify attribute_option array if needed
+     *
+     * @param Mage_Rule_Model_Rule $rule
+     * @return Enterprise_CustomerSegment_Model_Segment_Condition_Product_Combine_List
+     */
+    public function setRule($rule)
+    {
+        $this->setData('rule', $rule);
+        if ($rule instanceof Enterprise_CustomerSegment_Model_Segment && $rule->getApplyTo() !== null) {
+            $attributeOption = $this->loadAttributeOptions()->getAttributeOption();
+            $applyTo = $rule->getApplyTo();
+            if (Enterprise_CustomerSegment_Model_Segment::APPLY_TO_VISITORS == $applyTo) {
+                unset($attributeOption['store_credit']);
+            } elseif (Enterprise_CustomerSegment_Model_Segment::APPLY_TO_VISITORS_AND_REGISTERED == $applyTo) {
+                foreach ($attributeOption as $key => $option) {
+                    if ('store_credit' != $key) {
+                        $attributeOption[$key] .= '*';
+                    }
+                }
+            }
+            $this->setAttributeOption($attributeOption);
+        }
+        return $this;
+    }
+
+    /**
      * Condition string on conditions page
      *
      * @return string
@@ -89,8 +118,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Shoppingcart_Amount
     public function asHtml()
     {
         return $this->getTypeElementHtml()
-            . Mage::helper('enterprise_customersegment')->__('Shopping Cart %s Amount %s %s:',
-                $this->getAttributeElementHtml(), $this->getOperatorElementHtml(), $this->getValueElementHtml())
+            . Mage::helper('enterprise_customersegment')->__('Shopping Cart %s Amount %s %s:', $this->getAttributeElementHtml(), $this->getOperatorElementHtml(), $this->getValueElementHtml())
             . $this->getRemoveLinkHtml();
     }
 
@@ -156,7 +184,12 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Shoppingcart_Amount
         }
 
         $select->where("{$field} {$operator} ?", $this->getValue());
-        $select->where($this->_createCustomerFilter($customer, 'customer_id'));
+        if ($customer) {
+            // Leave ability to check this condition not only by customer_id but also by quote_id
+            $select->where('quote.customer_id = :customer_id OR quote.entity_id = :quote_id');
+        } else {
+            $select->where($this->_createCustomerFilter($customer, 'quote.customer_id'));
+        }
         return $select;
     }
 }

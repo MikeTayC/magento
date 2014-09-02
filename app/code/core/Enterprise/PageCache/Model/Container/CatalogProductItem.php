@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -28,7 +28,7 @@
  * Placeholder container for catalog product items
  */
 class Enterprise_PageCache_Model_Container_CatalogProductItem
-    extends Enterprise_PageCache_Model_Container_Advanced_Abstract
+    extends Enterprise_PageCache_Model_Container_Advanced_Quote
 {
     const BLOCK_NAME_RELATED           = 'CATALOG_PRODUCT_ITEM_RELATED';
     const BLOCK_NAME_UPSELL            = 'CATALOG_PRODUCT_ITEM_UPSELL';
@@ -38,21 +38,28 @@ class Enterprise_PageCache_Model_Container_CatalogProductItem
      *
      * @var null|Enterprise_TargetRule_Block_Catalog_Product_List_Abstract
      */
-    protected $_parentBlock = null;
+    protected $_parentBlock;
 
     /**
      * Current item id
      *
      * @var null|int
      */
-    protected $_itemId = null;
+    protected $_itemId;
 
     /**
      * Container position in list
      *
      * @var null|int
      */
-    protected $_itemPosition = null;
+    protected $_itemPosition;
+
+    /**
+     * Info cache additional id
+     *
+     * @var null|string
+     */
+    protected $_infoCacheId = null;
 
     /**
      * Data shared between all instances of current container
@@ -94,8 +101,13 @@ class Enterprise_PageCache_Model_Container_CatalogProductItem
      */
     protected function _getInfoCacheId()
     {
-        return 'CATALOG_PRODUCT_LIST_SHARED_'
-            . md5($this->_placeholder->getName());
+        if (is_null($this->_infoCacheId)) {
+            $this->_infoCacheId = 'CATALOG_PRODUCT_LIST_SHARED_'
+                . md5($this->_placeholder->getName()
+                    . $this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_CART, '')
+                    . $this->_getProductId());
+        }
+        return $this->_infoCacheId;
     }
 
     /**
@@ -110,14 +122,23 @@ class Enterprise_PageCache_Model_Container_CatalogProductItem
             return $this;
         }
 
-        $data = serialize(self::$_sharedInfoData[$placeholderName]['info']);
-        $id = $this->_getInfoCacheId();
+        $data = array();
+        $cacheRecord = Enterprise_PageCache_Model_Container_Abstract::_loadCache($this->_getCacheId());
+        if ($cacheRecord) {
+            $cacheRecord = json_decode($cacheRecord, true);
+            if ($cacheRecord) {
+                $data = $cacheRecord;
+            }
+        }
+        $data[$this->_getInfoCacheId()] = self::$_sharedInfoData[$placeholderName]['info'];
+        $data = json_encode($data);
+
         $tags = array(Enterprise_PageCache_Model_Processor::CACHE_TAG);
         $lifetime = $this->_placeholder->getAttribute('cache_lifetime');
         if (!$lifetime) {
             $lifetime = false;
         }
-        Enterprise_PageCache_Model_Cache::getCacheInstance()->save($data, $id, $tags, $lifetime);
+        Enterprise_PageCache_Model_Cache::getCacheInstance()->save($data, $this->_getCacheId(), $tags, $lifetime);
         return $this;
     }
 
@@ -132,17 +153,17 @@ class Enterprise_PageCache_Model_Container_CatalogProductItem
         $placeholderName = $this->_placeholder->getName();
         $info = self::$_sharedInfoData[$placeholderName]['info'];
         if (is_null($info)) {
-            $infoCacheId = $this->_getInfoCacheId();
-            $data = Enterprise_PageCache_Model_Cache::getCacheInstance()->load($infoCacheId);
-            $info = $data ? unserialize($data) : array();
+            $info = array();
+            $cacheRecord = Enterprise_PageCache_Model_Cache::getCacheInstance()->load($this->_getCacheId());
+            if ($cacheRecord) {
+                $cacheRecord = json_decode($cacheRecord, true);
+                if ($cacheRecord && array_key_exists($this->_getInfoCacheId(), $cacheRecord)) {
+                    $info = $cacheRecord[$this->_getInfoCacheId()];
+                }
+            }
             self::$_sharedInfoData[$placeholderName]['info'] = $info;
         }
-
-        if (is_null($key)) {
-            return $info;
-        }
-
-        return isset($info[$key]) ? $info[$key] : null;
+        return isset($key) ? (isset($info[$key]) ? $info[$key] : null) : $info;
     }
 
     /**
@@ -283,27 +304,6 @@ class Enterprise_PageCache_Model_Container_CatalogProductItem
         return $result;
     }
 
-
-    /**
-     * Get container individual additional cache id
-     *
-     * @return string | false
-     */
-    protected function _getAdditionalCacheId()
-    {
-        return md5('PRODUCT_ITEM_' . $this->_getItemId());
-    }
-
-    /**
-     * Get cache identifier
-     *
-     * @return string
-     */
-    protected function _getCacheId()
-    {
-        return md5('CONTAINER_CATALOG_PRODUCT_LIST_' . $this->_getListBlockType());
-    }
-
     /**
      * Render element that was not cached
      *
@@ -316,17 +316,23 @@ class Enterprise_PageCache_Model_Container_CatalogProductItem
             return '';
         }
 
+        /** @var $item Mage_Catalog_Model_Product */
         $item = Mage::getModel('catalog/product')
             ->setStoreId(Mage::app()->getStore()->getId())
             ->load($itemId);
 
-        $block = $this->_placeholder->getAttribute('block');
-        $template = $this->_placeholder->getAttribute('template');
-
-        $block = new $block;
-        $block->setTemplate($template);
-        $block->setLayout(Mage::app()->getLayout());
+        $block = $this->_getPlaceHolderBlock();
         $block->setItem($item);
+
+        $priceBlock = $this->_placeholder->getAttribute('price_block_type_' . $item->getTypeId() . '_block');
+        if (!empty($priceBlock)) {
+            $block->addPriceBlockType(
+                $item->getTypeId(),
+                $priceBlock,
+                $this->_placeholder->getAttribute('price_block_type_' . $item->getTypeId() . '_template')
+            );
+        }
+
         Mage::dispatchEvent('render_block', array('block' => $block, 'placeholder' => $this->_placeholder));
 
         return $block->toHtml();

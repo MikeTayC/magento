@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -52,7 +52,7 @@ class Enterprise_Reward_Model_Observer
         if ($data) {
             if (!isset($data['store_id'])) {
                 if ($customer->getStoreId() == 0) {
-                    $data['store_id'] = Mage::app()->getDefaultStoreView()->getWebsiteId();
+                    $data['store_id'] = Mage::app()->getDefaultStoreView()->getStoreId();
                 } else {
                     $data['store_id'] = $customer->getStoreId();
                 }
@@ -89,14 +89,15 @@ class Enterprise_Reward_Model_Observer
         $customer = $observer->getEvent()->getCustomer();
 
         $data = $request->getPost('reward');
-        $subscribeByDefault = Mage::helper('enterprise_reward')->getNotificationConfig('subscribe_by_default');
+        $subscribeByDefault = (int)Mage::helper('enterprise_reward')
+            ->getNotificationConfig('subscribe_by_default', (int)$customer->getWebsiteId());
         if ($customer->isObjectNew()) {
-            $data['reward_update_notification']  = (int)$subscribeByDefault;
-            $data['reward_warning_notification'] = (int)$subscribeByDefault;
+            $data['reward_update_notification']  = $subscribeByDefault;
+            $data['reward_warning_notification'] = $subscribeByDefault;
         }
 
-        $customer->setRewardUpdateNotification((isset($data['reward_update_notification']) ? 1 : 0));
-        $customer->setRewardWarningNotification((isset($data['reward_warning_notification']) ? 1 : 0));
+        $customer->setRewardUpdateNotification(!empty($data['reward_update_notification']) ? 1 : 0);
+        $customer->setRewardWarningNotification(!empty($data['reward_warning_notification']) ? 1 : 0);
 
         return $this;
     }
@@ -384,30 +385,30 @@ class Enterprise_Reward_Model_Observer
      * if customer has enough points to cover grand total
      *
      * @param Varien_Event_Observer $observer
+     * @return Enterprise_Reward_Model_Observer
      */
     public function preparePaymentMethod($observer)
     {
         if (!Mage::helper('enterprise_reward')->isEnabledOnFront()) {
             return $this;
         }
+
         $quote = $observer->getEvent()->getQuote();
         if (!is_object($quote) || !$quote->getId()) {
             return $this;
         }
+
         /* @var $reward Enterprise_Reward_Model_Reward */
         $reward = $quote->getRewardInstance();
         if (!$reward || !$reward->getId()) {
             return $this;
         }
-        $baseQuoteGrandTotal = $quote->getBaseGrandTotal()+$quote->getBaseRewardCurrencyAmount();
+
+        $baseQuoteGrandTotal = $quote->getBaseGrandTotal() + $quote->getBaseRewardCurrencyAmount();
         if ($reward->isEnoughPointsToCoverAmount($baseQuoteGrandTotal)) {
             $paymentCode = $observer->getEvent()->getMethodInstance()->getCode();
             $result = $observer->getEvent()->getResult();
-            if ('free' === $paymentCode) {
-                $result->isAvailable = true;
-            } else {
-                $result->isAvailable = false;
-            }
+            $result->isAvailable = $paymentCode === 'free' && empty($result->isDeniedInConfig);
         }
         return $this;
     }
@@ -443,7 +444,9 @@ class Enterprise_Reward_Model_Observer
      */
     protected function _paymentDataImport($quote, $payment, $useRewardPoints)
     {
-        if (!$quote || !$quote->getCustomerId()) {
+        if (!$quote || !$quote->getCustomerId()
+            || $quote->getBaseGrandTotal() + $quote->getBaseRewardCurrencyAmount() <= 0
+        ) {
             return $this;
         }
         $quote->setUseRewardPoints((bool)$useRewardPoints);

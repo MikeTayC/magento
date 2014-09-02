@@ -20,10 +20,18 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
+/* @var $coreHelper Mage_Core_Helper_Data */
+$coreHelper = Mage::helper('core');
 ?>
+<div style="display:none; visibility: hidden;">
+    <div id="ui:button:add"><?php echo $this->getAddButtonHtml(); ?></div>
+    <div id="ui:button:delete"><?php echo $this->getDeleteButtonHtml()?></div>
+    <div id="ui:button:delete-title"><?php echo Mage::helper('enterprise_giftregistry')->__('Delete Option'); ?></div>
+</div>
 
 <script type="text/javascript">
 //<![CDATA[
@@ -32,15 +40,15 @@ OptionTemplateSelect =
     '<table class="border" cellpadding="0" cellspacing="0">'+
         '<thead>'+
         '<tr class="headings">'+
-            '<th><?php echo Mage::helper('enterprise_giftregistry')->__('Code') ?> <span class="required">*</span></th>'+
-            '<th><?php echo Mage::helper('enterprise_giftregistry')->__('Label') ?> <span class="required">*</span></th>'+
-            '<th><?php echo Mage::helper('enterprise_giftregistry')->__('Is Default') ?></th>'+
+            '<th>' + <?php echo $coreHelper->jsonEncode(Mage::helper('enterprise_giftregistry')->__('Code')) ?> + '<span class="required">*</span></th>'+
+            '<th>' + <?php echo $coreHelper->jsonEncode(Mage::helper('enterprise_giftregistry')->__('Label')) ?> + '<span class="required">*</span></th>'+
+            '<th>' + <?php echo $coreHelper->jsonEncode(Mage::helper('enterprise_giftregistry')->__('Is Default')) ?> +'</th>'+
             '<th class="type-butt scope-item">&nbsp;</th>'+
         '</tr>'+
         '</thead>'+
         '<tbody id="<?php echo $this->getFieldPrefix() ?>_select_option_type_row_{{id}}"></tbody>'+
         '<tfoot>'+
-            '<tr><td colspan="10" class="a-right scope-item"><?php echo $this->getAddButtonHtml() ?></td></tr>'+
+            '<tr><td colspan="10" class="a-right scope-item">' + $('ui\:button\:add').innerHTML + '</td></tr>'+
         '</tfoot>'+
     '</table>'+
     '<input type="hidden" class="required-option-select-rows" name="validation_{{id}}_result" value="" >'+
@@ -54,7 +62,7 @@ OptionTemplateSelectRow =
         '<input type="text" class="required-entry validate-code input-text global-scope select-option-code" id="{{prefix}}_attribute_{{id}}_select_{{select_id}}_code" name="attributes[{{prefix}}][{{id}}][options][{{select_id}}][code]" value="{{code}}"></td>'+
         '<td><input type="text" class="required-entry input-text" id="{{prefix}}_attribute_{{id}}_select_{{select_id}}_label" name="attributes[{{prefix}}][{{id}}][options][{{select_id}}][label]" value="{{label}}">{{checkbox_scope}}</td>'+
         '<td><input type="radio" class="input-text global-scope" id="{{prefix}}_attribute_{{id}}_select_{{select_id}}_default" name="attributes[{{prefix}}][{{id}}][default]" value="{{select_id}}" {{checked}}></td>'+
-        '<td class="scope-item"><span title="<?php echo Mage::helper('enterprise_giftregistry')->__('Delete Option') ?>"><?php echo $this->getDeleteButtonHtml() ?></span></td>'+
+        '<td class="scope-item"><span title="'+$('ui\:button\:delete-title').innerHTML.toString().stripTags()+'">' + $('ui\:button\:delete').innerHTML +'</span></td>'+
     '</tr>';
 
 selectOptionType = {
@@ -114,7 +122,7 @@ selectOptionType = {
 }
 
 Validation.addAllThese([
-    ['required-option-select-rows', '<?php echo $this->__('Please add rows to option.') ?>', function(v, elm) {
+    ['required-option-select-rows', <?php echo $coreHelper->jsonEncode($this->__('Please add rows to option.')); ?>, function(v, elm) {
         var optionContainerElm = elm.up(1);
         var resultFlag = false;
         $$('#'+optionContainerElm.id+' .select-option-code').each(function(elm){

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCard
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -301,6 +301,19 @@ class Enterprise_GiftCard_Model_Observer extends Mage_Core_Model_Abstract
                 }
             }
         }
+        return $this;
+    }
+
+    /**
+     * Initialize product options renderer with giftcard specific params
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_GiftCard_Model_Observer
+     */
+    public function initOptionRenderer(Varien_Event_Observer $observer)
+    {
+        $block = $observer->getBlock();
+        $block->addOptionsRenderCfg('giftcard', 'enterprise_giftcard/catalog_product_configuration');
         return $this;
     }
 }

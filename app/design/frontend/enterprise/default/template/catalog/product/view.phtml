@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -36,7 +36,7 @@
 <script type="text/javascript">
     var optionsPrice = new Product.OptionsPrice(<?php echo $this->getJsonConfig() ?>);
 </script>
-<div id="messages_product_view"><?php echo $this->getMessagesBlock()->toHtml() ?></div>
+<div id="messages_product_view"><?php echo $this->getMessagesBlock()->setEscapeMessageFlag(true)->toHtml() ?></div>
 <div class="product-view">
     <form action="<?php echo $this->getSubmitUrl($_product) ?>" method="post" id="product_addtocart_form"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
         <div class="no-display">
@@ -50,7 +50,7 @@
                         <div class="product-name">
                             <h1><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></h1>
                         </div>
-                        <p class="product-ids"><?php echo $this->__('SKU# %s', $this->htmlEscape($_product->getSku())); ?></p>
+                        <p class="product-ids"><?php echo $this->__('SKU# %s', $this->escapeHtml($_product->getSku())); ?></p>
                         <?php echo $this->getReviewsSummaryHtml($_product, false, true)?>
                         <?php echo $this->getChildHtml('alert_urls') ?>
                         <?php echo $this->getChildHtml('product_type_data') ?>
@@ -100,7 +100,14 @@
                     </dd>
                 <?php endforeach;?>
                 </dl>
-                <script type="text/javascript">new Enterprise.Tabs('collateral-tabs')</script>
+                <script type="text/javascript">
+                //<![CDATA[
+                    var collateralTabs = new Enterprise.Tabs('collateral-tabs');
+                    Event.observe(window, 'load', function() {
+                        collateralTabs.select();
+                    });
+                //]]>
+                </script>
             <?php endif; ?>
             <?php if ($this->canEmailToFriend()): ?>
                 <p class="emailto-link"><a href="<?php echo $this->helper('catalog/product')->getEmailToFriendUrl($_product) ?>"><?php echo $this->__('Email to a Friend') ?></a></p>
@@ -152,6 +159,13 @@
             delete Validation.methods['required-entry'];
             delete Validation.methods['validate-one-required'];
             delete Validation.methods['validate-one-required-by-name'];
+            // Remove custom datetime validators
+            for (var methodName in Validation.methods) {
+                if (methodName.match(/^validate-datetime-.*/i)) {
+                    delete Validation.methods[methodName];
+                }
+            }
+
             if (this.validator.validate()) {
                 if (url) {
                     this.form.action = url;

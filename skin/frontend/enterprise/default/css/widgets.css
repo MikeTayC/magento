@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 /* Widgets =============================================================================== */
@@ -160,4 +160,7 @@
 .sidebar .widget-cms-hierarchy-link { display:block; margin:10px 0; padding:0 17px/* 0 37px*/; /*background:url(../images/bkg_widget-cms-link-icon.gif) 19px 2px no-repeat;*/ }
 .sidebar .widget-cms-hierarchy-link a { font-size:12px; background:url(../images/bkg_widget-link.gif) 100% 4px no-repeat; padding:0 15px 0 0; color:#333; text-decoration:underline; }
 .sidebar .widget-cms-hierarchy-link a:hover { color:#333; text-decoration:none; }
+
+/* Widget SKU */
+/* .widget-sku {} */
 /* ======================================================================================= */

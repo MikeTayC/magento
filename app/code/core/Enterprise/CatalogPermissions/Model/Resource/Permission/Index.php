@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogPermissions
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -557,12 +557,14 @@ class Enterprise_CatalogPermissions_Model_Resource_Permission_Index extends Mage
             'grant_catalog_product_price' => $readAdapter->getCheckSql(
                 $readAdapter->quoteInto('grant_catalog_category_view = ?', $deny),
                 $deny,
-                'grant_catalog_product_price'),
-            'grant_checkout_items'        => $readAdapter->getCheckSql(
+                'grant_catalog_product_price'
+            ),
+            'grant_checkout_items' => $readAdapter->getCheckSql(
                 $readAdapter->quoteInto('grant_catalog_category_view = ?', $deny)
-                . ' OR ' . $readAdapter->quoteInto('grant_catalog_product_price = ?', $deny),
+                    . ' OR ' . $readAdapter->quoteInto('grant_catalog_product_price = ?', $deny),
                 $deny,
-                'grant_catalog_product_price')
+                'grant_checkout_items'
+            )
         );
         $writeAdapter->update($this->getTable('permission_index_product'), $data, $condition);
 

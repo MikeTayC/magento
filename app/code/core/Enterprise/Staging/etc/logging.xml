@@ -21,11 +21,20 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <logging>
+    <actions>
+        <mergePost translate="label" module="enterprise_staging">
+            <label>Merge Post</label>
+        </mergePost>
+
+        <unschedule translate="label" module="enterprise_staging">
+            <label>Unschedule</label>
+        </unschedule>
+    </actions>
     <enterprise_staging translate="label">
         <label>Content Staging</label>
         <expected_models>

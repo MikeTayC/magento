@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -130,104 +130,6 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
         $dateObj->setDate($date, $localeDateFormat);
 
         return $dateObj->toString(Zend_Date::ISO_8601) . 'Z';
-    }
-
-    /**
-     * Prepare index data for using in Solr metadata
-     * Add language code suffix to text fields
-     * and type suffix for not text dynamic fields
-     *
-     * @see $this->_usedFields, $this->_searchTextFields
-     *
-     * @param array $data
-     * @param array $attributesParams
-     * @param string|null $localCode
-     *
-     * @return array
-     */
-    protected function _prepareIndexData($data, $attributesParams, $localeCode = null)
-    {
-        if (!is_array($data) || empty($data)) {
-            return array();
-        }
-
-        $fieldPrefix = $this->_advancedIndexFieldsPrefix;
-        $languageSuffix = $this->_getLanguageSuffix($localeCode);
-
-        foreach ($data as $key => $value) {
-            if (in_array($key, $this->_usedFields)) {
-                continue;
-            } elseif ($key == 'options') {
-                unset($data[$key]);
-                continue;
-            }
-
-            if (!array_key_exists($key, $attributesParams)) {
-                $backendType = (substr($key, 0, 8) == 'fulltext') ? 'text' : null;
-                $frontendInput = null;
-            } else {
-                $backendType = $attributesParams[$key]['backendType'];
-                $frontendInput = $attributesParams[$key]['frontendInput'];
-            }
-
-            if ($frontendInput == 'multiselect') {
-                if (!is_array($value)) {
-                    $value = explode($this->_separator, $value);
-                    $value = array_unique($value);
-                } else {
-                    $result = array();
-                    foreach ($value as $val) {
-                        if (is_array($val)) {
-                            $result = array_merge($result, explode($this->_separator, $val));
-                        }
-                    }
-                    $value = array_unique($result);
-                }
-                $data['attr_multi_'. $key] = $value;
-                unset($data[$key]);
-            } elseif ($frontendInput == 'select' || $frontendInput == 'boolean') {
-                if (is_array($value)) {
-                    $value = array_unique($value);
-                }
-                $data['attr_select_'. $key] = $value;
-                unset($data[$key]);
-            } elseif (in_array($backendType, $this->_textFieldTypes)) {
-                /*
-                 * for grouped products imploding all possible unique values
-                 */
-                if (is_array($value)) {
-                    $value = implode(' ', array_unique($value));
-                }
-
-                $data[$key . $languageSuffix] = $value;
-                unset($data[$key]);
-            } elseif ($backendType != 'static') {
-                if (substr($key, 0, strlen($fieldPrefix)) == $fieldPrefix) {
-                    $data[substr($key, strlen($fieldPrefix))] = $value;
-                    unset($data[$key]);
-                    continue;
-                }
-
-                if ($backendType == 'datetime') {
-                    if (is_array($value)) {
-                        foreach ($value as $k => &$val) {
-                            $val = $this->_getSolrDate($data['store_id'], $val);
-                            if (empty($val)) {
-                                unset($value[$k]);
-                            }
-                        }
-                    } else {
-                        $value = $this->_getSolrDate($data['store_id'], $value);
-                    }
-                }
-                if (!empty($value)) {
-                    $data['attr_'. $backendType .'_'. $key] = $value;
-                }
-                unset($data[$key]);
-            }
-        }
-
-        return $data;
     }
 
     /**
@@ -368,9 +270,8 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
     {
         $result = array();
 
-        $languageSuffix = $this->_getLanguageSuffix(
-            Mage::app()->getStore()->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE)
-        );
+        $localeCode = Mage::app()->getStore()->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE);
+        $languageSuffix = $this->_getLanguageSuffix($localeCode);
 
         /**
          * Support specifying sort by field as only string name of field
@@ -398,17 +299,12 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
             $sortType = $_sort['value'];
             if ($sortField == 'relevance') {
                 $sortField = 'score';
-            } elseif ($sortField == 'name') {
-                $sortField = 'alphaNameSort' . $languageSuffix;
             } elseif ($sortField == 'position') {
                 $sortField = 'position_category_' . Mage::registry('current_category')->getId();
             } elseif ($sortField == 'price') {
-                $websiteId       = Mage::app()->getStore()->getWebsiteId();
-                $customerGroupId = Mage::getSingleton('customer/session')->getCustomerGroupId();
-
-                $sortField = 'price_'. $customerGroupId .'_'. $websiteId;
+                $sortField = $this->getPriceFieldName();
             } else {
-                $sortField = $this->getAttributeSolrFieldName($sortField);
+                $sortField = $this->getSearchEngineFieldName($sortField, 'sort');
             }
 
             $result[] = array('sortField' => $sortField, 'sortType' => trim(strtolower($sortType)));
@@ -418,36 +314,149 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
     }
 
     /**
-     * Retrive Solr server status
+     * Retrieve Solr server status
      *
-     * @return float Actual time taken to ping the server, FALSE if timeout or HTTP error status occurs
+     * @return  float|bool Actual time taken to ping the server, FALSE if timeout or HTTP error status occurs
      */
     public function ping()
     {
-        if (is_null($this->_ping)){
+        if (is_null($this->_ping)) {
             try {
                 $this->_ping = $this->_client->ping();
             } catch (Exception $e) {
                 $this->_ping = false;
             }
         }
+
         return $this->_ping;
+    }
+
+    /**
+     * Prepare name for system text fields.
+     *
+     * @param   string $filed
+     * @param   string $suffix
+     * @return  string
+     */
+    public function getAdvancedTextFieldName($filed, $suffix = '', $storeId = null)
+    {
+        $localeCode     = Mage::app()->getStore($storeId)->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE);
+        $languageSuffix = Mage::helper('enterprise_search')->getLanguageSuffix($localeCode);
+
+        if ($suffix) {
+            $suffix = '_' . $suffix;
+        }
+
+        return $filed . $suffix . $languageSuffix;
+    }
+
+    /**
+     * Retrieve attribute solr field name
+     *
+     * @param   Mage_Catalog_Model_Resource_Eav_Attribute|string $attribute
+     * @param   string $target - default|sort|nav
+     *
+     * @return  string|bool
+     */
+    public function getSearchEngineFieldName($attribute, $target = 'default')
+    {
+        if (is_string($attribute)) {
+            if ($attribute == 'price') {
+                return $this->getPriceFieldName();
+            }
+
+            $eavConfig  = Mage::getSingleton('eav/config');
+            $entityType = $eavConfig->getEntityType('catalog_product');
+            $attribute  = $eavConfig->getAttribute($entityType, $attribute);
+        }
+
+        // Field type defining
+        $attributeCode = $attribute->getAttributeCode();
+        if (in_array($attributeCode, array('sku'))) {
+            return $attributeCode;
+        }
+
+        if ($attributeCode == 'price') {
+            return $this->getPriceFieldName();
+        }
+
+        $backendType    = $attribute->getBackendType();
+        $frontendInput  = $attribute->getFrontendInput();
+
+        if ($frontendInput == 'multiselect') {
+            $fieldType = 'multi';
+        } elseif ($frontendInput == 'select' || $frontendInput == 'boolean') {
+            $fieldType = 'select';
+        } elseif ($backendType == 'decimal' || $backendType == 'datetime') {
+            $fieldType = $backendType;
+        } else {
+            $fieldType = 'text';
+        }
+
+        // Field prefix construction. Depends on field usage purpose - default, sort, navigation
+        $fieldPrefix = 'attr_';
+        if ($target == 'sort') {
+            $fieldPrefix .= $target . '_';
+        } elseif ($target == 'nav') {
+            if ($attribute->getIsFilterable() || $attribute->getIsFilterableInSearch() || $attribute->usesSource()) {
+                $fieldPrefix .= $target . '_';
+            }
+        }
+
+        if ($fieldType == 'text') {
+            $localeCode     = Mage::app()->getStore($attribute->getStoreId())
+                ->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE);
+            $languageSuffix = Mage::helper('enterprise_search')->getLanguageSuffix($localeCode);
+            $fieldName      = $fieldPrefix . $attributeCode . $languageSuffix;
+        } else {
+            $fieldName      = $fieldPrefix . $fieldType . '_' . $attributeCode;
+        }
+
+        return $fieldName;
+    }
+
+
+
+
+
+    // Deprecated methods
+
+    /**
+     * Prepare index data for using in Solr metadata.
+     * Add language code suffix to text fields and type suffix for not text dynamic fields.
+     * Prepare sorting fields.
+     *
+     * @deprecated after 1.11.2.0
+     *
+     * @param   array $data
+     * @param   array $attributesParams
+     * @param   string|null $localeCode
+     *
+     * @return  array
+     */
+    protected function _prepareIndexData($data, $attributesParams = array(), $localeCode = null)
+    {
+        $productId  = $data['id'];
+        $storeId    = $data['store_id'];
+
+        if ($productId && $storeId) {
+            return $this->_prepareIndexProductData($data, $productId, $storeId);
+        }
+
+        return array();
     }
 
     /**
      * Retrieve attribute field's name for sorting
      *
+     * @deprecated after 1.11.2.0
+     *
      * @param string $attributeCode
+     *
      * @return string
      */
     public function getAttributeSolrFieldName($attributeCode)
     {
-        if ($attributeCode == 'score') {
-            return $attributeCode;
-        }
-        $entityType     = Mage::getSingleton('eav/config')->getEntityType('catalog_product');
-        $attribute      = Mage::getSingleton('eav/config')->getAttribute($entityType, $attributeCode);
-
-        return Mage::helper('enterprise_search')->getAttributeSolrFieldName($attribute);
+        return $this->getSearchEngineFieldName($attributeCode, 'sort');
     }
 }

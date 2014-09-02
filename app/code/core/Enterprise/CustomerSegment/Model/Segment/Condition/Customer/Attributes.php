@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -355,13 +355,14 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Attributes
             $condition = $this->getResource()->createConditionSql($field, $operator, $value);
             $select->where($condition);
         } else {
-            $joinFunction = 'joinLeft';
             if ($this->getValue() == 'is_exists') {
-                $joinFunction = 'joinInner';
+                $ifCondition = 'COUNT(*) != 0';
             } else {
-                $select->where('address.entity_id IS NULL');
+                $ifCondition = 'COUNT(*) = 0';
             }
-            $select->$joinFunction(array('address'=>$addressTable), 'address.entity_id = main.value', array());
+            $select->reset(Zend_Db_Select::COLUMNS);
+            $condition = $this->getResource()->getReadConnection()->getCheckSql($ifCondition, '1', '0');
+            $select->columns(new Zend_Db_Expr($condition));
             $select->where('main.attribute_id = ?', $attribute->getId());
         }
         return $select;

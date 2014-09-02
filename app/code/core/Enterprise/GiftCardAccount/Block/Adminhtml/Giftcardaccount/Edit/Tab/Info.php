@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -90,13 +90,15 @@ class Enterprise_GiftCardAccount_Block_Adminhtml_Giftcardaccount_Edit_Tab_Info e
             $model->setData('is_redeemable', Enterprise_GiftCardAccount_Model_Giftcardaccount::REDEEMABLE);
         }
 
-        $fieldset->addField('website_id', 'select', array(
+        $field = $fieldset->addField('website_id', 'select', array(
             'name'      => 'website_id',
             'label'     => Mage::helper('enterprise_giftcardaccount')->__('Website'),
             'title'     => Mage::helper('enterprise_giftcardaccount')->__('Website'),
             'required'  => true,
             'values'    => Mage::getSingleton('adminhtml/system_store')->getWebsiteValuesForForm(true),
         ));
+        $renderer = $this->getLayout()->createBlock('adminhtml/store_switcher_form_renderer_fieldset_element');
+        $field->setRenderer($renderer);
 
         $fieldset->addType('price', 'Enterprise_GiftCardAccount_Block_Adminhtml_Giftcardaccount_Form_Price');
 

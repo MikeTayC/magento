@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -120,7 +120,6 @@ class Mage_Catalog_Model_Layer extends Varien_Object
             ->addMinimalPrice()
             ->addFinalPrice()
             ->addTaxPercents()
-            //->addStoreFilter()
             ->addUrlRewrite($this->getCurrentCategory()->getId());
 
         Mage::getSingleton('catalog/product_status')->addVisibleFilterToCollection($collection);

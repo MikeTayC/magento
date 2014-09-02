@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -40,12 +40,11 @@ class Enterprise_Cms_Model_Source_Hierarchy_Menu_Chapter
      */
     public function toOptionArray()
     {
-        $helper = Mage::helper('enterprise_cms');
         $options = array(
-            array('label' => $helper->__('No'), 'value' => ''),
-            array('label' => $helper->__('Chapter'), 'value' => 'chapter'),
-            array('label' => $helper->__('Section'), 'value' => 'section'),
-            array('label' => $helper->__('Both'), 'value' => 'both'),
+            array('label' => Mage::helper('enterprise_cms')->__('No'), 'value' => ''),
+            array('label' => Mage::helper('enterprise_cms')->__('Chapter'), 'value' => 'chapter'),
+            array('label' => Mage::helper('enterprise_cms')->__('Section'), 'value' => 'section'),
+            array('label' => Mage::helper('enterprise_cms')->__('Both'), 'value' => 'both'),
         );
 
         return $options;

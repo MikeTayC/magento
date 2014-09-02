@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -36,12 +36,14 @@ class Enterprise_Search_Model_Resource_Engine
     /**
      * Store search engine adapter model instance
      *
-     * @var object
+     * @var Enterprise_Search_Model_Adapter_Abstract
      */
     protected $_adapter = null;
 
     /**
      * Advanced index fields prefix
+     *
+     * @deprecated after 1.11.2.0
      *
      * @var string
      */
@@ -50,16 +52,16 @@ class Enterprise_Search_Model_Resource_Engine
     /**
      * List of static fields for index
      *
+     * @deprecated after 1.11.2.0
+     *
      * @var array
      */
-    protected $_advancedStaticIndexFields = array(
-        '#categories',
-        '#show_in_categories',
-        '#visibility'
-    );
+    protected $_advancedStaticIndexFields = array('#visibility');
 
     /**
      * List of obligatory dynamic fields for index
+     *
+     * @deprecated after 1.11.2.0
      *
      * @var array
      */
@@ -67,10 +69,6 @@ class Enterprise_Search_Model_Resource_Engine
         '#position_category_',
         '#price_'
     );
-
-
-
-
 
     /**
      * Check if hold commit action is possible depending on current commit mode
@@ -125,16 +123,6 @@ class Enterprise_Search_Model_Resource_Engine
     public function __construct()
     {
         $this->_initAdapter();
-    }
-
-    /**
-     * Returns advanced index fields prefix
-     *
-     * @return string
-     */
-    public function getFieldsPrefix()
-    {
-        return $this->_advancedIndexFieldsPrefix;
     }
 
     /**
@@ -193,38 +181,26 @@ class Enterprise_Search_Model_Resource_Engine
      * @param int $storeId
      * @param array $index
      * @param string $entityType 'product'|'cms'
+     *
      * @return Enterprise_Search_Model_Resource_Engine
      */
     public function saveEntityIndex($entityId, $storeId, $index, $entityType = 'product')
     {
-        $store             = Mage::app()->getStore($storeId);
-        $localeCode        = $store->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE);
-        $index['store_id'] = $storeId;
-        $docs = $this->_adapter->prepareDocs(array($entityId => $index), $localeCode);
-
-        $this->_adapter->addDocs($docs);
-
-        return $this;
+        return $this->saveEntityIndexes($storeId, array($entityId => $index), $entityType);
     }
 
     /**
-     * Multi add entities data to search index
+     * Add entities data to search index
      *
      * @param int $storeId
      * @param array $entityIndexes
      * @param string $entityType 'product'|'cms'
+     *
      * @return Enterprise_Search_Model_Resource_Engine
      */
     public function saveEntityIndexes($storeId, $entityIndexes, $entityType = 'product')
     {
-        $store      = Mage::app()->getStore($storeId);
-        $localeCode = $store->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE);
-        foreach ($entityIndexes as $entityId => $indexData) {
-            $entityIndexes[$entityId]['store_id'] = $storeId;
-        }
-
-        $docs = $this->_adapter->prepareDocs($entityIndexes, $localeCode);
-
+        $docs = $this->_adapter->prepareDocsPerStore($entityIndexes, $storeId);
         $this->_adapter->addDocs($docs);
 
         return $this;
@@ -313,63 +289,15 @@ class Enterprise_Search_Model_Resource_Engine
     }
 
     /**
-     * Add to index fields that allowed in advanced index
+     * Retrieve allowed visibility values for current engine
      *
-     * @param array $productData
-     *
-     * @return array
-     */
-    public function addAllowedAdvancedIndexField($productData)
-    {
-        $advancedIndex = array();
-
-        foreach ($productData as $field => $value) {
-            if (in_array($field, $this->_advancedStaticIndexFields)
-                || $this->_isDynamicField($field)
-            ) {
-                if (!empty($value)) {
-                    $advancedIndex[$field] = $value;
-                }
-            }
-        }
-
-        return $advancedIndex;
-    }
-
-    /**
-     * Define if field is dynamic index field
-     *
-     * @param string $field
-     *
-     * @return bool
-     */
-    protected function _isDynamicField($field)
-    {
-        foreach ($this->_advancedDynamicIndexFields as $dynamicField) {
-            $length = strlen($dynamicField);
-            if (substr($field, 0, $length) == $dynamicField) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Prepare advanced index for products
-     *
-     * @see Mage_CatalogSearch_Model_Resource_Fulltext->_getSearchableProducts()
-     *
-     * @param array $index
-     * @param int $storeId
-     * @param array | null $productIds
+     * @see
      *
      * @return array
      */
-    public function addAdvancedIndex($index, $storeId, $productIds = null)
+    public function getAllowedVisibility()
     {
-        return Mage::getResourceSingleton('enterprise_search/index')
-            ->addAdvancedIndex($index, $storeId, $productIds);
+        return Mage::getSingleton('catalog/product_visibility')->getVisibleInSiteIds();
     }
 
     /**
@@ -403,19 +331,20 @@ class Enterprise_Search_Model_Resource_Engine
      */
     protected function _getAdapterModel($adapterName)
     {
-        $model = '';
         switch ($adapterName) {
             case 'solr':
             default:
                 if (extension_loaded('solr')) {
-                    $model = 'enterprise_search/adapter_phpExtension';
+                    $modelName = 'enterprise_search/adapter_phpExtension';
                 } else {
-                    $model = 'enterprise_search/adapter_httpStream';
+                    $modelName = 'enterprise_search/adapter_httpStream';
                 }
                 break;
         }
 
-        return Mage::getSingleton($model);
+        $adapter = Mage::getSingleton($modelName);
+
+        return $adapter;
     }
 
     /**
@@ -503,6 +432,33 @@ class Enterprise_Search_Model_Resource_Engine
         return $this->_adapter->getIndexNeedsOptimization();
     }
 
+    protected $_searchableAttributes = null;
+
+    /**
+     * Store searchable attributes
+     *
+     * @param array $attributes
+     * @return Enterprise_Search_Model_Resource_Engine
+     */
+    public function storeSearchableAttributes(array $attributes)
+    {
+        $this->_adapter->storeSearchableAttributes($attributes);
+        return $this;
+    }
+
+    /**
+     * Retrieve attribute field name for search engine
+     *
+     * @param   $attribute
+     * @param   string $target
+     *
+     * @return  string|bool
+     */
+    public function getSearchEngineFieldName($attribute, $target = 'default')
+    {
+        return $this->_adapter->getSearchEngineFieldName($attribute, $target);
+    }
+
 
 
 
@@ -557,5 +513,83 @@ class Enterprise_Search_Model_Resource_Engine
         }
 
         return $this;
+    }
+
+    /**
+     * Returns advanced index fields prefix
+     *
+     * @deprecated after 1.11.2.0
+     *
+     * @return string
+     */
+    public function getFieldsPrefix()
+    {
+        return $this->_advancedIndexFieldsPrefix;
+    }
+
+    /**
+     * Prepare advanced index for products
+     *
+     * @deprecated after 1.11.2.0
+     *
+     * @see Mage_CatalogSearch_Model_Resource_Fulltext->_getSearchableProducts()
+     *
+     * @param array $index
+     * @param int $storeId
+     * @param array | null $productIds
+     *
+     * @return array
+     */
+    public function addAdvancedIndex($index, $storeId, $productIds = null)
+    {
+        return Mage::getResourceSingleton('enterprise_search/index')
+            ->addAdvancedIndex($index, $storeId, $productIds);
+    }
+
+    /**
+     * Add to index fields that allowed in advanced index
+     *
+     * @deprecated after 1.11.2.0
+     *
+     * @param array $productData
+     *
+     * @return array
+     */
+    public function addAllowedAdvancedIndexField($productData)
+    {
+        $advancedIndex = array();
+
+        foreach ($productData as $field => $value) {
+            if (in_array($field, $this->_advancedStaticIndexFields)
+                || $this->_isDynamicField($field)
+            ) {
+                if (!empty($value)) {
+                    $advancedIndex[$field] = $value;
+                }
+            }
+        }
+
+        return $advancedIndex;
+    }
+
+    /**
+     * Define if field is dynamic index field
+     *
+     * @deprecated after 1.11.2.0
+     *
+     * @param string $field
+     *
+     * @return bool
+     */
+    protected function _isDynamicField($field)
+    {
+        foreach ($this->_advancedDynamicIndexFields as $dynamicField) {
+            $length = strlen($dynamicField);
+            if (substr($field, 0, $length) == $dynamicField) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

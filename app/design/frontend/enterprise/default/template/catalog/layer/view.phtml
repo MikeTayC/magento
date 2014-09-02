@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -28,7 +28,7 @@
 /**
  * Category layered navigation
  *
- * @see Mage_Catalog_Block_Layer_View
+ * @deprecated since 1.12.0.0
  */
 ?>
 <?php if($this->canShowBlock()): ?>
@@ -37,8 +37,8 @@
         <strong><span><?php echo $this->__('Shop By') ?></span></strong>
     </div>
     <?php echo $this->getStateHtml() ?>
+    <div class="block-content">
     <?php if($this->canShowOptions()): ?>
-        <div class="block-content">
             <p class="block-subtitle"><?php echo $this->__('Shopping Options') ?></p>
             <dl id="narrow-by-list">
                 <?php $_filters = $this->getFilters() ?>
@@ -50,7 +50,10 @@
                 <?php endforeach; ?>
             </dl>
             <script type="text/javascript">decorateDataList('narrow-by-list')</script>
-        </div>
     <?php endif; ?>
+    <?php if ($this->getLayer()->getState()->getFilters()): ?>
+        <div class="actions"><a href="<?php echo $this->getClearUrl() ?>"><?php echo $this->__('Clear All') ?></a></div>
+    <?php endif; ?>
+    </div>
 </div>
 <?php endif; ?>

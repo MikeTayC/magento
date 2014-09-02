@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -61,7 +61,7 @@ class Enterprise_Reminder_Block_Adminhtml_Reminder_Edit_Tab_General
         $fieldset->addField('description', 'textarea', array(
             'name'  => 'description',
             'label' => Mage::helper('enterprise_reminder')->__('Description'),
-            'style' => 'width: 98%; height: 100px;',
+            'style' => 'height: 100px;',
         ));
 
         $field = $fieldset->addField('salesrule_id', 'note', array(
@@ -83,11 +83,19 @@ class Enterprise_Reminder_Block_Adminhtml_Reminder_Edit_Tab_General
                 ->prepareElementHtml($field);
         }
 
-        if (!Mage::app()->isSingleStoreMode()) {
-            $fieldset->addField('website_ids','multiselect',array(
-                'name'     => 'website_ids',
+        if (Mage::app()->isSingleStoreMode()) {
+            $websiteId = Mage::app()->getStore(true)->getWebsiteId();
+            $fieldset->addField('website_ids', 'hidden', array(
+                'name'     => 'website_ids[]',
+                'value'    => $websiteId
+            ));
+            $model->setWebsiteIds($websiteId);
+        } else {
+            $fieldset->addField('website_ids', 'multiselect', array(
+                'name'     => 'website_ids[]',
+                'label'    => Mage::helper('enterprise_reminder')->__('Assigned to Website'),
+                'title'    => Mage::helper('enterprise_reminder')->__('Assigned to Website'),
                 'required' => true,
-                'label'    => Mage::helper('newsletter')->__('Assigned to Websites'),
                 'values'   => Mage::getSingleton('adminhtml/system_store')->getWebsiteValuesForForm(),
                 'value'    => $model->getWebsiteIds()
             ));
@@ -109,18 +117,18 @@ class Enterprise_Reminder_Block_Adminhtml_Reminder_Edit_Tab_General
 
         $dateFormatIso = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT);
 
-        $fieldset->addField('active_from', 'date', array(
-            'name'   => 'active_from',
-            'label'  => Mage::helper('enterprise_reminder')->__('Active From'),
-            'title'  => Mage::helper('enterprise_reminder')->__('Active From'),
+        $fieldset->addField('from_date', 'date', array(
+            'name'   => 'from_date',
+            'label'  => Mage::helper('enterprise_reminder')->__('From Date'),
+            'title'  => Mage::helper('enterprise_reminder')->__('From Date'),
             'image'  => $this->getSkinUrl('images/grid-cal.gif'),
             'input_format' => Varien_Date::DATE_INTERNAL_FORMAT,
             'format'       => $dateFormatIso
         ));
-        $fieldset->addField('active_to', 'date', array(
-            'name'   => 'active_to',
-            'label'  => Mage::helper('enterprise_reminder')->__('Active To'),
-            'title'  => Mage::helper('enterprise_reminder')->__('Active To'),
+        $fieldset->addField('to_date', 'date', array(
+            'name'   => 'to_date',
+            'label'  => Mage::helper('enterprise_reminder')->__('To Date'),
+            'title'  => Mage::helper('enterprise_reminder')->__('To Date'),
             'image'  => $this->getSkinUrl('images/grid-cal.gif'),
             'input_format' => Varien_Date::DATE_INTERNAL_FORMAT,
             'format'       => $dateFormatIso

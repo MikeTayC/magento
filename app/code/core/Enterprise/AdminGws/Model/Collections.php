@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_AdminGws
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -145,16 +145,6 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
     }
 
     /**
-     * Limit price rules collection
-     *
-     * @param Mage_Core_Model_Mysql4_Collection_Abstract $collection
-     */
-    public function limitPriceRules($collection)
-    {
-        $collection->addWebsiteFilter($this->_role->getRelevantWebsiteIds());
-    }
-
-    /**
      * Limit online visitor log collection
      *
      * @param Mage_Log_Model_Mysql4_Visitor_Collection $collection
@@ -275,7 +265,6 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
         $collection->setIsStoreFilterWithAdmin(false)->addStoreFilter($this->_role->getStoreIds());
     }
 
-
     /**
      * Filter admin roles collection by allowed stores
      *
@@ -388,16 +377,6 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
     }
 
     /**
-     * Limit customer segment collection
-     *
-     * @param Enterprise_CustomerSegment_Model_Mysql4_Segment_Collection $collection
-     */
-    public function limitCustomerSegments($collection)
-    {
-        $collection->addWebsiteFilter($this->_role->getRelevantWebsiteIds());
-    }
-
-    /**
      * Limit GiftRegistry Entity collection
      *
      * @param Enterprise_GiftRegistry_Model_Mysql4_Entity_Collection $collection
@@ -415,5 +394,53 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
     public function limitBestsellersCollection($collection)
     {
         $collection->addStoreRestrictions($this->_role->getStoreIds());
+    }
+
+    /**
+     * Limit most viewed collection
+     *
+     * @param Mage_Reports_Model_Resource_Report_Product_Viewed_Collection $collection
+     */
+    public function limitMostViewedCollection($collection)
+    {
+        $collection->addStoreRestrictions($this->_role->getStoreIds());
+    }
+
+    /**
+     * Limit Automated Email Marketing Reminder Rules collection
+     *
+     * @param Mage_Core_Model_Mysql4_Collection_Abstract $collection
+     */
+    public function limitRuleEntityCollection($collection)
+    {
+        $collection->addWebsiteFilter($this->_role->getRelevantWebsiteIds());
+    }
+
+
+
+
+
+    /**
+     * Limit customer segment collection
+     *
+     * @deprecated after 1.12.0.0 use $this->limitRuleEntityCollection() for any rule based collection
+     *
+     * @param Enterprise_CustomerSegment_Model_Mysql4_Segment_Collection $collection
+     */
+    public function limitCustomerSegments($collection)
+    {
+        $this->limitRuleEntityCollection($collection);
+    }
+
+    /**
+     * Limit price rules collection
+     *
+     * @deprecated after 1.12.0.0 use $this->limitRuleEntityCollection() for any rule based collection
+     *
+     * @param Mage_Core_Model_Mysql4_Collection_Abstract $collection
+     */
+    public function limitPriceRules($collection)
+    {
+        $this->limitRuleEntityCollection($collection);
     }
 }

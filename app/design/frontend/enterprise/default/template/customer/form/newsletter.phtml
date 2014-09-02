@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -39,6 +39,8 @@
                 <input type="checkbox" name="is_subscribed" id="subscription" value="1" title="<?php echo $this->__('General Subscription') ?>"<?php if($this->getIsSubscribed()): ?> checked="checked"<?php endif; ?> class="checkbox" />
             </div>
         </li>
+        <?php /* Extensions placeholder */ ?>
+        <?php echo $this->getChildHtml('customer.form.newsletter.extra')?>
     </ul>
 </div>
 <div class="buttons-set form-buttons">
@@ -46,6 +48,8 @@
     <button type="submit" class="button" title="<?php echo $this->__('Save') ?>"><span><span><?php echo $this->__('Save') ?></span></span></button>
 </div>
 </form>
+<?php /* Extensions placeholder */ ?>
+<?php echo $this->getChildHtml('customer.form.newsletter.extra2')?>
 <script type="text/javascript">
 //<![CDATA[
     var dataForm = new VarienForm('form-validate', true);

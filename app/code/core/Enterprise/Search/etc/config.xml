@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -75,6 +75,25 @@
             </enterprise_search_setup>
         </resources>
 
+        <events>
+            <catalogsearch_index_process_start>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>holdCommit</method>
+                    </enterprise_search>
+                </observers>
+            </catalogsearch_index_process_start>
+
+            <catalogsearch_index_process_complete>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>applyIndexChanges</method>
+                    </enterprise_search>
+                </observers>
+            </catalogsearch_index_process_complete>
+        </events>
     </global>
 
     <admin>
@@ -107,23 +126,14 @@
                 </observers>
             </adminhtml_catalog_product_attribute_edit_prepare_form>
 
-            <catalogsearch_index_process_start>
+            <catelogsearch_searchable_attributes_load_after>
                 <observers>
                     <enterprise_search>
                         <class>enterprise_search/observer</class>
-                        <method>holdCommit</method>
+                        <method>storeSearchableAttributes</method>
                     </enterprise_search>
                 </observers>
-            </catalogsearch_index_process_start>
-
-            <catalogsearch_index_process_complete>
-                <observers>
-                    <enterprise_search>
-                        <class>enterprise_search/observer</class>
-                        <method>applyIndexChanges</method>
-                    </enterprise_search>
-                </observers>
-            </catalogsearch_index_process_complete>
+            </catelogsearch_searchable_attributes_load_after>
 
             <catalogsearch_query_save_after>
                 <observers>
@@ -187,6 +197,16 @@
                     </enterprise_search>
                 </observers>
             </store_delete_after>
+
+            <after_reindex_process_catalog_product_price>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>runFulltextReindexAfterPriceReindex</method>
+                    </enterprise_search>
+                </observers>
+            </after_reindex_process_catalog_product_price>
+
         </events>
         <translate>
             <modules>

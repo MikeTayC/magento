@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -54,9 +54,12 @@ class Enterprise_Search_Block_Recommendations extends Mage_Core_Block_Template
             return array();
         }
         $result = array();
+
+        /** @var $coreHelper Mage_Core_Helper_Data */
+        $coreHelper = Mage::helper('core');
         foreach ($recommendations as $recommendation) {
             $result[] = array(
-                'word'        => $recommendation['query_text'],
+                'word'        => $coreHelper->escapeHtml($recommendation['query_text']),
                 'num_results' => $recommendation['num_results'],
                 'link'        => $this->getUrl("*/*/") . "?q=" . urlencode($recommendation['query_text'])
             );

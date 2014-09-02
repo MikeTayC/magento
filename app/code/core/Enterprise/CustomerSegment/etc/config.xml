@@ -21,14 +21,14 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_CustomerSegment>
-            <version>1.11.0.0.2</version>
+            <version>1.11.0.0.3</version>
         </Enterprise_CustomerSegment>
     </modules>
     <global>
@@ -161,6 +161,22 @@
                     </enterprise_customersegment>
                 </observers>
             </enterprise_customer_attribute_edit_tab_general_prepare_form>
+            <targetrule_edit_tab_main_after_prepare_form>
+                <observers>
+                    <enterprise_customersegment>
+                        <class>enterprise_customersegment/observer</class>
+                        <method>addFieldsToTargetRuleForm</method>
+                    </enterprise_customersegment>
+                </observers>
+            </targetrule_edit_tab_main_after_prepare_form>
+            <banner_edit_tab_properties_after_prepare_form>
+                <observers>
+                    <enterprise_customersegment>
+                        <class>enterprise_customersegment/observer</class>
+                        <method>addFieldsToBannerForm</method>
+                    </enterprise_customersegment>
+                </observers>
+            </banner_edit_tab_properties_after_prepare_form>
         </events>
         <translate>
             <modules>
@@ -230,6 +246,14 @@
                     </enterprise_customersegment>
                 </observers>
             </newsletter_subscriber_save_commit_after>
+            <visitor_init>
+                <observers>
+                    <enterprise_customersegment>
+                        <class>enterprise_customersegment/observer</class>
+                        <method>processEvent</method>
+                    </enterprise_customersegment>
+                </observers>
+            </visitor_init>
         </events>
     </frontend>
     <default>

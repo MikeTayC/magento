@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -79,17 +79,17 @@ class Enterprise_Rma_Block_Return_Create extends Enterprise_Rma_Block_Form
      */
     public function getAttributes()
     {
-        /* @var $itemModel  */
+        /* @var $itemModel */
         $itemModel = Mage::getModel('enterprise_rma/item');
 
         /* @var $itemForm Enterprise_Rma_Model_Item_Form */
-        $itemForm   = Mage::getModel('enterprise_rma/item_form');
+        $itemForm = Mage::getModel('enterprise_rma/item_form');
         $itemForm->setFormCode('default')
             ->setStore($this->getStore())
             ->setEntity($itemModel);
 
         // prepare item attributes to show
-        $attributes     = array();
+        $attributes = array();
 
         // add system required attributes
         foreach ($itemForm->getSystemAttributes() as $attribute) {
@@ -106,6 +106,8 @@ class Enterprise_Rma_Block_Return_Create extends Enterprise_Rma_Block_Form
                 $attributes[$attribute->getAttributeCode()] = $attribute;
             }
         }
+
+        uasort($attributes, array($this, '_compareSortOrder'));
 
         return $attributes;
     }
@@ -124,5 +126,20 @@ class Enterprise_Rma_Block_Return_Create extends Enterprise_Rma_Block_Form
             $email = $this->escapeHtml($data->getCustomerCustomEmail());
         }
         return $email;
+    }
+
+    /**
+     * Compares sort order of attributes, returns -1, 0 or 1 if $a sort
+     * order is less, equal or greater than $b sort order respectively.
+     *
+     * @param $a Enterprise_Rma_Model_Item_Attribute
+     * @param $b Enterprise_Rma_Model_Item_Attribute
+     *
+     * @return int
+     */
+    protected function _compareSortOrder(Enterprise_Rma_Model_Item_Attribute $a, Enterprise_Rma_Model_Item_Attribute $b)
+    {
+        $diff = $a->getSortOrder() - $b->getSortOrder();
+        return $diff ? ($diff > 0 ? 1 : -1) : 0;
     }
 }

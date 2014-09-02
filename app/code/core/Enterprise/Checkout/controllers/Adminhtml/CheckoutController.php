@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -49,7 +49,9 @@ class Enterprise_Checkout_Adminhtml_CheckoutController extends Mage_Adminhtml_Co
     public function getCartModel()
     {
         return Mage::getSingleton('enterprise_checkout/cart')
-            ->setSession(Mage::getSingleton('adminhtml/session'));
+            ->setSession(Mage::getSingleton('adminhtml/session'))
+            ->setContext(Enterprise_Checkout_Model_Cart::CONTEXT_ADMIN_CHECKOUT)
+            ->setCurrentStore($this->getRequest()->getPost('store'));
     }
 
     /**
@@ -79,7 +81,9 @@ class Enterprise_Checkout_Adminhtml_CheckoutController extends Mage_Adminhtml_Co
                 $this->_redirectFlag = true;
                 return $this;
             } else {
-                throw new Enterprise_Checkout_Exception($this->__('Shopping cart management disabled for this customer.'));
+                throw new Enterprise_Checkout_Exception(
+                    $this->__('Shopping cart management disabled for this customer.')
+                );
             }
         }
 
@@ -120,8 +124,12 @@ class Enterprise_Checkout_Adminhtml_CheckoutController extends Mage_Adminhtml_Co
                 Mage::app()->getStore($storeId)->setCurrentCurrencyCode($quoteCurrency->getCode());
             }
         } else {
-            // Assign store to quote when it will be saved
-            $quote->setStore(Mage::app()->getStore($storeId));
+            // customer and addresses should be set to resolve situation when no quote was saved for customer previously
+            // otherwise quote would be saved with customer_id = null and zero totals
+            $quote->setStore(Mage::app()->getStore($storeId))->setCustomer($customer);
+            $quote->getBillingAddress();
+            $quote->getShippingAddress();
+            $quote->save();
         }
 
         Mage::register('checkout_current_quote', $quote);
@@ -271,8 +279,11 @@ class Enterprise_Checkout_Adminhtml_CheckoutController extends Mage_Adminhtml_Co
                     }
                     foreach ($source['source_wishlist'] as $productId => $qty) {
                         if (in_array($productId, $quoteProductIds)) {
-                            $wishlistItem = Mage::getModel('wishlist/item')
-                                ->loadByProductWishlist($wishlist->getId(), $productId, $wishlist->getSharedStoreIds());
+                            $wishlistItem = Mage::getModel('wishlist/item')->loadByProductWishlist(
+                                $wishlist->getId(),
+                                $productId,
+                                $wishlist->getSharedStoreIds()
+                            );
                             if ($wishlistItem->getId()) {
                                 $wishlistItem->delete();
                             }
@@ -726,14 +737,14 @@ class Enterprise_Checkout_Adminhtml_CheckoutController extends Mage_Adminhtml_Co
 
     /**
      * Returns item info by list and list item id
-     * Returned object has following keys:
+     * Returns object on success or false on error. Returned object has following keys:
      *  - product_id - null if no item found
      *  - buy_request - Varien_Object, empty if not buy request stored for this item
      *
      * @param string $listType
-     * @param int $itemId
+     * @param int    $itemId
      *
-     * @return Varien_Object
+     * @return Varien_Object|false
      */
     protected function _getListItemInfo($listType, $itemId)
     {
@@ -765,6 +776,41 @@ class Enterprise_Checkout_Adminhtml_CheckoutController extends Mage_Adminhtml_Co
     }
 
     /**
+     * Wrapper for _getListItemInfo() - extends with additional list types. New method has been created to leave
+     * definition of original method unchanged (add_by_sku list type utilizes additional parameter - $info).
+     * @see _getListItemInfo() for return format
+     *
+     * @param string $listType
+     * @param int    $itemId
+     * @param array  $info
+     * @return Varien_Object|false
+     */
+    protected function _getInfoForListItem($listType, $itemId, $info)
+    {
+        $productId = null;
+        $buyRequest = new Varien_Object();
+        switch ($listType) {
+            case Enterprise_Checkout_Block_Adminhtml_Sku_Abstract::LIST_TYPE:
+                $info['sku'] = $itemId;
+
+            case Enterprise_Checkout_Block_Adminhtml_Sku_Errors_Abstract::LIST_TYPE:
+                if ((!isset($info['sku'])) || (string)$info['sku'] == '') { // Allow SKU == '0'
+                    return false;
+                }
+                $item = $this->getCartModel()->prepareAddProductBySku($info['sku'], $info['qty'], $info);
+                if ($item['code'] != Enterprise_Checkout_Helper_Data::ADD_ITEM_STATUS_SUCCESS) {
+                    return false;
+                }
+                $productId = $item['item']['id'];
+                break;
+
+            default:
+                return $this->_getListItemInfo($listType, $itemId);
+        }
+        return new Varien_Object(array('product_id' => $productId, 'buy_request' => $buyRequest));
+    }
+
+    /**
      * Processing request data
      *
      * @return Enterprise_Checkout_Adminhtml_CheckoutController
@@ -775,9 +821,30 @@ class Enterprise_Checkout_Adminhtml_CheckoutController extends Mage_Adminhtml_Co
          * Update quote items
          */
         if ($this->getRequest()->getPost('update_items')) {
-            $items = $this->getRequest()->getPost('item', array());
-            $items = $this->_processFiles($items);
-            $this->getCartModel()->updateQuoteItems($items);
+            if ((int)$this->getRequest()->getPost('empty_customer_cart') == 1) {
+                // Empty customer's shopping cart
+                $this->getCartModel()->getQuote()->removeAllItems()->collectTotals()->save();
+            } else {
+                $items = $this->getRequest()->getPost('item', array());
+                $items = $this->_processFiles($items);
+                $this->getCartModel()->updateQuoteItems($items);
+                if ($this->getCartModel()->getQuote()->getHasError()){
+                    foreach ($this->getCartModel()->getQuote()->getErrors() as $error) {
+                        /* @var $error Mage_Core_Model_Message_Error */
+                        Mage::getSingleton('adminhtml/session')->addError($error->getCode());
+                    }
+                }
+            }
+        }
+
+        if ($this->getRequest()->getPost('sku_remove_failed')) {
+            // "Remove all" button on error grid has been pressed: remove items from "add-by-SKU" queue
+            $this->getCartModel()->removeAllAffectedItems();
+        }
+
+        $sku = $this->getRequest()->getPost('remove_sku', false);
+        if ($sku) {
+            $this->getCartModel()->removeAffectedItem($sku);
         }
 
         /**
@@ -785,15 +852,24 @@ class Enterprise_Checkout_Adminhtml_CheckoutController extends Mage_Adminhtml_Co
          */
         $listTypes = $this->getRequest()->getPost('configure_complex_list_types');
         if ($listTypes) {
+            $skuListTypes = array(
+                Enterprise_Checkout_Block_Adminhtml_Sku_Errors_Abstract::LIST_TYPE,
+                Enterprise_Checkout_Block_Adminhtml_Sku_Abstract::LIST_TYPE,
+            );
             /* @var $productHelper Mage_Catalog_Helper_Product */
             $productHelper = Mage::helper('catalog/product');
             $listTypes = array_filter(explode(',', $listTypes));
+            if (in_array(Enterprise_Checkout_Block_Adminhtml_Sku_Errors_Abstract::LIST_TYPE, $listTypes)) {
+                // If results came from SKU error grid - clean them (submitted results are going to be re-checked)
+                $this->getCartModel()->removeAllAffectedItems();
+            }
             $listItems = $this->getRequest()->getPost('list');
             foreach ($listTypes as $listType) {
                 if (!isset($listItems[$listType])
                     || !is_array($listItems[$listType])
                     || !isset($listItems[$listType]['item'])
-                    || !is_array($listItems[$listType]['item'])) {
+                    || !is_array($listItems[$listType]['item'])
+                ) {
                     continue;
                 }
 
@@ -804,14 +880,15 @@ class Enterprise_Checkout_Adminhtml_CheckoutController extends Mage_Adminhtml_Co
                         $info = array(); // For sure to filter incoming data
                     }
 
-                    $itemInfo = $this->_getListItemInfo($listType, $itemId);
+                    $itemInfo = $this->_getInfoForListItem($listType, $itemId, $info);
                     if (!$itemInfo) {
                         continue;
                     }
 
                     $currentConfig = $itemInfo->getBuyRequest();
                     if (isset($info['_config_absent'])) {
-                        // User added items without configuration (used multiple checkbox control) - try to use configs from list
+                        // User has added items without configuration (using multiple checkbox control)
+                        // Try to use configs from list
                         if (isset($info['qty'])) {
                             $currentConfig->setQty($info['qty']);
                         }
@@ -824,15 +901,27 @@ class Enterprise_Checkout_Adminhtml_CheckoutController extends Mage_Adminhtml_Co
                         $config = $productHelper->addParamsToBuyRequest($info, $params)
                             ->toArray();
                     }
-                    try {
-                        $this->getCartModel()->addProduct($itemInfo->getProductId(), $config);
-                    } catch (Mage_Core_Exception $e){
-                        Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
-                    } catch (Exception $e){
-                        Mage::logException($e);
+                    if (in_array($listType, $skuListTypes)) {
+                        // Items will be later added to cart using saveAffectedItems()
+                        $this->getCartModel()->setAffectedItemConfig($itemId, $config);
+                    } else {
+                        try {
+                            $this->getCartModel()->addProduct($itemInfo->getProductId(), $config);
+                        } catch (Mage_Core_Exception $e){
+                            Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+                        } catch (Exception $e){
+                            Mage::logException($e);
+                        }
                     }
                 }
             }
+        }
+
+
+        if (is_array($listTypes) &&  array_intersect($listTypes, $skuListTypes)) {
+            $cart = $this->getCartModel();
+            // We need to save products to enterprise_checkout/cart instead of checkout/cart
+            $cart->saveAffectedProducts($cart, false);
         }
 
         /**
@@ -888,12 +977,55 @@ class Enterprise_Checkout_Adminhtml_CheckoutController extends Mage_Adminhtml_Co
     public function showUpdateResultAction()
     {
         $session = Mage::getSingleton('adminhtml/session');
-        if ($session->hasUpdateResult() && is_scalar($session->getUpdateResult())){
+        if ($session->hasUpdateResult() && is_scalar($session->getUpdateResult())) {
             $this->getResponse()->setBody($session->getUpdateResult());
             $session->unsUpdateResult();
         } else {
             $session->unsUpdateResult();
             return false;
         }
+    }
+
+    /**
+     * Upload and parse CSV file with SKUs and quantity
+     */
+    public function uploadSkuCsvAction()
+    {
+        try {
+            $this->_initData();
+        } catch (Mage_Core_Exception $e) {
+            Mage::logException($e);
+            $this->_redirect('*/customer');
+            $this->_redirectFlag = true;
+        }
+        if ($this->_redirectFlag) {
+            return;
+        }
+
+        /** @var $helper Enterprise_Checkout_Helper_Data */
+        $helper = Mage::helper('enterprise_checkout');
+        $rows = $helper->isSkuFileUploaded($this->getRequest())
+            ? $helper->processSkuFileUploading($this->_getSession())
+            : array();
+
+        $items = $this->getRequest()->getPost('add_by_sku');
+        if (!is_array($items)) {
+            $items = array();
+        }
+        $result = array();
+        foreach ($items as $sku => $qty) {
+            $result[] = array('sku' => $sku, 'qty' => $qty['qty']);
+        }
+        foreach ($rows as $row) {
+            $result[] = $row;
+        }
+
+        if (!empty($result)) {
+            $cart = $this->getCartModel();
+            $cart->prepareAddProductsBySku($result);
+            $cart->saveAffectedProducts($this->getCartModel(), true);
+        }
+
+        $this->_redirectReferer();
     }
 }

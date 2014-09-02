@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -33,6 +33,11 @@
  */
 class Enterprise_Checkout_Block_Adminhtml_Manage_Items extends Mage_Adminhtml_Block_Template
 {
+    /**
+     * Rterieve grid id in template
+     *
+     * @return string
+     */
     public function getJsObjectName()
     {
         return 'checkoutItemsGrid';
@@ -129,6 +134,12 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Items extends Mage_Adminhtml_Bl
         return $this->getStore()->formatPrice($value);
     }
 
+    /**
+     * Check whether to use custom price for item
+     *
+     * @param $item
+     * @return bool
+     */
     public function usedCustomPriceForItem($item)
     {
         return false;
@@ -190,8 +201,12 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Items extends Mage_Adminhtml_Bl
             $class = 'disabled';
             $addAttributes = 'disabled="disabled"';
         }
-        return sprintf('<button type="button" class="scalable %s" %s><span>%s</span></button>',
-            $class, $addAttributes, Mage::helper('sales')->__('Configure'));
+        return sprintf(
+            '<button type="button" class="scalable %s" %s><span><span><span>%s</span></span></span></button>',
+            $class,
+            $addAttributes,
+            Mage::helper('sales')->__('Configure')
+        );
     }
 
     /**
@@ -203,5 +218,17 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Items extends Mage_Adminhtml_Bl
     public function isMoveToWishlistAllowed($item)
     {
         return $item->getProduct()->isVisibleInSiteVisibility();
+    }
+
+    /**
+     * Retrieve collection of customer wishlists
+     *
+     * @return Mage_Wishlist_Model_Resource_Wishlist_Collection
+     */
+    public function getCustomerWishlists()
+    {
+        /* @var Mage_Wishlist_Model_Resource_Wishlist_Collection $wishlistCollection */
+        return Mage::getModel("wishlist/wishlist")->getCollection()
+            ->filterByCustomerId($this->getCustomerId());
     }
 }

@@ -116,5 +116,19 @@
             <container>Enterprise_PageCache_Model_Container_CatalogProductItem</container>
             <cache_lifetime>86400</cache_lifetime>
         </catalog_product_item_upsell>
+        <catalog_product_list_related>
+            <block>catalog/product_list_related</block>
+            <name>catalog.product.related</name>
+            <placeholder>CATALOG_PRODUCT_LIST_RELATED</placeholder>
+            <container>Enterprise_PageCache_Model_Container_CatalogProductList</container>
+            <cache_lifetime>86400</cache_lifetime>
+        </catalog_product_list_related>
+        <catalog_product_list_upsell>
+            <block>catalog/product_list_upsell</block>
+            <name>product.info.upsell</name>
+            <placeholder>CATALOG_PRODUCT_LIST_UPSELL</placeholder>
+            <container>Enterprise_PageCache_Model_Container_CatalogProductList</container>
+            <cache_lifetime>86400</cache_lifetime>
+        </catalog_product_list_upsell>
     </placeholders>
 </config>

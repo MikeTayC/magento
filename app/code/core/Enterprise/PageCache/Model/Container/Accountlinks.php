@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -59,14 +59,8 @@ class Enterprise_PageCache_Model_Container_Accountlinks extends Enterprise_PageC
      */
     protected function _renderBlock()
     {
-        $block = $this->_placeholder->getAttribute('block');
-        $template = $this->_placeholder->getAttribute('template');
-        $name = $this->_placeholder->getAttribute('name');
-
-        $block = new $block;
-        $block->setTemplate($template);
-        $block->setNameInLayout($name);
-        $block->setLayout(Mage::app()->getLayout());
+        $block = $this->_getPlaceHolderBlock();
+        $block->setNameInLayout($this->_placeholder->getAttribute('name'));
 
         if (!$this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER)
             || $this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER_LOGGED_IN)

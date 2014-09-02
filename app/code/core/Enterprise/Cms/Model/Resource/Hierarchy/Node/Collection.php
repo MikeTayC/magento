@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -166,7 +166,9 @@ class Enterprise_Cms_Model_Resource_Hierarchy_Node_Collection extends Mage_Core_
                         'menu_excluded',
                         'menu_levels_down',
                         'menu_ordered',
-                        'menu_list_type'
+                        'menu_list_type',
+                        'top_menu_visibility',
+                        'top_menu_excluded'
                     ));
         }
         $this->setFlag('meta_data_joined', true);
@@ -258,6 +260,28 @@ class Enterprise_Cms_Model_Resource_Hierarchy_Node_Collection extends Mage_Core_
     public function applyRootNodeFilter()
     {
         $this->addFieldToFilter('parent_node_id', array('null' => true));
+        return $this;
+    }
+
+    /**
+     * Apply filter to retrieve only proper scope nodes.
+     *
+     * @param string $scope Scope name: default|store|website
+     */
+    public function applyScope($scope)
+    {
+        $this->getSelect()->where('main_table.scope = ?', $scope);
+        return $this;
+    }
+
+    /**
+     * Apply filter to retrieve only proper scope ID nodes.
+     *
+     * @param int $codeId
+     */
+    public function applyScopeId($codeId)
+    {
+        $this->getSelect()->where('main_table.scope_id = ?', $codeId);
         return $this;
     }
 }

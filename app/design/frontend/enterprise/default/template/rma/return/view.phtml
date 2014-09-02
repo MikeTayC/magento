@@ -20,14 +20,16 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 /** @var $this Enterprise_Rma_Block_Return_View */
 ?>
-<?php $_rma = $this->getRma() ?>
-<?php $_order = $this->getOrder(); ?>
-<?php $additionalData = $this->getAdditionalData() ?>
+<?php
+    $_rma = $this->getRma();
+    $_order = $this->getOrder();
+    $additionalData = $this->getAdditionalData();
+?>
 
 <div class="page-title">
     <h1><?php echo $this->__('RMA') ?> #<?php echo $_rma->getIncrementId()?> - <?php echo $this->escapeHtml($_rma->getStatusLabel()) ?></h1>
@@ -197,8 +199,8 @@
             <td><?php echo $this->escapeHtml($this->helper('enterprise_rma')->getQty($item));?></td>
             <td><span class="nobr"><?php echo $this->escapeHtml($item->getStatusLabel()) ?></span></td>
             <td>
-                <a id="as_<?php echo $key ?>" href="javascript:void(0)" onclick="showHiddenForm(<?php echo $key ?>)"><?php echo $this->escapeHtml($this->__('Show Details')) ?></a>
-                <a id="ah_<?php echo $key ?>" style="display:none" href="javascript:void(0)" onclick="hideHiddenForm(<?php echo $key ?>)"><?php echo $this->escapeHtml($this->__('Hide Details')) ?></a>
+                <a id="as_<?php echo $key ?>" href="javascript:void(0)" onclick="showHiddenForm(<?php echo $key ?>)"><?php echo $this->__('Show Details') ?></a>
+                <a id="ah_<?php echo $key ?>" style="display:none" href="javascript:void(0)" onclick="hideHiddenForm(<?php echo $key ?>)"><?php echo $this->__('Hide Details') ?></a>
             </td>
         </tr>
         <tr id="shf_<?php echo $key ?>" style="display:none">
@@ -279,13 +281,13 @@
                             </strong>
                             <br />
                             <span>
-                                <?php echo nl2br($_comment->getComment()); ?>
+                                <?php echo nl2br($this->escapeHtml($_comment->getComment())); ?>
                             </span>
                             <div class="divider"></div>
                         </li>
                         <?php endif; ?>
-                    <?php endforeach ?>
-                    <?php endif ?>
+                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>

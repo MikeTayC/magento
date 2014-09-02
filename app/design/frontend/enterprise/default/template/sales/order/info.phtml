@@ -20,11 +20,12 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
-<?php  $_order = $this->getOrder() ?>
+<?php /** @var $this Mage_Sales_Block_Order_Info */ ?>
+<?php $_order = $this->getOrder() ?>
 <div class="order-page">
 <div class="page-title title-buttons">
     <h1><?php echo $this->__('Order #%s - %s', $_order->getRealOrderId(), $_order->getStatusLabel()) ?></h1>
@@ -58,10 +59,10 @@
     </div>
     <div class="col-2">
         <div class="info-box">
-            <h2 class="box-title"><?php echo $this->__('Shipping Method') ?><?php /* | <a href="#"><?php echo $this->__('Track Order') ?></a>*/ ?></h2>
+            <h2 class="box-title"><?php echo $this->__('Shipping Method') ?></h2>
             <div class="box-content">
         <?php if ($_order->getShippingDescription()): ?>
-            <?php echo $_order->getShippingDescription() ?>
+            <?php echo $this->escapeHtml($_order->getShippingDescription()) ?>
         <?php else: ?>
             <?php echo $this->helper('sales')->__('No shipping information available'); ?>
         <?php endif; ?>

@@ -20,14 +20,14 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
 <?php $_websiteCollection = $this->getWebsiteCollection() ?>
 <?php if ($_websiteCollection->getSize()): ?>
 <div id="store_switcher_container">
-<p class="switcher"><label for="store_switcher"><?php echo $this->__('Choose Store View') ?>:</label>
+<p class="switcher"><label for="store_switcher"><?php echo $this->__('Choose Store View:') ?></label>
 <select name="store_switcher" id="store_switcher" class="left-col-block">
     <?php if( $this->helper('permissions')->isSuperAdmin() ):?>
         <option value=""><?php echo $this->getDefaultStoreName() ?></option>
@@ -57,6 +57,7 @@
         <?php endforeach; ?>
     <?php endforeach; ?>
 </select>
+<?php echo $this->getHintHtml() ?>
 </p>
 </div>
 <script type="text/javascript">

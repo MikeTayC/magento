@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Banner
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -97,36 +97,19 @@ class Enterprise_Banner_Block_Adminhtml_Banner_Edit_Tab_Properties extends Mage_
             'can_be_empty' => true,
         ));
 
-        // whether to specify customer segments - also for UI design purposes only
-        $fieldset->addField('customer_segment_is_all', 'select', array(
-            'label'     => Mage::helper('enterprise_banner')->__('Customer Segments'),
-            'options'   => array(
-                    '1' => Mage::helper('enterprise_banner')->__('Any'),
-                    '0' => Mage::helper('enterprise_banner')->__('Specified'),
-                ),
-            'note'      => Mage::helper('enterprise_banner')->__('Applies to Any of the Specified Customer Segments'),
-            'disabled'  => (bool)$model->getIsReadonly()
-        ));
-        $model->setCustomerSegmentIsAll($model->getCustomerSegmentIds() ? '0' : '1'); // see $form->setValues() below
+        $afterFormBlock = $this->getLayout()->createBlock('adminhtml/widget_form_element_dependence')
+            ->addFieldMap("{$htmlIdPrefix}is_types", 'is_types')
+            ->addFieldMap("{$htmlIdPrefix}types", 'types')
+            ->addFieldDependence('types', 'is_types', '1');
 
-        $fieldset->addField('customer_segment_ids', 'multiselect', array(
-            'name'         => 'customer_segment_ids',
-            'values'       => Mage::getResourceSingleton('enterprise_customersegment/segment_collection')->toOptionArray(),
-            'can_be_empty' => true,
-        ));
+        Mage::dispatchEvent('banner_edit_tab_properties_after_prepare_form', array('model' => $model, 'form' => $form,
+            'block' => $this, 'after_form_block' => $afterFormBlock));
+
+        $this->setChild('form_after', $afterFormBlock);
 
         $form->setValues($model->getData());
         $this->setForm($form);
 
-        // define customer segments and types field dependencies
-        $this->setChild('form_after', $this->getLayout()->createBlock('adminhtml/widget_form_element_dependence')
-            ->addFieldMap("{$htmlIdPrefix}is_types", 'is_types')
-            ->addFieldMap("{$htmlIdPrefix}types", 'types')
-            ->addFieldDependence('types', 'is_types', '1')
-            ->addFieldMap("{$htmlIdPrefix}customer_segment_is_all", 'customer_segment_is_all')
-            ->addFieldMap("{$htmlIdPrefix}customer_segment_ids", 'customer_segment_ids')
-            ->addFieldDependence('customer_segment_ids', 'customer_segment_is_all', '0')
-        );
         return $this;
     }
 

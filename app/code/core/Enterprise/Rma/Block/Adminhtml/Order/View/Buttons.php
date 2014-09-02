@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -46,11 +46,14 @@ class Enterprise_Rma_Block_Adminhtml_Order_View_Buttons extends Mage_Adminhtml_B
             if ($isReturnable) {
                 $url = Mage::getSingleton('adminhtml/url')
                    ->getUrl('*/rma/new', array('order_id' => $container->getOrderId()));
-
+                $order = 35;
+                if (isset($this->_buttons[0]['send_notification']['sort_order'])) {
+                    $order = $this->_buttons[0]['send_notification']['sort_order'] + 5;
+                }
                 $container->addButton('create_rma', array(
                     'label' => Mage::helper('enterprise_rma')->__('Create RMA'),
                     'onclick' => "setLocation('" . $url . "')",
-                ), 0, $this->_buttons[0]['send_notification']['sort_order']+5);
+                ), 0, $order);
             }
         }
         return $this;

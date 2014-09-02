@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -202,7 +202,7 @@ abstract class Mage_Catalog_Model_Resource_Abstract extends Mage_Eav_Model_Entit
             if (!$isDefaultStore) {
                 $object->setExistsStoreValueFlag($attributeCode);
             }
-            $attribute->getBackend()->setValueId($valueId);
+            $attribute->getBackend()->setEntityValueId($object, $valueId);
         }
 
         return $this;
@@ -537,7 +537,10 @@ abstract class Mage_Catalog_Model_Resource_Abstract extends Mage_Eav_Model_Entit
      * @param array $origData
      * @return bool
      */
-    protected function _canUpdateAttribute(Mage_Eav_Model_Entity_Attribute_Abstract $attribute, $value, array &$origData)
+    protected function _canUpdateAttribute(
+        Mage_Eav_Model_Entity_Attribute_Abstract $attribute,
+        $value,
+        array &$origData)
     {
         $result = parent::_canUpdateAttribute($attribute, $value, $origData);
         if ($result &&

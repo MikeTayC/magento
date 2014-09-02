@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -88,16 +88,17 @@ class Enterprise_CustomerSegment_Model_Customer extends Mage_Core_Model_Abstract
     public function getActiveSegmentsForEvent($eventName, $websiteId)
     {
         if (!isset($this->_segmentMap[$eventName][$websiteId])) {
-            $this->_segmentMap[$eventName][$websiteId] = Mage::getResourceModel('enterprise_customersegment/segment_collection')
+            $relatedSegments = Mage::getResourceModel('enterprise_customersegment/segment_collection')
                 ->addEventFilter($eventName)
                 ->addWebsiteFilter($websiteId)
                 ->addIsActiveFilter(1);
+            $this->_segmentMap[$eventName][$websiteId] = $relatedSegments;
         }
         return $this->_segmentMap[$eventName][$websiteId];
     }
 
     /**
-     * Match all related to event segments and assign/deassign customer to segments on specific website
+     * Match all related to event segments and assign/deassign customer/visitor to segments on specific website
      *
      * @param   string $eventName
      * @param   Mage_Customer_Model_Customer | int $customer
@@ -107,34 +108,17 @@ class Enterprise_CustomerSegment_Model_Customer extends Mage_Core_Model_Abstract
     public function processEvent($eventName, $customer, $website)
     {
         Varien_Profiler::start('__SEGMENTS_MATCHING__');
-        $website    = Mage::app()->getWebsite($website);
-        $websiteId  = $website->getId();
-        $segments = $this->getActiveSegmentsForEvent($eventName, $websiteId);
-        if ($customer instanceof Mage_Customer_Model_Customer) {
-            $customerId = $customer->getId();
-        } else {
-            $customerId = $customer;
-        }
-        $matchedIds     = array();
-        $notMatchedIds  = array();
-        foreach ($segments as $segment) {
-            $isMatched = $segment->validateCustomer($customer, $website);
-            if ($isMatched) {
-                $matchedIds[]   = $segment->getId();
-            } else {
-                $notMatchedIds[]= $segment->getId();
-            }
-        }
+        $website = Mage::app()->getWebsite($website);
+        $segments = $this->getActiveSegmentsForEvent($eventName, $website->getId());
 
-        $this->addCustomerToWebsiteSegments($customerId, $websiteId, $matchedIds);
-        $this->removeCustomerFromWebsiteSegments($customerId, $websiteId, $notMatchedIds);
+        $this->_processSegmentsValidation($customer, $website, $segments);
 
         Varien_Profiler::stop('__SEGMENTS_MATCHING__');
         return $this;
     }
 
     /**
-     * Validate all segments for specific customer on specific website
+     * Validate all segments for specific customer/visitor on specific website
      *
      * @param   Mage_Customer_Model_Customer $customer
      * @param   Mage_Core_Model_Website $website
@@ -147,9 +131,44 @@ class Enterprise_CustomerSegment_Model_Customer extends Mage_Core_Model_Abstract
             ->addWebsiteFilter($website)
             ->addIsActiveFilter(1);
 
-        $matchedIds     = array();
-        $notMatchedIds  = array();
+        $this->_processSegmentsValidation($customer, $website, $segments);
+
+        return $this;
+    }
+
+    /**
+     * Check if customer is related to segments and update customer-segment relations
+     *
+     * @param int|null|Mage_Customer_Model_Customer $customer
+     * @param Mage_Core_Model_Website $website
+     * @param Enterprise_CustomerSegment_Model_Resource_Segment_Collection $segments
+     * @return Enterprise_CustomerSegment_Model_Customer
+     */
+    protected function _processSegmentsValidation($customer, $website, $segments)
+    {
+        $websiteId = $website->getId();
+        if ($customer instanceof Mage_Customer_Model_Customer) {
+            $customerId = $customer->getId();
+        } else {
+            $customerId = $customer;
+        }
+
+        $matchedIds = array();
+        $notMatchedIds = array();
+        $useVisitorId = !$customer || !$customerId;
         foreach ($segments as $segment) {
+            if ($useVisitorId) {
+                // Skip segment if it cannot be applied to visitor
+                if ($segment->getApplyTo() == Enterprise_CustomerSegment_Model_Segment::APPLY_TO_REGISTERED) {
+                    continue;
+                }
+                $segment->setVisitorId(Mage::getSingleton('log/visitor')->getId());
+            } else {
+                // Skip segment if it cannot be applied to customer
+                if ($segment->getApplyTo() == Enterprise_CustomerSegment_Model_Segment::APPLY_TO_VISITORS) {
+                    continue;
+                }
+            }
             $isMatched = $segment->validateCustomer($customer, $website);
             if ($isMatched) {
                 $matchedIds[]   = $segment->getId();
@@ -157,8 +176,21 @@ class Enterprise_CustomerSegment_Model_Customer extends Mage_Core_Model_Abstract
                 $notMatchedIds[]= $segment->getId();
             }
         }
-        $this->addCustomerToWebsiteSegments($customer->getId(), $website->getId(), $matchedIds);
-        $this->removeCustomerFromWebsiteSegments($customer->getId(), $website->getId(), $notMatchedIds);
+
+
+        if ($customerId) {
+            $this->addCustomerToWebsiteSegments($customerId, $websiteId, $matchedIds);
+            $this->removeCustomerFromWebsiteSegments($customerId, $websiteId, $notMatchedIds);
+            $segmentIds = $this->_customerWebsiteSegments[$websiteId][$customerId];
+        } else {
+            $this->addVisitorToWebsiteSegments(Mage::getSingleton('customer/session'), $websiteId, $matchedIds);
+            $this->removeVisitorFromWebsiteSegments(Mage::getSingleton('customer/session'), $websiteId, $notMatchedIds);
+            $allSegments= Mage::getSingleton('customer/session')->getCustomerSegmentIds();
+            $segmentIds = $allSegments[$websiteId];
+        }
+
+        Mage::dispatchEvent('enterprise_customersegment_ids_changed', array('segment_ids' => $segmentIds));
+
         return $this;
     }
 
@@ -185,6 +217,58 @@ class Enterprise_CustomerSegment_Model_Customer extends Mage_Core_Model_Abstract
         foreach ($websiteIds as $websiteId) {
             $this->processEvent($eventName, $customerId, $websiteId);
         }
+        return $this;
+    }
+
+    /**
+     * Add visitor-segment relation for specified website
+     *
+     * @param Mage_Core_Model_Session_Abstract $visitorSession
+     * @param int $websiteId
+     * @param array $segmentIds
+     * @return Enterprise_CustomerSegment_Model_Customer
+     */
+    public function addVisitorToWebsiteSegments($visitorSession, $websiteId, $segmentIds)
+    {
+        $visitorSegmentIds = $visitorSession->getCustomerSegmentIds();
+        if (!is_array($visitorSegmentIds)) {
+            $visitorSegmentIds = array();
+        }
+        if (isset($visitorSegmentIds[$websiteId]) && is_array($visitorSegmentIds[$websiteId])) {
+            $segmentsIdsForWebsite = $visitorSegmentIds[$websiteId];
+            if (!empty($segmentIds)) {
+                $segmentsIdsForWebsite = array_unique(array_merge($segmentsIdsForWebsite, $segmentIds));
+            }
+            $visitorSegmentIds[$websiteId] = $segmentsIdsForWebsite;
+        } else {
+            $visitorSegmentIds[$websiteId] = $segmentIds;
+        }
+        $visitorSession->setCustomerSegmentIds($visitorSegmentIds);
+        return $this;
+    }
+
+    /**
+     * Remove visitor-segment relation for specified website
+     *
+     * @param Mage_Core_Model_Session_Abstract $visitorSession
+     * @param int $websiteId
+     * @param array $segmentIds
+     * @return Enterprise_CustomerSegment_Model_Customer
+     */
+    public function removeVisitorFromWebsiteSegments($visitorSession, $websiteId, $segmentIds)
+    {
+        $visitorCustomerSegmentIds = $visitorSession->getCustomerSegmentIds();
+        if (!is_array($visitorCustomerSegmentIds)) {
+            $visitorCustomerSegmentIds = array();
+        }
+        if (isset($visitorCustomerSegmentIds[$websiteId]) && is_array($visitorCustomerSegmentIds[$websiteId])) {
+            $segmentsIdsForWebsite = $visitorCustomerSegmentIds[$websiteId];
+            if (!empty($segmentIds)) {
+                $segmentsIdsForWebsite = array_diff($segmentsIdsForWebsite, $segmentIds);
+            }
+            $visitorCustomerSegmentIds[$websiteId] = $segmentsIdsForWebsite;
+        }
+        $visitorSession->setCustomerSegmentIds($visitorCustomerSegmentIds);
         return $this;
     }
 
@@ -235,15 +319,6 @@ class Enterprise_CustomerSegment_Model_Customer extends Mage_Core_Model_Abstract
         }
         return $this->_customerWebsiteSegments[$websiteId][$customerId];
     }
-
-
-
-
-
-
-
-
-
 
     /**
      * Assign customer with specific segment ids

@@ -20,7 +20,7 @@
  *
  * @category    Varien
  * @package     Varien_Data
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -33,12 +33,22 @@
  */
 class Varien_Data_Form_Element_Label extends Varien_Data_Form_Element_Abstract
 {
+    /**
+     * Assigns attributes for Element
+     *
+     * @param array $attributes
+     */
     public function __construct($attributes=array())
     {
         parent::__construct($attributes);
         $this->setType('label');
     }
 
+    /**
+     * Retrieve Element HTML
+     *
+     * @return string
+     */
     public function getElementHtml()
     {
         $html = $this->getBold() ? '<strong>' : '';
@@ -47,5 +57,4 @@ class Varien_Data_Form_Element_Label extends Varien_Data_Form_Element_Abstract
         $html.= $this->getAfterElementHtml();
         return $html;
     }
-
 }

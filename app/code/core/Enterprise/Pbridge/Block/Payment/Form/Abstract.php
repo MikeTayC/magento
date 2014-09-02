@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -32,7 +32,7 @@
  * @package     Enterprise_Pbridge
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-abstract class Enterprise_Pbridge_Block_Payment_Form_Abstract extends Mage_Payment_Block_Form
+abstract class Enterprise_Pbridge_Block_Payment_Form_Abstract extends Enterprise_Pbridge_Block_Iframe_Abstract
 {
     /**
      * Default template for payment form block
@@ -42,18 +42,18 @@ abstract class Enterprise_Pbridge_Block_Payment_Form_Abstract extends Mage_Payme
     protected $_template = 'pbridge/checkout/payment/pbridge.phtml';
 
     /**
-     * Default iframe block type
+     * Whether to include billing parameters in Payment Bridge source URL
      *
-     * @var string
+     * @var bool
      */
-    protected $_iframeBlockType = 'core/template';
+    protected $_sendBilling = false;
 
     /**
-     * Default iframe template
+     * Whether to include shipping parameters in Payment Bridge source URL
      *
-     * @var string
+     * @var bool
      */
-    protected $_iframeTemplate = 'pbridge/checkout/payment/iframe.phtml';
+    protected $_sendShipping = false;
 
     /**
      * Return original payment method code
@@ -63,16 +63,6 @@ abstract class Enterprise_Pbridge_Block_Payment_Form_Abstract extends Mage_Payme
     public function getOriginalCode()
     {
         return $this->getMethod()->getOriginalCode();
-    }
-
-    /**
-     * Return redirect url for Payment Bridge application
-     *
-     * @return string
-     */
-    public function getRedirectUrl()
-    {
-        return $this->getUrl('enterprise_pbridge/pbridge/result', array('_current' => true, '_secure' => true));
     }
 
     /**
@@ -88,30 +78,29 @@ abstract class Enterprise_Pbridge_Block_Payment_Form_Abstract extends Mage_Payme
     /**
      * Getter.
      * Return Payment Bridge url with required parameters (such as merchant code, merchant key etc.)
+     * Can include quote shipping and billing address if its required in payment processing
      *
      * @return string
      */
     public function getSourceUrl()
     {
-        $sourceUrl = Mage::helper('enterprise_pbridge')->getGatewayFormUrl(array(
+        $requestParams = array(
             'redirect_url' => $this->getRedirectUrl(),
-            'request_gateway_code' => $this->getOriginalCode()
-        ), $this->getQuote());
+            'request_gateway_code' => $this->getOriginalCode(),
+            'magento_payment_action' => $this->getMethod()->getConfigPaymentAction(),
+            'css_url' => $this->getCssUrl(),
+            'customer_id' => $this->getCustomerIdentifier()
+        );
+        if ($this->_sendBilling) {
+            $billing = $this->getQuote()->getBillingAddress();
+            $requestParams['billing'] = $this->getMethod()->getPbridgeMethodInstance()->getAddressInfo($billing);
+        }
+        if ($this->_sendShipping) {
+            $shipping = $this->getQuote()->getShippingAddress();
+            $requestParams['shipping'] = $this->getMethod()->getPbridgeMethodInstance()->getAddressInfo($shipping);
+        }
+        $sourceUrl = Mage::helper('enterprise_pbridge')->getGatewayFormUrl($requestParams, $this->getQuote());
         return $sourceUrl;
-    }
-
-    /**
-     * Create and return iframe block
-     *
-     * @return Mage_Core_Block_Template
-     */
-    public function getIframeBlock()
-    {
-        $iframeBlock = $this->getLayout()->createBlock($this->_iframeBlockType)
-            ->setTemplate($this->_iframeTemplate)
-            ->setMethodCode($this->getMethodCode())
-            ->setSourceUrl($this->getSourceUrl());
-        return $iframeBlock;
     }
 
     /**
@@ -121,7 +110,7 @@ abstract class Enterprise_Pbridge_Block_Payment_Form_Abstract extends Mage_Payme
      */
     protected function _toHtml()
     {
-        $this->setChild('pbridge_iframe', $this->getIframeBlock());
+        $this->setReloadAllowed($this->_allowReload);
         return parent::_toHtml();
     }
 }

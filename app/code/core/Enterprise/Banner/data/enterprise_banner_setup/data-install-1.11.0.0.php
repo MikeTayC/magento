@@ -20,13 +20,27 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Banner
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 $banners = array(
-    array('top.container', 'Free Shipping on All Handbags', '<a href="{{store direct_url="apparel/women/handbags"}}"> <img class="callout" title="Get Free Shipping on All Items under Handbags" src="{{skin url="images/callouts/home/free_shipping_all_handbags.jpg"}}" alt="Free Shipping on All Handbags" /></a>'),
-    array('footer.before', '15% off Our New Evening Dresses', '<a href="{{store direct_url="apparel/women/evening-dresses"}}"> <img class="callout" title="15% off Our New Evening Dresses" src="{{skin url="images/callouts/home/15_off_new_evening_dresses.jpg"}}" alt="15% off Our New Evening Dresses" /></a>')
+    array(
+        'top.container',
+        'Free Shipping on All Handbags',
+        '<a href="{{store direct_url="apparel/women/handbags"}}"> '
+            . '<img class="callout" title="Get Free Shipping on All Items under Handbags" '
+            . 'src="{{skin url="images/callouts/home/free_shipping_all_handbags.jpg"}}" '
+            . 'alt="Free Shipping on All Handbags" /></a>'
+    ),
+    array(
+        'footer.before',
+        '15% off Our New Evening Dresses',
+        '<a href="{{store direct_url="apparel/women/evening-dresses"}}"> '
+        . '<img class="callout" title="15% off Our New Evening Dresses" '
+        . 'src="{{skin url="images/callouts/home/15_off_new_evening_dresses.jpg"}}" '
+        . 'alt="15% off Our New Evening Dresses" /></a>'
+    )
 );
 
 foreach ($banners as $sortOrder => $bannerData) {
@@ -57,7 +71,7 @@ foreach ($banners as $sortOrder => $bannerData) {
             'unique_id'    => Mage::helper('core')->uniqHash()
         ))
         ->addData(array(
-            'type'          => 'enterprise_banner/widget_banner',
+            'instance_type'          => 'enterprise_banner/widget_banner',
             'package_theme' => 'enterprise/default',
             'title'         => $bannerData[1],
             'sort_order'    => $sortOrder

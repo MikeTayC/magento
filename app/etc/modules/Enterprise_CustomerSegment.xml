@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -36,6 +36,8 @@
                 <Mage_Adminhtml/>
                 <Mage_Catalog/>
                 <Mage_CatalogRule/>
+                <Mage_Rule/>
+                <Mage_Log/>
             </depends>
         </Enterprise_CustomerSegment>
     </modules>

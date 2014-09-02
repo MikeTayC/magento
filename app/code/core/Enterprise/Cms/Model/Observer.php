@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -149,12 +149,26 @@ class Enterprise_Cms_Model_Observer
          * Validate Request and modify router match condition
          */
         /* @var $node Enterprise_Cms_Model_Hierarchy_Node */
-        $node = Mage::getModel('enterprise_cms/hierarchy_node');
+        $node = Mage::getModel('enterprise_cms/hierarchy_node', array(
+            'scope' => Enterprise_Cms_Model_Hierarchy_Node::NODE_SCOPE_STORE,
+            'scope_id' => Mage::app()->getStore()->getId(),
+        ))->getHeritage();
         $requestUrl = $condition->getIdentifier();
         $node->loadByRequestUrl($requestUrl);
 
         if ($node->checkIdentifier($requestUrl, Mage::app()->getStore())) {
             $condition->setContinue(false);
+            if (!$node->getId()) {
+                $collection = $node->getNodesCollection();
+                foreach ($collection as $item) {
+                    if ($item->getPageIdentifier() == $requestUrl) {
+                        $url = Mage::getUrl('', array('_direct' => $item->getRequestUrl()));
+                        $condition->setRedirectUrl($url);
+                        break;
+                    }
+                }
+
+            }
         }
         if (!$node->getId()) {
             return $this;
@@ -162,7 +176,10 @@ class Enterprise_Cms_Model_Observer
 
         if (!$node->getPageId()) {
             /* @var $child Enterprise_Cms_Model_Hierarchy_Node */
-            $child = Mage::getModel('enterprise_cms/hierarchy_node');
+            $child = Mage::getModel('enterprise_cms/hierarchy_node', array(
+                'scope' => $node->getScope(),
+                'scope_id' => $node->getScopeId(),
+            ));
             $child->loadFirstChildByParent($node->getId());
             if (!$child->getId()) {
                 return $this;
@@ -197,7 +214,9 @@ class Enterprise_Cms_Model_Observer
 
         // Create new initial version & revision if it
         // is a new page or version control was turned on for this page.
-        if ($page->getIsNewPage() || ($page->getUnderVersionControl() && $page->dataHasChangedFor('under_version_control'))) {
+        if ($page->getIsNewPage() || ($page->getUnderVersionControl()
+            && $page->dataHasChangedFor('under_version_control'))
+        ) {
             $version = Mage::getModel('enterprise_cms/page_version');
 
             $revisionInitialData = $page->getData();
@@ -321,6 +340,76 @@ class Enterprise_Cms_Model_Observer
             ->walk($collection->getSelect(), array(array($this, 'removeVersionCallback')), array('version'=> $version));
 
          return $this;
+    }
+
+    /**
+     * Clean up hierarchy tree that belongs to website.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_Cms_Model_Observer
+     */
+    public function deleteWebsite(Varien_Event_Observer $observer)
+    {
+        /* @var $store Mage_Core_Model_Website */
+        $website = $observer->getEvent()->getWebsite();
+        $nodeModel = Mage::getModel('enterprise_cms/hierarchy_node');
+        $nodeModel->deleteByScope(Enterprise_Cms_Model_Hierarchy_Node::NODE_SCOPE_WEBSITE, $website->getId());
+
+        foreach ($website->getStoreIds() as $storeId) {
+            $this->_cleanStoreFootprints($storeId);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clean up hierarchy tree that belongs to store.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_Cms_Model_Observer
+     */
+    public function deleteStore(Varien_Event_Observer $observer)
+    {
+        $storeId = $observer->getEvent()->getStore()->getId();
+        $this->_cleanStoreFootprints($storeId);
+        return $this;
+    }
+
+    /**
+     * Clean up information about deleted store from the widgets and hierarchy nodes
+     *
+     * @param int $storeId
+     */
+    private function _cleanStoreFootprints($storeId)
+    {
+        $storeScope = Enterprise_Cms_Model_Hierarchy_Node::NODE_SCOPE_STORE;
+        $nodeModel = Mage::getModel('enterprise_cms/hierarchy_node');
+        $nodeModel->deleteByScope($storeScope, $storeId);
+
+        /* @var $widgetModel Mage_Widget_Model_Widget_Instance */
+        $widgetModel = Mage::getModel('widget/widget_instance');
+        $widgets = $widgetModel->getResourceCollection()
+                ->addStoreFilter(array($storeId, false))
+                ->addFieldToFilter('instance_type','enterprise_cms/widget_node');
+
+        /* @var $widgetInstance Mage_Widget_Model_Widget_Instance */
+        foreach ($widgets as $widgetInstance) {
+            $storeIds = $widgetInstance->getStoreIds();
+            foreach ($storeIds as $key => $value) {
+                if ($value == $storeId) {
+                    unset($storeIds[$key]);
+                }
+            }
+            $widgetInstance->setStoreIds($storeIds);
+
+            $widgetParams = $widgetInstance->getWidgetParameters();
+            unset($widgetParams['anchor_text_' . $storeId]);
+            unset($widgetParams['title_' . $storeId]);
+            unset($widgetParams['node_id_' . $storeId]);
+            $widgetInstance->setWidgetParameters($widgetParams);
+
+            $widgetInstance->save();
+        }
     }
 
     /**
@@ -456,5 +545,84 @@ class Enterprise_Cms_Model_Observer
         $action->getLayout()->getUpdate()->addHandle($menuLayout->getLayoutHandle());
 
         return $this;
+    }
+
+    /**
+     * Adds CMS hierarchy menu item to top menu
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function addCmsToTopmenuItems(Varien_Event_Observer $observer)
+    {
+        /**
+         * @var $topMenuRootNode Varien_Data_Tree_Node
+         */
+        $topMenuRootNode = $observer->getMenu();
+
+        $hierarchyModel = Mage::getModel('enterprise_cms/hierarchy_node', array(
+            'scope' => Enterprise_Cms_Model_Hierarchy_Node::NODE_SCOPE_STORE,
+            'scope_id' => Mage::app()->getStore()->getId(),
+        ))->getHeritage();
+
+        $nodes = $hierarchyModel->getNodesData();
+        $tree = $topMenuRootNode->getTree();
+
+        $nodesFlatList = array(
+            $topMenuRootNode->getId() => $topMenuRootNode
+        );
+
+        $nodeModel = Mage::getModel('enterprise_cms/hierarchy_node');
+
+        foreach ($nodes as $node) {
+
+            $nodeData = $nodeModel->load($node['node_id']);
+
+            if (!$nodeData || ($nodeData->getParentNodeId() == null && !$nodeData->getTopMenuVisibility())
+                || ($nodeData->getParentNodeId() != null && $nodeData->getTopMenuExcluded())
+                || ($nodeData->getPageId() && !$nodeData->getPageIsActive())
+            ) {
+                continue;
+            }
+
+            $menuNodeId = 'cms-hierarchy-node-' . $node['node_id'];
+            $menuNodeData = array(
+                'name' => $nodeData->getLabel(),
+                'id' => $menuNodeId,
+                'url' => $nodeData->getUrl(),
+                'is_active' => $this->_isCmsNodeActive($nodeData)
+            );
+
+            $parentNodeId = !isset($node['parent_node_id']) ? $topMenuRootNode->getId()
+                : 'cms-hierarchy-node-' . $node['parent_node_id'];
+            $parentNode = isset($nodesFlatList[$parentNodeId]) ? $nodesFlatList[$parentNodeId] : null;
+
+            if (!$parentNode) {
+                continue;
+            }
+
+            $menuNode = new Varien_Data_Tree_Node($menuNodeData, 'id', $tree, $parentNode);
+            $parentNode->addChild($menuNode);
+
+            $nodesFlatList[$menuNodeId] = $menuNode;
+        }
+    }
+
+    /**
+     * Checks whether node belongs to currently active node's path
+     *
+     * @param Enterprise_Cms_Model_Hierarchy_Node $cmsNode
+     * @return bool
+     */
+    protected function _isCmsNodeActive($cmsNode)
+    {
+        $currentNode = Mage::registry('current_cms_hierarchy_node');
+
+        if (!$currentNode) {
+            return false;
+        }
+
+        $nodePathIds = explode('/', $currentNode->getXpath());
+
+        return in_array($cmsNode->getId(), $nodePathIds);
     }
 }

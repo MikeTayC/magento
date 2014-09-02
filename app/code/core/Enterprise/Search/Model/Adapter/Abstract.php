@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -73,33 +73,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      *
      * @var array
      */
-    protected $_usedFields = array(
-        self::UNIQUE_KEY,
-        'id',
-        'sku',
-        'price',
-        'store_id',
-        'categories',
-        'show_in_categories',
-        'visibility',
-        'in_stock',
-        'score'
-    );
-
-    /**
-     * Fields which must be are not included in fulltext field
-     *
-     * @var array
-     */
-    protected $_notInFulltextField = array(
-        self::UNIQUE_KEY,
-        'id',
-        'store_id',
-        'in_stock',
-        'categories',
-        'show_in_categories',
-        'visibility'
-    );
+    protected $_usedFields = array('sku', 'visibility', 'in_stock');
 
     /**
      * Defines text type fields
@@ -114,15 +88,15 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      * @var array
      */
     protected $_defaultQueryParams = array(
-        'offset'         => 0,
-        'limit'          => 100,
-        'sort_by'        => array(array('score' => 'desc')),
-        'store_id'       => null,
-        'locale_code'    => null,
-        'fields'         => array(),
-        'solr_params'    => array(),
+        'offset' => 0,
+        'limit' => 100,
+        'sort_by' => array(array('score' => 'desc')),
+        'store_id' => null,
+        'locale_code' => null,
+        'fields' => array(),
+        'solr_params' => array(),
         'ignore_handler' => false,
-        'filters'        => array()
+        'filters' => array()
     );
 
     /**
@@ -135,9 +109,9 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
     /**
      * Searchable attribute params
      *
-     * @var array
+     * @var array | null
      */
-    protected $_indexableAttributeParams;
+    protected $_indexableAttributeParams = null;
 
     /**
      * Define if automatic commit on changes for adapter is allowed
@@ -154,8 +128,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
     protected $_indexNeedsOptimization = false;
 
 
-
-
+    // Deprecated properties
 
     /**
      * Text fields which can store data differ in different languages
@@ -166,9 +139,34 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      */
     protected $_searchTextFields = array('name', 'alphaNameSort');
 
+    /**
+     * Fields which must be are not included in fulltext field
+     *
+     * @deprecated after 1.11.2.0
+     *
+     * @var array
+     */
+    protected $_notInFulltextField = array(
+        self::UNIQUE_KEY,
+        'id',
+        'store_id',
+        'in_stock',
+        'category_ids',
+        'visibility'
+    );
 
 
-
+    /**
+     * Retrieve attribute field name
+     *
+     * @abstract
+     *
+     * @param Mage_Catalog_Model_Resource_Eav_Attribute|string $attribute
+     * @param string $target
+     *
+     * @return string|bool
+     */
+    abstract public function getSearchEngineFieldName($attribute, $target = 'default');
 
     /**
      * Before commit action
@@ -187,12 +185,6 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      */
     protected function _afterCommit()
     {
-        /**
-         * Cleaning MAXPRICE cache
-         */
-        $cacheTag = Mage::getSingleton('enterprise_search/catalog_layer_filter_price')->getCacheTag();
-        Mage::app()->cleanCache(array($cacheTag));
-
         $this->_indexNeedsOptimization = true;
 
         return $this;
@@ -227,123 +219,351 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
     }
 
     /**
-     * Retrieve attributes selected parameters
+     * Store searchable attributes to prevent additional collection load
      *
-     * @return array
+     * @param   array $attributes
+     * @return  Enterprise_Search_Model_Adapter_Abstract
      */
-    protected function _getIndexableAttributeParams()
+    public function storeSearchableAttributes(array $attributes)
     {
-        if (empty($this->_searchableAttributeParams)) {
-            $entityTypeId = Mage::getSingleton('eav/config')
-                ->getEntityType('catalog_product')
-                ->getEntityTypeId();
-            $items = Mage::getResourceSingleton('catalog/product_attribute_collection')
-                ->setEntityTypeFilter($entityTypeId)
-                ->addToIndexFilter()
-                ->getItems();
+        $result = array();
+        foreach ($attributes as $attribute) {
+            $result[$attribute->getAttributeCode()] = $attribute;
+        }
 
-            $this->_indexableAttributeParams = array();
-            foreach ($items as $item) {
-                $this->_indexableAttributeParams[$item->getAttributeCode()] = array(
-                    'backendType'   => $item->getBackendType(),
-                    'frontendInput' => $item->getFrontendInput(),
-                    'searchWeight'  => $item->getSearchWeight(),
-                    'isSearchable'  => $item->getIsSearchable()
-                );
+        $this->_indexableAttributeParams = $result;
+        return $this;
+    }
+
+    /**
+     * Prepare name for system text fields.
+     *
+     * @param   string $field
+     * @param   string $suffix
+     *
+     * @return  string
+     */
+    public function getAdvancedTextFieldName($field, $suffix = '', $storeId = null)
+    {
+        return $field;
+    }
+
+    /**
+     * Prepare price field name for search engine
+     *
+     * @param   null|int $customerGroupId
+     * @param   null|int $websiteId
+     *
+     * @return  bool|string
+     */
+    public function getPriceFieldName($customerGroupId = null, $websiteId = null)
+    {
+        if ($customerGroupId === null) {
+            $customerGroupId = Mage::getSingleton('customer/session')->getCustomerGroupId();
+        }
+        if ($websiteId === null) {
+            $websiteId = Mage::app()->getStore()->getWebsiteId();
+        }
+
+        if ($customerGroupId === null || !$websiteId) {
+            return false;
+        }
+
+        return 'price_' . $customerGroupId . '_' . $websiteId;
+    }
+
+
+    /**
+     * Prepare category index data for product
+     *
+     * @param   $productId
+     * @param   $storeId
+     *
+     * @return  array
+     */
+    protected function _prepareProductCategoryIndexData($productId, $storeId)
+    {
+        $result = array();
+
+        $categoryProductData = Mage::getResourceSingleton('enterprise_search/index')
+                ->getCategoryProductIndexData($storeId, $productId);
+
+        if (isset($categoryProductData[$productId])) {
+            $categoryProductData = $categoryProductData[$productId];
+
+            $categoryIds = array_keys($categoryProductData);
+            if (!empty($categoryIds)) {
+                $result = array('category_ids' => $categoryIds);
+
+                foreach ($categoryProductData as $categoryId => $position) {
+                    $result['position_category_' . $categoryId] = $position;
+                }
             }
         }
 
-        return $this->_indexableAttributeParams;
+        return $result;
+    }
+
+    /**
+     * Prepare price index for product
+     *
+     * @param   $productId
+     * @param   $storeId
+     *
+     * @return  array
+     */
+    protected function _preparePriceIndexData($productId, $storeId)
+    {
+        $result = array();
+
+        $productPriceIndexData = Mage::getResourceSingleton('enterprise_search/index')
+            ->getPriceIndexData($productId, $storeId);
+
+        if (isset($productPriceIndexData[$productId])) {
+            $productPriceIndexData = $productPriceIndexData[$productId];
+
+            $websiteId = Mage::app()->getStore($storeId)->getWebsiteId();
+            foreach ($productPriceIndexData as $customerGroupId => $price) {
+                $fieldName = $this->getPriceFieldName($customerGroupId, $websiteId);
+                $result[$fieldName] = sprintf('%F', $price);
+            }
+        }
+
+        return $result;
+    }
+
+
+    /**
+     * Is data available in index
+     *
+     * @param array $productIndexData
+     * @param int $productId
+     * @return bool
+     */
+    protected function isAvailableInIndex($productIndexData, $productId)
+    {
+        if (!is_array($productIndexData) || empty($productIndexData)) {
+            return false;
+        }
+
+        if (!isset($productIndexData['visibility'][$productId])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Prepare index data for using in search engine metadata.
+     * Prepare fields for advanced search, navigation, sorting and fulltext fields for each search weight for
+     * quick search and spell.
+     *
+     * @param array $productIndexData
+     * @param int $productId
+     * @param int $storeId
+     *
+     * @return  array|bool
+     */
+    protected function _prepareIndexProductData($productIndexData, $productId, $storeId)
+    {
+        if (!$this->isAvailableInIndex($productIndexData, $productId)) {
+            return false;
+        }
+
+
+        $fulltextData = array();
+        foreach ($productIndexData as $attributeCode => $value) {
+
+            if ($attributeCode == 'visibility') {
+                $productIndexData[$attributeCode] = $value[$productId];
+                continue;
+            }
+
+            // Prepare processing attribute info
+            if (isset($this->_indexableAttributeParams[$attributeCode])) {
+                /* @var $attribute Mage_Catalog_Model_Resource_Eav_Attribute */
+                $attribute = $this->_indexableAttributeParams[$attributeCode];
+            } else {
+                $attribute = null;
+            }
+
+            // Prepare values for required fields
+            if (!in_array($attributeCode, $this->_usedFields)) {
+                unset($productIndexData[$attributeCode]);
+            }
+
+            if (!$attribute || $attributeCode == 'price' || empty($value)) {
+                continue;
+            }
+
+            $attribute->setStoreId($storeId);
+
+            // Preparing data for solr fields
+            if ($attribute->getIsSearchable() || $attribute->getIsVisibleInAdvancedSearch()
+                || $attribute->getIsFilterable() || $attribute->getIsFilterableInSearch()
+            ) {
+                $backendType = $attribute->getBackendType();
+                $frontendInput = $attribute->getFrontendInput();
+
+                if ($attribute->usesSource()) {
+                    if ($frontendInput == 'multiselect') {
+                        $preparedValue = array();
+                        foreach ($value as $val) {
+                            $preparedValue = array_merge($preparedValue, explode(',', $val));
+                        }
+                        $preparedNavValue = $preparedValue;
+                    } else {
+                        // safe condition
+                        if (!is_array($value)) {
+                            $preparedValue = array($value);
+                        } else {
+                            $preparedValue = array_unique($value);
+                        }
+
+                        $preparedNavValue = $preparedValue;
+                        // Ensure that self product value will be saved after array_unique function for sorting purpose
+                        if (isset($value[$productId])) {
+                            if (!isset($preparedNavValue[$productId])) {
+                                $selfValueKey = array_search($value[$productId], $preparedNavValue);
+                                unset($preparedNavValue[$selfValueKey]);
+                                $preparedNavValue[$productId] = $value[$productId];
+                            }
+                        }
+                    }
+
+                    foreach ($preparedValue as $id => $val) {
+                        $preparedValue[$id] = $attribute->getSource()->getOptionText($val);
+                    }
+                } else {
+                    $preparedValue = $value;
+                    if ($backendType == 'datetime') {
+                        if (is_array($value)) {
+                            $preparedValue = array();
+                            foreach ($value as &$val) {
+                                $val = $this->_getSolrDate($storeId, $val);
+                                if (!empty($val)) {
+                                    $preparedValue[] = $val;
+                                }
+                            }
+                            unset($val); //clear link to value
+                            $preparedValue = array_unique($preparedValue);
+                        } else {
+                            $preparedValue = $this->_getSolrDate($storeId, $value);
+                        }
+                    }
+                }
+            }
+
+            // Preparing data for sorting field
+            if ($attribute->getUsedForSortBy()) {
+                if (is_array($preparedValue)) {
+                    if (isset($preparedValue[$productId])) {
+                        $sortValue = $preparedValue[$productId];
+                    } else {
+                        $sortValue = null;
+                    }
+                }
+
+                if (!empty($sortValue)) {
+                    $fieldName = $this->getSearchEngineFieldName($attribute, 'sort');
+
+                    if ($fieldName) {
+                        $productIndexData[$fieldName] = $sortValue;
+                    }
+                }
+            }
+
+            // Adding data for advanced search field (without additional prefix)
+            if (($attribute->getIsVisibleInAdvancedSearch() ||  $attribute->getIsFilterable()
+                || $attribute->getIsFilterableInSearch())
+            ) {
+                if ($attribute->usesSource()) {
+                    $fieldName = $this->getSearchEngineFieldName($attribute, 'nav');
+                    if ($fieldName && !empty($preparedNavValue)) {
+                        $productIndexData[$fieldName] = $preparedNavValue;
+                    }
+                } else {
+                    $fieldName = $this->getSearchEngineFieldName($attribute);
+                    if ($fieldName && !empty($preparedValue)) {
+                        $productIndexData[$fieldName] = in_array($backendType, $this->_textFieldTypes)
+                            ? implode(' ', (array)$preparedValue)
+                            : $preparedValue ;
+                    }
+                }
+            }
+
+            // Adding data for fulltext search field
+            if ($attribute->getIsSearchable() && !empty($preparedValue)) {
+                $searchWeight = $attribute->getSearchWeight();
+                if ($searchWeight) {
+                    $fulltextData[$searchWeight][] = is_array($preparedValue)
+                        ? implode(' ', $preparedValue)
+                        : $preparedValue;
+                }
+            }
+
+            unset($preparedNavValue, $preparedValue, $fieldName, $attribute);
+        }
+
+        // Preparing fulltext search fields
+        $fulltextSpell = array();
+        foreach ($fulltextData as $searchWeight => $data) {
+            $fieldName = $this->getAdvancedTextFieldName('fulltext', $searchWeight, $storeId);
+            $productIndexData[$fieldName] = $this->_implodeIndexData($data);
+            $fulltextSpell += $data;
+        }
+        unset($fulltextData);
+
+        // Preparing field with spell info
+        $fulltextSpell = array_unique($fulltextSpell);
+        $fieldName = $this->getAdvancedTextFieldName('spell', '', $storeId);
+        $productIndexData[$fieldName] = $this->_implodeIndexData($fulltextSpell);
+        unset($fulltextSpell);
+
+        // Getting index data for price
+        if (isset($this->_indexableAttributeParams['price'])) {
+            $priceEntityIndexData = $this->_preparePriceIndexData($productId, $storeId);
+            $productIndexData = array_merge($productIndexData, $priceEntityIndexData);
+        }
+
+        // Product category index data definition
+        $productCategoryIndexData = $this->_prepareProductCategoryIndexData($productId, $storeId);
+        $productIndexData = array_merge($productIndexData, $productCategoryIndexData);
+
+        // Define system data for engine internal usage
+        $productIndexData['id'] = $productId;
+        $productIndexData['store_id'] = $storeId;
+        $productIndexData[self::UNIQUE_KEY] = $productId . '|' . $storeId;
+
+        return $productIndexData;
     }
 
     /**
      * Create Solr Input Documents by specified data
      *
-     * @param array $docData
-     * @param string|null $localeCode
-     * @return array
+     * @param   array $docData
+     * @param   int $storeId
+     *
+     * @return  array
      */
-    public function prepareDocs($docData, $localeCode = null)
+    public function prepareDocsPerStore($docData, $storeId)
     {
         if (!is_array($docData) || empty($docData)) {
             return array();
         }
 
-        $docs = array();
-        $attributeParams = $this->_getIndexableAttributeParams();
         $this->_separator = Mage::getResourceSingleton('catalogsearch/fulltext')->getSeparator();
-        $fieldPrefix = Mage::getResourceSingleton('enterprise_search/engine')->getFieldsPrefix();
-        $fieldPrefixLength = strlen($fieldPrefix);
 
-        foreach ($docData as $entityId => $index) {
+        $docs = array();
+        foreach ($docData as $productId => $productIndexData) {
             $doc = new $this->_clientDocObjectName;
 
-            $index[self::UNIQUE_KEY] = $entityId . '|' . $index['store_id'];
-            $index['id'] = $entityId;
-
-            $fulltext = $index;
-            foreach ($this->_notInFulltextField as $field) {
-                if (isset($fulltext[$field])) {
-                    unset($fulltext[$field]);
-                }
-            }
-
-            /**
-             * Merge attributes to fulltext fields according to their search weights
-             */
-            $attributesWeights = array();
-            $attributesSpell = array();
-            $needToReplaceSeparator = ($this->_separator != ' ');
-            $currentCurrency = Mage::app()->getStore($index['store_id'])->getDefaultCurrency();
-            foreach ($index as $code => $value) {
-                $weight = 0;
-                $isSearchable = 0;
-
-                if (!empty($attributeParams[$code])) {
-                    $weight = $attributeParams[$code]['searchWeight'];
-                    $frontendInput = $attributeParams[$code]['frontendInput'];
-                    $isSearchable = $attributeParams[$code]['isSearchable'];
-                } elseif ((substr($code, 0, 5 + $fieldPrefixLength) == $fieldPrefix . 'price'
-                        && !empty($attributeParams['price']))) {
-                    $weight = $attributeParams['price']['searchWeight'];
-                    $frontendInput = 'price';
-                    $isSearchable = $attributeParams['price']['isSearchable'];
-                }
-
-                if ($weight && $isSearchable) {
-                    if ($needToReplaceSeparator && $frontendInput == 'multiselect') {
-                        $value = str_replace($this->_separator, ' ', $value);
-                    } elseif ($code == 'price' || $frontendInput == 'price') {
-                        if (!is_array($value)) {
-                            $value = array($value);
-                        }
-
-                        foreach ($value as $key => $price) {
-                            if ($price == round($price, 0)) {
-                                $value[] = $currentCurrency->formatPrecision($price, 0, array(), false);
-                            } elseif ($price == round($price, 1)) {
-                                $value[] = $currentCurrency->formatPrecision($price, 1, array(), false);
-                            }
-                            $value[$key] = $currentCurrency->formatPrecision($price, 2, array(), false);
-                        }
-                    }
-
-                    $attributesWeights['fulltext' . $weight][] = $value;
-                    $attributesSpell[] = $value;
-                }
-            }
-            $index['fulltext_spell'] = $this->_implodeIndexData($attributesSpell);
-
-            foreach ($attributesWeights as $key => $value) {
-                $index[$key] = $this->_implodeIndexData($value);
-            }
-
-            $index = $this->_prepareIndexData($index, $attributeParams, $localeCode);
-            if (!$index) {
+            $productIndexData = $this->_prepareIndexProductData($productIndexData, $productId, $storeId);
+            if (!$productIndexData) {
                 continue;
             }
 
-            foreach ($index as $name => $value) {
+            foreach ($productIndexData as $name => $value) {
                 if (is_array($value)) {
                     foreach ($value as $val) {
                         if (!is_array($val)) {
@@ -358,20 +578,6 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
         }
 
         return $docs;
-    }
-
-    /**
-     * Ability extend document index data.
-     *
-     * @param array $data
-     * @param array $attributesParams
-     * @param string|null $localCode
-     *
-     * @return array
-     */
-    protected function _prepareIndexData($data, $attributesParams, $localeCode = null)
-    {
-        return $data;
     }
 
     /**
@@ -392,7 +598,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
         $_docs = array();
         foreach ($docs as $doc) {
             if ($doc instanceof $this->_clientDocObjectName) {
-               $_docs[] = $doc;
+                $_docs[] = $doc;
             }
         }
 
@@ -625,7 +831,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
     protected function _prepareQueryResponse($response)
     {
         $realResponse = $response->response;
-        $_docs  = $realResponse->docs;
+        $_docs = $realResponse->docs;
         if (!$_docs) {
             return array();
         }
@@ -726,7 +932,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
         return $text;
     }
 
-/**
+    /**
      * Escape filter query text
      *
      * @param string $text
@@ -734,7 +940,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      */
     protected function _prepareFilterQueryText($text)
     {
-        $words = explode(' ', $text);
+        $words = explode(' ', trim($text));
         if (count($words) > 1) {
             $text = $this->_phrase($text);
         } else {
@@ -828,11 +1034,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      */
     protected function _prepareFieldCondition($field, $value)
     {
-        if ($field == 'categories') {
-            $fieldCondition = "(categories:{$value} OR show_in_categories:{$value})";
-        } else {
-            $fieldCondition = $field .':'. $value;
-        }
+        $fieldCondition = $field . ':' . $value;
 
         return $fieldCondition;
     }
@@ -845,10 +1047,10 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      */
     protected function _objectToArray($object)
     {
-        if(!is_object($object) && !is_array($object)){
+        if (!is_object($object) && !is_array($object)) {
             return $object;
         }
-        if(is_object($object)){
+        if (is_object($object)) {
             $object = get_object_vars($object);
         }
 
@@ -863,11 +1065,11 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      */
     protected function _facetObjectToArray($object)
     {
-        if(!is_object($object) && !is_array($object)){
+        if (!is_object($object) && !is_array($object)) {
             return $object;
         }
 
-        if(is_object($object)){
+        if (is_object($object)) {
             $object = get_object_vars($object);
         }
 
@@ -879,12 +1081,8 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
         }
 
         foreach ($object['facet_queries'] as $attr => $val) {
-            if (preg_match('/\(categories:(\d+) OR show_in_categories\:\d+\)/', $attr, $matches)) {
-                $res['categories'][$matches[1]]    = $val;
-            } else {
-                $attrArray = explode(':', $attr);
-                $res[$attrArray[0]][$attrArray[1]] = $val;
-            }
+            $attrArray = explode(':', $attr);
+            $res[$attrArray[0]][$attrArray[1]] = $val;
         }
 
         return $res;
@@ -920,7 +1118,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      */
     public function setIndexNeedsOptimization($state = true)
     {
-        $this->_indexNeedsOptimization = (bool) $state;
+        $this->_indexNeedsOptimization = (bool)$state;
         return $this;
     }
 
@@ -934,9 +1132,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
         return $this->_indexNeedsOptimization;
     }
 
-
-
-
+    // Deprecated methods
 
     /**
      * Filter index data by common Solr metadata fields
@@ -956,7 +1152,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
         }
 
         foreach ($data as $code => $value) {
-            if(!in_array($code, $this->_usedFields) && strpos($code, 'fulltext') !== 0 ) {
+            if (!in_array($code, $this->_usedFields) && strpos($code, 'fulltext') !== 0) {
                 unset($data[$code]);
             }
         }
@@ -984,5 +1180,63 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
     public function getSearchTextFields()
     {
         return $this->_searchTextFields;
+    }
+
+    /**
+     * Create Solr Input Documents by specified data
+     *
+     * @deprecated after 1.11.2.0
+     *
+     * @param  array $docData
+     * @param  string|null $localeCode
+     * @return array
+     */
+    public function prepareDocs($docData, $localeCode)
+    {
+        return array();
+    }
+
+    /**
+     * Retrieve attributes selected parameters
+     *
+     * @deprecated after 1.11.2.0
+     *
+     * @return  array
+     */
+    protected function _getIndexableAttributeParams()
+    {
+        if ($this->_indexableAttributeParams === null) {
+            $attributeCollection = Mage::getResourceSingleton('catalog/product_attribute_collection')
+                    ->addToIndexFilter()
+                    ->getItems();
+
+            $this->_indexableAttributeParams = array();
+            foreach ($attributeCollection as $item) {
+                $this->_indexableAttributeParams[$item->getAttributeCode()] = array(
+                    'backendType' => $item->getBackendType(),
+                    'frontendInput' => $item->getFrontendInput(),
+                    'searchWeight' => $item->getSearchWeight(),
+                    'isSearchable' => (bool)$item->getIsSearchable()
+                );
+            }
+        }
+
+        return $this->_indexableAttributeParams;
+    }
+
+    /**
+     * Ability extend document index data.
+     *
+     * @deprecated after 1.11.2.0
+     *
+     * @param   array $data
+     * @param   array $attributesParams
+     * @param   string|null $localeCode
+     *
+     * @return  array
+     */
+    protected function _prepareIndexData($data, $attributesParams = array(), $localeCode = null)
+    {
+        return $data;
     }
 }

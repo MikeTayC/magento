@@ -81,7 +81,7 @@
             <xsd:element name="giftcardAccountCreateResponseParam">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="createdGiftcardId" type="xsd:string" />
+                        <xsd:element name="result" type="xsd:string" />
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>

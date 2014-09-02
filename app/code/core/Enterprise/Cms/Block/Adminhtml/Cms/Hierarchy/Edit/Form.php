@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -30,6 +30,7 @@
  *
  * @category   Enterprise
  * @package    Enterprise_Cms
+ * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminhtml_Block_Widget_Form
 {
@@ -72,6 +73,25 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
         $fieldset->addField('nodes_data', 'hidden', array(
             'name'      => 'nodes_data'
         ));
+
+        $fieldset->addField('use_default_scope_property', 'hidden', array(
+            'name'      => 'use_default_scope_property'
+        ));
+
+        $currentWebsite = $this->getRequest()->getParam('website');
+        $currentStore   = $this->getRequest()->getParam('store');
+        if ($currentStore) {
+            $fieldset->addField('store', 'hidden', array(
+                'name'   => 'store',
+                'value' => $currentStore,
+            ));
+        }
+        if ($currentWebsite) {
+            $fieldset->addField('website', 'hidden', array(
+                'name'   => 'website',
+                'value' => $currentWebsite,
+            ));
+        }
 
         $fieldset->addField('removed_nodes', 'hidden', array(
             'name'      => 'removed_nodes'
@@ -152,9 +172,10 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
                 'title'     => Mage::helper('enterprise_cms')->__('Enable Chapter/Section'),
                 'name'      => 'meta_cs_enabled',
                 'values'    => $yesNoOptions,
-                'onchange'   => 'hierarchyNodes.nodeChanged()',
+                'onchange'  => 'hierarchyNodes.nodeChanged()',
                 'container_id' => 'field_meta_cs_enabled',
-                'tabindex'   => '45'
+                'note'      => Mage::helper('enterprise_cms')->__('Enables Chapter/Section functionality for this node, its sub-nodes and pages'),
+                'tabindex'  => '45'
             ));
 
             $fieldset->addField('meta_chapter_section', 'select', array(
@@ -162,9 +183,10 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
                 'title'     => Mage::helper('enterprise_cms')->__('Chapter/Section'),
                 'name'      => 'meta_chapter_section',
                 'values'    => Mage::getSingleton('enterprise_cms/source_hierarchy_menu_chapter')->toOptionArray(),
-                'onchange'   => 'hierarchyNodes.nodeChanged()',
+                'onchange'  => 'hierarchyNodes.nodeChanged()',
                 'container_id' => 'field_meta_chapter_section',
-                'tabindex'   => '50'
+                'note'      => Mage::helper('enterprise_cms')->__('Defines this node as Chapter/Section'),
+                'tabindex'  => '50'
             ));
         }
 
@@ -186,6 +208,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
         $pagerFieldset->addField('pager_frame', 'text', array(
             'name'      => 'pager_frame',
             'label'     => Mage::helper('enterprise_cms')->__('Frame'),
+            'class'     => 'validate-digits',
             'onchange'  => 'hierarchyNodes.nodeChanged()',
             'container_id' => 'field_pager_frame',
             'note'      => Mage::helper('enterprise_cms')->__('How many Links to display at once'),
@@ -194,6 +217,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
         $pagerFieldset->addField('pager_jump', 'text', array(
             'name'      => 'pager_jump',
             'label'     => Mage::helper('enterprise_cms')->__('Frame Skip'),
+            'class'     => 'validate-digits',
             'onchange'  => 'hierarchyNodes.nodeChanged()',
             'container_id' => 'field_pager_jump',
             'note'      => Mage::helper('enterprise_cms')->__('If the Current Frame Position does not cover Utmost Pages, will render Link to Current Position plus/minus this Value'),
@@ -204,7 +228,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
          * Context menu options
          */
         $menuFieldset   = $form->addFieldset('menu_fieldset', array(
-            'legend'    => Mage::helper('enterprise_cms')->__('Navigation Menu Options')
+            'legend'    => Mage::helper('enterprise_cms')->__('Page Navigation Menu Options')
         ));
 
         $menuFieldset->addField('menu_excluded', 'select', array(
@@ -217,7 +241,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
         ));
 
         $menuFieldset->addField('menu_visibility', 'select', array(
-            'label'     => Mage::helper('enterprise_cms')->__('Enable Navigation Menu'),
+            'label'     => Mage::helper('enterprise_cms')->__('Show in Navigation Menu'),
             'name'      => 'menu_visibility',
             'values'    => $yesNoOptions,
             'onchange'   => "hierarchyNodes.metadataChanged('menu_visibility', 'menu_fieldset')",
@@ -249,6 +273,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
         $menuFieldset->addField('menu_levels_down', 'text', array(
             'name'      => 'menu_levels_down',
             'label'     => Mage::helper('enterprise_cms')->__('Maximal Depth'),
+            'class'     => 'validate-digits',
             'onchange'  => 'hierarchyNodes.nodeChanged()',
             'container_id' => 'field_menu_levels_down',
             'note'      => Mage::helper('enterprise_cms')->__('Node Levels to Include'),
@@ -273,15 +298,30 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
             'tabindex'  => '150'
         ));
 
-        if ($this->isLockedByOther()) {
-            foreach ($form->getElements() as $formElement) {
-                if ($formElement->getType() == 'fieldset') {
-                    foreach ($formElement->getElements() as $fieldsetElement) {
-                        $fieldsetElement->setDisabled(true);
-                    }
-                }
-            }
-        }
+        /**
+         * Top menu options
+         */
+        $menuFieldset   = $form->addFieldset('top_menu_fieldset', array(
+            'legend'    => Mage::helper('enterprise_cms')->__('Main Navigation Menu Options')
+        ));
+
+        $menuFieldset->addField('top_menu_excluded', 'select', array(
+            'label'     => Mage::helper('enterprise_cms')->__('Exclude from Navigation Menu'),
+            'name'      => 'top_menu_excluded',
+            'values'    => $yesNoOptions,
+            'onchange'   => "hierarchyNodes.nodeChanged()",
+            'container_id' => 'field_top_menu_excluded',
+            'tabindex'  => '170'
+        ));
+
+        $menuFieldset->addField('top_menu_visibility', 'select', array(
+            'label'     => Mage::helper('enterprise_cms')->__('Show in Navigation Menu'),
+            'name'      => 'top_menu_visibility',
+            'values'    => $yesNoOptions,
+            'onchange'   => "hierarchyNodes.metadataChanged('top_menu_visibility', 'top_menu_fieldset')",
+            'container_id' => 'field_top_menu_visibility',
+            'tabindex'  => '160'
+        ));
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -300,8 +340,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
             'id'        => 'add_cms_pages',
             'label'     => Mage::helper('enterprise_cms')->__('Add Selected Page(s) to Tree'),
             'onclick'   => 'hierarchyNodes.pageGridAddSelected()',
-            'class'     => 'add' . (($this->isLockedByOther()) ? ' disabled' : ''),
-            'disabled'  => $this->isLockedByOther()
+            'class'     => 'add'
         );
         return $this->getLayout()->createBlock('adminhtml/widget_button')
             ->setData($addButtonData)->toHtml();
@@ -319,22 +358,19 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
             'id'        => 'delete_node_button',
             'label'     => Mage::helper('enterprise_cms')->__('Remove From Tree'),
             'onclick'   => 'hierarchyNodes.deleteNodePage()',
-            'class'     => 'delete' . (($this->isLockedByOther()) ? ' disabled' : ''),
-            'disabled'  => $this->isLockedByOther()
+            'class'     => 'delete'
         ))->toHtml();
         $buttons[] = $this->getLayout()->createBlock('adminhtml/widget_button')->setData(array(
             'id'        => 'cancel_node_button',
             'label'     => Mage::helper('enterprise_cms')->__('Cancel'),
             'onclick'   => 'hierarchyNodes.cancelNodePage()',
-            'class'     => 'delete' . (($this->isLockedByOther()) ? ' disabled' : ''),
-            'disabled'  => $this->isLockedByOther()
+            'class'     => 'delete'
         ))->toHtml();
         $buttons[] = $this->getLayout()->createBlock('adminhtml/widget_button')->setData(array(
             'id'        => 'save_node_button',
             'label'     => Mage::helper('enterprise_cms')->__('Save'),
             'onclick'   => 'hierarchyNodes.saveNodePage()',
-            'class'     => 'save' . (($this->isLockedByOther()) ? ' disabled' : ''),
-            'disabled'  => $this->isLockedByOther()
+            'class'     => 'save'
         ))->toHtml();
 
         return join(' ', $buttons);
@@ -351,8 +387,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
             'id'        => 'new_node_button',
             'label'     => Mage::helper('enterprise_cms')->__('Add Node...'),
             'onclick'   => 'hierarchyNodes.newNodePage()',
-            'class'     => 'add' . (($this->isLockedByOther()) ? ' disabled' : ''),
-            'disabled'  => $this->isLockedByOther()
+            'class'     => 'add'
         ))->toHtml();
     }
 
@@ -364,52 +399,26 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
      */
     public function getNodesJson()
     {
-        $nodes = array();
-        /* @var $node Enterprise_Cms_Model_Hierarchy_Node */
+        /** @var $nodeModel Enterprise_Cms_Model_Hierarchy_Node */
         $nodeModel = Mage::registry('current_hierarchy_node');
-        // restore data is exists
-        try{
-            $data = Mage::helper('core')->jsonDecode($nodeModel->getNodesData());
-        }catch (Zend_Json_Exception $e){
-            $data = null;
-        }
-        if (is_array($data)) {
-            foreach ($data as $v) {
-                $node = array(
-                    'node_id'               => $v['node_id'],
-                    'parent_node_id'        => $v['parent_node_id'],
-                    'label'                 => $v['label'],
-                    'identifier'            => $v['identifier'],
-                    'page_id'               => empty($v['page_id']) ? null : $v['page_id']
-                );
-                $nodes[] = Mage::helper('enterprise_cms/hierarchy')->copyMetaData($v, $node);
-            }
-        } else {
-            $collection = $nodeModel->getCollection()
-                ->joinCmsPage()
-                ->addCmsPageInStoresColumn()
-                ->joinMetaData()
-                ->setOrderByLevel();
+        $this->setData('current_scope', $nodeModel->getScope());
+        $this->setData('current_scope_id', $nodeModel->getScopeId());
 
-            foreach ($collection as $item) {
-                /* @var $item Enterprise_Cms_Model_Hierarchy_Node */
-                $node = array(
-                    'node_id'               => $item->getId(),
-                    'parent_node_id'        => $item->getParentNodeId(),
-                    'label'                 => $item->getLabel(),
-                    'identifier'            => $item->getIdentifier(),
-                    'page_id'               => $item->getPageId(),
-                    'assigned_to_store'     => $this->isNodeAvailableForStore($item, $this->_currentStore)
-                );
-                $nodes[] = Mage::helper('enterprise_cms/hierarchy')->copyMetaData($item->getData(), $node);
-            }
+        $this->setData('use_default_scope', $nodeModel->getIsInherited());
+        $nodeHeritageModel = $nodeModel->getHeritage();
+        $nodes = $nodeHeritageModel->getNodesData();
+        unset($nodeModel);
+        unset($nodeHeritageModel);
+
+        foreach ($nodes as &$node) {
+            $node['assigned_to_store'] = !$this->getData('use_default_scope');
         }
 
         // fill in custom meta_chapter_section field
         $c = count($nodes);
         for ($i = 0; $i < $c; $i++) {
             if (isset($nodes[$i]['meta_chapter']) && isset($nodes[$i]['meta_section'])
-                && $nodes[$i]['meta_chapter'] && $nodes[$i]['meta_section']) 
+                && $nodes[$i]['meta_chapter'] && $nodes[$i]['meta_section'])
             {
                 $nodes[$i]['meta_chapter_section'] = 'both';
             } elseif (isset($nodes[$i]['meta_chapter']) && $nodes[$i]['meta_chapter']) {
@@ -515,15 +524,34 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
     }
 
     /**
+     * Get current store view if available, or get any in current scope
+     *
+     * @return Mage_Core_Model_Store
+     */
+    protected function _getStore()
+    {
+        $store = null;
+        if ($this->_currentStore) {
+            $store = Mage::app()->getStore($this->_currentStore);
+        } elseif ($this->getCurrentScope() == Enterprise_Cms_Model_Hierarchy_Node::NODE_SCOPE_WEBSITE) {
+            $store = Mage::app()->getWebsite($this->getCurrentScopeId())->getDefaultStore();
+        }
+
+        if (!$store) {
+            $store = Mage::app()->getAnyStoreView();
+        }
+
+        return $store;
+    }
+
+    /**
      * Return URL query param for current store
      *
      * @return string
      */
     public function getCurrentStoreUrlParam()
     {
-        /* @var $store Mage_Core_Model_Store */
-        $store = $this->_currentStore ? Mage::app()->getStore($this->_currentStore) : Mage::app()->getAnyStoreView();
-        return '?___store=' . $store->getCode();
+        return '?___store=' . $this->_getStore()->getCode();
     }
 
     /**
@@ -533,9 +561,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
      */
     public function getStoreBaseUrl()
     {
-        /* @var $store Mage_Core_Model_Store */
-        $store = $this->_currentStore ? Mage::app()->getStore($this->_currentStore) : Mage::app()->getAnyStoreView();
-        return $store->getBaseUrl();
+        return $this->_getStore()->getBaseUrl();
     }
 
     /**
@@ -545,9 +571,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
      */
     public function getStoreSwitcherHtml()
     {
-        return $this->getLayout()->getBlock('store_switcher')
-            ->setUseConfirm(false)
-            ->toHtml();
+        return $this->getLayout()->getBlock('scope_switcher')->toHtml();
     }
 
     /**
@@ -573,6 +597,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
     /**
      * Check whether current user can drag nodes
      *
+     * @deprecated since 1.12.0.0
      * @return bool
      */
     public function canDragNodes()
@@ -583,6 +608,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
     /**
      * Check whether page is locked by other user
      *
+     * @deprecated since 1.12.0.0
      * @return bool
      */
     public function isLockedByOther()
@@ -596,6 +622,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
     /**
      * Check whether page is locked by editor
      *
+     * @deprecated since 1.12.0.0
      * @return bool
      */
     public function isLockedByMe()
@@ -609,6 +636,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
     /**
      * Retrieve lock lifetime
      *
+     * @deprecated since 1.12.0.0
      * @return int
      */
     public function getLockLifetime()
@@ -619,6 +647,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
     /**
      * Retrieve lock message for js alert
      *
+     * @deprecated since 1.12.0.0
      * @return string
      */
     public function getLockAlertMessage()
@@ -627,8 +656,24 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Edit_Form extends Mage_Adminh
     }
 
     /**
+     * Retrieve Url to Hierarchy delete action
+     *
+     * @return string
+     */
+    public function getDeleteHierarchyUrl()
+    {
+        $params = array(
+            'website'=> $this->getRequest()->getParam('website'),
+            'store'  => $this->getRequest()->getParam('store'),
+            'scopes' => $this->getData('current_scope') . '_' . $this->getData('current_scope_id'),
+        );
+        return $this->getUrl('*/*/delete', $params);
+    }
+
+    /**
      * Retrieve lock model
      *
+     * @deprecated since 1.12.0.0
      * @return Enterprise_Cms_Model_Hierarchy_Lock
      */
     protected function _getLockModel()

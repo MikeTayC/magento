@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -70,18 +70,26 @@
             <p class="cart-empty">
                 <?php echo $this->__('You have no items in your shopping cart.') ?>
             </p>
+            <?php if ($this->getCartEmptyMessage()): ?>
+                <p class="cart-empty cart-empty-message"><?php echo $this->getCartEmptyMessage(); ?></p>
+            <?php endif; ?>
         <?php endif ?>
-        <?php if($_cartQty && $this->isPossibleOnepageCheckout()): ?>
-            <p class="subtotal">
-                <?php if ($this->canApplyMsrp()): ?>
-                    <span class="map-cart-sidebar-total"><?php echo $this->__('ORDER TOTAL WILL BE DISPLAYED BEFORE YOU SUBMIT THE ORDER'); ?></span>
-                <?php else: ?>
-                    <span class="label"><?php echo $this->__('Cart Subtotal:') ?></span> <?php echo Mage::helper('checkout')->formatPrice($this->getSubtotal()) ?><?php if ($_subtotalInclTax = $this->getSubtotalInclTax()): ?> / <?php echo Mage::helper('checkout')->formatPrice($_subtotalInclTax) ?> <?php echo Mage::helper('tax')->getIncExcText(true) ?><?php endif; ?>
-                <?php endif; ?>
-            </p>
+        <?php if ($_cartQty || $this->getAllowCartLink()): ?>
+            <?php $isPossibleOnepageCheckout = $_cartQty && $this->isPossibleOnepageCheckout() ?>
+            <?php if ($isPossibleOnepageCheckout): ?>
+                <p class="subtotal">
+                    <?php if ($this->canApplyMsrp()): ?>
+                        <span class="map-cart-sidebar-total"><?php echo $this->__('ORDER TOTAL WILL BE DISPLAYED BEFORE YOU SUBMIT THE ORDER'); ?></span>
+                    <?php else: ?>
+                        <span class="label"><?php echo $this->__('Cart Subtotal:') ?></span> <?php echo Mage::helper('checkout')->formatPrice($this->getSubtotal()) ?><?php if ($_subtotalInclTax = $this->getSubtotalInclTax()): ?> / <?php echo Mage::helper('checkout')->formatPrice($_subtotalInclTax) ?> <?php echo Mage::helper('tax')->getIncExcText(true) ?><?php endif; ?>
+                    <?php endif; ?>
+                </p>
+            <?php endif ?>
             <div class="actions">
-                <?php echo $this->getChildHtml('extra_actions') ?>
-                <button class="button" type="button" onclick="setLocation('<?php echo $this->getCheckoutUrl() ?>')"><span><span><?php echo $this->__('Checkout') ?></span></span></button>
+                <?php if ($isPossibleOnepageCheckout): ?>
+                    <?php echo $this->getChildHtml('extra_actions') ?>
+                    <button class="button" type="button" onclick="setLocation('<?php echo $this->getCheckoutUrl() ?>')"><span><span><?php echo $this->__('Checkout') ?></span></span></button>
+                <?php endif ?>
                 <a href="<?php echo $this->getUrl('checkout/cart'); ?>"><span><?php echo $this->__('Go to Shopping Cart') ?></span></a>
             </div>
         <?php endif ?>

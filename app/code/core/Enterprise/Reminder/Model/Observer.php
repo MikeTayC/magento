@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -109,5 +109,50 @@ class Enterprise_Reminder_Model_Observer
             Mage::getModel('enterprise_reminder/rule')->sendReminderEmails();
             return $this;
         }
+    }
+
+    /**
+     * Checks whether Sales Rule can be used in Email Remainder Rules and if it cant -
+     * detaches it from Email Remainder Rules
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function detachUnsupportedSalesRule($observer)
+    {
+        $rule = $observer->getRule();
+        $couponType = $rule->getCouponType();
+        $autoGeneration = $rule->getUseAutoGeneration();
+
+        if ($couponType == Mage_SalesRule_Model_Rule::COUPON_TYPE_SPECIFIC && !empty($autoGeneration)) {
+            $model = Mage::getModel('enterprise_reminder/rule');
+            $ruleId = $rule->getId();
+            $model->detachSalesRule($ruleId);
+        }
+    }
+
+    /**
+     * Adds filter to collection which excludes all rules that can't be used in Email Remainder Rules
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function addSalesRuleFilter($observer)
+    {
+        $collection = $observer->getCollection();
+        $collection->addAllowedSalesRulesFilter();
+    }
+
+    /**
+     * Adds notice to "Use Auto Generation" checkbox
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function addUseAutoGenerationNotice($observer)
+    {
+        $form = $observer->getForm();
+        $checkbox = $form->getElement('use_auto_generation');
+        $checkbox->setNote($checkbox->getNote()
+            . '<br />'
+            . Mage::helper('enterprise_reminder')->__('<b>Important</b>: If this shopping cart price rule has been used in an automated email reminder rule it will be automatically unassigned after shopping cart price rule is saved.')
+        );
     }
 }

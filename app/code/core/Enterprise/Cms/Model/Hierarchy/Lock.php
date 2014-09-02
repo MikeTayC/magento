@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -42,6 +42,10 @@
  * @category    Enterprise
  * @package     Enterprise_Cms
  * @author      Magento Core Team <core@magentocommerce.com>
+ */
+
+/**
+ * @deprecated since 1.12.0.0
  */
 class Enterprise_Cms_Model_Hierarchy_Lock extends Mage_Core_Model_Abstract
 {
@@ -225,5 +229,6 @@ class Enterprise_Cms_Model_Hierarchy_Lock extends Mage_Core_Model_Abstract
     {
         $timeout = (int)Mage::getStoreConfig('cms/hierarchy/lock_timeout');
         return ($timeout != 0 && $timeout < 120 ) ? 120 : $timeout;
+
     }
 }

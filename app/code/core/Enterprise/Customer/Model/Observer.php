@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Customer
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -194,8 +194,8 @@ class Enterprise_Customer_Model_Observer
             ));
             if (!$validate) {
                 throw Mage::exception('Mage_Eav',
-                    Mage::helper('eav')->__('Maximum length of attribute code must be less then %s symbols',
-                        $attributeCodeMaxLength));
+                    Mage::helper('eav')->__('Maximum length of attribute code must be less then %s symbols', $attributeCodeMaxLength)
+                );
             }
         }
 

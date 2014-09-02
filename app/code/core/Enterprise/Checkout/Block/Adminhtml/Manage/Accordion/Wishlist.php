@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -76,6 +76,16 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Wishlist
     }
 
     /**
+     * Create wishlist item collection
+     *
+     * @return Mage_Wishlist_Model_Resource_Item_Collection
+     */
+    protected function _createItemsCollection()
+    {
+        return Mage::getModel('wishlist/item')->getCollection();
+    }
+
+    /**
      * Return items collection
      *
      * @return Mage_Wishlist_Model_Resource_Item_Collection
@@ -83,21 +93,25 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Wishlist
     public function getItemsCollection()
     {
         if (!$this->hasData('items_collection')) {
-            $wishlist = Mage::getModel('wishlist/wishlist')->loadByCustomer($this->_getCustomer())
-                ->setStore($this->_getStore())
-                ->setSharedStoreIds($this->_getStore()->getWebsite()->getStoreIds());
-            if ($wishlist->getId()) {
-                $collection = $wishlist->getItemCollection()
-                    ->setSalableFilter()
-                    ->resetSortOrder();
-            } else {
-                $collection = parent::getItemsCollection();
-            }
+            $collection = $this->_createItemsCollection()
+                ->addCustomerIdFilter($this->_getCustomer()->getId())
+                ->addStoreFilter($this->_getStore()->getWebsite()->getStoreIds())
+                ->setVisibilityFilter()
+                ->setSalableFilter()
+                ->resetSortOrder();
+
             foreach ($collection as $item) {
-                if ($item->getProduct()) {
-                    $item->setName($item->getProduct()->getName());
-                    $item->setPrice($item->getProduct()->getPrice());
+                $product = $item->getProduct();
+                if ($product) {
+                    if (!$product->getStockItem()->getIsInStock() || !$product->isInStock()) {
+                        // Remove disabled and out of stock products from the grid
+                        $collection->removeItemByKey($item->getId());
+                    } else {
+                        $item->setName($product->getName());
+                        $item->setPrice($product->getPrice());
+                    }
                 }
+
             }
             $this->setData('items_collection', $collection);
         }

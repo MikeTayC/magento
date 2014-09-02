@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -44,9 +44,9 @@
             <?php endif; ?>
             <div class="a-center" style="margin: 0 0 10px 0;">
             <?php if ($this->getIsPsl() == Enterprise_Rma_Block_Adminhtml_Rma_Edit_Tab_General_Shippingmethod::PSL_ALLOWED): ?>
-                <button class="scalable save" type="button" id="get-shipping-method-and-rates"><span><?php echo Mage::helper('enterprise_rma')->__('Create Shipping Label') ?></span></button>
+                <button class="scalable save" type="button" id="get-shipping-method-and-rates"><span><span><span><?php echo Mage::helper('enterprise_rma')->__('Create Shipping Label') ?></span></span></span></button>
             <?php elseif ($this->getIsPsl() == Enterprise_Rma_Block_Adminhtml_Rma_Edit_Tab_General_Shippingmethod::PSL_DISABLED): ?>
-                <button class="scalable save disabled" type="button" title="<?php echo Mage::helper('enterprise_rma')->__('Enabled when authorized items require a new shipment'); ?>"><span><?php echo Mage::helper('enterprise_rma')->__('Create Shipping Label') ?></span></button>
+                <button class="scalable save disabled" type="button" title="<?php echo Mage::helper('enterprise_rma')->__('Enabled when authorized items require a new shipment'); ?>"><span><span><span><?php echo Mage::helper('enterprise_rma')->__('Create Shipping Label') ?></span></span></span></button>
             <?php endif; ?>
             <?php if ($this->getShipment()->getShippingLabel()): ?>
                 <?php echo $this->getPrintLabelButton() ?>
@@ -227,7 +227,7 @@
         <div class="buttons-set a-right">
             <?php echo $this->getPrintButton() ?>
             <button type="button" class="scalable SavePackagesBtn save" onclick="hidePackedWindow();" title="<?php echo Mage::helper('sales')->__('Products should be added to package(s)')?>">
-                <span><?php echo Mage::helper('enterprise_rma')->__('OK') ?></span>
+                <span><span><span><?php echo Mage::helper('enterprise_rma')->__('OK') ?></span></span></span>
             </button>
         </div>
     </div>

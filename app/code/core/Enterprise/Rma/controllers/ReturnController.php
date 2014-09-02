@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -180,7 +180,7 @@ class Enterprise_Rma_ReturnController extends Mage_Core_Controller_Front_Action
     /**
      * Try to load valid collection of ordered items
      *
-     * @param int $entityId
+     * @param int $orderId
      * @return bool
      */
     protected function _loadOrderItems($orderId)

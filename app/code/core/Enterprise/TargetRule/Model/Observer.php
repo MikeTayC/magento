@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -88,5 +88,28 @@ class Enterprise_TargetRule_Model_Observer
             Enterprise_TargetRule_Model_Index::ENTITY_PRODUCT,
             Enterprise_TargetRule_Model_Index::EVENT_TYPE_REINDEX_PRODUCTS
         );
+    }
+
+    /**
+     * Clear customer segment indexer if customer segment is on|off on backend
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_TargetRule_Model_Observer
+     */
+    public function coreConfigSaveCommitAfter(Varien_Event_Observer $observer)
+    {
+        if ($observer->getDataObject()->getPath() == 'customer/enterprise_customersegment/is_enabled'
+            && $observer->getDataObject()->isValueChanged()) {
+            Mage::getSingleton('index/indexer')->logEvent(
+                new Varien_Object(array('type_id' => null, 'store' => null)),
+                Enterprise_TargetRule_Model_Index::ENTITY_TARGETRULE,
+                Enterprise_TargetRule_Model_Index::EVENT_TYPE_CLEAN_TARGETRULES
+            );
+            Mage::getSingleton('index/indexer')->indexEvents(
+                Enterprise_TargetRule_Model_Index::ENTITY_TARGETRULE,
+                Enterprise_TargetRule_Model_Index::EVENT_TYPE_CLEAN_TARGETRULES
+            );
+        }
+        return $this;
     }
 }

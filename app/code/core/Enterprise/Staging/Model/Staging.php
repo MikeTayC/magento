@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -241,14 +241,14 @@ class Enterprise_Staging_Model_Staging extends Mage_Core_Model_Abstract
      *
      * @return Mage_Core_Model_Abstract
      */
-    protected function _afterSave()
+    public function afterCommitCallback()
     {
         if ($this->getIsNew()) {
             $this->create();
         } else {
             $this->update();
         }
-        return parent::_afterSave();
+        return parent::afterCommitCallback();
     }
 
     /**

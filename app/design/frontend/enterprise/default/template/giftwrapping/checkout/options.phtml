@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -127,12 +127,14 @@ var giftWrapping = {
         if (this.allowGiftReceipt || this.allowPrintedCard) {
             $$('.extra-options-container').each(function(element){
                 var id = element.id.sub('extra-options-container-','');
-                if (this.cardInfo) {
-                    data.id = id;
+                data.id = id;
+                if (this.cardInfo[id]) {
                     this.cardInfo[id].id = id;
-                    this.insertOptions(element, this.cardInfo[id]);
-                    toogleVisibility(['add-gift-options-'+data.id], true);
+                } else {
+                    this.cardInfo[id] = {"id":id};
                 }
+                this.insertOptions(element, this.cardInfo[id]);
+                toogleVisibility(['add-gift-options-'+data.id], true);
             }, this);
         }
     },
@@ -173,7 +175,7 @@ var giftWrapping = {
             imageBox.src = this.designsInfo[value].path;
             imageBox.removeClassName('no-display');
         } else {
-            imageBox.src = '';
+            imageBox.src = '<?php echo $this->getSkinUrl('images/spacer.gif')?>';
             imageBox.addClassName('no-display');
         }
         imageBox.up().removeClassName('no-display');

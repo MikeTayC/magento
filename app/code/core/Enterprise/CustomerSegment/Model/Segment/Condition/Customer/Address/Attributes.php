@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -73,7 +73,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Address_Attrib
     /**
      * Load attribute options
      *
-     * @return Mage_CatalogRule_Model_Rule_Condition_Product
+     * @return Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Address_Attributes
      */
     public function loadAttributeOptions()
     {
@@ -118,9 +118,21 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Address_Attrib
 
                 default:
                     $options = array();
+                    if (!$this->getData('value_select_options') && is_object($this->getAttributeObject())) {
+                        if ($this->getAttributeObject()->usesSource()) {
+                            if ($this->getAttributeObject()->getFrontendInput() == 'multiselect') {
+                                $addEmptyOption = false;
+                            } else {
+                                $addEmptyOption = true;
+                            }
+                            $options = $this->getAttributeObject()->getSource()->getAllOptions($addEmptyOption);
+                        }
+                    }
             }
+
             $this->setData('value_select_options', $options);
         }
+
         return $this->getData('value_select_options');
     }
 

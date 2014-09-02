@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -427,20 +427,11 @@ class Enterprise_Rma_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getFormatedDate($date)
     {
-        $storeDate = Mage::app()
-            ->getLocale()
-            ->storeDate(
-                Mage::app()->getStore(),
-                Varien_Date::toTimestamp($date),
-                true
-        );
+        $storeDate = Mage::app()->getLocale()
+            ->storeDate(Mage::app()->getStore(), Varien_Date::toTimestamp($date), true);
 
         return Mage::helper('core')
-            ->formatDate(
-                $storeDate,
-                Mage_Core_Model_Locale::FORMAT_TYPE_SHORT,
-                true
-            );
+            ->formatDate($storeDate, Mage_Core_Model_Locale::FORMAT_TYPE_SHORT);
     }
 
     /**

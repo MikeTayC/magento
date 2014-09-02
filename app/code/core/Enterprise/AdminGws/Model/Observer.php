@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_AdminGws
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -70,7 +70,9 @@ class Enterprise_AdminGws_Model_Observer extends Enterprise_AdminGws_Model_Obser
         }
         else {
             // set selected website ids
-            $websiteIds = ($object->getData('gws_websites') != '' ? explode(',', $object->getData('gws_websites')) : array());
+            $websiteIds = ($object->getData('gws_websites') != '' ?
+                    explode(',', $object->getData('gws_websites')) :
+                    array());
             $object->setGwsWebsites($websiteIds);
 
             // set either the set store group ids or all of allowed websites
@@ -137,11 +139,15 @@ class Enterprise_AdminGws_Model_Observer extends Enterprise_AdminGws_Model_Obser
 
         // validate specified data
         if ($object->getGwsIsAll() == 0 && empty($websiteIds) && empty($storeGroupIds)) {
-            Mage::throwException(Mage::helper('enterprise_admingws')->__('Please specify at least one website or one store group.'));
+            Mage::throwException(
+                Mage::helper('enterprise_admingws')->__('Please specify at least one website or one store group.')
+            );
         }
         if (!$this->_role->getIsAll()) {
             if ($object->getGwsIsAll()) {
-                Mage::throwException(Mage::helper('enterprise_admingws')->__('Not enough permissions to set All Scopes to a Role.'));
+                Mage::throwException(
+                    Mage::helper('enterprise_admingws')->__('Not enough permissions to set All Scopes to a Role.')
+                );
             }
         }
 
@@ -160,7 +166,9 @@ class Enterprise_AdminGws_Model_Observer extends Enterprise_AdminGws_Model_Obser
                 // prevent granting disallowed websites
                 if (!$this->_role->getIsAll()) {
                     if (!$this->_role->hasWebsiteAccess($websiteId, true)) {
-                        Mage::throwException(Mage::helper('enterprise_admingws')->__('Website "%s" is not allowed in your current permission scope.', Mage::app()->getWebsite($websiteId)->getName()));
+                        Mage::throwException(
+                            Mage::helper('enterprise_admingws')->__('Website "%s" is not allowed in your current permission scope.', Mage::app()->getWebsite($websiteId)->getName())
+                        );
                     }
                 }
             }
@@ -182,7 +190,9 @@ class Enterprise_AdminGws_Model_Observer extends Enterprise_AdminGws_Model_Obser
                 }
                 // prevent granting disallowed store group
                 if (count(array_diff($storeGroupIds, $this->_role->getStoreGroupIds()))) {
-                    Mage::throwException(Mage::helper('enterprise_admingws')->__('Not enough permissions to save specified Combination of Store Scopes.'));
+                    Mage::throwException(
+                        Mage::helper('enterprise_admingws')->__('Not enough permissions to save specified Combination of Store Scopes.')
+                    );
                 }
             }
         }
@@ -274,6 +284,31 @@ class Enterprise_AdminGws_Model_Observer extends Enterprise_AdminGws_Model_Obser
             // inject into request predispatch to block disallowed actions
             $this->validateControllerPredispatch($observer);
         }
+    }
+
+    /**
+     * Check access to massaction status block
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_AdminGws_Model_Observer
+     */
+    public function catalogProductPrepareMassAction($observer)
+    {
+        if ($this->_role->getIsAll()) {
+            return $this;
+        }
+
+        $request = Mage::app()->getRequest();
+        $storeId = $request->getParam('store', Mage_Core_Model_App::ADMIN_STORE_ID);
+        if ($this->_role->hasStoreAccess($storeId)) {
+            return $this;
+        }
+
+        $massActionBlock = $observer->getEvent()->getBlock()->getMassactionBlock();
+        $massActionBlock->removeItem('status');
+        $massActionBlock->removeItem('attributes');
+
+        return $this;
     }
 
     /**
@@ -378,14 +413,17 @@ class Enterprise_AdminGws_Model_Observer extends Enterprise_AdminGws_Model_Obser
         // initialize controllers map
         if (null === $this->_controllersMap) {
             $this->_controllersMap = array('full' => array(), 'partial' => array());
-            foreach (Mage::getConfig()->getNode(self::XML_PATH_VALIDATE_CALLBACK . 'controller_predispatch')->children() as $actionName => $method) {
+            $children = Mage::getConfig()->getNode(self::XML_PATH_VALIDATE_CALLBACK . 'controller_predispatch')
+                ->children();
+            foreach ($children as $actionName => $method) {
                 list($module, $controller, $action) = explode('__', $actionName);
-                $map = array('module' => $module, 'controller' => $controller, 'action' => $action, 'callback' => $method);
                 if ($action) {
-                    $this->_controllersMap['full'][$module][$controller][$action] = $this->_recognizeCallbackString((string)$method);
+                    $this->_controllersMap['full'][$module][$controller][$action] =
+                        $this->_recognizeCallbackString((string)$method);
                 }
                 else {
-                    $this->_controllersMap['partial'][$module][$controller] = $this->_recognizeCallbackString((string)$method);
+                    $this->_controllersMap['partial'][$module][$controller] =
+                        $this->_recognizeCallbackString((string)$method);
                 }
             }
         }
@@ -407,7 +445,11 @@ class Enterprise_AdminGws_Model_Observer extends Enterprise_AdminGws_Model_Obser
         }
 
         if ($callback) {
-            $this->_invokeCallback($callback, 'enterprise_admingws/controllers', $observer->getEvent()->getControllerAction());
+            $this->_invokeCallback(
+                $callback,
+                'enterprise_admingws/controllers',
+                $observer->getEvent()->getControllerAction()
+            );
         }
     }
 
@@ -427,7 +469,8 @@ class Enterprise_AdminGws_Model_Observer extends Enterprise_AdminGws_Model_Obser
         if (!$callback = $this->_pickCallback('block_html_before', $block)) {
             return;
         }
-        $this->_invokeCallback($callback, 'enterprise_admingws/blocks', $observer); // the $observer is used intentionally
+        /* the $observer is used intentionally */
+        $this->_invokeCallback($callback, 'enterprise_admingws/blocks', $observer);
     }
 
     /**
@@ -446,7 +489,8 @@ class Enterprise_AdminGws_Model_Observer extends Enterprise_AdminGws_Model_Obser
         // gather callbacks from mapper configuration
         if (!isset($this->_callbacks[$callbackGroup])) {
             $this->_callbacks[$callbackGroup] = array();
-            foreach ((array)Mage::getConfig()->getNode(self::XML_PATH_VALIDATE_CALLBACK . $callbackGroup) as $className => $callback) {
+            $callbacks = (array)Mage::getConfig()->getNode(self::XML_PATH_VALIDATE_CALLBACK . $callbackGroup);
+            foreach ($callbacks as $className => $callback) {
                 $factoryClassName = str_replace('__', '/', $className);
                 switch ($callbackGroup) {
                     case 'collection_load_before':

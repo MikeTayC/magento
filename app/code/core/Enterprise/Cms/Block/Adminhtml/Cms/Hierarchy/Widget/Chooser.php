@@ -20,13 +20,16 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 
 /**
  * Cms Pages Hierarchy Grid Block
+ *
+ * @method Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Widget_Chooser setScope(string $value)
+ * @method Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Widget_Chooser setScopeId(int $value)
  *
  * @category   Enterprise
  * @package    Enterprise_Cms
@@ -41,8 +44,8 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Widget_Chooser extends Mage_A
      */
     public function prepareElementHtml(Varien_Data_Form_Element_Abstract $element)
     {
-        $uniqId = Mage::helper('core')->uniqHash($element->getId());
-        $sourceUrl = $this->getUrl('*/cms_hierarchy_widget/chooser', array('uniq_id' => $uniqId));
+        $uniqueId = Mage::helper('core')->uniqHash($element->getId());
+        $sourceUrl = $this->getUrl('*/cms_hierarchy_widget/chooser', array('uniq_id' => $uniqueId));
 
         $chooser = $this->getLayout()->createBlock('widget/adminhtml_widget_chooser')
             ->setElement($element)
@@ -50,7 +53,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Widget_Chooser extends Mage_A
             ->setConfig($this->getConfig())
             ->setFieldsetId($this->getFieldsetId())
             ->setSourceUrl($sourceUrl)
-            ->setUniqId($uniqId);
+            ->setUniqId($uniqueId);
 
 
         if ($element->getValue()) {
@@ -60,7 +63,12 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Widget_Chooser extends Mage_A
             }
         }
 
-        $element->setData('after_element_html', $chooser->toHtml());
+        $radioHtml = Mage::getBlockSingleton('enterprise_cms/adminhtml_cms_hierarchy_widget_radio')
+            ->setUniqId($uniqueId)
+            ->toHtml();
+
+        $element->setData('after_element_html', $chooser->toHtml() . $radioHtml);
+
         return $element;
     }
 
@@ -156,21 +164,13 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Widget_Chooser extends Mage_A
     public function getNodes()
     {
         $nodes = array();
-        $collection = Mage::getModel('enterprise_cms/hierarchy_node')->getCollection()
-            ->joinCmsPage()
-            ->setTreeOrder();
+        /** @var $hierarchyNode Enterprise_Cms_Model_Hierarchy_Node */
+        $hierarchyNode = Mage::getModel('enterprise_cms/hierarchy_node');
+        $hierarchyNode->setScope($this->getScope());
+        $hierarchyNode->setScopeId($this->getScopeId());
 
-        foreach ($collection as $item) {
-            /* @var $item Enterprise_Cms_Model_Hierarchy_Node */
-            $node = array(
-                'node_id'               => $item->getId(),
-                'parent_node_id'        => $item->getParentNodeId(),
-                'label'                 => $item->getLabel(),
-                'page_exists'           => (bool)$item->getPageExists(),
-                'page_id'               => $item->getPageId(),
-            );
-            $nodes[] = $node;
-        }
-        return $nodes;
+        $nodeHeritage = $hierarchyNode->getHeritage();
+        unset($hierarchyNode);
+        return $nodeHeritage->getNodesData();
     }
 }

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -61,12 +61,14 @@ class Enterprise_Reward_Block_Adminhtml_Reward_Rate_Edit_Form extends Mage_Admin
             'legend' => Mage::helper('enterprise_reward')->__('Reward Exchange Rate Information')
         ));
 
-        $fieldset->addField('website_id', 'select', array(
+        $field = $fieldset->addField('website_id', 'select', array(
             'name'   => 'website_id',
             'title'  => Mage::helper('enterprise_reward')->__('Website'),
             'label'  => Mage::helper('enterprise_reward')->__('Website'),
-            'values' => Mage::getModel('enterprise_reward/source_website')->toOptionArray()
+            'values' => Mage::getModel('enterprise_reward/source_website')->toOptionArray(),
         ));
+        $renderer = $this->getLayout()->createBlock('adminhtml/store_switcher_form_renderer_fieldset_element');
+        $field->setRenderer($renderer);
 
         $fieldset->addField('customer_group_id', 'select', array(
             'name'   => 'customer_group_id',
@@ -85,10 +87,14 @@ class Enterprise_Reward_Block_Adminhtml_Reward_Rate_Edit_Form extends Mage_Admin
         $rateRenderer = $this->getLayout()
             ->createBlock('enterprise_reward/adminhtml_reward_rate_edit_form_renderer_rate')
             ->setRate($this->getRate());
-        $fromIndex = $this->getRate()->getDirection() == Enterprise_Reward_Model_Reward_Rate::RATE_EXCHANGE_DIRECTION_TO_CURRENCY
-                   ? 'points' : 'currency_amount';
-        $toIndex = $this->getRate()->getDirection() == Enterprise_Reward_Model_Reward_Rate::RATE_EXCHANGE_DIRECTION_TO_CURRENCY
-                 ? 'currency_amount' : 'points';
+        $direction = $this->getRate()->getDirection();
+        if ($direction == Enterprise_Reward_Model_Reward_Rate::RATE_EXCHANGE_DIRECTION_TO_CURRENCY) {
+            $fromIndex = 'points';
+            $toIndex = 'currency_amount';
+        } else {
+            $fromIndex = 'currency_amount';
+            $toIndex = 'points';
+        }
         $fieldset->addField('rate_to_currency', 'note', array(
             'title'             => Mage::helper('enterprise_reward')->__('Rate'),
             'label'             => Mage::helper('enterprise_reward')->__('Rate'),

@@ -20,14 +20,11 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
-
-/**
- * @var $this Enterprise_Rma_Block_Adminhtml_Rma_Edit_Tab_General_Shipping_Methods
- */
 ?>
+<?php /** @var $this Enterprise_Rma_Block_Adminhtml_Rma_Edit_Tab_General_Shipping_Methods */ ?>
 <div class="entry-edit">
     <div class="entry-edit-head">
         <h4 class="icon-head head-shipping-method"><?php echo Mage::helper('enterprise_rma')->__('Create Shipping Label') ?></h4>
@@ -54,7 +51,7 @@
                                 <?php endif ;?>
                                 <dt class="option-label">
                                     <strong>
-                                        <?php echo $method->getCarrierTitle(); ?>
+                                        <?php echo $this->escapeHtml($method->getCarrierTitle()); ?>
                                     </strong>
                                 </dt>
                                 <dd>
@@ -65,7 +62,7 @@
                                 <input name="shipping_method" type="radio" value="<?php echo $method->getCode() ?>" id="s_method_<?php echo $method->getCode() ?>" class="radio" />
                                 <div style="display:none;" id="h_method_<?php echo $method->getCode() ?>"><?php echo $this->jsonData($method); ?></div>
                                 <label for="s_method_<?php echo $method->getCode() ?>">
-                                    <?php echo $method->getMethodTitle() ?>
+                                    <?php echo $this->escapeHtml($method->getMethodTitle()) ?>
                                     <strong class="price"><?php echo $this->getShippingPrice($method->getPrice()) ?></strong>
                                 </label>
                             </li>
@@ -84,8 +81,8 @@
             </div>
         </div>
         <div class="a-right" style="padding-top:10px;">
-            <button id="get-shipping-method-cancel-button" class="scalable" type="button"><span><?php echo $this->__('Cancel') ?></span></button>
-            <button disabled="disabled" id="get-shipping-method-ok-button" class="scalable disabled" type="button"><span><?php echo $this->__('OK') ?></span></button>
+            <button id="get-shipping-method-cancel-button" class="scalable" type="button"><span><span><span><?php echo $this->__('Cancel') ?></span></span></span></button>
+            <button disabled="disabled" id="get-shipping-method-ok-button" class="scalable disabled" type="button"><span><span><span><?php echo $this->__('OK') ?></span></span></span></button>
         </div>
     </div>
 </div>

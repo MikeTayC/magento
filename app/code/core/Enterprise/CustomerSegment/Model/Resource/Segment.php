@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -32,18 +32,37 @@
  * @package     Enterprise_CustomerSegment
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_CustomerSegment_Model_Resource_Segment extends Mage_Core_Model_Resource_Db_Abstract
+class Enterprise_CustomerSegment_Model_Resource_Segment extends Mage_Rule_Model_Resource_Abstract
 {
     /**
+     * Store associated with rule entities information map
+     *
+     * @var array
+     */
+    protected $_associatedEntitiesMap = array(
+        'website' => array(
+            'associations_table' => 'enterprise_customersegment/website',
+            'rule_id_field'      => 'segment_id',
+            'entity_id_field'    => 'website_id'
+        ),
+        'event' => array(
+            'associations_table' => 'enterprise_customersegment/event',
+            'rule_id_field'      => 'segment_id',
+            'entity_id_field'    => 'event'
+        )
+    );
+
+    /**
      * Segment websites table name
+     *
+     * @deprecated after 1.11.2.0
      *
      * @var string
      */
     protected $_websiteTable;
 
     /**
-     * Intialize resource model
-     *
+     * Initialize main table and table id field
      */
     protected function _construct()
     {
@@ -52,66 +71,159 @@ class Enterprise_CustomerSegment_Model_Resource_Segment extends Mage_Core_Model_
     }
 
     /**
-     * Get website ids associated to the segment id
+     * Add website ids to rule data after load
      *
-     * @param int $segmentId
-     * @return array
+     * @param Mage_Core_Model_Abstract $object
+     *
+     * @return Enterprise_CustomerSegment_Model_Resource_Segment
      */
-    public function getWebsiteIds($segmentId)
+    protected function _afterLoad(Mage_Core_Model_Abstract $object)
     {
-        $select = $this->_getReadAdapter()->select()
-            ->from($this->_websiteTable, 'website_id')
-            ->where('segment_id = :segment_id');
-        return $this->_getReadAdapter()->fetchCol($select, array(':segment_id' => $segmentId));
+        $object->setData('website_ids', (array)$this->getWebsiteIds($object->getId()));
+
+        parent::_afterLoad($object);
+        return $this;
     }
 
     /**
-     * Perform actions after object save
+     * Match and save events.
+     * Save websites associations.
      *
      * @param Mage_Core_Model_Abstract $object
+     *
      * @return Enterprise_CustomerSegment_Model_Resource_Segment
      */
     protected function _afterSave(Mage_Core_Model_Abstract $object)
     {
-        $id = $object->getId();
-        $this->_getWriteAdapter()->delete(
-            $this->getTable('enterprise_customersegment/event'),
-            array('segment_id = ?' => $id)
-        );
-        if ($object->getMatchedEvents() && is_array($object->getMatchedEvents())) {
-            foreach ($object->getMatchedEvents() as $event) {
-                $data = array(
-                    'segment_id' => $id,
-                    'event'      => $event,
-                );
-                $this->_getWriteAdapter()->insert($this->getTable('enterprise_customersegment/event'), $data);
+        $segmentId = $object->getId();
+
+        $this->unbindRuleFromEntity($segmentId, array(), 'event');
+        if ($object->hasMatchedEvents()) {
+            $matchedEvents = $object->getMatchedEvents();
+            if (is_array($matchedEvents) && !empty($matchedEvents)) {
+                $this->bindRuleToEntity($segmentId, $matchedEvents, 'event');
             }
         }
 
-        if ($object->hasData('website_ids')) {
-            $this->_saveWebsiteIds($object);
+        if ($object->hasWebsiteIds()) {
+            $websiteIds = $object->getWebsiteIds();
+            if (!is_array($websiteIds)) {
+                $websiteIds = explode(',', (string)$websiteIds);
+            }
+            $this->bindRuleToEntity($segmentId, $websiteIds, 'website');
         }
 
-        return parent::_afterSave($object);
+        parent::_afterSave($object);
+        return $this;
     }
 
     /**
-     * Save all website ids associated to segment
+     * Delete association between customer and segment for specific segment
      *
+     * @param   Enterprise_CustomerSegment_Model_Segment $segment
+     *
+     * @return  Enterprise_CustomerSegment_Model_Resource_Segment
+     */
+    public function deleteSegmentCustomers($segment)
+    {
+        $this->_getWriteAdapter()->delete(
+            $this->getTable('enterprise_customersegment/customer'),
+            array('segment_id=?' => $segment->getId())
+        );
+        return $this;
+    }
+
+    /**
+     * Save customer Ids matched by segment SQL select on specific website
      *
      * @param Enterprise_CustomerSegment_Model_Segment $segment
+     * @param int $websiteId
+     * @param string $select
+     *
      * @return Enterprise_CustomerSegment_Model_Resource_Segment
      */
-    protected function _saveWebsiteIds($segment)
+    public function saveCustomersFromSelect($segment, $websiteId, $select)
     {
-        $adapter = $this->_getWriteAdapter();
-        $adapter->delete($this->_websiteTable, array('segment_id=?'=>$segment->getId()));
-        foreach ($segment->getWebsiteIds() as $websiteId) {
-            $adapter->insert($this->_websiteTable, array(
-                'website_id' => $websiteId,
-                'segment_id' => $segment->getId()
-            ));
+        $customerTable = $this->getTable('enterprise_customersegment/customer');
+        $adapter   = $this->_getWriteAdapter();
+        $segmentId = $segment->getId();
+        $now       = $this->formatDate(time());
+
+        $data = array();
+        $count= 0;
+        $stmt = $adapter->query($select);
+        $adapter->beginTransaction();
+        try {
+            while ($row = $stmt->fetch()) {
+                $data[] = array(
+                    'segment_id'    => $segmentId,
+                    'customer_id'   => $row['entity_id'],
+                    'website_id'    => $websiteId,
+                    'added_date'    => $now,
+                    'updated_date'  => $now,
+                );
+                $count++;
+                if (($count % 1000) == 0) {
+                    $adapter->insertMultiple($customerTable, $data);
+                    $data = array();
+                }
+            }
+            if (!empty($data)) {
+                $adapter->insertMultiple($customerTable, $data);
+            }
+        } catch (Exception $e) {
+            $adapter->rollBack();
+            throw $e;
         }
+
+        $adapter->commit();
+
+        return $this;
+    }
+
+    /**
+     * Count customers in specified segment
+     *
+     * @param int $segmentId
+     *
+     * @return int
+     */
+    public function getSegmentCustomersQty($segmentId)
+    {
+        $adapter = $this->_getReadAdapter();
+        $select = $adapter->select()
+            ->from($this->getTable('enterprise_customersegment/customer'), array('COUNT(DISTINCT customer_id)'))
+            ->where('segment_id = ?', (int)$segmentId);
+
+        return (int)$adapter->fetchOne($select);
+    }
+
+    /**
+     * Aggregate customer/segments relations by matched segment conditions
+     *
+     * @param Enterprise_CustomerSegment_Model_Segment $segment
+     *
+     * @return Enterprise_CustomerSegment_Model_Resource_Segment
+     */
+    public function aggregateMatchedCustomers($segment)
+    {
+        $websiteIds = $segment->getWebsiteIds();
+        $adapter    = $this->_getWriteAdapter();
+
+        $adapter->beginTransaction();
+        try {
+            $this->deleteSegmentCustomers($segment);
+            foreach ($websiteIds as $websiteId) {
+                $query = $segment->getConditions()->getConditionsSql(null, $websiteId);
+                $this->saveCustomersFromSelect($segment, $websiteId, $query);
+            }
+        } catch (Exception $e) {
+            $adapter->rollback();
+            throw $e;
+        }
+
+        $adapter->commit();
+
         return $this;
     }
 
@@ -119,7 +231,8 @@ class Enterprise_CustomerSegment_Model_Resource_Segment extends Mage_Core_Model_
      * Get select query result
      *
      * @param Varien_Db_Select|string $sql
-     * @param array $bindParams array of binded variables
+     * @param array $bindParams array of bind variables
+     *
      * @return int
      */
     public function runConditionSql($sql, $bindParams)
@@ -246,81 +359,35 @@ class Enterprise_CustomerSegment_Model_Resource_Segment extends Mage_Core_Model_
         return $condition;
     }
 
-    /**
-     * Delete association between customer and segment for specific segment
-     *
-     * @param Enterprise_CustomerSegment_Model_Segment $segment
-     * @return Enterprise_CustomerSegment_Model_Resource_Segment
-     */
-    public function deleteSegmentCustomers($segment)
-    {
-        $this->_getWriteAdapter()->delete(
-            $this->getTable('enterprise_customersegment/customer'),
-            array('segment_id=?' => $segment->getId())
-        );
-        return $this;
-    }
+
+
 
     /**
-     * Save customer ids mutched by segment SQL select on specific website
+     * Save all website Ids associated to specified segment
      *
-     * @param Enterprise_CustomerSegment_Model_Segment $segment
-     * @param int $websiteId
-     * @param string $select
+     * @deprecated after 1.11.2.0 use $this->bindRuleToEntity() instead
+     *
+     * @param Mage_Core_Model_Abstract|Enterprise_CustomerSegment_Model_Segment $segment
+     *
      * @return Enterprise_CustomerSegment_Model_Resource_Segment
      */
-    public function saveCustomersFromSelect($segment, $websiteId, $select)
+    protected function _saveWebsiteIds($segment)
     {
-        $table = $this->getTable('enterprise_customersegment/customer');
-        $adapter = $this->_getWriteAdapter();
-        $segmentId = $segment->getId();
-        $now = $this->formatDate(time());
-
-        $data = array();
-        $count= 0;
-        $stmt = $adapter->query($select);
-        while ($row = $stmt->fetch()) {
-            $data[] = array(
-                'segment_id'    => $segmentId,
-                'customer_id'   => $row['entity_id'],
-                'website_id'    => $websiteId,
-                'added_date'    => $now,
-                'updated_date'  => $now,
-            );
-            $count++;
-            if ($count>1000) {
-                $count = 0;
-                $adapter->insertMultiple($table, $data);
-                $data = array();
+        if ($segment->hasWebsiteIds()) {
+            $websiteIds = $segment->getWebsiteIds();
+            if (!is_array($websiteIds)) {
+                $websiteIds = explode(',', (string)$websiteIds);
             }
+            $this->bindRuleToEntity($segment->getId(), $websiteIds, 'website');
         }
-        if ($count>0) {
-            $adapter->insertMultiple($table, $data);
-        }
+
         return $this;
     }
 
     /**
-     * Count customers in specified segments
+     * Save customer Ids matched by segment SQL select
      *
-     * @param int $segmentId
-     * @return int
-     */
-    public function getSegmentCustomersQty($segmentId)
-    {
-        $adapter = $this->_getReadAdapter();
-        return (int)$adapter->fetchOne(
-            $adapter->select()
-                ->from($this->getTable('enterprise_customersegment/customer'), array('COUNT(DISTINCT customer_id)'))
-                ->where('segment_id = :segment_id'),
-            array(':segment_id' => (int)$segmentId)
-        );
-    }
-
-    /**
-     * save CustomerSegments from select
-     *
-     * @deprecated after 1.6.0.0 - please use saveCustomersFromSelect
+     * @deprecate after 1.6.0.0 - please use $this->saveCustomersFromSelect() instead
      *
      * @param Enterprise_CustomerSegment_Model_Segment $segment
      * @param Varien_Db_Select $select
@@ -356,5 +423,29 @@ class Enterprise_CustomerSegment_Model_Resource_Segment extends Mage_Core_Model_
             $adapter->insertMultiple($table, $data);
         }
         return $this;
+    }
+
+    /**
+     * Get Active Segments By Ids
+     *
+     * @param array $segmentIds
+     * @return array
+     */
+    public function getActiveSegmentsByIds($segmentIds)
+    {
+        $activeSegmentsIds = array();
+        if (count($segmentIds)) {
+            $adapter = $this->_getWriteAdapter();
+            $select = $adapter->select()
+                ->from($this->getMainTable(), array('segment_id'))
+                ->where('segment_id IN (?)', $segmentIds)
+                ->where('is_active = 1');
+
+            $segmentsList = $adapter->fetchAll($select);
+            foreach ($segmentsList as $segment) {
+                $activeSegmentsIds[] = $segment['segment_id'];
+            }
+        }
+        return $activeSegmentsIds;
     }
 }

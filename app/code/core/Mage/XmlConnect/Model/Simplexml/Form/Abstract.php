@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_XmlConnect
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -182,7 +182,7 @@ class Mage_XmlConnect_Model_Simplexml_Form_Abstract extends Varien_Object
     public function getElements()
     {
         if (empty($this->_elements)) {
-            $this->_elements = Mage::getModel('xmlconnect/simplexml_form_element_collection');
+            $this->_elements = Mage::getModel('xmlconnect/simplexml_form_element_collection', $this);
         }
         return $this->_elements;
     }

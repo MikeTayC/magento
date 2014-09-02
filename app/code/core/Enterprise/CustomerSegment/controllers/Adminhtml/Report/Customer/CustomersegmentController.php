@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -186,18 +186,20 @@ class Enterprise_CustomerSegment_Adminhtml_Report_Customer_CustomersegmentContro
         $segment = $this->_initSegment();
         if ($segment) {
             try {
-                $segment->matchCustomers();
+                if ($segment->getApplyTo() != Enterprise_CustomerSegment_Model_Segment::APPLY_TO_VISITORS) {
+                    $segment->matchCustomers();
+                }
                 Mage::getSingleton('adminhtml/session')->addSuccess(
                     $this->__('Customer Segment data has been refreshed.')
                 );
                 $this->_redirect('*/*/detail', array('_current' => true));
-                return ;
+                return;
             } catch (Mage_Core_Exception $e) {
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
             }
         }
         $this->_redirect('*/*/detail', array('_current' => true));
-        return ;
+        return;
     }
 
     /**

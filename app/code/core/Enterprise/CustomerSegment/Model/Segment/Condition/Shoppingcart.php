@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -43,7 +43,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Shoppingcart
     /**
      * Get condition "selectors" for parent block
      *
-     * @return string
+     * @return array
      */
     public function getNewChildSelectOptions()
     {
@@ -53,7 +53,8 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Shoppingcart
                 Mage::getModel($prefix.'itemsquantity')->getNewChildSelectOptions(),
                 Mage::getModel($prefix.'productsquantity')->getNewChildSelectOptions(),
             ),
-            'label' => Mage::helper('enterprise_customersegment')->__('Shopping Cart')
+            'label' => Mage::helper('enterprise_customersegment')->__('Shopping Cart'),
+            'available_in_guest_mode' => true,
         );
     }
 }

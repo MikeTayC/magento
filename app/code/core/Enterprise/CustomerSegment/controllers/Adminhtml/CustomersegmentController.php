@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -112,7 +112,8 @@ class Enterprise_CustomerSegment_Adminhtml_CustomersegmentController extends Mag
                 $model->getId() ? $this->__('Edit Segment') : $this->__('New Segment'),
                 $model->getId() ? $this->__('Edit Segment') : $this->__('New Segment'))
             ->_addContent($block)
-            ->_addLeft($this->getLayout()->createBlock('enterprise_customersegment/adminhtml_customersegment_edit_tabs'))
+            ->_addLeft(
+                $this->getLayout()->createBlock('enterprise_customersegment/adminhtml_customersegment_edit_tabs'))
             ->renderLayout();
     }
 
@@ -123,7 +124,9 @@ class Enterprise_CustomerSegment_Adminhtml_CustomersegmentController extends Mag
     {
         try {
             $model = $this->_initSegment();
-            $model->matchCustomers();
+            if ($model->getApplyTo() != Enterprise_CustomerSegment_Model_Segment::APPLY_TO_VISITORS) {
+                $model->matchCustomers();
+            }
         } catch (Mage_Core_Exception $e) {
             $this->_getSession()->addError($e->getMessage());
             $this->_redirect('*/*/');
@@ -135,7 +138,7 @@ class Enterprise_CustomerSegment_Adminhtml_CustomersegmentController extends Mag
             $this->_redirect('*/*/');
             return;
         }
-        $this->_redirect('*/*/edit', array('id' => $model->getId(), 'active_tab'=>'customers_tab'));
+        $this->_redirect('*/*/edit', array('id' => $model->getId(), 'active_tab' => 'customers_tab'));
     }
 
     /**
@@ -147,8 +150,10 @@ class Enterprise_CustomerSegment_Adminhtml_CustomersegmentController extends Mag
     {
         $this->loadLayout()
             ->_setActiveMenu('customer/customersegment')
-            ->_addBreadcrumb(Mage::helper('enterprise_customersegment')->__('Segments'), Mage::helper('enterprise_customersegment')->__('Segments'))
-        ;
+            ->_addBreadcrumb(
+                Mage::helper('enterprise_customersegment')->__('Segments'),
+                Mage::helper('enterprise_customersegment')->__('Segments')
+            );
         return $this;
     }
 
@@ -161,10 +166,12 @@ class Enterprise_CustomerSegment_Adminhtml_CustomersegmentController extends Mag
         $typeArr = explode('|', str_replace('-', '/', $this->getRequest()->getParam('type')));
         $type = $typeArr[0];
 
+        $segment = Mage::getModel('enterprise_customersegment/segment');
+        $segment->setApplyTo((int) $this->getRequest()->getParam('apply_to'));
         $model = Mage::getModel($type)
             ->setId($id)
             ->setType($type)
-            ->setRule(Mage::getModel('enterprise_customersegment/segment'))
+            ->setRule($segment)
             ->setPrefix('conditions');
         if (!empty($typeArr[1])) {
             $model->setAttribute($typeArr[1]);
@@ -184,18 +191,40 @@ class Enterprise_CustomerSegment_Adminhtml_CustomersegmentController extends Mag
      */
     public function saveAction()
     {
-        if ($data = $this->getRequest()->getPost()) {
+        $data = $this->getRequest()->getPost();
+        if ($data) {
             try {
                 $redirectBack = $this->getRequest()->getParam('back', false);
 
                 $model = $this->_initSegment('segment_id');
-                $data['conditions'] = $data['rule']['conditions'];
-                unset($data['rule']);
+
+                // Sanitize apply_to property
+                if (array_key_exists('apply_to', $data)) {
+                    $data['apply_to'] = (int)$data['apply_to'];
+                }
+
+                $validateResult = $model->validateData(new Varien_Object($data));
+                if ($validateResult !== true) {
+                    foreach ($validateResult as $errorMessage) {
+                        $this->_getSession()->addError($errorMessage);
+                    }
+                    $this->_getSession()->setFormData($data);
+
+                    $this->_redirect('*/*/edit', array('id' => $model->getId()));
+                    return;
+                }
+
+                if (array_key_exists('rule', $data)){
+                    $data['conditions'] = $data['rule']['conditions'];
+                    unset($data['rule']);
+                }
 
                 $model->loadPost($data);
                 Mage::getSingleton('adminhtml/session')->setPageData($model->getData());
                 $model->save();
-                $model->matchCustomers();
+                if ($model->getApplyTo() != Enterprise_CustomerSegment_Model_Segment::APPLY_TO_VISITORS) {
+                    $model->matchCustomers();
+                }
 
                 Mage::getSingleton('adminhtml/session')->addSuccess($this->__('The segment has been saved.'));
                 Mage::getSingleton('adminhtml/session')->setPageData(false);

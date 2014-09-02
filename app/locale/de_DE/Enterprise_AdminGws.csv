@@ -3,6 +3,7 @@
 "An order cannot be created in disallowed store.","Eine Bestellung kann nicht in einem unzulässigen Store angelegt werden."
 "Custom","Kundschaft"
 "None","Keine"
+"Not enough permissions to delete this item(s): %s.","Keine ausreichende Berechtigung zum Löschen von: %s."
 "Not enough permissions to delete this item.","Es sind nicht genügend Genehmigungen vorhanden, um diesen Artikel zu löschen."
 "Not enough permissions to save specified Combination of Store Scopes.","Es sind nicht genügend Genehmigungen vorhanden, um die angegebene Kombination von Store-Bereichen zu speichern."
 "Not enough permissions to save this item.","Es sind nicht genügend Genehmigungen vorhanden, um diesen Artikel zu speichern."

@@ -3,6 +3,7 @@
 "An order cannot be created in disallowed store.","An order cannot be created in disallowed store."
 "Custom","Custom"
 "None","None"
+"Not enough permissions to delete this item(s): %s.","Not enough permissions to delete this item(s): %s."
 "Not enough permissions to delete this item.","Not enough permissions to delete this item."
 "Not enough permissions to save specified Combination of Store Scopes.","Not enough permissions to save specified Combination of Store Scopes."
 "Not enough permissions to save this item.","Not enough permissions to save this item."

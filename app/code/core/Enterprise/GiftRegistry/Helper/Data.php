@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -139,7 +139,6 @@ class Enterprise_GiftRegistry_Helper_Data extends Mage_Core_Helper_Abstract
             ->filterByIsActive(1);
 
         if (count($entityCollection)) {
-            $result[] = new Varien_Object(array('value' => '', 'title' => $this->__('Select Gift Registry')));
             foreach ($entityCollection as $entity) {
                 $result[] = new Varien_Object(array('value' => $entity->getId(),
                         'title' => $this->escapeHtml($entity->getTitle())));

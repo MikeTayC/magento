@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -82,12 +82,6 @@ Adding custom product price block
             <action method="addPriceBlockType"><type>bundle</type><block>bundle/catalog_product_price</block><template>bundle/catalog/product/price.phtml</template></action>
         </reference>
     </default>
-
-    <wishlist_index_index>
-        <reference name="customer.wishlist">
-            <action method="addOptionsRenderCfg"><type>bundle</type><helper>bundle/catalog_product_configuration</helper></action>
-        </reference>
-    </wishlist_index_index>
 
     <catalog_product_view>
         <reference name="catalog.product.related">
@@ -226,11 +220,11 @@ Additional block for bundle product type
         <reference name="product.info.options.wrapper.bottom">
             <remove name="product.tierprices" />
             <block type="bundle/catalog_product_view" name="bundle.tierprices" as="tierprices" before="-" template="bundle/catalog/product/view/tierprices.phtml"/>
+            <block type="cataloginventory/qtyincrements" name="product.info.qtyincrements" before="-" template="cataloginventory/qtyincrements.phtml"/>
             <block type="bundle/catalog_product_view" name="bundle.back.button" as="backButton" after="-" template="bundle/catalog/product/view/backbutton.phtml"/>
             <action method="unsetChild"><block>product.info.addtocart</block></action>
             <action method="setHideRequiredNotice"><flag>1</flag></action>
             <action method="unsetChild"><block>product.info.addto</block></action>
-            <block type="cataloginventory/qtyincrements" name="product.info.extrahint" as="extrahint" template="cataloginventory/qtyincrements.phtml"/>
         </reference>
         <reference name="product.clone_prices">
             <action method="addPriceBlockType"><type>bundle</type><block>bundle/catalog_product_price</block><template>bundle/catalog/product/view/price.phtml</template></action>

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -202,7 +202,7 @@ class Enterprise_GiftRegistry_Model_Resource_Entity_Collection extends Mage_Core
             $select->where('m.type_id = ?', (int)$params['type_id']);
         }
         if (!empty($params['id'])) {
-            $select->where('m.url_key =?', (int)$params['id']);
+            $select->where('m.url_key = ?', $params['id']);
         }
         if (!empty($params['firstname'])) {
             $select->where($adapter->quoteInto('p.firstname LIKE ?', $params['firstname'] . '%'));

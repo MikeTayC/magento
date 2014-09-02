@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -128,9 +128,9 @@ class Enterprise_CustomerBalance_Model_Balance_History extends Mage_Core_Model_A
                 if ((!$balance->getCreditMemo()) || !$balance->getCreditMemo()->getIncrementId()) {
                     Mage::throwException(Mage::helper('enterprise_customerbalance')->__('There is no creditmemo set to balance model.'));
                 }
-                $this->setAdditionalInfo(Mage::helper('enterprise_customerbalance')->__('Order #%s, creditmemo #%s',
-                    $balance->getOrder()->getIncrementId(), $balance->getCreditMemo()->getIncrementId()
-                ));
+                $this->setAdditionalInfo(
+                    Mage::helper('enterprise_customerbalance')->__('Order #%s, creditmemo #%s', $balance->getOrder()->getIncrementId(), $balance->getCreditMemo()->getIncrementId())
+                );
                 break;
             case self::ACTION_REVERTED:
                 $this->_checkBalanceModelOrder($balance);

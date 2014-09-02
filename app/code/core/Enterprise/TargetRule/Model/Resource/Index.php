@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -114,7 +114,7 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Index_Model_Resour
     {
         $adapter = $this->_getReadAdapter();
         $select  = $adapter->select()
-            ->from($this->getMainTable(), 'flag')
+            ->from($this->getMainTable(), 'customer_segment_id')
             ->where('type_id = :type_id')
             ->where('entity_id = :entity_id')
             ->where('store_id = :store_id')
@@ -125,29 +125,66 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Index_Model_Resour
             $this->orderRand($select);
         }
 
+        $segmentsIds = array_merge(array(0), $this->_getSegmentsIdsFromCurrentCustomer());
         $bind = array(
-            ':type_id'           => $object->getType(),
-            ':entity_id'         => $object->getProduct()->getEntityId(),
-            ':store_id'          => $object->getStoreId(),
-            ':customer_group_id' => $object->getCustomerGroupId()
+            ':type_id'              => $object->getType(),
+            ':entity_id'            => $object->getProduct()->getEntityId(),
+            ':store_id'             => $object->getStoreId(),
+            ':customer_group_id'    => $object->getCustomerGroupId()
         );
-        $flag    = $adapter->fetchOne($select, $bind);
 
-        if (empty($flag)) {
-            $productIds = $this->_matchProductIds($object);
-            if ($productIds) {
-                $value = join(',', $productIds);
-                $this->getTypeIndex($object->getType())
-                    ->saveResult($object, $value);
-            }
-            $this->saveFlag($object);
-        } else {
-            $productIds = $this->getTypeIndex($object->getType())
-                ->loadProductIds($object);
-            $productIds = array_diff($productIds, $object->getExcludeProductIds());
+        $segmentsList = $adapter->fetchAll($select, $bind);
+
+        $foundSegmentIndexes = array();
+        foreach ($segmentsList as $segment) {
+            $foundSegmentIndexes[] = $segment['customer_segment_id'];
         }
 
+        $productIds = array();
+        foreach ($segmentsIds as $segmentId) {
+            if (in_array($segmentId, $foundSegmentIndexes)) {
+                $productIds = array_merge($productIds,
+                    $this->getTypeIndex($object->getType())->loadProductIdsBySegmentId($object, $segmentId));
+            } else {
+                $matchedProductIds = $this->_matchProductIdsBySegmentId($object, $segmentId);
+                $productIds = array_merge($matchedProductIds, $productIds);
+                $this->getTypeIndex($object->getType())
+                    ->saveResultForCustomerSegments($object, $segmentId, implode(',', $matchedProductIds));
+                $this->saveFlag($object, $segmentId);
+            }
+        }
+        $productIds = array_diff(array_unique($productIds), $object->getExcludeProductIds());
         return array_slice($productIds, 0, $object->getLimit());
+    }
+
+    /**
+     * Match, save and return applicable product ids by segmentId object
+     *
+     * @param Enterprise_TargetRule_Model_Index $object
+     * @param string $segmentId
+     * @return array
+     */
+    protected function _matchProductIdsBySegmentId($object, $segmentId)
+    {
+        $limit = $object->getLimit() + $this->getOverfillLimit();
+        $productIds = array();
+        $ruleCollection = $object->getRuleCollection();
+        if (Mage::helper('enterprise_customersegment')->isEnabled()) {
+            $ruleCollection->addSegmentFilter($segmentId);
+        }
+        foreach ($ruleCollection as $rule) {
+            /* @var $rule Enterprise_TargetRule_Model_Rule */
+            if (count($productIds) >= $limit) {
+                break;
+            }
+            if (!$rule->checkDateForStore($object->getStoreId())) {
+                continue;
+            }
+            $excludeProductIds = array_merge(array($object->getProduct()->getEntityId()), $productIds);
+            $resultIds = $this->_getProductIdsByRule($rule, $object, $rule->getPositionsLimit(), $excludeProductIds);
+            $productIds = array_merge($productIds, $resultIds);
+        }
+        return $productIds;
     }
 
     /**
@@ -155,6 +192,7 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Index_Model_Resour
      *
      * @param Enterprise_TargetRule_Model_Index $object
      * @return array
+     * @deprecated after 1.12.0.0
      */
     protected function _matchProductIds($object)
     {
@@ -278,14 +316,15 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Index_Model_Resour
      * @param Enterprise_TargetRule_Model_Index $object
      * @return Enterprise_TargetRule_Model_Resource_Index
      */
-    public function saveFlag($object)
+    public function saveFlag($object, $segmentId = null)
     {
         $data = array(
-            'type_id'           => $object->getType(),
-            'entity_id'         => $object->getProduct()->getEntityId(),
-            'store_id'          => $object->getStoreId(),
-            'customer_group_id' => $object->getCustomerGroupId(),
-            'flag'              => 1
+            'type_id'             => $object->getType(),
+            'entity_id'           => $object->getProduct()->getEntityId(),
+            'store_id'            => $object->getStoreId(),
+            'customer_group_id'   => $object->getCustomerGroupId(),
+            'customer_segment_id' => $segmentId,
+            'flag'                => 1
         );
 
         $this->_getWriteAdapter()->insertOnDuplicate($this->getMainTable(), $data);
@@ -346,7 +385,7 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Index_Model_Resour
                 $selectOperator = '=?';
                 break;
         }
-
+        $field = $this->_getReadAdapter()->quoteIdentifier($field);
         return $this->_getReadAdapter()->quoteInto("{$field}{$selectOperator}", $value);
     }
 
@@ -355,14 +394,15 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Index_Model_Resour
      * also modify bind array
      *
      * @param string $field
-     * @param unknown_type $attribute
+     * @param mixed $attribute
      * @param string $operator
      * @param array $bind
-     * @param unknown_type $callback
+     * @param array $callback
      * @return string
      */
     public function getOperatorBindCondition($field, $attribute, $operator, &$bind, $callback = array())
     {
+        $field = $this->_getReadAdapter()->quoteIdentifier($field);
         $bindName = ':targetrule_bind_' . $this->_bindIncrement ++;
         switch ($operator) {
             case '!=':
@@ -517,43 +557,32 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Index_Model_Resour
      *
      * @param int $productId
      * @param int $ruleId
+     *
      * @return Enterprise_TargetRule_Model_Resource_Index
      */
     public function removeProductIndex($productId = null, $ruleId = null)
     {
-        $adapter = $this->_getWriteAdapter();
-        $where   = array();
-        if (!is_null($productId)) {
-            $where['product_id=?'] = $productId;
-        }
-        if (!is_null($ruleId)) {
-            $where['rule_id=?'] = $ruleId;
-        }
-
-        $adapter->delete($this->getTable('enterprise_targetrule/product'), $where);
+        /** @var $targetRule Enterprise_TargetRule_Model_Resource_Rule */
+        $targetRule = Mage::getResourceSingleton('enterprise_targetrule/rule');
+        $targetRule->unbindRuleFromEntity($ruleId, $productId, 'product');
 
         return $this;
     }
 
     /**
-     * Save target rule matched product index data
+     * Bind target rule to specified product
      *
      * @param int $ruleId
      * @param int $productId
+     * @param int $storeId
+     *
      * @return Enterprise_TargetRule_Model_Resource_Index
      */
     public function saveProductIndex($ruleId, $productId, $storeId)
     {
-        $this->removeProductIndex($productId, $ruleId);
-
-        $adapter = $this->_getWriteAdapter();
-        $bind    = array(
-            'rule_id'       => $ruleId,
-            'product_id'    => $productId,
-            'store_id'      => $storeId
-        );
-
-        $adapter->insert($this->getTable('enterprise_targetrule/product'), $bind);
+        /** @var $targetRule Enterprise_TargetRule_Model_Resource_Rule */
+        $targetRule = Mage::getResourceSingleton('enterprise_targetrule/rule');
+        $targetRule->bindRuleToEntity($ruleId, $productId, 'product');
 
         return $this;
     }
@@ -569,5 +598,38 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Index_Model_Resour
     {
         $this->_getReadAdapter()->orderRand($select, $field);
         return $this;
+    }
+
+    /**
+     * Get SegmentsIds From Current Customer
+     *
+     * @return array
+     */
+    protected function _getSegmentsIdsFromCurrentCustomer()
+    {
+        $segmentIds = array();
+        if (Mage::helper('enterprise_customersegment')->isEnabled()) {
+            $customer = Mage::registry('segment_customer');
+            if (!$customer) {
+                $customer = Mage::getSingleton('customer/session')->getCustomer();
+            }
+            $websiteId = Mage::app()->getWebsite()->getId();
+
+            if (!$customer->getId()) {
+                $allSegmentIds = Mage::getSingleton('customer/session')->getCustomerSegmentIds();
+                if ((is_array($allSegmentIds) && isset($allSegmentIds[$websiteId]))) {
+                    $segmentIds = $allSegmentIds[$websiteId];
+                }
+            } else {
+                $segmentIds = Mage::getSingleton('enterprise_customersegment/customer')
+                    ->getCustomerSegmentIdsForWebsite($customer->getId(), $websiteId);
+            }
+
+            if(count($segmentIds)) {
+                $segmentIds = Mage::getResourceModel('enterprise_customersegment/segment')
+                    ->getActiveSegmentsByIds($segmentIds);
+            }
+        }
+        return $segmentIds;
     }
 }

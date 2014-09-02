@@ -20,10 +20,17 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
+/**
+ * Full page cache observer
+ *
+ * @category   Enterprise
+ * @package    Enterprise_PageCache
+ * @author     Magento Core Team <core@magentocommerce.com>
+ */
 class Enterprise_PageCache_Model_Observer
 {
     /*
@@ -32,10 +39,24 @@ class Enterprise_PageCache_Model_Observer
     const XML_PATH_DESIGN_EXCEPTION = 'design/package/ua_regexp';
 
     /**
+     * Page Cache Processor
+     *
      * @var Enterprise_PageCache_Model_Processor
      */
     protected $_processor;
+
+    /**
+     * Page Cache Config
+     *
+     * @var Enterprise_PageCache_Model_Config
+     */
     protected $_config;
+
+    /**
+     * Is Enabled Full Page Cache
+     *
+     * @var bool
+     */
     protected $_isEnabled;
 
     /**
@@ -50,6 +71,7 @@ class Enterprise_PageCache_Model_Observer
 
     /**
      * Check if full page cache is enabled
+     *
      * @return bool
      */
     public function isCacheEnabled()
@@ -79,7 +101,8 @@ class Enterprise_PageCache_Model_Observer
     /**
      * Check when cache should be disabled
      *
-     * @param $observer
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function processPreDispatch(Varien_Event_Observer $observer)
     {
@@ -132,7 +155,8 @@ class Enterprise_PageCache_Model_Observer
     /**
      * model_load_after event processor. Collect tags of all loaded entities
      *
-     * @param $observer
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function registerModelTag(Varien_Event_Observer $observer)
     {
@@ -146,12 +170,14 @@ class Enterprise_PageCache_Model_Observer
                 $this->_processor->addRequestTag($tags);
             }
         }
+        return $this;
     }
 
     /**
      * Check category state on post dispatch to allow category page be cached
      *
      * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function checkCategoryState(Varien_Event_Observer $observer)
     {
@@ -173,6 +199,7 @@ class Enterprise_PageCache_Model_Observer
      * Check product state on post dispatch to allow product page be cached
      *
      * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function checkProductState(Varien_Event_Observer $observer)
     {
@@ -194,6 +221,7 @@ class Enterprise_PageCache_Model_Observer
      * Check if data changes duering object save affect cached pages
      *
      * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function validateDataChanges(Varien_Event_Observer $observer)
     {
@@ -201,13 +229,15 @@ class Enterprise_PageCache_Model_Observer
             return $this;
         }
         $object = $observer->getEvent()->getObject();
-        $object = Mage::getModel('enterprise_pagecache/validator')->checkDataChange($object);
+        Mage::getModel('enterprise_pagecache/validator')->checkDataChange($object);
+        return $this;
     }
 
     /**
      * Check if data delete affect cached pages
      *
      * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function validateDataDelete(Varien_Event_Observer $observer)
     {
@@ -215,11 +245,14 @@ class Enterprise_PageCache_Model_Observer
             return $this;
         }
         $object = $observer->getEvent()->getObject();
-        $object = Mage::getModel('enterprise_pagecache/validator')->checkDataDelete($object);
+        Mage::getModel('enterprise_pagecache/validator')->checkDataDelete($object);
+        return $this;
     }
 
     /**
      * Clean full page cache
+     *
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function cleanCache()
     {
@@ -228,7 +261,18 @@ class Enterprise_PageCache_Model_Observer
     }
 
     /**
+     * Clean expired entities in full page cache
+     * @return Enterprise_PageCache_Model_Observer
+     */
+    public function cleanExpiredCache()
+    {
+        Enterprise_PageCache_Model_Cache::getCacheInstance()->getFrontend()->clean(Zend_Cache::CLEANING_MODE_OLD);
+        return $this;
+    }
+
+    /**
      * Invalidate full page cache
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function invalidateCache()
     {
@@ -240,6 +284,7 @@ class Enterprise_PageCache_Model_Observer
      * Render placeholder tags around the block if needed
      *
      * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function renderBlockPlaceholder(Varien_Event_Observer $observer)
     {
@@ -249,7 +294,7 @@ class Enterprise_PageCache_Model_Observer
         $block = $observer->getEvent()->getBlock();
         $transport = $observer->getEvent()->getTransport();
         $placeholder = $this->_config->getBlockPlaceholder($block);
-        if ($transport && $placeholder) {
+        if ($transport && $placeholder && !$block->getSkipRenderTag()) {
             $blockHtml = $transport->getHtml();
             $blockHtml = $placeholder->getStartTag() . $blockHtml . $placeholder->getEndTag();
             $transport->setHtml($blockHtml);
@@ -262,6 +307,7 @@ class Enterprise_PageCache_Model_Observer
      *
      * @param Varien_Event_Observer $observer
      * @deprecated after 1.8
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function blockCreateAfter(Varien_Event_Observer $observer)
     {
@@ -280,6 +326,7 @@ class Enterprise_PageCache_Model_Observer
      * Set cart hash in cookie on quote change
      *
      * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function registerQuoteChange(Varien_Event_Observer $observer)
     {
@@ -291,10 +338,7 @@ class Enterprise_PageCache_Model_Observer
             $observer->getEvent()->getQuoteItem()->getQuote();
         $this->_getCookie()->setObscure(Enterprise_PageCache_Model_Cookie::COOKIE_CART, 'quote_' . $quote->getId());
 
-        $cacheId = md5(Enterprise_PageCache_Model_Container_Sidebar_Cart::CACHE_TAG_PREFIX
-            . $this->_getCookie()->get(Enterprise_PageCache_Model_Cookie::COOKIE_CART)
-            . $this->_getCookie()->get(Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER));
-
+        $cacheId = Enterprise_PageCache_Model_Container_Advanced_Quote::getCacheId();
         Enterprise_PageCache_Model_Cache::getCacheInstance()->remove($cacheId);
 
         return $this;
@@ -304,6 +348,7 @@ class Enterprise_PageCache_Model_Observer
      * Set compare list in cookie on list change. Also modify recently compared cookie.
      *
      * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function registerCompareListChange(Varien_Event_Observer $observer)
     {
@@ -349,6 +394,7 @@ class Enterprise_PageCache_Model_Observer
      * Set new message cookie on adding messsage to session.
      *
      * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function processNewMessage(Varien_Event_Observer $observer)
     {
@@ -359,19 +405,14 @@ class Enterprise_PageCache_Model_Observer
         return $this;
     }
 
-    /**
-     * Set cookie for logged in customer
-     *
-     * @param Varien_Event_Observer $observer
-     */
-    public function customerLogin(Varien_Event_Observer $observer)
-    {
-        if (!$this->isCacheEnabled()) {
-            return $this;
-        }
-        $this->_getCookie()->updateCustomerCookies();
 
-        // update customer viewed products index
+    /**
+     * Update customer viewed products index and renew customer viewed product ids cookie
+     *
+     * @return Enterprise_PageCache_Model_Observer
+     */
+    public function updateCustomerProductIndex()
+    {
         try {
             $productIds = $this->_getCookie()->get(Enterprise_PageCache_Model_Container_Viewedproducts::COOKIE_NAME);
             if ($productIds) {
@@ -392,16 +433,31 @@ class Enterprise_PageCache_Model_Observer
         Mage::getSingleton('catalog/product_visibility')->addVisibleInSiteFilterToCollection($collection);
         $productIds = $collection->load()->getLoadedIds();
         $productIds = implode(',', $productIds);
-        Enterprise_PageCache_Model_Cookie::registerViewedProducts($productIds, $countLimit, false);
-
+        $this->_getCookie()->registerViewedProducts($productIds, $countLimit, false);
         return $this;
+    }
 
+    /**
+     * Set cookie for logged in customer
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
+     */
+    public function customerLogin(Varien_Event_Observer $observer)
+    {
+        if (!$this->isCacheEnabled()) {
+            return $this;
+        }
+        $this->_getCookie()->updateCustomerCookies();
+        $this->updateCustomerProductIndex();
+        return $this;
     }
 
     /**
      * Remove customer cookie
      *
      * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function customerLogout(Varien_Event_Observer $observer)
     {
@@ -423,6 +479,7 @@ class Enterprise_PageCache_Model_Observer
      * Set wishlist hash in cookie on wishlist change
      *
      * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function registerWishlistChange(Varien_Event_Observer $observer)
     {
@@ -446,9 +503,28 @@ class Enterprise_PageCache_Model_Observer
     }
 
     /**
+     * Clear wishlist list
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
+     */
+    public function registerWishlistListChange(Varien_Event_Observer $observer)
+    {
+        if (!$this->isCacheEnabled()) {
+            return $this;
+        }
+
+        $blockContainer = Mage::getModel('enterprise_pagecache/container_wishlists');
+        Enterprise_PageCache_Model_Cache::getCacheInstance()->remove($blockContainer->getCacheId());
+
+        return $this;
+    }
+
+    /**
      * Set poll hash in cookie on poll vote
      *
      * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function registerPollChange(Varien_Event_Observer $observer)
     {
@@ -466,6 +542,7 @@ class Enterprise_PageCache_Model_Observer
      * Clean order sidebar cache
      *
      * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function registerNewOrder(Varien_Event_Observer $observer)
     {
@@ -483,6 +560,7 @@ class Enterprise_PageCache_Model_Observer
      * Remove new message cookie on clearing session messages.
      *
      * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function processMessageClearing(Varien_Event_Observer $observer)
     {
@@ -497,12 +575,14 @@ class Enterprise_PageCache_Model_Observer
      * Resave exception rules to cache storage
      *
      * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
      */
     public function registerDesignExceptionsChange(Varien_Event_Observer $observer)
     {
         $object = $observer->getDataObject();
         Enterprise_PageCache_Model_Cache::getCacheInstance()
-            ->save($object->getValue(), Enterprise_PageCache_Model_Processor::DESIGN_EXCEPTION_KEY);
+            ->save($object->getValue(), Enterprise_PageCache_Model_Processor::DESIGN_EXCEPTION_KEY,
+                array(Enterprise_PageCache_Model_Processor::CACHE_TAG));
         return $this;
     }
 
@@ -546,6 +626,10 @@ class Enterprise_PageCache_Model_Observer
      */
     public function updateProductInfo(Varien_Event_Observer $observer)
     {
+        if (!$this->isCacheEnabled()) {
+            return $this;
+        }
+
         $paramsObject = $observer->getEvent()->getParams();
         if ($paramsObject instanceof Varien_Object) {
             if (array_key_exists(Enterprise_PageCache_Model_Cookie::COOKIE_CATEGORY_ID, $_COOKIE)) {
@@ -577,5 +661,21 @@ class Enterprise_PageCache_Model_Observer
             ));
         }
         return $this;
+    }
+
+    /**
+     * Observer on changed Customer SegmentIds
+     *
+     * @param Varien_Event_Observer $observer
+     * @return void
+     */
+    public function changedCustomerSegmentIds(Varien_Event_Observer $observer)
+    {
+        if (!$this->isCacheEnabled()) {
+            return;
+        }
+        $segmentIds = is_array($observer->getSegmentIds()) ? $observer->getSegmentIds() : array();
+        $segmentsIdsString= implode(',', $segmentIds);
+        $this->_getCookie()->set(Enterprise_PageCache_Model_Cookie::CUSTOMER_SEGMENT_IDS, $segmentsIdsString);
     }
 }

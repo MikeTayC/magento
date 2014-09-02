@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -74,7 +74,7 @@
                         <?php endif; ?>
                     <?php endif; ?>
                     <?php if ($this->helper('wishlist')->isAllow()) : ?>
-                        <p><a href="#" onclick="setPLocation('<?php echo $this->helper('catalog/product_compare')->getAddToWishlistUrl($_item) ?>', true)"><?php echo $this->__('Add to Wishlist') ?></a></p>
+                        <p><a href="<?php echo $this->helper('catalog/product_compare')->getAddToWishlistUrl($_item) ?>" onclick="setPLocation(this.href, true); return false;" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a></p>
                     <?php endif; ?>
                 </td>
             <?php endforeach; ?>
@@ -86,7 +86,7 @@
                 <?php $_i = 0 ?>
                 <?php foreach($this->getItems() as $_item): ?>
                 <?php if($_i++%10==0): ?>
-                <th class="label"><span class="nobr"><?php echo $this->__($_attribute->getFrontendLabel()) ?></span></th>
+                <th class="label"><span class="nobr"><?php echo $_attribute->getStoreLabel() ? $_attribute->getStoreLabel() : $this->__($_attribute->getFrontendLabel()) ?></span></th>
                 <?php endif; ?>
                 <td>
                     <?php switch ($_attribute->getAttributeCode()) {
@@ -97,7 +97,9 @@
                             <img src="<?php echo $this->helper('catalog/image')->init($_item, 'small_image')->resize(125, 125); ?>" width="125" height="125" alt="<?php echo $this->stripTags($_item->getName(), null, true) ?>" />
                             <?php break;
                         default: ?>
-                            <?php echo $_helper->productAttribute($_item, $this->getProductAttributeValue($_item, $_attribute), $_attribute->getAttributeCode()) ?>
+                            <div class="std">
+                                <?php echo $_helper->productAttribute($_item, $this->getProductAttributeValue($_item, $_attribute), $_attribute->getAttributeCode()) ?>
+                            </div>
                             <?php break;
                     } ?>
                 </td>
@@ -124,7 +126,7 @@
                         <?php endif; ?>
                     <?php endif; ?>
                     <?php if ($this->helper('wishlist')->isAllow()) : ?>
-                        <p><a href="#" onclick="setPLocation('<?php echo $this->helper('catalog/product_compare')->getAddToWishlistUrl($_item) ?>', true)"><?php echo $this->__('Add to Wishlist') ?></a></p>
+                        <p><a href="<?php echo $this->helper('catalog/product_compare')->getAddToWishlistUrl($_item) ?>" onclick="setPLocation(this.href, true); return false;" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a></p>
                     <?php endif; ?>
                 </td>
                 <?php endforeach; ?>

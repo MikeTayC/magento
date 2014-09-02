@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogEvent
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -31,7 +31,8 @@
  * @category   Enterprise
  * @package    Enterprise_CatalogEvent
  */
-class Enterprise_CatalogEvent_Block_Adminhtml_Form_Renderer_Fieldset_Element extends Mage_Adminhtml_Block_Widget_Form_Renderer_Fieldset_Element
+class Enterprise_CatalogEvent_Block_Adminhtml_Form_Renderer_Fieldset_Element
+    extends Mage_Adminhtml_Block_Widget_Form_Renderer_Fieldset_Element
 {
     /**
      * Initialize block template
@@ -109,13 +110,11 @@ class Enterprise_CatalogEvent_Block_Adminhtml_Form_Renderer_Fieldset_Element ext
             return $html;
         }
         if ($element->getScope() == 'global' || $element->getScope() === null) {
-            $html .= '[GLOBAL]';
-        }
-        elseif ($element->getScope() == 'website') {
-            $html .= '[WEBSITE]';
-        }
-        elseif ($element->getScope() == 'store') {
-            $html .= '[STORE VIEW]';
+            $html .= Mage::helper('adminhtml')->__('[GLOBAL]');
+        } elseif ($element->getScope() == 'website') {
+            $html .= Mage::helper('adminhtml')->__('[WEBSITE]');
+        } elseif ($element->getScope() == 'store') {
+            $html .= Mage::helper('adminhtml')->__('[STORE VIEW]');
         }
 
         return $html;

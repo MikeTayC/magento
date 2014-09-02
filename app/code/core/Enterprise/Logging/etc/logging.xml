@@ -21,11 +21,95 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <logging>
+    <actions>
+        <view translate="label">
+            <label>View</label>
+        </view>
+        <save translate="label">
+            <label>Save</label>
+        </save>
+        <delete translate="label">
+            <label>Delete</label>
+        </delete>
+        <massDelete translate="label">
+            <label>Mass Delete</label>
+        </massDelete>
+        <export translate="label">
+            <label>Export</label>
+        </export>
+        <import translate="label">
+            <label>Import</label>
+        </import>
+        <edit translate="label">
+            <label>Edit</label>
+        </edit>
+        <massUpdate translate="label">
+            <label>Mass Update</label>
+        </massUpdate>
+        <move translate="label">
+            <label>Move</label>
+        </move>
+        <new translate="label">
+            <label>New</label>
+        </new>
+        <forgotpassword translate="label">
+            <label>Forgot Password</label>
+        </forgotpassword>
+        <global_search translate="label">
+            <label>Global Search</label>
+        </global_search>
+        <apply translate="label">
+            <label>Apply</label>
+        </apply>
+        <reorder translate="label">
+            <label>Reorder</label>
+        </reorder>
+        <print translate="label">
+            <label>Print</label>
+        </print>
+        <email translate="label">
+            <label>Email</label>
+        </email>
+        <run translate="label">
+            <label>Run</label>
+        </run>
+        <rollback translate="label">
+            <label>Rollback</label>
+        </rollback>
+        <reindex_process translate="label">
+            <label>Reindex Process</label>
+        </reindex_process>
+        <clean translate="label">
+            <label>Clean</label>
+        </clean>
+        <flush translate="label">
+            <label>Flush</label>
+        </flush>
+        <fetch translate="label">
+            <label>Fetch</label>
+        </fetch>
+        <updateProfile translate="label">
+            <label>Update Profile</label>
+        </updateProfile>
+        <updateState translate="label">
+            <label>Update State</label>
+        </updateState>
+        <login translate="label">
+            <label>Login</label>
+        </login>
+        <send translate="label">
+            <label>Send</label>
+        </send>
+        <create translate="label">
+            <label>Create</label>
+        </create>
+    </actions>
+
     <catalog_products translate="label">
         <label>Catalog Products</label>
         <expected_models>
@@ -89,7 +173,7 @@
     </catalog_categories>
 
     <core_urlrewrites translate="label">
-        <label>Urlrewrites</label>
+        <label>URL Rewrites</label>
         <expected_models>
             <core__url_rewrite/>
         </expected_models>
@@ -1158,7 +1242,7 @@
     </sales_shipments>
 
     <sales_creditmemos translate="label">
-        <label>Sales Creditmemos</label>
+        <label>Sales Credit Memos</label>
         <expected_models>
             <sales__order_creditmemo>
                 <additional_data>
@@ -1232,7 +1316,7 @@
     </sales_agreement>
 
     <api_roles translate="label">
-        <label>Webservices API Roles</label>
+        <label>Web Services API Roles</label>
         <expected_models>
             <api__roles/>
         </expected_models>
@@ -1255,7 +1339,7 @@
     </api_roles>
 
     <api_users translate="label">
-        <label>Webservices API Users</label>
+        <label>Web Services API Users</label>
         <expected_models>
             <api__user>
                 <skip_data>
@@ -1483,15 +1567,23 @@
     <adminhtml_system_backups translate="label">
         <label>System Backups</label>
         <actions>
-            <adminhtml_system_backup_create>
+            <adminhtml_system_backup_create translate="label">
                 <action>create</action>
+                <label>Create</label>
                 <post_dispatch>postDispatchSystemBackupsCreate</post_dispatch>
             </adminhtml_system_backup_create>
 
-            <adminhtml_system_backup_delete>
-                <action>delete</action>
+            <adminhtml_system_backup_massDelete translate="label">
+                <action>massDelete</action>
+                <label>Mass Delete</label>
                 <post_dispatch>postDispatchSystemBackupsDelete</post_dispatch>
-            </adminhtml_system_backup_delete>
+            </adminhtml_system_backup_massDelete>
+
+            <adminhtml_system_backup_rollback translate="label">
+                <action>rollback</action>
+                <label>Rollback</label>
+                <post_dispatch>postDispatchSystemRollback</post_dispatch>
+            </adminhtml_system_backup_rollback>
         </actions>
     </adminhtml_system_backups>
 
@@ -1615,7 +1707,8 @@
             <googlebase__type/>
         </expected_models>
         <actions>
-            <googlebase_types_edit>
+            <googlebase_types_edit translate="label">
+                <label>Edit</label>
                 <action>edit</action>
             </googlebase_types_edit>
 

@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -74,7 +74,7 @@
                             <input type="hidden" name="price" value="<?php echo $item->getPrice(); ?>">
                             <input type="text" name="qty" value="<?php echo $item->getQty()*1; ?>" class="input-text qty qty-decimal">&nbsp;
                             <button type="button" class="scalable delete icon-btn" onclick="packaging.deleteItem(this);" style="display:none;">
-                                <span><?php echo Mage::helper('sales')->__('Delete') ?></span>
+                                <span><span><span><?php echo Mage::helper('sales')->__('Delete') ?></span></span></span>
                             </button>
                         </td>
                     </tr>

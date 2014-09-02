@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -32,7 +32,7 @@
  * @package     Enterprise_Logging
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Logging_Model_Resource_Helper_Mysql4 extends Mage_Eav_Model_Resource_Helper_Mssql
+class Enterprise_Logging_Model_Resource_Helper_Mysql4 extends Mage_Eav_Model_Resource_Helper_Mysql4
 {
     /**
      * Returns expression for converting int field to IP string

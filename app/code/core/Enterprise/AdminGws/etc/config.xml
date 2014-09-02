@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_AdminGws
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -144,14 +144,6 @@
                     </enterprise_admingws>
                 </observers>
             </eav_collection_abstract_load_before>
-            <review_review_collection_load_before>
-                <observers>
-                    <enterprise_admingws>
-                        <class>enterprise_admingws/observer</class>
-                        <method>limitCollection</method>
-                    </enterprise_admingws>
-                </observers>
-            </review_review_collection_load_before>
             <log_visitor_collection_load_before>
                 <observers>
                     <enterprise_admingws>
@@ -248,7 +240,15 @@
                     </enterprise_admingws>
                 </observers>
             </store_group_save_after>
-            <adminhtml_catalog_product_edit_tab_attributes_create_html_before>
+            <adminhtml_catalog_product_grid_prepare_massaction>
+                <observers>
+                    <enterprise_admingws>
+                        <class>enterprise_admingws/observer</class>
+                        <method>catalogProductPrepareMassAction</method>
+                    </enterprise_admingws>
+                </observers>
+            </adminhtml_catalog_product_grid_prepare_massaction>
+          <adminhtml_catalog_product_edit_tab_attributes_create_html_before>
                 <observers>
                     <enterprise_admingws>
                         <class>enterprise_admingws/blocks</class>
@@ -328,6 +328,7 @@
                 <collection_load_before>
                     <sales__report_bestsellers_collection>limitBestsellersCollection</sales__report_bestsellers_collection>
                     <reports__product_collection>limitProductReports</reports__product_collection>
+                    <reports__report_product_viewed_collection>limitMostViewedCollection</reports__report_product_viewed_collection>
                     <core__store_collection>limitStores</core__store_collection>
                     <core__website_collection>limitWebsites</core__website_collection>
                     <core__store_group_collection>limitStoreGroups</core__store_group_collection>
@@ -343,8 +344,6 @@
                     <reports__tag_customer_collection>addStoreFilter</reports__tag_customer_collection>
                     <catalogsearch__query_collection>addStoreFilter</catalogsearch__query_collection>
                     <enterprise_invitation__invitation_collection>addStoreFilter</enterprise_invitation__invitation_collection>
-                    <catalogrule__rule_collection>limitPriceRules</catalogrule__rule_collection>
-                    <salesrule__rule_collection>limitPriceRules</salesrule__rule_collection>
                     <log__visitor_online_collection>limitOnlineCustomers</log__visitor_online_collection>
                     <enterprise_giftcardaccount__giftcardaccount_collection>limitGiftCardAccounts</enterprise_giftcardaccount__giftcardaccount_collection>
                     <enterprise_catalogevent__event_collection>limitCatalogEvents</enterprise_catalogevent__event_collection>
@@ -371,18 +370,24 @@
                     <widget__widget_instance_collection>addStoreFilter</widget__widget_instance_collection>
                     <sales__order_payment_transaction_collection>addStoreFilter</sales__order_payment_transaction_collection>
                     <enterprise_banner__banner_collection>addStoreFilter</enterprise_banner__banner_collection>
-                    <enterprise_customersegment__segment_collection>limitCustomerSegments</enterprise_customersegment__segment_collection>
                     <enterprise_reward__reward_history_collection>limitRewardHistoryWebsites</enterprise_reward__reward_history_collection>
                     <enterprise_reward__reward_collection>limitRewardBalanceWebsites</enterprise_reward__reward_collection>
+                    <enterprise_reward__reward_rate_collection>limitRewardBalanceWebsites</enterprise_reward__reward_rate_collection>
+                    <enterprise_customerbalance__balance_history_collection>limitStoreCreditsHistory</enterprise_customerbalance__balance_history_collection>
+                    <enterprise_customerbalance__balance_collection>limitStoreCredits</enterprise_customerbalance__balance_collection>
                     <enterprise_giftregistry__entity_collection>limitGiftRegistryEntityWebsites</enterprise_giftregistry__entity_collection>
                     <review__review_product_collection>limitProductReviews</review__review_product_collection>
                     <enterprise_rma__rma_grid_collection>addStoreAttributeToFilter</enterprise_rma__rma_grid_collection>
+                    <catalogrule__rule_collection>limitRuleEntityCollection</catalogrule__rule_collection>
+                    <salesrule__rule_collection>limitRuleEntityCollection</salesrule__rule_collection>
+                    <enterprise_reminder__rule_collection>limitRuleEntityCollection</enterprise_reminder__rule_collection>
+                    <enterprise_customersegment__segment_collection>limitRuleEntityCollection</enterprise_customersegment__segment_collection>
                 </collection_load_before>
                 <model_save_before>
                     <cms__page>cmsPageSaveBefore</cms__page>
                     <cms__block>cmsBlockSaveBefore</cms__block>
                     <poll__poll>pollSaveBefore</poll__poll>
-                    <rule__rule>ruleSaveBefore</rule__rule>
+                    <rule__abstract>ruleSaveBefore</rule__abstract>
                     <sales__order>salesOrderSaveBefore</sales__order>
                     <sales__order_invoice>salesOrderEntitySaveBefore</sales__order_invoice>
                     <sales__order_shipment>salesOrderEntitySaveBefore</sales__order_shipment>
@@ -405,15 +410,17 @@
                     <widget__widget_instance>widgetInstanceSaveBefore</widget__widget_instance>
                     <enterprise_banner__banner>bannerSaveBefore</enterprise_banner__banner>
                     <enterprise_giftcardaccount__giftcardaccount>giftCardAccountSaveBefore</enterprise_giftcardaccount__giftcardaccount>
-                    <enterprise_customersegment__segment>customerSegmentSaveBefore</enterprise_customersegment__segment>
                     <enterprise_giftregistry__type>giftRegistryTypeSaveBefore</enterprise_giftregistry__type>
+                    <enterprise_giftwrapping__wrapping>giftWrappingSaveBefore</enterprise_giftwrapping__wrapping>
+                    <enterprise_reward__reward_rate>rewardRateSaveBefore</enterprise_reward__reward_rate>
                     <review__review>catalogProductReviewSaveBefore</review__review>
+                    <rating__rating>ratingSaveBefore</rating__rating>
                 </model_save_before>
                 <model_delete_before>
                     <cms__page>cmsPageDeleteBefore</cms__page>
                     <cms__block>cmsBlockDeleteBefore</cms__block>
                     <poll__poll>pollDeleteBefore</poll__poll>
-                    <rule__rule>ruleDeleteBefore</rule__rule>
+                    <rule__abstract>ruleDeleteBefore</rule__abstract>
                     <catalog__product>catalogProductDeleteBefore</catalog__product>
                     <catalog__category>catalogCategoryDeleteBefore</catalog__category>
                     <customer__customer>customerDeleteBefore</customer__customer>
@@ -430,9 +437,9 @@
                     <widget__widget_instance>widgetInstanceDeleteBefore</widget__widget_instance>
                     <enterprise_banner__banner>bannerDeleteBefore</enterprise_banner__banner>
                     <enterprise_giftcardaccount__giftcardaccount>giftCardAccountDeleteBefore</enterprise_giftcardaccount__giftcardaccount>
-                    <enterprise_customersegment__segment>customerSegmentDeleteBefore</enterprise_customersegment__segment>
                     <enterprise_giftregistry__type>giftRegistryTypeDeleteBefore</enterprise_giftregistry__type>
                     <review__review>catalogProductReviewDeleteBefore</review__review>
+                    <enterprise_reward__reward_rate>rewardRateDeleteBefore</enterprise_reward__reward_rate>
                 </model_delete_before>
                 <model_load_after>
                     <catalog__product>catalogProductLoadAfter</catalog__product>
@@ -441,7 +448,7 @@
                     <customer__customer>customerLoadAfter</customer__customer>
                     <sales__order>salesOrderLoadAfter</sales__order>
                     <sales__order_payment_transaction>salesOrderTransactionLoadAfter</sales__order_payment_transaction>
-                    <rule__rule>ruleLoadAfter</rule__rule>
+                    <rule__abstract>ruleLoadAfter</rule__abstract>
                     <core__website>coreWebsiteLoadAfter</core__website>
                     <core__store_group>coreStoreGroupLoadAfter</core__store_group>
                     <core__store>coreStoreGroupLoadAfter</core__store>
@@ -450,15 +457,21 @@
                     <enterprise_banner__banner>bannerLoadAfter</enterprise_banner__banner>
                     <widget__widget_instance>widgetInstanceLoadAfter</widget__widget_instance>
                     <enterprise_giftcardaccount__giftcardaccount>giftCardAccountLoadAfter</enterprise_giftcardaccount__giftcardaccount>
-                    <enterprise_customersegment__segment>customerSegmentLoadAfter</enterprise_customersegment__segment>
                 </model_load_after>
                 <controller_predispatch>
                     <adminhtml__system_config__>validateSystemConfig</adminhtml__system_config__>
                     <adminhtml__catalog_product__>validateCatalogProduct</adminhtml__catalog_product__>
                     <adminhtml__catalog_product__edit>validateCatalogProductEdit</adminhtml__catalog_product__edit>
-                    <adminhtml__promo_catalog__>validatePromoCatalog</adminhtml__promo_catalog__>
+                    <adminhtml__catalog_product__massStatus>validateCatalogProductMassActions</adminhtml__catalog_product__massStatus>
+                    <adminhtml__catalog_product_action_attribute__edit>validateCatalogProductMassActions</adminhtml__catalog_product_action_attribute__edit>
+
+                    <adminhtml__promo_catalog__>validateRuleEntityAction</adminhtml__promo_catalog__>
+                    <adminhtml__promo_catalog__index>promoCatalogIndexAction</adminhtml__promo_catalog__index>
                     <adminhtml__promo_catalog__applyRules>validatePromoCatalogApplyRules</adminhtml__promo_catalog__applyRules>
-                    <adminhtml__promo_quote__>validatePromoQuote</adminhtml__promo_quote__>
+                    <adminhtml__promo_quote__>validateRuleEntityAction</adminhtml__promo_quote__>
+                    <adminhtml__customersegment__>validateRuleEntityAction</adminhtml__customersegment__>
+                    <adminhtml__reminder__>validateRuleEntityAction</adminhtml__reminder__>
+
                     <adminhtml__customer__>validateNoWebsiteGeneric</adminhtml__customer__>
                     <adminhtml__customer__edit>validateCustomerEdit</adminhtml__customer__edit>
                     <adminhtml__customerbalance__>validateCustomerbalance</adminhtml__customerbalance__>
@@ -553,6 +566,9 @@
                     <adminhtml__customer_attribute__>validateCustomerAttributeActions</adminhtml__customer_attribute__>
                     <adminhtml__customer_address_attribute__>validateCustomerAttributeActions</adminhtml__customer_address_attribute__>
                     <adminhtml__rma__new>validateSalesOrderViewAction</adminhtml__rma__new>
+                    <adminhtml__rma_item_attribute__save>validateRmaAttributeSaveAction</adminhtml__rma_item_attribute__save>
+                    <adminhtml__rma_item_attribute__edit>validateRmaAttributeEditAction</adminhtml__rma_item_attribute__edit>
+                    <adminhtml__rma_item_attribute__delete>validateRmaAttributeDeleteAction</adminhtml__rma_item_attribute__delete>
                 </controller_predispatch>
                 <block_html_before>
                     <adminhtml__customer>widgetCustomerGridContainer</adminhtml__customer>
@@ -569,11 +585,11 @@
                     <adminhtml__newsletter_queue_edit_form>setIsRequiredSubscribersFromFieldForNewsletterQueueForm</adminhtml__newsletter_queue_edit_form>
                     <adminhtml__catalog_product_edit_action_attribute_tab_websites>catalogProductMassUpdateWebsites</adminhtml__catalog_product_edit_action_attribute_tab_websites>
                     <adminhtml__catalog_product_grid__preparemassaction>catalogProductPrepareMassaction</adminhtml__catalog_product_grid__preparemassaction>
-                    <adminhtml__promo_catalog>removePromoCatalogButtons</adminhtml__promo_catalog>
-                    <adminhtml__promo_quote>removePromoQuoteButtons</adminhtml__promo_quote>
                     <adminhtml__cms_page_edit>removeCmsPageButtons</adminhtml__cms_page_edit>
                     <adminhtml__cms_block_edit>removeCmsBlockButtons</adminhtml__cms_block_edit>
                     <adminhtml__poll_edit>removePollButtons</adminhtml__poll_edit>
+
+                    <enterprise_reward__adminhtml_reward_rate_edit>removeRewardRateButtons</enterprise_reward__adminhtml_reward_rate_edit>
                     <adminhtml__tag_tag_grid>removeTagGridActions</adminhtml__tag_tag_grid>
                     <adminhtml__tag_edit>removeTagButtons</adminhtml__tag_edit>
                     <adminhtml__tag_edit_form>disableTagEditFormFields</adminhtml__tag_edit_form>
@@ -585,6 +601,8 @@
                     <enterprise_staging__adminhtml_staging_edit>removeStagingEditButtons</enterprise_staging__adminhtml_staging_edit>
                     <enterprise_staging__adminhtml_backup_grid>removeStagingBackupGridActions</enterprise_staging__adminhtml_backup_grid>
                     <enterprise_staging__adminhtml_backup_edit>removeStagingBackupEditButtons</enterprise_staging__adminhtml_backup_edit>
+                    <enterprise_giftwrapping__adminhtml_giftwrapping_edit>removeGiftWrappingEditButtons</enterprise_giftwrapping__adminhtml_giftwrapping_edit>
+                    <enterprise_giftwrapping__adminhtml_giftwrapping_grid>removeGiftWrappingForbiddenMassactions</enterprise_giftwrapping__adminhtml_giftwrapping_grid>
                     <enterprise_cms__adminhtml_cms_page_revision_edit>removeRevisionEditButtons</enterprise_cms__adminhtml_cms_page_revision_edit>
                     <enterprise_cms__adminhtml_cms_page_preview_buttons>removePreviewPublishButton</enterprise_cms__adminhtml_cms_page_preview_buttons>
                     <enterprise_giftcardaccount__adminhtml_giftcardaccount>removeGiftCardAccountAddButton</enterprise_giftcardaccount__adminhtml_giftcardaccount>
@@ -601,7 +619,6 @@
                     <enterprise_banner__adminhtml_banner_new>validateBannerPermissions</enterprise_banner__adminhtml_banner_new>
                     <enterprise_cms__adminhtml_cms_hierarchy_edit>removeCmsHierarchyFormButtons</enterprise_cms__adminhtml_cms_hierarchy_edit>
                     <enterprise_cms__adminhtml_cms_page_edit_tab_hierarchy>prepareCmsHierarchyNodes</enterprise_cms__adminhtml_cms_page_edit_tab_hierarchy>
-                    <enterprise_customersegment__adminhtml_customersegment>removeCustomerSegmentAddButton</enterprise_customersegment__adminhtml_customersegment>
                     <adminhtml__customer_group>removeCustomerGroupAddButton</adminhtml__customer_group>
                     <adminhtml__customer_group_edit>removeCustomerGroupControlButtons</adminhtml__customer_group_edit>
                     <adminhtml__sales_transactions_detail>removeSalesTransactionControlButtons</adminhtml__sales_transactions_detail>
@@ -616,6 +633,17 @@
                     <enterprise_customer__adminhtml_customer_address_attribute>removeAddNewCustomerAttributeButton</enterprise_customer__adminhtml_customer_address_attribute>
                     <enterprise_customer__adminhtml_customer_attribute_edit>removeDeleteCustomerAttributeButton</enterprise_customer__adminhtml_customer_attribute_edit>
                     <enterprise_customer__adminhtml_customer_address_attribute_edit>removeDeleteCustomerAttributeButton</enterprise_customer__adminhtml_customer_address_attribute_edit>
+                    <adminhtml__promo_catalog>removeRuleEntityGridButtons</adminhtml__promo_catalog>
+                    <adminhtml__promo_quote>removeRuleEntityGridButtons</adminhtml__promo_quote>
+                    <enterprise_customersegment__adminhtml_customersegment>removeRuleEntityGridButtons</enterprise_customersegment__adminhtml_customersegment>
+                    <enterprise_reminder__adminhtml_reminder>removeRuleEntityGridButtons</enterprise_reminder__adminhtml_reminder>
+                    <adminhtml__promo_catalog_edit>removeRuleEntityEditButtons</adminhtml__promo_catalog_edit>
+                    <adminhtml__promo_quote_edit>removeRuleEntityEditButtons</adminhtml__promo_quote_edit>
+                    <adminhtml__rating_edit>removeRatingEditButtons</adminhtml__rating_edit>
+                    <enterprise_customersegment__adminhtml_customersegment_edit>removeRuleEntityEditButtons</enterprise_customersegment__adminhtml_customersegment_edit>
+                    <enterprise_reminder__adminhtml_reminder_edit>removeRuleEntityEditButtons</enterprise_reminder__adminhtml_reminder_edit>
+                    <enterprise_rma__adminhtml_rma_item_attribute_edit>removeRmaDeleteAttributeButton</enterprise_rma__adminhtml_rma_item_attribute_edit>
+                    <enterprise_rma__adminhtml_rma_item_attribute_edit_tab_options>disableRmaAttributeDeleteOptionButton</enterprise_rma__adminhtml_rma_item_attribute_edit_tab_options>
                 </block_html_before>
             </admingws>
         </enterprise>

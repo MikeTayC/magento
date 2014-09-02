@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -73,7 +73,9 @@ foreach ($fieldsets as $fieldset => $fields) : ?>
              <label for="<?php echo $field ?>" <?php echo ($isRequired ? 'class="required"' : '')?>>
                  <?php echo ($isRequired ? '<em>*</em>' : '') . $this->__($data['label']) ?>
              </label>
-             <?php echo $this->renderField($data, $field) ?>
+             <div class="input-box">
+                 <?php echo $this->renderField($data, $field) ?>
+             </div>
         </li>
     <?php endforeach; ?>
     </ul>

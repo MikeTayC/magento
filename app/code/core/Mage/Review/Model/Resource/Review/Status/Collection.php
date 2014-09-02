@@ -20,10 +20,9 @@
  *
  * @category    Mage
  * @package     Mage_Review
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
-
 
 /**
  * Review statuses collection
@@ -49,7 +48,7 @@ class Mage_Review_Model_Resource_Review_Status_Collection extends Mage_Core_Mode
     {
         $this->_init('review/review_status');
     }
-    
+
     /**
      * Convert items array to array for select options
      *

@@ -34,8 +34,8 @@
                     <xsd:sequence>
                         <xsd:element minOccurs="1" maxOccurs="1" name="sessionId" type="xsd:string" />
                         <xsd:element minOccurs="1" maxOccurs="1" name="code" type="xsd:string" />
-                        <xsd:element minOccurs="1" maxOccurs="1" name="customer_id" type="xsd:string" />
-                        <xsd:element minOccurs="0" maxOccurs="1" name="store_id" type="xsd:string" />
+                        <xsd:element minOccurs="1" maxOccurs="1" name="customerId" type="xsd:string" />
+                        <xsd:element minOccurs="0" maxOccurs="1" name="storeId" type="xsd:string" />
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>

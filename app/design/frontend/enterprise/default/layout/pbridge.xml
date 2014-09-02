@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -48,5 +48,18 @@
     <enterprise_pbridge_pbridge_result>
         <block type="enterprise_pbridge/checkout_payment_result" name="pbridge.checkout.payment.result" template="pbridge/checkout/payment/result.phtml" output="toHtml" />
     </enterprise_pbridge_pbridge_result>
+
+    <enterprise_pbridge_payment_profile_index>
+        <update handle="customer_account" />
+        <reference name="my.account.wrapper">
+            <block type="enterprise_pbridge/payment_profile" name="pbridge.payment.profile" template="pbridge/payment/profile.phtml" />
+        </reference>
+    </enterprise_pbridge_payment_profile_index>
+
+    <customer_account>
+        <reference name="customer_account_navigation">
+            <action method="addLink" translate="label" module="enterprise_pbridge" ifconfig="payment/pbridge/profilestatus"><name>pbridge_payment_profile</name><path>enterprise_pbridge/payment_profile/</path><label>My Credit Cards</label></action>
+        </reference>
+    </customer_account>
 
 </layout>

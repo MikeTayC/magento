@@ -27,6 +27,7 @@
 "Notified","Notified"
 "Notify Customer by Email","Notify Customer by Email"
 "Order #%s","Order #%s"
+"Order #%s, creditmemo #%s","Order #%s, creditmemo #%s"
 "Please set store ID as well.","Please set store ID as well."
 "Refund Money to Store Credit","Refund Money to Store Credit"
 "Refund Store Credit Automatically","Refund Store Credit Automatically"

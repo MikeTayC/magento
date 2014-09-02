@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -135,11 +135,10 @@ class Enterprise_Rma_Block_Adminhtml_Rma_Edit extends Mage_Adminhtml_Block_Widge
     public function getHeaderText()
     {
         if ($this->getRma()->getId()) {
-            return Mage::helper('enterprise_rma')
-                ->__('RMA #%s - %s',
-                    intval($this->getRma()->getIncrementId()),
-                    $this->getRma()->getStatusLabel());
+            return Mage::helper('enterprise_rma')->__('RMA #%s - %s', intval($this->getRma()->getIncrementId()), $this->getRma()->getStatusLabel());
         }
+
+        return '';
     }
 
     /**

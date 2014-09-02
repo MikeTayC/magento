@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -77,7 +77,7 @@
                 }
 
                 var message = document.getElementById('payment-method-message');
-                message.innerHTML = '<?php echo Mage::helper('enterprise_pbridge')->__('Your payment information has been submitted to the server. If you need to make changes, please click <a style="color: #1E75B4" href="#" onclick="parent.reloadIframe(paymentObj.currentMethod); return false;">here</a> .') ?>';
+                message.innerHTML = '<?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('enterprise_pbridge')->__('Your payment information has been submitted to the server. If you need to make changes, please click <a style="color: #1E75B4" href="#" onclick="parent.reloadIframe(paymentObj.currentMethod); return false;">here</a> .')) ?>';
             } catch (e) {}
         }
     }

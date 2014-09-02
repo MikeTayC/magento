@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -33,101 +33,48 @@
  * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_CustomerSegment_Model_Resource_Segment_Collection
-    extends Mage_Core_Model_Resource_Db_Collection_Abstract
+    extends Mage_Rule_Model_Resource_Rule_Collection_Abstract
 {
     /**
-     * Flag to check if customerCount was added
+     * Store associated with rule entities information map
      *
-     * @var boolean
+     * @var array
      */
-    protected $_customerCountAdded   = false;
+    protected $_associatedEntitiesMap = array(
+        'website' => array(
+            'associations_table' => 'enterprise_customersegment/website',
+            'rule_id_field'      => 'segment_id',
+            'entity_id_field'    => 'website_id'
+        ),
+        'event' => array(
+            'associations_table' => 'enterprise_customersegment/event',
+            'rule_id_field'      => 'segment_id',
+            'entity_id_field'    => 'event'
+        )
+    );
 
     /**
-     * Intialize collection
+     * Fields map for correlation names & real selected fields
      *
+     * @var array
+     */
+    protected $_map = array('fields' => array('website_id' => 'website.website_id'));
+
+    /**
+     * Store flag which determines if customer count data was added
+     *
+     * @deprecated after 1.11.2.0 - use $this->getFlag('is_customer_count_added') instead
+     *
+     * @var bool
+     */
+    protected $_customerCountAdded = false;
+
+    /**
+     * Set resource model
      */
     protected function _construct()
     {
         $this->_init('enterprise_customersegment/segment');
-    }
-
-    /**
-     * Limit segments collection by is_active column
-     *
-     * @param int $value
-     * @return Enterprise_CustomerSegment_Model_Resource_Segment_Collection
-     */
-    public function addIsActiveFilter($value)
-    {
-        $this->getSelect()->where('main_table.is_active = ?', $value);
-        return $this;
-    }
-
-    /**
-     * Join website table if needed before load
-     *
-     * @return Enterprise_CustomerSegment_Model_Resource_Segment_Collection
-     */
-    protected function _beforeLoad()
-    {
-        $isFilteredByWebsite = $this->getFlag('is_filtered_by_website');
-        $isOrderedByWebsite = array_key_exists('website_ids', $this->_orders);
-        if (($isFilteredByWebsite || $isOrderedByWebsite) && !$this->getFlag('is_website_table_joined')) {
-            $this->setFlag('is_website_table_joined', true);
-            $join = ($isFilteredByWebsite ? 'joinInner' : 'joinLeft');
-            $cols = ($isOrderedByWebsite ? array('website_ids' => 'website.website_id') : array());
-            $this->getSelect()->$join(
-                array('website' => $this->getTable('enterprise_customersegment/website')),
-                'main_table.segment_id = website.segment_id',
-                $cols
-            );
-        }
-        return parent::_beforeLoad();
-    }
-
-    /**
-     * Redeclare after load method for adding website ids to items
-     *
-     * @return Enterprise_CustomerSegment_Model_Resource_Segment_Collection
-     */
-    protected function _afterLoad()
-    {
-        parent::_afterLoad();
-        if ($this->getFlag('add_websites_to_result') && $this->_items) {
-            $select = $this->getConnection()->select()
-                ->from($this->getTable('enterprise_customersegment/website'), array(
-                    'segment_id',
-                    'website_id'
-                ))
-                ->where('segment_id IN (?)', array_keys($this->_items));
-
-            $websites = $this->getConnection()->fetchAll($select);
-            foreach ($this->_items as $item) {
-                $websiteIds = array();
-                foreach ($websites as $website) {
-                    if ($item->getId() == $website['segment_id']) {
-                        array_push($websiteIds, $website['website_id']);
-                    }
-                }
-                if (count($websiteIds)) {
-                    $item->setWebsiteIds($websiteIds);
-                }
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * Init flag for adding segment website ids to collection result
-     *
-     * @param bool | null $flag
-     * @return Enterprise_CustomerSegment_Model_Resource_Segment_Collection
-     */
-    public function addWebsitesToResult($flag = null)
-    {
-        $flag = ($flag === null) ? true : $flag;
-        $this->setFlag('add_websites_to_result', $flag);
-        return $this;
     }
 
     /**
@@ -138,49 +85,37 @@ class Enterprise_CustomerSegment_Model_Resource_Segment_Collection
      */
     public function addEventFilter($eventName)
     {
+        $entityInfo = $this->_getAssociatedEntityInfo('event');
         if (!$this->getFlag('is_event_table_joined')) {
             $this->setFlag('is_event_table_joined', true);
             $this->getSelect()->joinInner(
-                array('evt'=>$this->getTable('enterprise_customersegment/event')),
-                'main_table.segment_id = evt.segment_id',
+                array('evt' => $this->getTable($entityInfo['associations_table'])),
+                'main_table.' . $entityInfo['rule_id_field'] . ' = evt.' . $entityInfo['rule_id_field'],
                 array()
             );
         }
-        $this->getSelect()->where('evt.event = ?', $eventName);
+        $this->getSelect()->where('evt.' . $entityInfo['entity_id_field'] . ' = ?', $eventName);
         return $this;
     }
 
     /**
-     * Limit segments collection by specific website
-     *
-     * @param int | array | Mage_Core_Model_Website $websiteId
-     * @return Enterprise_CustomerSegment_Model_Resource_Segment_Collection
-     */
-    public function addWebsiteFilter($websiteId)
-    {
-        $this->setFlag('is_filtered_by_website', true);
-        if ($websiteId instanceof Mage_Core_Model_Website) {
-            $websiteId = $websiteId->getId();
-        }
-        $this->getSelect()->where('website.website_id IN (?)', $websiteId);
-        return $this;
-    }
-
-    /**
-     * Redeclared for support website id filter
+     * Provide support for customer count filter
      *
      * @param string $field
      * @param mixed $condition
+     *
      * @return Enterprise_CustomerSegment_Model_Resource_Segment_Collection
      */
     public function addFieldToFilter($field, $condition = null)
     {
-        if ($field == 'website_ids') {
-            return $this->addWebsiteFilter($condition);
+        if ($field == 'customer_count') {
+            return $this->addCustomerCountFilter($condition);
         } else if ($field == $this->getResource()->getIdFieldName()) {
             $field = 'main_table.' . $field;
         }
-        return parent::addFieldToFilter($field, $condition);
+
+        parent::addFieldToFilter($field, $condition);
+        return $this;
     }
 
     /**
@@ -202,7 +137,7 @@ class Enterprise_CustomerSegment_Model_Resource_Segment_Collection
     public function getSelectCountSql()
     {
         $countSelect = parent::getSelectCountSql();
-        if ($this->_customerCountAdded) {
+        if ($this->getFlag('is_customer_count_added')) {
             $countSelect->reset(Zend_Db_Select::GROUP);
             $countSelect->reset(Zend_Db_Select::HAVING);
             $countSelect->resetJoinLeft();
@@ -217,10 +152,12 @@ class Enterprise_CustomerSegment_Model_Resource_Segment_Collection
      */
     public function addCustomerCountToSelect()
     {
-        if ($this->_customerCountAdded) {
+        if ($this->getFlag('is_customer_count_added')) {
             return $this;
         }
+        $this->setFlag('is_customer_count_added', true);
         $this->_customerCountAdded = true;
+
         $this->getSelect()
             ->joinLeft(
                 array('customer_count_table' => $this->getTable('enterprise_customersegment/customer')),
@@ -237,6 +174,7 @@ class Enterprise_CustomerSegment_Model_Resource_Segment_Collection
      * Add customer count filter
      *
      * @param integer $customerCount
+     *
      * @return Enterprise_CustomerSegment_Model_Resource_Segment_Collection
      */
     public function addCustomerCountFilter($customerCount)
@@ -248,7 +186,7 @@ class Enterprise_CustomerSegment_Model_Resource_Segment_Collection
     }
 
     /**
-     * Retrive all ids for collection
+     * Retrieve all ids for collection
      *
      * @return array
      */

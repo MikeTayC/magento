@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -136,16 +136,11 @@ class Enterprise_Rma_Block_Adminhtml_Rma_Edit_Tab_General_Shipping_Tracking exte
      * Get Carrier Title
      *
      * @param string $code
-     * @return bool|string
+     * @return string
      */
     public function getCarrierTitle($code)
     {
-        if ($carrier = Mage::getSingleton('shipping/config')->getCarrierInstance($code)) {
-            return $carrier->getConfigData('title');
-        } else {
-            return Mage::helper('sales')->__('Custom Value');
-        }
-        return false;
+        $carrier = Mage::getSingleton('shipping/config')->getCarrierInstance($code);
+        return $carrier ? $carrier->getConfigData('title') : Mage::helper('sales')->__('Custom Value');
     }
-
 }

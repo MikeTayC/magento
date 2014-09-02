@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -56,7 +56,7 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Rcompared
     /**
      * Return items collection
      *
-     * @return Mage_Core_Model_Mysql4_Collection_Abstract
+     * @return Mage_Core_Model_Resource_Db_Collection_Abstract
      */
     public function getItemsCollection()
     {
@@ -74,14 +74,28 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Rcompared
 
             // prepare products collection and apply visitors log to it
             $attributes = Mage::getSingleton('catalog/config')->getProductAttributes();
+            if (!in_array('status', $attributes)) {
+                // Status attribute is required even if it is not used in product listings
+                array_push($attributes, 'status');
+            }
             $productCollection = Mage::getModel('catalog/product')->getCollection()
                 ->setStoreId($this->_getStore()->getId())
                 ->addStoreFilter($this->_getStore()->getId())
                 ->addAttributeToSelect($attributes);
             Mage::getResourceSingleton('reports/event')->applyLogToCollection(
-                $productCollection, Mage_Reports_Model_Event::EVENT_PRODUCT_COMPARE, $this->_getCustomer()->getId(), 0, $skipProducts
+                $productCollection,
+                Mage_Reports_Model_Event::EVENT_PRODUCT_COMPARE,
+                $this->_getCustomer()->getId(),
+                0,
+                $skipProducts
             );
             $productCollection = Mage::helper('adminhtml/sales')->applySalableProductTypesFilter($productCollection);
+            // Remove disabled and out of stock products from the grid
+            foreach ($productCollection as $product) {
+                if (!$product->getStockItem()->getIsInStock() || !$product->isInStock()) {
+                    $productCollection->removeItemByKey($product->getId());
+                }
+            }
             $productCollection->addOptionsToResult();
             $this->setData('items_collection', $productCollection);
         }

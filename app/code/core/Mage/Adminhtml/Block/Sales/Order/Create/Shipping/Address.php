@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -62,6 +62,7 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Shipping_Address
      */
     protected function _prepareForm()
     {
+        $this->setJsVariablePrefix('shippingAddress');
         parent::_prepareForm();
 
         $this->_form->addFieldNameSuffix('order[shipping_address]');

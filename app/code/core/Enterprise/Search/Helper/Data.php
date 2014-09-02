@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -201,8 +201,9 @@ class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-     * Return true if third part search engine used
+     * Return true if third party search engine is used
      *
+     * @return bool
      */
     public function isThirdPartSearchEngine()
     {
@@ -266,6 +267,8 @@ class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Retrieve filter array
      *
+     * @deprecated since 1.12.0.0
+     *
      * @param Enterprise_Search_Model_Resource_Collection $collection
      * @param Mage_Catalog_Model_Resource_Eav_Attribute $attribute
      * @param string|array $value
@@ -320,40 +323,6 @@ class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return array($field => $value);
-    }
-
-    /**
-     * Retrieve attribute field's name for sorting
-     *
-     * @param Mage_Catalog_Model_Resource_Eav_Attribute $attribute
-     *
-     * @return string
-     */
-    public function getAttributeSolrFieldName($attribute)
-    {
-        $attributeCode = $attribute->getAttributeCode();
-        if ($attributeCode == 'score') {
-            return $attributeCode;
-        }
-        $field          = $attributeCode;
-        $backendType    = $attribute->getBackendType();
-        $frontendInput  = $attribute->getFrontendInput();
-
-        if ($frontendInput == 'multiselect') {
-            $field = 'attr_multi_'. $field;
-        } elseif ($frontendInput == 'select' || $frontendInput == 'boolean') {
-            $field = 'attr_select_'. $field;
-        } elseif ($backendType == 'decimal') {
-            $field = 'attr_decimal_'. $field;
-        } elseif ($backendType == 'datetime') {
-            $field = 'attr_datetime_'. $field;
-        } elseif (in_array($backendType, $this->_textFieldTypes)) {
-            $locale = Mage::app()->getStore()->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE);
-            $languageSuffix = $this->getLanguageSuffix($locale);
-            $field .= $languageSuffix;
-        }
-
-        return $field;
     }
 
     /**
@@ -427,5 +396,25 @@ class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return $this->_isEngineAvailableForNavigation;
+    }
+
+
+
+
+
+    // Deprecated methods
+
+    /**
+     * Retrieve attribute field's name
+     *
+     * @deprecated after 1.11.2.0
+     *
+     * @param Mage_Catalog_Model_Resource_Eav_Attribute $attribute
+     *
+     * @return string
+     */
+    public function getAttributeSolrFieldName($attribute)
+    {
+        return '';
     }
 }

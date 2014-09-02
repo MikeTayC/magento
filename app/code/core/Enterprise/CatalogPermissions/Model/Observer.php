@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogPermissions
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -223,7 +223,9 @@ class Enterprise_CatalogPermissions_Model_Observer
             $observer->getEvent()->getControllerAction()->getResponse()
                 ->setRedirect($this->_helper->getLandingPageUrl());
 
-            Mage::throwException($this->_helper->__('You have no permissions to access this category'));
+            Mage::throwException(
+                Mage::helper('enterprise_catalogpermissions')->__('You have no permissions to access this category')
+            );
         }
         return $this;
     }
@@ -298,12 +300,12 @@ class Enterprise_CatalogPermissions_Model_Observer
                 if ($parentItem) {
                     $quote->setHasError(true)
                             ->addMessage(
-                                $this->_helper->__('The product "%s" cannot be added to cart.', $parentItem->getName())
+                                Mage::helper('enterprise_catalogpermissions')->__('The product "%s" cannot be added to cart.', $parentItem->getName())
                             );
                 } else {
                      $quote->setHasError(true)
                             ->addMessage(
-                                $this->_helper->__('The product "%s" cannot be added to cart.', $quoteItem->getName())
+                                Mage::helper('enterprise_catalogpermissions')->__('The product "%s" cannot be added to cart.', $quoteItem->getName())
                             );
                 }
             }
@@ -354,11 +356,11 @@ class Enterprise_CatalogPermissions_Model_Observer
             $quoteItem->getQuote()->removeItem($quoteItem->getId());
             if ($parentItem) {
                 Mage::throwException(
-                    $this->_helper->__('The product "%s" cannot be added to cart.', $parentItem->getName())
+                    Mage::helper('enterprise_catalogpermissions')->__('The product "%s" cannot be added to cart.', $parentItem->getName())
                 );
             } else {
                 Mage::throwException(
-                            $this->_helper->__('The product "%s" cannot be added to cart.', $quoteItem->getName())
+                    Mage::helper('enterprise_catalogpermissions')->__('The product "%s" cannot be added to cart.', $quoteItem->getName())
                 );
             }
         }
@@ -444,7 +446,9 @@ class Enterprise_CatalogPermissions_Model_Observer
             $observer->getEvent()->getControllerAction()->getResponse()
                 ->setRedirect($this->_helper->getLandingPageUrl());
 
-            Mage::throwException($this->_helper->__('You have no permissions to access this product'));
+            Mage::throwException(
+                Mage::helper('enterprise_catalogpermissions')->__('You have no permissions to access this product')
+            );
         }
 
         return $this;

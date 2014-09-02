@@ -20,13 +20,12 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
- * Target rule edit form
- *
+ * Target rule edit form block
  */
 
 class Enterprise_TargetRule_Block_Adminhtml_Targetrule_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
@@ -34,28 +33,32 @@ class Enterprise_TargetRule_Block_Adminhtml_Targetrule_Edit extends Mage_Adminht
     protected $_blockGroup = 'enterprise_targetrule';
     protected $_controller = 'adminhtml_targetrule';
 
+    /**
+     * Initialize form
+     * Add standard buttons
+     * Add "Save and Continue" button
+     */
     public function __construct()
     {
         parent::__construct();
-        $this->_updateButton('save', 'label', Mage::helper('enterprise_targetrule')->__('Save Rule'));
-        $this->_updateButton('delete', 'label', Mage::helper('enterprise_targetrule')->__('Delete Rule'));
-        $this->_addButton('save_and_continue_edit', array(
-            'class' => 'save',
-            'label' => Mage::helper('enterprise_targetrule')->__('Save and Continue Edit'),
-            'onclick'   => 'saveAndContinueEdit()',
-        ), 3);
 
-        $this->_formScripts[] = '
-            function saveAndContinueEdit() {
-                editForm.submit($(\'edit_form\').action + \'back/edit/\');
-            }';
+        $this->_addButton('save_and_continue_edit', array(
+            'class'   => 'save',
+            'label'   => Mage::helper('enterprise_targetrule')->__('Save and Continue Edit'),
+            'onclick' => 'editForm.submit($(\'edit_form\').action + \'back/edit/\')',
+        ), 3);
     }
 
+    /**
+     * Getter for form header text
+     *
+     * @return string
+     */
     public function getHeaderText()
     {
         $rule = Mage::registry('current_target_rule');
         if ($rule && $rule->getRuleId()) {
-            return Mage::helper('enterprise_targetrule')->__("Edit Rule '%s'", $this->htmlEscape($rule->getName()));
+            return Mage::helper('enterprise_targetrule')->__("Edit Rule '%s'", $this->escapeHtml($rule->getName()));
         }
         else {
             return Mage::helper('enterprise_targetrule')->__('New Rule');

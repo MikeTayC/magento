@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -38,26 +38,4 @@ class Enterprise_TargetRule_Block_Adminhtml_Targetrule_Edit_Tabs extends Mage_Ad
         $this->setDestElementId('edit_form');
         $this->setTitle(Mage::helper('enterprise_targetrule')->__('Product Rule Information'));
     }
-
-    protected function _beforeToHtml()
-    {
-        $this->addTab('main_section', array(
-            'label'     => Mage::helper('enterprise_targetrule')->__('Rule Information'),
-            'content'   => $this->getLayout()->createBlock('enterprise_targetrule/adminhtml_targetrule_edit_tab_main')->toHtml(),
-            'active'    => true
-        ));
-
-        $this->addTab('conditions_section', array(
-            'label'     => Mage::helper('enterprise_targetrule')->__('Products to Match'),
-            'content'   => $this->getLayout()->createBlock('enterprise_targetrule/adminhtml_targetrule_edit_tab_conditions')->toHtml(),
-        ));
-
-        $this->addTab('targeted_products', array(
-            'label'     => Mage::helper('enterprise_targetrule')->__('Products to Display'),
-            'content'   => $this->getLayout()->createBlock('enterprise_targetrule/adminhtml_targetrule_edit_tab_actions')->toHtml(),
-        ));
-
-        return parent::_beforeToHtml();
-    }
-
 }

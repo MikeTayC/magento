@@ -21,11 +21,17 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <logging>
+    <actions>
+        <share translate="label" module="enterprise_giftregistry">
+            <label>Share</label>
+        </share>
+    </actions>
+
     <enterprise_giftregistry_type translate="label">
         <label>Gift Registry Type</label>
         <expected_models>

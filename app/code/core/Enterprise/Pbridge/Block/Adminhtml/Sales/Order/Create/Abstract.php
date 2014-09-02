@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -32,7 +32,8 @@
  * @package     Enterprise_Pbridge
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Pbridge_Block_Adminhtml_Sales_Order_Create_Abstract extends Enterprise_Pbridge_Block_Payment_Form_Abstract
+class Enterprise_Pbridge_Block_Adminhtml_Sales_Order_Create_Abstract
+    extends Enterprise_Pbridge_Block_Payment_Form_Abstract
 {
     /**
      * Return url model class for adminhtml
@@ -70,7 +71,7 @@ class Enterprise_Pbridge_Block_Adminhtml_Sales_Order_Create_Abstract extends Ent
      *
      * @var string
      */
-    protected $_iframeTemplate = 'enterprise/pbridge/sales/order/create/iframe.phtml';
+    protected $_iframeTemplate = 'enterprise/pbridge/iframe.phtml';
 
     /**
      * Return redirect url for Payment Bridge application
@@ -79,7 +80,9 @@ class Enterprise_Pbridge_Block_Adminhtml_Sales_Order_Create_Abstract extends Ent
      */
     public function getRedirectUrl()
     {
-        return Mage::getModel('adminhtml/url')->getUrl('*/pbridge/result', array('store' => $this->getQuote()->getStoreId()));
+        return Mage::getModel('adminhtml/url')->getUrl('*/pbridge/result',
+            array('store' => $this->getQuote()->getStoreId())
+        );
     }
 
     /**
@@ -90,5 +93,49 @@ class Enterprise_Pbridge_Block_Adminhtml_Sales_Order_Create_Abstract extends Ent
     public function getQuote()
     {
         return Mage::getSingleton('adminhtml/session_quote')->getQuote();
+    }
+
+    /**
+     * Generate and return variation code
+     *
+     * @return string
+     */
+    protected function _getVariation()
+    {
+        return Mage::app()->getConfig()->getNode('default/payment/pbridge/merchantcode')
+            . '_' . $this->getQuote()->getStore()->getWebsite()->getCode();
+    }
+
+    /**
+     * Disable external CSS in admin order creation
+     * @return null
+     */
+    public function getCssUrl()
+    {
+        return null;
+    }
+
+    /**
+     * Get current customer object
+     *
+     * @return null|Mage_Customer_Model_Customer
+     */
+    protected function _getCurrentCustomer()
+    {
+        if (Mage::getSingleton('adminhtml/session_quote')->getCustomer() instanceof Mage_Customer_Model_Customer) {
+            return Mage::getSingleton('adminhtml/session_quote')->getCustomer();
+        }
+
+        return null;
+    }
+
+    /**
+     * Return store for current context
+     *
+     * @return Mage_Core_Model_Store
+     */
+    protected function _getCurrentStore()
+    {
+        return $this->getQuote()->getStore();
     }
 }

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -41,8 +41,8 @@ $table = $installer->getConnection()
         'primary'   => true,
         ), 'Rule Id')
     ->addColumn('name', Varien_Db_Ddl_Table::TYPE_TEXT, 255, array(
-        'nullable'  => false,
-        'default'   => '',
+        'nullable'  => true,
+        'default'   => null,
         ), 'Name')
     ->addColumn('description', Varien_Db_Ddl_Table::TYPE_TEXT, '64k', array(
         ), 'Description')
@@ -94,7 +94,8 @@ $table = $installer->getConnection()
         ), 'Website Id')
     ->addIndex($installer->getIdxName('enterprise_reminder/website', array('website_id')),
         array('website_id'))
-    ->addForeignKey($installer->getFkName('enterprise_reminder/website', 'rule_id', 'enterprise_reminder/rule', 'rule_id'),
+    ->addForeignKey(
+        $installer->getFkName('enterprise_reminder/website', 'rule_id', 'enterprise_reminder/rule', 'rule_id'),
         'rule_id', $installer->getTable('enterprise_reminder/rule'), 'rule_id',
         Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE)
     ->setComment('Enterprise Reminder Rule Website');
@@ -125,10 +126,12 @@ $table = $installer->getConnection()
         array('rule_id'))
     ->addIndex($installer->getIdxName('enterprise_reminder/template', array('template_id')),
         array('template_id'))
-    ->addForeignKey($installer->getFkName('enterprise_reminder/template', 'template_id', 'core/email_template', 'template_id'),
+    ->addForeignKey(
+        $installer->getFkName('enterprise_reminder/template', 'template_id', 'core/email_template', 'template_id'),
         'template_id', $installer->getTable('core/email_template'), 'template_id',
         Varien_Db_Ddl_Table::ACTION_SET_NULL, Varien_Db_Ddl_Table::ACTION_CASCADE)
-    ->addForeignKey($installer->getFkName('enterprise_reminder/template', 'rule_id', 'enterprise_reminder/rule', 'rule_id'),
+    ->addForeignKey(
+        $installer->getFkName('enterprise_reminder/template', 'rule_id', 'enterprise_reminder/rule', 'rule_id'),
         'rule_id', $installer->getTable('enterprise_reminder/rule'), 'rule_id',
         Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE)
     ->setComment('Enterprise Reminder Template');
@@ -167,7 +170,8 @@ $table = $installer->getConnection()
         ), 'Is Active')
     ->addIndex($installer->getIdxName('enterprise_reminder/coupon', array('rule_id')),
         array('rule_id'))
-    ->addForeignKey($installer->getFkName('enterprise_reminder/coupon', 'rule_id', 'enterprise_reminder/rule', 'rule_id'),
+    ->addForeignKey(
+        $installer->getFkName('enterprise_reminder/coupon', 'rule_id', 'enterprise_reminder/rule', 'rule_id'),
         'rule_id', $installer->getTable('enterprise_reminder/rule'), 'rule_id',
         Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE)
     ->setComment('Enterprise Reminder Rule Coupon');

@@ -21,18 +21,13 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <sections>
-        <promo translate="label" module="enterprise_reminder">
-            <class>separator-top</class>
-            <label>Promotions</label>
-            <tab>customer</tab>
-            <frontend_type>text</frontend_type>
-            <sort_order>400</sort_order>
+        <promo>
             <show_in_default>1</show_in_default>
             <show_in_website>1</show_in_website>
             <show_in_store>1</show_in_store>
@@ -72,7 +67,7 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
                             <comment>Set this value not less than your cron.php launch period.</comment>
-                            <depends><frequency>I</frequency></depends> 
+                            <depends><frequency>I</frequency></depends>
                         </interval>
                         <minutes translate="label comment" module="enterprise_reminder">
                             <label>Minute of the Hour</label>
@@ -82,7 +77,7 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
                             <comment>Valid range: 0-59 (default 0).</comment>
-                            <depends><frequency>H</frequency></depends> 
+                            <depends><frequency>H</frequency></depends>
                         </minutes>
                         <time translate="label" module="enterprise_reminder">
                             <label>Start Time</label>

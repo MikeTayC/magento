@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Eav
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -63,6 +63,44 @@ class Enterprise_Eav_Helper_Data extends Mage_Core_Helper_Abstract
                 'value' => 'default'
             )
         );
+    }
+
+    /**
+     * Check validation rules for specified input type and return possible warnings.
+     *
+     * @param string $frontendInput
+     * @param array $validateRules
+     * @return array
+     */
+    public function checkValidateRules($frontendInput, $validateRules)
+    {
+        $errors = array();
+        switch ($frontendInput) {
+            case 'text':
+            case 'textarea':
+            case 'multiline':
+                if (isset($validateRules['min_text_length']) && isset($validateRules['max_text_length'])) {
+                    $minTextLength = (int) $validateRules['min_text_length'];
+                    $maxTextLength = (int) $validateRules['max_text_length'];
+                    if ($minTextLength > $maxTextLength) {
+                        $errors[] = Mage::helper('enterprise_eav')->__('Wrong values for minimum and maximum text length validation rules.');
+                    }
+                }
+                break;
+            case 'date':
+                if (isset($validateRules['date_range_min']) && isset($validateRules['date_range_max'])) {
+                    $minValue = (int) $validateRules['date_range_min'];
+                    $maxValue = (int) $validateRules['date_range_max'];
+                    if ($minValue > $maxValue) {
+                        $errors[] = Mage::helper('enterprise_eav')->__('Wrong values for minimum and maximum date validation rules.');
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+
+        return $errors;
     }
 
     /**
@@ -442,21 +480,6 @@ class Enterprise_Eav_Helper_Data extends Mage_Core_Helper_Abstract
                 if ($value) {
                     $value = $this->stripTags($value);
                 }
-            }
-            //options
-            if (!empty($data['option']['value'])) {
-                foreach ($data['option']['value'] as &$options) {
-                    foreach ($options as &$label) {
-                        $label = $this->stripTags($label);
-                    }
-                }
-            }
-            //default value
-            if (!empty($data['default_value_text'])) {
-                $data['default_value_text'] = $this->stripTags($data['default_value_text']);
-            }
-            if (!empty($data['default_value_textarea'])) {
-                $data['default_value_textarea'] = $this->stripTags($data['default_value_textarea']);
             }
 
             //validate attribute_code

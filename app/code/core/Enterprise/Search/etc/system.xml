@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -167,6 +167,7 @@
                         <search_recommendations_count translate="label">
                             <label>Search Recommendations Count</label>
                             <frontend_type>text</frontend_type>
+                            <validate>validate-digits</validate>
                             <sort_order>81</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_SalesArchive
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -175,7 +175,7 @@ class Enterprise_SalesArchive_Model_Resource_Archive extends Mage_Core_Model_Res
                 (int) $archiveAge,
                 Varien_Db_Adapter_Interface::INTERVAL_DAY
             );
-            $select->where($archivePeriodExpr . ' <= updated_at');
+            $select->where($archivePeriodExpr . ' >= updated_at');
         }
 
         return $select;
@@ -285,22 +285,19 @@ class Enterprise_SalesArchive_Model_Resource_Archive extends Mage_Core_Model_Res
             array_keys($adapter->describeTable($targetTable)),
             array_keys($adapter->describeTable($sourceTable))
         );
-        $updatedAtIndex = array_search('updated_at', $insertFields);
+
+        $selectFields = $insertFields;
+        $updatedAtIndex = array_search('updated_at', $selectFields);
         if ($updatedAtIndex !== false) {
-            unset($insertFields[$updatedAtIndex]);
-            $insertFields['updated_at'] = new Zend_Db_Expr("'" . $this->formatDate(true) . "'");
+            unset($selectFields[$updatedAtIndex]);
+            $selectFields['updated_at'] = new Zend_Db_Expr($adapter->quoteInto('?', $this->formatDate(true)));
         }
 
         $select = $adapter->select()
-            ->from($sourceTable, $insertFields);
+            ->from($sourceTable, $selectFields);
 
         if (!empty($conditionField)) {
             $select->where($adapter->quoteIdentifier($conditionField) . ' IN(?)', $conditionValue);
-        }
-
-        if ($updatedAtIndex !== false) {
-            unset($insertFields['updated_at']);
-            $insertFields[$updatedAtIndex] = 'updated_at';
         }
 
         $adapter->query($select->insertFromSelect($targetTable, $insertFields, true));

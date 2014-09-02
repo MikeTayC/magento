@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -111,7 +111,7 @@ class Enterprise_PageCache_Model_Container_Sidebar_Poll extends Enterprise_PageC
     /**
      * Get poll id to show
      *
-     * @return int|null
+     * @return int|null|bool
      */
     protected function _getPollToShow()
     {
@@ -129,13 +129,12 @@ class Enterprise_PageCache_Model_Container_Sidebar_Poll extends Enterprise_PageC
             ) {
                 return null;
             }
-            $active_ids = array_diff($renderedParams['active_ids'],$renderedParams['voted_ids']);
-            if (!$active_ids || !$renderedParams['active_ids']) {
-                $this->_activePollId = false;
-            } else {
-                $this->_activePollId = $renderedParams['active_ids'][array_rand($active_ids)];
-            }
+
+            $activeIds = array_diff($renderedParams['active_ids'], $renderedParams['voted_ids']);
+            $randomKey = array_rand($activeIds);
+            $this->_activePollId = isset($activeIds[$randomKey]) ? $activeIds[$randomKey] : false;
         }
+
         return $this->_activePollId;
     }
 
@@ -148,15 +147,13 @@ class Enterprise_PageCache_Model_Container_Sidebar_Poll extends Enterprise_PageC
     {
         $renderedParams = $this->_loadInfoCache();
 
-        $blockClass = $this->_placeholder->getAttribute('block');
         $templates = unserialize($this->_placeholder->getAttribute('templates'));
 
-        /** @var $block Mage_Poll_Block_ActivePoll */
-        $block = new $blockClass;
+        $block = $this->_getPlaceHolderBlock();
+
         foreach ($templates as $type=>$template) {
             $block->setPollTemplate($template, $type);
         }
-        $block->setLayout(Mage::app()->getLayout());
 
         if ($renderedParams) {
             if($this->_getPollToShow()) {

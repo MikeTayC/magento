@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -43,32 +43,28 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Attribute extends Mage_Catalo
         $attribute = $this->getAttributeModel();
         $this->_requestVar = $attribute->getAttributeCode();
 
-        $fieldName = Mage::helper('enterprise_search')->getAttributeSolrFieldName($attribute);
+        $engine = Mage::getResourceSingleton('enterprise_search/engine');
+        $fieldName = $engine->getSearchEngineFieldName($attribute, 'nav');
+
         $productCollection = $this->getLayer()->getProductCollection();
-        $options = $productCollection->getFacetedData($fieldName);
-        ksort($options);
+        $optionsFacetedData = $productCollection->getFacetedData($fieldName);
+        $options = $attribute->getSource()->getAllOptions(false);
 
         $data = array();
-        foreach ($options as $label => $count) {
-            if (Mage::helper('core/string')->strlen($label)) {
-                // Check filter type
-                if ($this->_getIsFilterableAttribute($attribute) == self::OPTIONS_ONLY_WITH_RESULTS) {
-                    if (!empty($count)) {
-                        $data[] = array(
-                            'label' => $label,
-                            'value' => $label,
-                            'count' => $count,
-                        );
-                    }
-                } else {
-                    $data[] = array(
-                        'label' => $label,
-                        'value' => $label,
-                        'count' => (int) $count,
-                    );
-                }
+        foreach ($options as $option) {
+            $optionId = $option['value'];
+            // Check filter type
+            if ($this->_getIsFilterableAttribute($attribute) != self::OPTIONS_ONLY_WITH_RESULTS
+                || !empty($optionsFacetedData[$optionId])
+            ) {
+                $data[] = array(
+                    'label' => $option['label'],
+                    'value' => $option['label'],
+                    'count' => isset($optionsFacetedData[$optionId]) ? $optionsFacetedData[$optionId] : 0,
+                );
             }
         }
+
         return $data;
     }
 
@@ -102,7 +98,8 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Attribute extends Mage_Catalo
      */
     public function addFacetCondition()
     {
-        $facetField = Mage::helper('enterprise_search')->getAttributeSolrFieldName($this->getAttributeModel());
+        $engine = Mage::getResourceSingleton('enterprise_search/engine');
+        $facetField = $engine->getSearchEngineFieldName($this->getAttributeModel(), 'nav');
         $this->getLayer()->getProductCollection()->setFacetCondition($facetField);
 
         return $this;
@@ -111,22 +108,37 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Attribute extends Mage_Catalo
     /**
      * Apply attribute filter to solr query
      *
-     * @param Mage_Catalog_Model_Layer_Filter_Attribute $filter
-     * @param int $value
+     * @param   Mage_Catalog_Model_Layer_Filter_Attribute $filter
+     * @param   int $value
+     *
+     * @return  Enterprise_Search_Model_Catalog_Layer_Filter_Attribute
      */
     public function applyFilterToCollection($filter, $value)
     {
-        if (empty($value)) {
+        if (empty($value) || (isset($value['from']) && empty($value['from']) && isset($value['to'])
+            && empty($value['to']))
+        ) {
             $value = array();
-        } else if (!is_array($value)) {
+        }
+
+        if (!is_array($value)) {
             $value = array($value);
         }
 
-        $productCollection = $this->getLayer()->getProductCollection();
-        $attribute  = $filter->getAttributeModel();
+        $attribute = $filter->getAttributeModel();
+        $options = $attribute->getSource()->getAllOptions();
+        foreach ($value as &$valueText) {
+            foreach ($options as $option) {
+                if ($option['label'] == $valueText) {
+                    $valueText = $option['value'];
+                }
+            }
+        }
 
-        $param = Mage::helper('enterprise_search')->getSearchParam($productCollection, $attribute, $value);
-        $productCollection->addFqFilter($param);
+        $fieldName = Mage::getResourceSingleton('enterprise_search/engine')
+            ->getSearchEngineFieldName($attribute, 'nav');
+        $this->getLayer()->getProductCollection()->addFqFilter(array($fieldName => $value));
+
         return $this;
     }
 }

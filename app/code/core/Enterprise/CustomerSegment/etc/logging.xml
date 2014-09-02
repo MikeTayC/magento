@@ -21,11 +21,17 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <logging>
+    <actions>
+        <refresh_data translate="label" module="enterprise_customersegment">
+            <label>Refresh Data</label>
+        </refresh_data>
+    </actions>
+
     <enterprise_customersegment translate="label">
         <label>Manage Segments</label>
         <expected_models>
@@ -44,7 +50,7 @@
             </adminhtml_customersegment_save>
 
             <adminhtml_customersegment_match>
-                <action>refresh data</action>
+                <action>refresh_data</action>
                 <post_dispatch>postDispatchCustomerSegmentMatch</post_dispatch>
             </adminhtml_customersegment_match>
 

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -258,7 +258,7 @@ $installer->addAttribute(Mage_Catalog_Model_Product::ENTITY, 'gift_wrapping_avai
     'user_defined'  => false,
     'default'       => '',
     'apply_to'      => $applyTo,
-    'class'         => 'hidden-for-virtual',
+    'frontend_class' => 'hidden-for-virtual',
     'frontend_input_renderer' => 'enterprise_giftwrapping/adminhtml_product_helper_form_config',
     'input_renderer'   => 'enterprise_giftwrapping/adminhtml_product_helper_form_config',
     'visible_on_front' => false
@@ -276,6 +276,6 @@ $installer->addAttribute(Mage_Catalog_Model_Product::ENTITY, 'gift_wrapping_pric
     'required'      => false,
     'user_defined'  => false,
     'apply_to'      => $applyTo,
-    'class'         => 'hidden-for-virtual',
+    'frontend_class' => 'hidden-for-virtual',
     'visible_on_front' => false
 ));

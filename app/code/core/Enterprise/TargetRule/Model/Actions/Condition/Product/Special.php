@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -32,11 +32,10 @@
  * @package    Enterprise_TargetRule
  */
 class Enterprise_TargetRule_Model_Actions_Condition_Product_Special
-    extends Mage_CatalogRule_Model_Rule_Condition_Product
+    extends Mage_Rule_Model_Condition_Product_Abstract
 {
     /**
      * Set condition type and value
-     *
      */
     public function __construct()
     {
@@ -46,7 +45,7 @@ class Enterprise_TargetRule_Model_Actions_Condition_Product_Special
     }
 
     /**
-     * Retrieve new child select options
+     * Get inherited conditions selectors
      *
      * @return array
      */

@@ -21,11 +21,20 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <logging>
+    <actions>
+        <preview translate="label" module="enterprise_cms">
+            <label>Preview</label>
+        </preview>
+        <publish translate="label" module="enterprise_cms">
+            <label>Publish</label>
+        </publish>
+    </actions>
+
     <enterprise_cms_hierarchy translate="label">
         <label>CMS Hierarchy</label>
         <expected_models>

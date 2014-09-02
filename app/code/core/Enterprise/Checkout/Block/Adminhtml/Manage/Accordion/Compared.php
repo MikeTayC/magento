@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -52,7 +52,7 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Compared
     /**
      * Return items collection
      *
-     * @return Mage_Core_Model_Mysql4_Collection_Abstract
+     * @return Mage_Core_Model_Resource_Db_Collection_Abstract
      */
     public function getItemsCollection()
     {
@@ -64,7 +64,9 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Compared
                 ->setStoreId($this->_getStore()->getId())
                 ->addStoreFilter($this->_getStore()->getId())
                 ->setCustomerId($this->_getCustomer()->getId())
-                ->addAttributeToSelect($attributes);
+                ->addAttributeToSelect($attributes)
+                ->addAttributeToFilter('status', Mage_Catalog_Model_Product_Status::STATUS_ENABLED);
+            Mage::getSingleton('cataloginventory/stock_status')->addIsInStockFilterToCollection($collection);
             $collection = Mage::helper('adminhtml/sales')->applySalableProductTypesFilter($collection);
             $collection->addOptionsToResult();
             $this->setData('items_collection', $collection);

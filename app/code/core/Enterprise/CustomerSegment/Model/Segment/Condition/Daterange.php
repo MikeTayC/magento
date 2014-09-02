@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -107,7 +107,8 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Daterange
     public function getValueAfterElementHtml()
     {
         return '<a href="javascript:void(0)" class="rule-chooser-trigger"><img src="'
-            . Mage::getDesign()->getSkinUrl('images/rule_chooser_trigger.gif') . '" alt="" class="v-middle rule-chooser-trigger"'
+            . Mage::getDesign()->getSkinUrl('images/rule_chooser_trigger.gif')
+            . '" alt="" class="v-middle rule-chooser-trigger"'
             . 'title="' . Mage::helper('rule')->__('Open Chooser') . '" /></a>';
     }
 
@@ -134,8 +135,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Daterange
     {
         $this->_valueElement = $this->getValueElement();
         return $this->getTypeElementHtml()
-            . Mage::helper('enterprise_customersegment')->__('Date Range %s within %s',
-                $this->getOperatorElementHtml(), $this->_valueElement->getHtml())
+            . Mage::helper('enterprise_customersegment')->__('Date Range %s within %s', $this->getOperatorElementHtml(), $this->_valueElement->getHtml())
             . $this->getRemoveLinkHtml()
             . '<div class="rule-chooser no-split" url="' . $this->getValueElementChooserUrl() . '"></div>';
     }

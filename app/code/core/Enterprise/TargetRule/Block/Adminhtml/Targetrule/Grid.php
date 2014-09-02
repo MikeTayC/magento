@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -58,7 +58,9 @@ class Enterprise_TargetRule_Block_Adminhtml_Targetrule_Grid extends Mage_Adminht
     }
 
     /**
-     * Return grids url
+     * Get grid URL
+     *
+     * @return string
      */
     public function getGridUrl()
     {
@@ -67,6 +69,8 @@ class Enterprise_TargetRule_Block_Adminhtml_Targetrule_Grid extends Mage_Adminht
 
     /**
      * Retrieve URL for Row click
+     *
+     * @param Varien_Object $row
      *
      * @return string
      */
@@ -99,7 +103,7 @@ class Enterprise_TargetRule_Block_Adminhtml_Targetrule_Grid extends Mage_Adminht
         ));
 
         $this->addColumn('from_date', array(
-            'header'    => Mage::helper('enterprise_targetrule')->__('Date Starts'),
+            'header'    => Mage::helper('enterprise_targetrule')->__('Date Start'),
             'index'     => 'from_date',
             'type'      => 'date',
             'default'   => '--',
@@ -107,7 +111,7 @@ class Enterprise_TargetRule_Block_Adminhtml_Targetrule_Grid extends Mage_Adminht
         ));
 
         $this->addColumn('to_date', array(
-            'header'    => Mage::helper('enterprise_targetrule')->__('Date Ends'),
+            'header'    => Mage::helper('enterprise_targetrule')->__('Date Expire'),
             'index'     => 'to_date',
             'type'      => 'date',
             'default'   => '--',

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -105,8 +105,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Segment extends Mage_Ru
     {
         $this->_valueElement = $this->getValueElement();
         return $this->getTypeElementHtml()
-            . Mage::helper('enterprise_customersegment')->__('If Customer Segment %s %s',
-                $this->getOperatorElementHtml(), $this->_valueElement->getHtml())
+            . Mage::helper('enterprise_customersegment')->__('If Customer Segment %s %s', $this->getOperatorElementHtml(), $this->_valueElement->getHtml())
             . $this->getRemoveLinkHtml()
             . '<div class="rule-chooser" url="' . $this->getValueElementChooserUrl() . '"></div>';
     }
@@ -156,10 +155,20 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Segment extends Mage_Ru
             return false;
         }
 
-        $segments = Mage::getSingleton('enterprise_customersegment/customer')->getCustomerSegmentIdsForWebsite(
-            $customer->getId(),
-            $object->getQuote()->getStore()->getWebsite()->getId()
-        );
+        $quoteWebsiteId = $object->getQuote()->getStore()->getWebsite()->getId();
+        if (!$customer->getId()) {
+            $visitorSegmentIds = Mage::getSingleton('customer/session')->getCustomerSegmentIds();
+            if (is_array($visitorSegmentIds) && isset($visitorSegmentIds[$quoteWebsiteId])) {
+                $segments = $visitorSegmentIds[$quoteWebsiteId];
+            } else {
+                $segments = array();
+            }
+        } else {
+            $segments = Mage::getSingleton('enterprise_customersegment/customer')->getCustomerSegmentIdsForWebsite(
+                $customer->getId(),
+                $quoteWebsiteId
+            );
+        }
         return $this->validateAttribute($segments);
     }
 }

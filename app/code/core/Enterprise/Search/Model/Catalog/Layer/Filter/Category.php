@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -50,7 +50,7 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Category extends Mage_Catalog
             $categories = $category->getChildrenCategories();
 
             $productCollection = $this->getLayer()->getProductCollection();
-            $facets = $productCollection->getFacetedData('categories');
+            $facets = $productCollection->getFacetedData('category_ids');
 
             $data = array();
             foreach ($categories as $category) {
@@ -92,7 +92,7 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Category extends Mage_Catalog
             ? array_keys($childrenCategories)
             : array_keys($childrenCategories->toArray());
 
-        $this->getLayer()->getProductCollection()->setFacetCondition('categories', $categories);
+        $this->getLayer()->getProductCollection()->setFacetCondition('category_ids', $categories);
 
         return $this;
     }
@@ -113,7 +113,7 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Category extends Mage_Catalog
     public function addCategoryFilter($category, $filter)
     {
         $productCollection = $this->getLayer()->getProductCollection();
-        $productCollection->addFqFilter(array('categories' => $category->getId()));
+        $productCollection->addFqFilter(array('category_ids' => $category->getId()));
 
         return $this;
     }

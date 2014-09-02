@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -28,7 +28,7 @@
  * Product attribute value condition
  */
 class Enterprise_Reminder_Model_Rule_Condition_Wishlist_Attributes
-    extends Mage_CatalogRule_Model_Rule_Condition_Product
+    extends Mage_Rule_Model_Condition_Product_Abstract
 {
     public function __construct()
     {

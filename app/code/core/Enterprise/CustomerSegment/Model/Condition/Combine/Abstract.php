@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -100,13 +100,20 @@ abstract class Enterprise_CustomerSegment_Model_Condition_Combine_Abstract exten
     /**
      * Get filter by customer condition for segment matching sql
      *
-     * @param $customer
+     * @param mixed $customer
      * @param string $fieldName
      * @return string
      */
     protected function _createCustomerFilter($customer, $fieldName)
     {
-        return "{$fieldName} = root.entity_id";
+        $customerFilter = '';
+        if ($customer) {
+            $customerFilter = "{$fieldName} = :customer_id";
+        } else {
+            $customerFilter = "{$fieldName} = root.entity_id";
+        }
+
+        return $customerFilter;
     }
 
     /**

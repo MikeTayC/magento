@@ -20,10 +20,11 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
+<?php /** @var $this Mage_Checkout_Block_Multishipping_Overview */ ?>
 <div class="page-title">
     <h1><?php echo $this->__('Review Order') ?></h1>
 </div>
@@ -45,8 +46,8 @@
             <div class="info-box">
                 <h3 class="box-title"><?php echo $this->__('Payment Method') ?> <span class="separator">|</span> <a href="<?php echo $this->getEditBillingUrl() ?>"><?php echo $this->__('Change') ?></a></h3>
                 <div class="box-content">
-                    <input type="hidden" name="payment[cc_number]" value="<?php echo $this->htmlEscape($this->getPayment()->getCcNumber())?>" />
-                    <input type="hidden" name="payment[cc_cid]" value="<?php echo $this->htmlEscape($this->getPayment()->getCcCid())?>" />
+                    <input type="hidden" name="payment[cc_number]" value="<?php echo $this->escapeHtml($this->getPayment()->getCcNumber())?>" />
+                    <input type="hidden" name="payment[cc_cid]" value="<?php echo $this->escapeHtml($this->getPayment()->getCcCid())?>" />
                     <?php echo $this->getPaymentHtml() ?>
                 </div>
             </div>
@@ -68,7 +69,7 @@
                     <h4 class="box-title"><?php echo $this->__('Shipping Method') ?> <span class="separator">|</span> <a href="<?php echo $this->getEditShippingUrl() ?>"><?php echo $this->__('Change') ?></a></h4>
                     <?php if($_rate=$this->getShippingAddressRate($_address)): ?>
                     <p class="box-content">
-                    <?php echo $_rate->getCarrierTitle() ?> (<?php echo $_rate->getMethodTitle() ?>)
+                    <?php echo $this->escapeHtml($_rate->getCarrierTitle()) ?> (<?php echo $this->escapeHtml($_rate->getMethodTitle()) ?>)
                     <?php $_excl = $this->getShippingPriceExclTax($_address); ?>
                     <?php $_incl = $this->getShippingPriceInclTax($_address); ?>
 

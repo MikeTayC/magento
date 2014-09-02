@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -31,7 +31,6 @@
     </div>
     <script type="text/javascript" src="<?php echo $this->getJsUrl('varien/accordion.js') ?>"></script>
     <script type="text/javascript" src="<?php echo $this->getSkinUrl('js/opcheckout.js') ?>"></script>
-    <script type="text/javascript">countryRegions = <?php echo $this->helper('directory')->getRegionJson() ?></script>
     <div class="opc-progress-container" id="col-right-opcheckout">
         <?php echo $this->getChildHtml('checkoutProgress') ?>
     </div>

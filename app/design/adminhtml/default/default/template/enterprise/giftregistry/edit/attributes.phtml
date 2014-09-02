@@ -20,9 +20,11 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+/* @var $coreHelper Mage_Core_Helper_Data */
+$coreHelper = Mage::helper('core');
 ?>
 
 <div class="entry-edit custom-options attribute-custom-options">
@@ -54,8 +56,8 @@ var attributeTemplate =
     '</thead>'+
     '<tr>'+
         '<td><input type="text" class="required-entry validate-code input-text global-scope attribute-code" id="{{prefix}}_attribute_{{id}}_code" name="attributes[{{prefix}}][{{id}}][code]" value="{{code}}"></td>'+
-        '<td><?php echo $this->getTypeSelectHtml() ?></td>'+
-        '<td><?php echo $this->getGroupSelectHtml() ?></td>'+
+        '<td>' + <?php echo $coreHelper->jsonEncode($this->getTypeSelectHtml()); ?> + '</td>'+
+        '<td>' + <?php echo $coreHelper->jsonEncode($this->getGroupSelectHtml()); ?> + '</td>'+
         '<td><input type="text" class="required-entry input-text" id="{{prefix}}_attribute_{{id}}_label" name="attributes[{{prefix}}][{{id}}][label]" value="{{label}}">{{checkbox_scope}}</td>'+
         '<td><?php echo $this->getRequiredSelectHtml() ?></td>'+
         '<td><input type="text" class="input-text global-scope" id="{{prefix}}_attribute_{{id}}_sort_order" name="attributes[{{prefix}}][{{id}}][sort_order]" value="{{sort_order}}"></td>'+
@@ -255,7 +257,8 @@ var customAttribute = {
         var hiddenGroupInput = $(element.id.sub('_type','_hidden_group'));
 
         $$('.attribute-type').each(function(el){
-            if (el.id != element.id && el.value == element.value && code) {
+            var optionBox = $(el).up('.option-box');
+            if (el.id != element.id && el.value == element.value && code && !optionBox.hasClassName('no-display')) {
                 alreadyUsed = true;
             }
         });

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -65,6 +65,35 @@ class Enterprise_Pbridge_Model_Observer
         if (((bool)$this->_getMethodConfigData('using_pbridge', $method, $storeId) === true)
             && ((bool)$method->getIsDummy() === false)) {
             $result->isAvailable = false;
+        }
+        return $this;
+    }
+
+    /**
+     * Update Payment Profiles functionality switcher
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_Pbridge_Model_Observer
+     */
+    public function updatePaymentProfileStatus(Varien_Event_Observer $observer)
+    {
+        $website = Mage::app()->getWebsite($observer->getEvent()->getData('website'));
+        $braintreeEnabled = $website->getConfig('payment/braintree_basic/active')
+            && $website->getConfig('payment/braintree_basic/payment_profiles_enabled');
+        $authorizenetEnabled = $website->getConfig('payment/authorizenet/active')
+            && $website->getConfig('payment/authorizenet/payment_profiles_enabled');
+
+        $profileStatus = null;
+
+        if ($braintreeEnabled || $authorizenetEnabled) {
+            $profileStatus = 1;
+        } else {
+            $profileStatus = 0;
+        }
+
+        if ($profileStatus !== null) {
+            $scope = $observer->getEvent()->getData('website') ? 'websites' : 'default';
+            Mage::getConfig()->saveConfig('payment/pbridge/profilestatus', $profileStatus, $scope, $website->getId());
+            Mage::app()->cleanCache(array(Mage_Core_Model_Config::CACHE_TAG));
         }
         return $this;
     }

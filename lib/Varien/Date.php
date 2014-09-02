@@ -20,7 +20,7 @@
  *
  * @category    Varien
  * @package     Varien_Date
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -61,7 +61,7 @@ class Varien_Date
         'dd'   => '%d',
         'd'    => '%e',
         'yyyy' => '%Y',
-        'yy'   => '%y',
+        'yy'   => '%Y',
         'y'    => '%Y'
     );
     /**

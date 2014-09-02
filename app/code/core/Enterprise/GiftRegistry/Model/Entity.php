@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -618,20 +618,19 @@ class Enterprise_GiftRegistry_Model_Entity extends Mage_Core_Model_Abstract
     public function validate()
     {
         $errors = array();
-        $helper = Mage::helper('enterprise_giftregistry');
 
         if (!Zend_Validate::is($this->getTitle(), 'NotEmpty')) {
-            $errors[] = $helper->__('Please enter the title.');
+            $errors[] = Mage::helper('enterprise_giftregistry')->__('Please enter the title.');
         }
 
         if (!Zend_Validate::is($this->getMessage(), 'NotEmpty')) {
-            $errors[] = $helper->__('Please enter the message.');
+            $errors[] = Mage::helper('enterprise_giftregistry')->__('Please enter the message.');
         }
 
         if (!Zend_Validate::is($this->getIsPublic(), 'NotEmpty')) {
-            $errors[] = $helper->__('Please enter correct Privacy setting.');
+            $errors[] = Mage::helper('enterprise_giftregistry')->__('Please enter correct Privacy setting.');
         } else if (!key_exists($this->getIsPublic(), $this->getOptionsIsPublic())) {
-            $errors[] = $helper->__('Please enter correct Privacy setting.');
+            $errors[] = Mage::helper('enterprise_giftregistry')->__('Please enter correct Privacy setting.');
         }
 
         $allCustomValues = $this->getCustomValues();
@@ -641,7 +640,9 @@ class Enterprise_GiftRegistry_Model_Entity extends Mage_Core_Model_Abstract
             }
         }
 
-        $errorsCustom = $helper->validateCustomAttributes($allCustomValues, $this->getRegistryAttributes());
+        $errorsCustom = Mage::helper('enterprise_giftregistry')->validateCustomAttributes(
+            $allCustomValues, $this->getRegistryAttributes()
+        );
         if ($errorsCustom !== true) {
             $errors = empty($errors) ? $errorsCustom : array_merge($errors, $errorsCustom);
         }
@@ -793,6 +794,55 @@ class Enterprise_GiftRegistry_Model_Entity extends Mage_Core_Model_Abstract
     public function loadByUrlKey($urlKey)
     {
         $this->_getResource()->loadByUrlKey($this, $urlKey);
+        return $this;
+    }
+
+    /**
+     * Validate gift registry items
+     *
+     * @param array $items
+     */
+    protected function _validateItems($items)
+    {
+        foreach ($items as $id => $item) {
+            $model = Mage::getSingleton('enterprise_giftregistry/item')->load($id);
+            if ($model->getId() && $model->getEntityId() == $this->getId()) {
+                if (!isset($item['delete'])) {
+                    /** @var $stockItem Mage_CatalogInventory_Model_Stock_Item */
+                    $stockItem = Mage::getSingleton('cataloginventory/stock_item');
+                    $stockItem->loadByProduct($model->getProductId());
+                    // not Mage_Core_Exception intentionally
+                    if ($stockItem->getIsQtyDecimal() == 0 && $item['qty'] != (int)$item['qty']) {
+                        throw new Mage_Exception(Mage::helper('enterprise_giftregistry')->__('Wrong gift registry item quantity specified.'));
+                    }
+                }
+            } else {
+                Mage::throwException(
+                    Mage::helper('enterprise_giftregistry')->__('Wrong gift registry item ID specified.')
+                );
+            }
+        }
+    }
+
+    /**
+     * Update gift registry items
+     *
+     * @param array $items
+     * @return Enterprise_GiftRegistry_Model_Entity
+     */
+    public function updateItems($items)
+    {
+        $this->_validateItems($items);
+        foreach ($items as $id => $item) {
+            $model = Mage::getSingleton('enterprise_giftregistry/item')->load($id);
+            if (isset($item['delete'])) {
+                $model->delete();
+            } else {
+                $model->setQty($item['qty']);
+                $model->setNote($item['note']);
+                $model->save();
+            }
+        }
         return $this;
     }
 }

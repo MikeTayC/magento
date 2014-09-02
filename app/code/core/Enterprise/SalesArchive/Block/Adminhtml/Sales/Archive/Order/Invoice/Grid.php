@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_SalesArchive
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -29,7 +29,8 @@
  *
  */
 
-class Enterprise_SalesArchive_Block_Adminhtml_Sales_Archive_Order_Invoice_Grid extends Mage_Adminhtml_Block_Sales_Invoice_Grid
+class Enterprise_SalesArchive_Block_Adminhtml_Sales_Archive_Order_Invoice_Grid
+    extends Mage_Adminhtml_Block_Sales_Invoice_Grid
 {
     public function __construct()
     {
@@ -55,5 +56,22 @@ class Enterprise_SalesArchive_Block_Adminhtml_Sales_Archive_Order_Invoice_Grid e
     public function getGridUrl()
     {
          return $this->getUrl('*/*/invoicesgrid', array('_current' => true));
+    }
+
+    /**
+     * Retrieve grid export types
+     *
+     * @return array|false
+     */
+    public function getExportTypes()
+    {
+        if (!empty($this->_exportTypes)) {
+            foreach ($this->_exportTypes as $exportType) {
+                $url = Mage::helper('core/url')->removeRequestParam($exportType->getUrl(), 'action');
+                $exportType->setUrl(Mage::helper('core/url')->addRequestParam($url, array('action' => 'invoice')));
+            }
+            return $this->_exportTypes;
+        }
+        return false;
     }
 }

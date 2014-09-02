@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -84,13 +84,13 @@ class Enterprise_GiftWrapping_Model_Total_Quote_Giftwrapping extends Mage_Sales_
             $address->getBaseGrandTotal()
             + $address->getGwItemsBasePrice()
             + $address->getGwBasePrice()
-            + $address->getGwCardPrice()
+            + $address->getGwCardBasePrice()
         );
         $address->setGrandTotal(
             $address->getGrandTotal()
             + $address->getGwItemsPrice()
             + $address->getGwPrice()
-            + $address->getGwCardBasePrice()
+            + $address->getGwCardPrice()
         );
 
         if ($quote->getIsNewGiftWrappingCollecting()) {

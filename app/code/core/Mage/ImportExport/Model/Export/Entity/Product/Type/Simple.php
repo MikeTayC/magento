@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_ImportExport
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -51,5 +51,12 @@ class Mage_ImportExport_Model_Export_Entity_Product_Type_Simple
      *
      * @var array
      */
-    protected $_disabledAttrs = array('old_id', 'recurring_profile', 'is_recurring', 'tier_price', 'category_ids');
+    protected $_disabledAttrs = array(
+        'old_id',
+        'recurring_profile',
+        'is_recurring',
+        'tier_price',
+        'group_price',
+        'category_ids'
+    );
 }

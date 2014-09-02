@@ -20,10 +20,11 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
+<?php /** @var $this Enterprise_Rma_Block_Adminhtml_Rma_Edit_Tab_General_Shipping_Tracking */ ?>
 <div class="field-row grid" id="shipment_tracking_info">
 <table cellspacing="0" class="data">
     <col width="100" />
@@ -44,7 +45,7 @@
                 <select name="carrier" class="select" style="width:110px" onchange="selectCarrier(this)">
                     <option value="custom"><?php echo $this->helper('shipping')->__('Custom Value')?></option>
                     <?php foreach ($this->getCarriers() as $_code=>$_name): ?>
-                    <option value="<?php echo $_code ?>"><?php echo $_name ?></option>
+                    <option value="<?php echo $_code ?>"><?php echo $this->escapeHtml($_name) ?></option>
                     <?php endforeach; ?>
                 </select>
             </td>
@@ -57,13 +58,13 @@
     <tbody>
     <?php $i=0;foreach ($_tracks as $_track):$i++ ?>
         <tr class="<?php echo ($i%2==0)?'even':'odd' ?>">
-            <td><?php echo $this->getCarrierTitle($_track->getCarrierCode()) ?></td>
+            <td><?php echo $this->escapeHtml($this->getCarrierTitle($_track->getCarrierCode())) ?></td>
             <td><?php echo $this->escapeHtml($_track->getCarrierTitle()) ?></td>
             <td>
                 <?php if (1 == 2/*$_track->isCustom()*/): ?>
                     <?php echo $this->escapeHtml($_track->getTrackNumber()) ?>
                 <?php else: ?>
-                <a href="#" onclick="popWin('<?php echo $this->helper('enterprise_rma')->getTrackingPopupUrlBySalesModel($_track) ?>','trackorder','width=800,height=600,resizable=yes,scrollbars=yes')"><?php echo $_track->getTrackNumber() ?></a>
+                <a href="#" onclick="popWin('<?php echo $this->helper('enterprise_rma')->getTrackingPopupUrlBySalesModel($_track) ?>','trackorder','width=800,height=600,resizable=yes,scrollbars=yes')"><?php echo $this->escapeHtml($_track->getTrackNumber()) ?></a>
                 <div id="shipment_tracking_info_response_<?php echo $_track->getId() ?>"></div>
                 <?php endif; ?>
             </td>
@@ -75,14 +76,10 @@
 </table>
 </div>
 <script type="text/javascript">
+//<![CDATA[
 function selectCarrier(elem) {
-    option = elem.options[elem.selectedIndex];
-    if (option.value && option.value != 'custom') {
-        $('tracking_title').value = option.text;
-    }
-    else {
-        $('tracking_title').value = '';
-    }
+    var option = elem.options[elem.selectedIndex];
+    $('tracking_title').value = option.value && option.value != 'custom' ? option.text : '';
 }
 
 function deleteTrackingNumber(url) {
@@ -90,4 +87,5 @@ function deleteTrackingNumber(url) {
         submitAndReloadArea($('shipment_tracking_info').parentNode, url)
     }
 }
+//]]>
 </script>

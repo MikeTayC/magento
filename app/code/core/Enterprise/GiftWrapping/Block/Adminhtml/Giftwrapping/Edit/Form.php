@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -87,13 +87,15 @@ class Enterprise_GiftWrapping_Block_Adminhtml_Giftwrapping_Edit_Form extends Mag
         ));
 
         if (!Mage::app()->isSingleStoreMode()) {
-            $fieldset->addField('website_ids','multiselect',array(
+            $field = $fieldset->addField('website_ids','multiselect',array(
                 'name'     => 'website_ids',
                 'required' => true,
                 'label'    => Mage::helper('enterprise_giftwrapping')->__('Websites'),
                 'values'   => Mage::getSingleton('adminhtml/system_store')->getWebsiteValuesForForm(),
-                'value'    => $model->getWebsiteIds()
+                'value'    => $model->getWebsiteIds(),
             ));
+            $renderer = $this->getLayout()->createBlock('adminhtml/store_switcher_form_renderer_fieldset_element');
+            $field->setRenderer($renderer);
         }
 
         $fieldset->addField('status', 'select', array(
@@ -153,7 +155,8 @@ class Enterprise_GiftWrapping_Block_Adminhtml_Giftwrapping_Edit_Form extends Mag
     protected function _getAdditionalElementTypes()
     {
         return array(
-            'image' => Mage::getConfig()->getBlockClassName('enterprise_giftwrapping/adminhtml_giftwrapping_helper_image')
+            'image' => Mage::getConfig()
+                ->getBlockClassName('enterprise_giftwrapping/adminhtml_giftwrapping_helper_image')
         );
     }
 }

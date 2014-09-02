@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -203,7 +203,7 @@ Enterprise.Staging.Mapper.prototype = {
         try {
             var row = $(btn).up().up();
             var websiteRow     = row.fromElement.websiteRow;
-            websiteRow.stores.unset(row.fromStore);
+            websiteRow.stores.unset(row.toStore);
             row.remove();
 
             this.enableBtn(row.addNewRow.btn);

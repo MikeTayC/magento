@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -37,7 +37,7 @@
          <div class="content">
             <p><input type="text" class="input-text" id="coupon_code" name="ccode" style="width:200px" /> <?php echo $this->getApplyButtonHtml() ?></p>
             <?php if($this->getCouponCode()): ?>
-                <p id="cc_info"><strong><?php echo $this->getCouponCode() ?></strong> [<a href="#" onclick="checkoutObj.applyCoupon();return false;" title="<?php echo $this->__('Remove Coupon Code') ?>"><?php echo $this->__('Remove') ?></a>]</p>
+                <p id="cc_info"><strong><?php echo $this->getCouponCode(); ?></strong> [<a href="#" onclick="checkoutObj.applyCoupon();return false;" title="<?php echo $this->__('Remove Coupon Code') ?>"><?php echo $this->__('Remove') ?></a>]</p>
             <?php elseif ($invalid = $this->getInvalidCouponCode()): ?>
                 <p id="cc_info"><strong><?php echo $this->helper('enterprise_checkout')->__('Coupon code "%s" is not valid', $invalid) ?></strong></p>
             <?php endif; ?>

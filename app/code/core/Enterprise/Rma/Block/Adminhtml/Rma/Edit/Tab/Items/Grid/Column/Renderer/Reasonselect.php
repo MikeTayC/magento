@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -40,31 +40,35 @@ class Enterprise_Rma_Block_Adminhtml_Rma_Edit_Tab_Items_Grid_Column_Renderer_Rea
      * @param   Varien_Object $row
      * @return  string
      */
-    protected function _getEditableView(Varien_object $row)
+    protected function _getEditableView(Varien_Object $row)
     {
+        /** @var $rmaItemAttribute Enterprise_Rma_Model_Item_Attribute */
         $rmaItemAttribute = Mage::getModel('enterprise_rma/item_form')
             ->setFormCode('default')
             ->getAttribute('reason_other');
 
         $selectName = 'items[' . $row->getId() . '][' . $this->getColumn()->getId() . ']';
-        $html = '<select name="'. $selectName .'" class="action-select reason required-entry">';
-        $value = $row->getData($this->getColumn()->getIndex());
-        $html.= '<option value=""></option>';
+        $html = '<select name="' . $selectName . '" class="action-select reason required-entry">'
+            . '<option value=""></option>';
+
+        $selectedIndex = $row->getData($this->getColumn()->getIndex());
         foreach ($this->getColumn()->getOptions() as $val => $label){
-            $selected = ( ($val == $value && (!is_null($value))) ? ' selected="selected"' : '' );
-            $html.= '<option value="' . $val . '"' . $selected . '>' . $label . '</option>';
+            $selected = isset($selectedIndex) && $val == $selectedIndex ? ' selected="selected"' : '';
+            $html .= '<option value="' . $val . '"' . $selected . '>' . $label . '</option>';
         }
+
         if ($rmaItemAttribute && $rmaItemAttribute->getId()) {
-            $selected = ($value == 0 && $row->getReasonOther() != '' ? ' selected="selected"' : '' );
-            $html.='<option value="other"' . $selected . '>'.$rmaItemAttribute->getStoreLabel().'</option>';
+            $selected = $value == 0 && $row->getReasonOther() != '' ? ' selected="selected"' : '';
+            $html .= '<option value="other"' . $selected . '>' . $rmaItemAttribute->getStoreLabel() . '</option>';
         }
-        $class = 'input-text ' . $this->getColumn()->getInlineCss();
-        $inputHtml = '<input type="text" ';
-        $inputHtml .= 'name="items[' . $row->getId() . '][reason_other]" ';
-        $inputHtml .= 'value="' . $row->getReasonOther() . '"';
-        $inputHtml .= 'class="' . $class . '" ';
-        $inputHtml .= 'style="display:none"/>';
-        $html.='</select>'.$inputHtml;
+
+        $html .= '</select>';
+        $html .= '<input type="text" '
+            . 'name="items[' . $row->getId() . '][reason_other]" '
+            . 'value="' . $this->escapeHtml($row->getReasonOther()) . '" '
+            . 'class="input-text ' . $this->getColumn()->getInlineCss() . '" '
+            . 'style="display:none" />';
+
         return $html;
     }
 
@@ -74,29 +78,34 @@ class Enterprise_Rma_Block_Adminhtml_Rma_Edit_Tab_Items_Grid_Column_Renderer_Rea
      * @param   Varien_Object $row
      * @return  string
      */
-    protected function _getNonEditableView(Varien_object $row)
+    protected function _getNonEditableView(Varien_Object $row)
     {
         /** @var $rmaItemAttribute Enterprise_Rma_Model_Item_Attribute */
         $rmaItemAttribute = Mage::getModel('enterprise_rma/item_form')
             ->setFormCode('default')
             ->getAttribute('reason_other');
         $value = $row->getData($this->getColumn()->getIndex());
+
         if ($value == 0 && $row->getReasonOther() != '') {
-            if ($rmaItemAttribute && $rmaItemAttribute->getId()) {
-                $html = $rmaItemAttribute->getStoreLabel().':&nbsp;';
+            $html = $rmaItemAttribute && $rmaItemAttribute->getId()
+                ? $rmaItemAttribute->getStoreLabel() . ':&nbsp;'
+                : '';
+
+            if (strlen($row->getReasonOther()) > 18) {
+                $html .= '<a class="item_reason_other">'
+                    . $this->escapeHtml(substr($row->getReasonOther() , 0, 15)) . '...'
+                    . '</a>';
+
+                $html .= '<input type="hidden" '
+                    . 'name="items[' . $row->getId() . '][' . $rmaItemAttribute->getAttributeCode() . ']" '
+                    . 'value="' . $this->escapeHtml($row->getReasonOther()) . '" />';
             } else {
-                $html = '';
-            }
-            if (strlen($row->getReasonOther())>18) {
-                $html .= '<a class="item_reason_other">' . substr($row->getReasonOther(),0,15) .'...'.'</a>';
-                $html .= '<input type="hidden" name="items[' . $row->getId() . ']'
-                    .'[' . $rmaItemAttribute->getAttributeCode() . ']" value="' . $row->getReasonOther() . '" />';
-            } else {
-                $html .= $row->getReasonOther();
+                $html .= $this->escapeHtml($row->getReasonOther());
             }
         } else {
-            return $this->_getValue($row);
+            $html = $this->escapeHtml($this->_getValue($row));
         }
+
         return $html;
     }
 }

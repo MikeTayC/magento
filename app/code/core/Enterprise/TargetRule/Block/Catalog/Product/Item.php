@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -44,7 +44,17 @@ class Enterprise_TargetRule_Block_Catalog_Product_Item extends Mage_Catalog_Bloc
     public function getCacheKeyInfo()
     {
         $cacheKeyInfo = parent::getCacheKeyInfo();
+
+        foreach (Mage::app()->getLayout()->getXpath('//action[@method="addPriceBlockType"]') as $element) {
+            if (!empty($element->type)) {
+                $prefix = 'price_block_type_' . (string)$element->type;
+                $cacheKeyInfo[$prefix . '_block'] = empty($element->block) ? '' : (string)$element->block;
+                $cacheKeyInfo[$prefix . '_template'] = empty($element->template) ? '' : (string)$element->template;
+            }
+        }
+
         $cacheKeyInfo[] = $this->getPosition();
+
         return $cacheKeyInfo;
     }
 }

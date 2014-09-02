@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Customer
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -258,6 +258,15 @@ class Enterprise_Customer_Adminhtml_Customer_AttributeController
 
             $data['entity_type_id']     = $this->_getEntityType()->getId();
             $data['validate_rules']     = $helper->getAttributeValidateRules($data['frontend_input'], $data);
+
+            $validateRulesErrors = $helper->checkValidateRules($data['frontend_input'], $data['validate_rules']);
+            if (count($validateRulesErrors)) {
+                foreach ($validateRulesErrors as $message) {
+                    $this->_getSession()->addError($message);
+                }
+                $this->_redirect('*/*/edit', array('_current' => true));
+                return;
+            }
 
             $attributeObject->addData($data);
 

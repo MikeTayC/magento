@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -167,14 +167,24 @@ class Enterprise_Reminder_Adminhtml_ReminderController extends Mage_Adminhtml_Co
                 $redirectBack = $this->getRequest()->getParam('back', false);
 
                 $model = $this->_initRule('rule_id');
+
+                $data = $this->_filterDates($data, array('from_date', 'to_date'));
+
+                $validateResult = $model->validateData(new Varien_Object($data));
+                if ($validateResult !== true) {
+                    foreach ($validateResult as $errorMessage) {
+                        $this->_getSession()->addError($errorMessage);
+                    }
+                    $this->_getSession()->setFormData($data);
+
+                    $this->_redirect('*/*/edit', array('id' => $model->getId()));
+                    return;
+                }
+
                 $data['conditions'] = $data['rule']['conditions'];
                 unset($data['rule']);
 
-                if (!isset($data['website_ids'])) {
-                    $data['website_ids'] = array(Mage::app()->getStore(true)->getWebsiteId());
-                }
 
-                $data = $this->_filterDates($data, array('active_from', 'active_to'));
                 $model->loadPost($data);
                 Mage::getSingleton('adminhtml/session')->setPageData($model->getData());
                 $model->save();

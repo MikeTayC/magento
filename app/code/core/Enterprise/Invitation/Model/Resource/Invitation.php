@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Invitation
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -41,6 +41,10 @@ class Enterprise_Invitation_Model_Resource_Invitation extends Mage_Core_Model_Re
     protected function _construct()
     {
         $this->_init('enterprise_invitation/invitation', 'invitation_id');
+        $this->addUniqueField(array(
+            'field' => array('customer_id', 'email'),
+            'title' => Mage::helper('enterprise_invitation')->__('Invitation for same email address')
+        ));
     }
 
     /**

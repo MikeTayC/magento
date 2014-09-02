@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -51,8 +51,8 @@ class Enterprise_GiftRegistry_Adminhtml_Giftregistry_CustomerController extends 
      */
     public function gridAction()
     {
-        $block = $this->getLayout()->createBlock('enterprise_giftregistry/adminhtml_customer_grid');
-        $this->getResponse()->setBody($block->toHtml());
+        $this->loadLayout();
+        $this->renderLayout();
     }
 
     /**

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -58,8 +58,7 @@ class Enterprise_Reminder_Model_Rule_Condition_Cart_Totalquantity
     public function asHtml()
     {
         return $this->getTypeElementHtml()
-            . Mage::helper('enterprise_reminder')->__('Total shopping cart items quantity %s %s:',
-                $this->getOperatorElementHtml(), $this->getValueElementHtml())
+            . Mage::helper('enterprise_reminder')->__('Total shopping cart items quantity %s %s:', $this->getOperatorElementHtml(), $this->getValueElementHtml())
             . $this->getRemoveLinkHtml();
     }
 

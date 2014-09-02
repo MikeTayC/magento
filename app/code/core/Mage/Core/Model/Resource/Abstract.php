@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -145,7 +145,7 @@ abstract class Mage_Core_Model_Resource_Abstract
      */
     public function mktime($str)
     {
-        return Varien_Date::formatDate($str);
+        return Varien_Date::toTimestamp($str);
     }
 
     /**

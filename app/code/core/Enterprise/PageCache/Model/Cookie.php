@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -60,6 +60,16 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
     const COOKIE_CATEGORY_ID = 'LAST_CATEGORY';
 
     /**
+     * Customer segment ids cookie name
+     */
+    const CUSTOMER_SEGMENT_IDS = 'CUSTOMER_SEGMENT_IDS';
+
+    /**
+     * Cookie name for users who allowed cookie save
+     */
+    const IS_USER_ALLOWED_SAVE_COOKIE  = 'user_allowed_save_cookie';
+
+    /**
      * Encryption salt value
      *
      * @var sting
@@ -69,7 +79,7 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
     /**
      * Retrieve encryption salt
      *
-     * @var string
+     * @return null|sting
      */
     protected function _getSalt()
     {
@@ -94,6 +104,7 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
      * @param string $path
      * @param string $domain
      * @param int|bool $secure
+     * @param bool $httponly
      * @return Mage_Core_Model_Cookie
      */
     public function setObscure(
@@ -106,7 +117,7 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
     /**
      * Keep customer cookies synchronized with customer session
      *
-     * @return Mage_Core_Model_Cookie
+     * @return Enterprise_PageCache_Model_Cookie
      */
     public function updateCustomerCookies()
     {
@@ -137,6 +148,7 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
             $this->delete(self::COOKIE_CUSTOMER_GROUP);
             $this->delete(self::COOKIE_CUSTOMER_LOGGED_IN);
         }
+        return $this;
     }
 
     /**
@@ -181,7 +193,8 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
     /**
      * Get catalog cookie
      *
-     * @param string $value
+     * @static
+     * @return bool
      */
     public static function getCategoryCookieValue()
     {

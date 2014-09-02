@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_SalesArchive
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -57,5 +57,4 @@ class Enterprise_SalesArchive_Model_Resource_Order_Collection extends Mage_Sales
         $select->from(array('main_table' => $this->getTable('enterprise_salesarchive/order_grid')), array());
         return $select;
     }
-
 }

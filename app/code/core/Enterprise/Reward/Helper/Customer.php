@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -37,18 +37,20 @@ class Enterprise_Reward_Helper_Customer extends Mage_Core_Helper_Abstract
     /**
      * Return Unsubscribe notification URL
      *
-     * @param string $notification Notification type
+     * @param string|boolean $notification Notification type
+     * @param int|string|Mage_Core_Model_Store $storeId
      * @return string
      */
     public function getUnsubscribeUrl($notification = false, $storeId = null)
     {
         $params = array();
+
         if ($notification) {
             $params['notification'] = $notification;
         }
         if (!is_null($storeId)) {
             $params['store_id'] = $storeId;
         }
-        return Mage::getUrl('enterprise_reward/customer/unsubscribe/', $params);
+        return Mage::app()->getStore($storeId)->getUrl('enterprise_reward/customer/unsubscribe/', $params);
     }
 }
