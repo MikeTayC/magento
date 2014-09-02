@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -128,7 +128,7 @@
             height:135px;
             }
         .ipad-landscape .content .app-logo {
-            height:170px;
+            height:157px;
             }
         .ipad .products-list-wrap {
             background:url(../images/xmlconnect/mobile_preview/ipad/bg_home_products.png) no-repeat 0 0;
@@ -136,7 +136,7 @@
             width:350px;
             }
             .ipad .products-list {
-                margin:10px 0 0 25px;
+                margin:18px 0 0 25px;
                 width:325px;
                 }
                 .ipad .products-list h4 {

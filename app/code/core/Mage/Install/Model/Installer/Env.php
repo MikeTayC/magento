@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Install
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -75,10 +75,10 @@ class Mage_Install_Model_Installer_Env extends Mage_Install_Model_Installer_Abst
                 return false;
             }
         }
-        elseif(!extension_loaded($extension)) {
-                Mage::getSingleton('install/session')->addError(
-                    Mage::helper('install')->__('PHP extension "%s" must be loaded.', $extension)
-                );
+        elseif (!extension_loaded($extension)) {
+            Mage::getSingleton('install/session')->addError(
+                Mage::helper('install')->__('PHP extension "%s" must be loaded.', $extension)
+            );
             return false;
         }
         else {

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -37,7 +37,7 @@ class Enterprise_Logging_Block_Adminhtml_Grid_Filter_User extends Mage_Adminhtml
     public function _getOptions()
     {
         $options = array(array('value' => '', 'label' => Mage::helper('enterprise_logging')->__('All Users')));
-        foreach(Mage::getResourceModel('enterprise_logging/event')->getUserNames() as $username) {
+        foreach (Mage::getResourceModel('enterprise_logging/event')->getUserNames() as $username) {
             $options[] = array('value' => $username, 'label' => $username);
         }
         return $options;

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogEvent
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -66,11 +66,11 @@ class Enterprise_CatalogEvent_Block_Adminhtml_Event_Edit_Form extends Mage_Admin
     {
         $form = new Varien_Data_Form(
             array(
-                'id'     => 'edit_form',
-                'action' => $this->getActionUrl(),
-                'method' => 'post',
+                'id'      => 'edit_form',
+                'action'  => $this->getActionUrl(),
+                'method'  => 'post',
                 'field_name_suffix' => 'catalogevent',
-                'enctype'=> 'multipart/form-data'
+                'enctype' => 'multipart/form-data'
             )
         );
 

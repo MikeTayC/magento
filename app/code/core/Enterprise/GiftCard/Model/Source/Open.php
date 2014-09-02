@@ -20,17 +20,21 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCard
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 class Enterprise_GiftCard_Model_Source_Open extends Mage_Eav_Model_Entity_Attribute_Source_Abstract
 {
+    /**
+     * Get all options
+     *
+     * @return array
+     */
     public function getAllOptions()
     {
         $result = array();
-
-        foreach ($this->_getValues() as $k=>$v) {
+        foreach ($this->_getValues() as $k => $v) {
             $result[] = array(
                 'value' => $k,
                 'label' => $v,
@@ -40,6 +44,11 @@ class Enterprise_GiftCard_Model_Source_Open extends Mage_Eav_Model_Entity_Attrib
         return $result;
     }
 
+    /**
+     * Get option text
+     *
+     * @return string|null
+     */
     public function getOptionText($value)
     {
         $options = $this->_getValues();
@@ -49,6 +58,11 @@ class Enterprise_GiftCard_Model_Source_Open extends Mage_Eav_Model_Entity_Attrib
         return null;
     }
 
+    /**
+     * Get values
+     *
+     * @return array
+     */
     protected function _getValues()
     {
         return array(
@@ -56,26 +70,40 @@ class Enterprise_GiftCard_Model_Source_Open extends Mage_Eav_Model_Entity_Attrib
             Enterprise_GiftCard_Model_Giftcard::OPEN_AMOUNT_ENABLED  => Mage::helper('enterprise_giftcard')->__('Yes'),
         );
     }
+
     /**
-     * Retrive Flat columns structure
+     * Retrieve flat column definition
+     *
      * @return array
      */
     public function getFlatColums()
     {
         $attributeDefaultValue = $this->getAttribute()->getDefaultValue();
-        return array(
-            $this->getAttribute()->getAttributeCode() => array(
-                'type'      => $this->getAttribute()->getBackendType(),
-                'unsigned'  => false,
-                'is_null'   => is_null($attributeDefaultValue) || empty($attributeDefaultValue),
-                'default'   => is_null($attributeDefaultValue) || empty($attributeDefaultValue)?null:$attributeDefaultValue,
-                'extra'     => null
-        ));
+        $attributeCode = $this->getAttribute()->getAttributeCode();
+        $attributeType = $this->getAttribute()->getBackendType();
+        $isNullable = is_null($attributeDefaultValue) || empty($attributeDefaultValue);
+
+        $column = array(
+            'unsigned' => false,
+            'extra'    => null,
+            'default'  => $isNullable ? null : $attributeDefaultValue
+        );
+
+        if (Mage::helper('core')->useDbCompatibleMode()) {
+            $column['type']     = $attributeType;
+            $column['is_null']  = $isNullable;
+        } else {
+            $column['type']     = Mage::getResourceHelper('eav')->getDdlTypeByColumnType($attributeType);
+            $column['nullable'] = $isNullable;
+            $column['comment']  = 'Enterprise Giftcard Open ' . $attributeCode . ' column';
+        }
+
+        return array($attributeCode => $column);
     }
+
     /**
-     * Retrieve Select For Flat Attribute update
+     * Retrieve select for flat attribute update
      *
-     * @param Mage_Eav_Model_Entity_Attribute_Abstract $attribute
      * @param int $store
      * @return Varien_Db_Select|null
      */

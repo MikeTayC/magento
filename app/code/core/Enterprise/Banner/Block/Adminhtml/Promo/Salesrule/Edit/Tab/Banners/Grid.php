@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Banner
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -74,14 +74,12 @@ class Enterprise_Banner_Block_Adminhtml_Promo_Salesrule_Edit_Tab_Banners_Grid
             }
             if ($column->getFilter()->getValue()) {
                 $this->getCollection()->addFieldToFilter('main_table.banner_id', array('in'=>$bannerIds));
-            }
-            else {
-                if($bannerIds) {
+            } else {
+                if ($bannerIds) {
                     $this->getCollection()->addFieldToFilter('main_table.banner_id', array('nin'=>$bannerIds));
                 }
             }
-        }
-        else {
+        } else {
             parent::_addColumnFilterToCollection($column);
         }
         return $this;

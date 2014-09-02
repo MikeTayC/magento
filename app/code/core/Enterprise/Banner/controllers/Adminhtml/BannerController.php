@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Banner
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -96,10 +96,10 @@ class Enterprise_Banner_Adminhtml_BannerController extends Mage_Adminhtml_Contro
 
             //Filter disallowed data
             $currentStores = array_keys(Mage::app()->getStores(true));
-            if (isset($data['store_contents_not_use'])){
+            if (isset($data['store_contents_not_use'])) {
                 $data['store_contents_not_use'] = array_intersect($data['store_contents_not_use'], $currentStores);
             }
-            if (isset($data['store_contents'])){
+            if (isset($data['store_contents'])) {
                 $data['store_contents'] = array_intersect_key($data['store_contents'], array_flip($currentStores));
             }
 
@@ -189,8 +189,7 @@ class Enterprise_Banner_Adminhtml_BannerController extends Mage_Adminhtml_Contro
         $ids = $this->getRequest()->getParam('banner');
         if (!is_array($ids)) {
             $this->_getSession()->addError($this->__('Please select banner(s).'));
-        }
-        else {
+        } else {
             try {
                 foreach ($ids as $id) {
                     $model = Mage::getSingleton('enterprise_banner/banner')->load($id);

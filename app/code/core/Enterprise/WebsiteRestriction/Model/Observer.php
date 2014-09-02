@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_WebsiteRestriction
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -41,19 +41,21 @@ class Enterprise_WebsiteRestriction_Model_Observer
         $controller = $observer->getEvent()->getControllerAction();
 
         if (!Mage::app()->getStore()->isAdmin()) {
-            $dispatchResult = new Varien_Object(array('should_proceed' => true));
-            Mage::dispatchEvent('websiterestriction_frontend', array('controller' => $controller, 'result' => $dispatchResult));
+            $dispatchResult = new Varien_Object(array('should_proceed' => true, 'customer_logged_in' => false));
+            Mage::dispatchEvent('websiterestriction_frontend', array(
+                'controller' => $controller, 'result' => $dispatchResult
+            ));
             if (!$dispatchResult->getShouldProceed()) {
                 return;
             }
-            if (!(int)Mage::getStoreConfig('general/restriction/is_active')) {
+            if (!Mage::helper('enterprise_websiterestriction')->getIsRestrictionEnabled()) {
                 return;
             }
             /* @var $request Mage_Core_Controller_Request_Http */
             $request    = $controller->getRequest();
             /* @var $response Mage_Core_Controller_Response_Http */
             $response   = $controller->getResponse();
-            switch ((int)Mage::getStoreConfig('general/restriction/mode')) {
+            switch ((int)Mage::getStoreConfig(Enterprise_WebsiteRestriction_Helper_Data::XML_PATH_RESTRICTION_MODE)) {
                 // show only landing page with 503 or 200 code
                 case Enterprise_WebsiteRestriction_Model_Mode::ALLOW_NONE:
                     if ($controller->getFullActionName() !== 'restriction_index_stub') {
@@ -63,7 +65,10 @@ class Enterprise_WebsiteRestriction_Model_Observer
                             ->setDispatched(false);
                         return;
                     }
-                    if (Enterprise_WebsiteRestriction_Model_Mode::HTTP_503 === (int)Mage::getStoreConfig('general/restriction/http_status')) {
+                    $httpStatus = (int)Mage::getStoreConfig(
+                        Enterprise_WebsiteRestriction_Helper_Data::XML_PATH_RESTRICTION_HTTP_STATUS
+                    );
+                    if (Enterprise_WebsiteRestriction_Model_Mode::HTTP_503 === $httpStatus) {
                         $response->setHeader('HTTP/1.1','503 Service Unavailable');
                     }
                     break;
@@ -73,24 +78,32 @@ class Enterprise_WebsiteRestriction_Model_Observer
 
                 // redirect to landing page/login
                 case Enterprise_WebsiteRestriction_Model_Mode::ALLOW_LOGIN:
-                    if (!Mage::helper('customer')->isLoggedIn()) {
+                    if (!$dispatchResult->getCustomerLoggedIn() && !Mage::helper('customer')->isLoggedIn()) {
                         // see whether redirect is required and where
                         $redirectUrl = false;
                         $allowedActionNames = array_keys(Mage::getConfig()
-                            ->getNode('frontend/enterprise/websiterestriction/full_action_names/generic')->asArray()
+                            ->getNode(Enterprise_WebsiteRestriction_Helper_Data::XML_NODE_RESTRICTION_ALLOWED_GENERIC)
+                            ->asArray()
                         );
                         if (Mage::helper('customer')->isRegistrationAllowed()) {
-                            foreach(array_keys(Mage::getConfig()->getNode('frontend/enterprise/websiterestriction/full_action_names/register')
-                                ->asArray()) as $fullActionName) {
+                            foreach(array_keys(Mage::getConfig()
+                                ->getNode(
+                                    Enterprise_WebsiteRestriction_Helper_Data::XML_NODE_RESTRICTION_ALLOWED_REGISTER
+                                )
+                                ->asArray()) as $fullActionName
+                            ) {
                                 $allowedActionNames[] = $fullActionName;
                             }
                         }
 
                         // to specified landing page
-                       if (Enterprise_WebsiteRestriction_Model_Mode::HTTP_302_LANDING
-                            === (int)Mage::getStoreConfig('general/restriction/http_redirect')) {
+                       if (Enterprise_WebsiteRestriction_Model_Mode::HTTP_302_LANDING === (int)Mage::getStoreConfig(
+                           Enterprise_WebsiteRestriction_Helper_Data::XML_PATH_RESTRICTION_HTTP_REDIRECT
+                       )) {
                             $allowedActionNames[] = 'cms_page_view';
-                            $pageIdentifier = Mage::getStoreConfig('general/restriction/cms_page');
+                            $pageIdentifier = Mage::getStoreConfig(
+                                Enterprise_WebsiteRestriction_Helper_Data::XML_PATH_RESTRICTION_LANDING_PAGE
+                            );
                             if ((!in_array($controller->getFullActionName(), $allowedActionNames))
                                 || $request->getParam('page_id') === $pageIdentifier) {
                                 $redirectUrl = Mage::getUrl('', array('_direct' => $pageIdentifier));
@@ -105,7 +118,9 @@ class Enterprise_WebsiteRestriction_Model_Observer
                             $response->setRedirect($redirectUrl);
                             $controller->setFlag('', Mage_Core_Controller_Varien_Action::FLAG_NO_DISPATCH, true);
                         }
-                        if (Mage::getStoreConfigFlag('customer/startup/redirect_dashboard')) {
+                        if (Mage::getStoreConfigFlag(
+                            Mage_Customer_Helper_Data::XML_PATH_CUSTOMER_STARTUP_REDIRECT_TO_DASHBOARD
+                        )) {
                             $afterLoginUrl = Mage::helper('customer')->getDashboardUrl();
                         } else {
                             $afterLoginUrl = Mage::getUrl();
@@ -113,7 +128,9 @@ class Enterprise_WebsiteRestriction_Model_Observer
                         Mage::getSingleton('core/session')->setWebsiteRestrictionAfterLoginUrl($afterLoginUrl);
                     }
                     elseif (Mage::getSingleton('core/session')->hasWebsiteRestrictionAfterLoginUrl()) {
-                        $response->setRedirect(Mage::getSingleton('core/session')->getWebsiteRestrictionAfterLoginUrl(true));
+                        $response->setRedirect(
+                            Mage::getSingleton('core/session')->getWebsiteRestrictionAfterLoginUrl(true)
+                        );
                         $controller->setFlag('', Mage_Core_Controller_Varien_Action::FLAG_NO_DISPATCH, true);
                     }
                     break;
@@ -130,8 +147,11 @@ class Enterprise_WebsiteRestriction_Model_Observer
     {
         $result = $observer->getEvent()->getResult();
         if ((!Mage::app()->getStore()->isAdmin()) && $result->getIsAllowed()) {
-            $result->setIsAllowed((!(bool)(int)Mage::getStoreConfig('general/restriction/is_active'))
-                || (Enterprise_WebsiteRestriction_Model_Mode::ALLOW_REGISTER === (int)Mage::getStoreConfig('general/restriction/mode'))
+            $restrictionMode = (int)Mage::getStoreConfig(
+                Enterprise_WebsiteRestriction_Helper_Data::XML_PATH_RESTRICTION_MODE
+            );
+            $result->setIsAllowed((!Mage::helper('enterprise_websiterestriction')->getIsRestrictionEnabled())
+                || (Enterprise_WebsiteRestriction_Model_Mode::ALLOW_REGISTER === $restrictionMode)
             );
         }
     }
@@ -143,10 +163,13 @@ class Enterprise_WebsiteRestriction_Model_Observer
      */
     public function addPrivateSalesLayoutUpdate($observer)
     {
-        if (in_array((int)Mage::getStoreConfig('general/restriction/mode'), array(
-            Enterprise_WebsiteRestriction_Model_Mode::ALLOW_REGISTER,
-            Enterprise_WebsiteRestriction_Model_Mode::ALLOW_LOGIN
-            ), true)) {
+        if (in_array((int)Mage::getStoreConfig(Enterprise_WebsiteRestriction_Helper_Data::XML_PATH_RESTRICTION_MODE),
+            array(
+                Enterprise_WebsiteRestriction_Model_Mode::ALLOW_REGISTER,
+                Enterprise_WebsiteRestriction_Model_Mode::ALLOW_LOGIN
+            ),
+            true
+        )) {
             $observer->getEvent()->getLayout()->getUpdate()->addHandle('restriction_privatesales_mode');
         }
     }

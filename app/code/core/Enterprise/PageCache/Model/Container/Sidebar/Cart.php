@@ -20,14 +20,14 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Cart sidebar container
  */
-class Enterprise_PageCache_Model_Container_Sidebar_Cart extends Enterprise_PageCache_Model_Container_Abstract
+class Enterprise_PageCache_Model_Container_Sidebar_Cart extends Enterprise_PageCache_Model_Container_Advanced_Abstract
 {
     const CACHE_TAG_PREFIX = 'cartsidebar';
 
@@ -49,7 +49,7 @@ class Enterprise_PageCache_Model_Container_Sidebar_Cart extends Enterprise_PageC
      */
     protected function _getCacheId()
     {
-        return 'CONTAINER_SIDEBAR_' . md5($this->_placeholder->getAttribute('cache_id') . $this->_getIdentifier());
+        return md5(self::CACHE_TAG_PREFIX . $this->_getIdentifier());
     }
 
     /**
@@ -70,18 +70,12 @@ class Enterprise_PageCache_Model_Container_Sidebar_Cart extends Enterprise_PageC
     }
 
     /**
-     * Save rendered block content to cache storage
+     * Get container individual additional cache id
      *
-     * @param string $blockContent
-     * @return Enterprise_PageCache_Model_Container_Abstract
+     * @return string | false
      */
-    public function saveCache($blockContent)
+    protected function _getAdditionalCacheId()
     {
-        $cacheId = $this->_getCacheId();
-        if ($cacheId !== false) {
-            $cacheTag = md5(self::CACHE_TAG_PREFIX . $this->_getIdentifier());
-            $this->_saveCache($blockContent, $cacheId, array($cacheTag));
-        }
-        return $this;
+        return md5('CONTAINER_SIDEBAR_' . $this->_placeholder->getAttribute('cache_id'));
     }
 }

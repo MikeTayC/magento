@@ -20,12 +20,29 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Logging event changes model
+ *
+ * @method Enterprise_Logging_Model_Resource_Event_Changes _getResource()
+ * @method Enterprise_Logging_Model_Resource_Event_Changes getResource()
+ * @method string getSourceName()
+ * @method Enterprise_Logging_Model_Event_Changes setSourceName(string $value)
+ * @method int getEventId()
+ * @method Enterprise_Logging_Model_Event_Changes setEventId(int $value)
+ * @method int getSourceId()
+ * @method Enterprise_Logging_Model_Event_Changes setSourceId(int $value)
+ * @method string getOriginalData()
+ * @method Enterprise_Logging_Model_Event_Changes setOriginalData(string $value)
+ * @method string getResultData()
+ * @method Enterprise_Logging_Model_Event_Changes setResultData(string $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Logging
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_Logging_Model_Event_Changes extends Mage_Core_Model_Abstract
 {
@@ -61,7 +78,7 @@ class Enterprise_Logging_Model_Event_Changes extends Mage_Core_Model_Abstract
      * Get fields that should not be logged for all models
      *
      */
-    public function _construct()
+    protected function _construct()
     {
         $this->_globalSkipFields = array_map('trim', array_filter(explode(',',
             (string)Mage::getConfig()->getNode(self::XML_PATH_SKIP_GLOBAL_FIELDS))));
@@ -124,7 +141,7 @@ class Enterprise_Logging_Model_Event_Changes extends Mage_Core_Model_Abstract
                 $newParams  = array_diff_key($resultData, $origData);
                 $sameParams = array_intersect_key($origData, $resultData);
                 foreach ($sameParams as $key => $value) {
-                    if ($origData[$key] != $resultData[$key]){
+                    if ($origData[$key] != $resultData[$key]) {
                         $updatedParams[$key] = $resultData[$key];
                     }
                 }

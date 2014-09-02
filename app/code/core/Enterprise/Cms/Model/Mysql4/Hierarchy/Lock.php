@@ -20,39 +20,18 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
 
 /**
  * Hierarchy Lock Resource Model
  *
- * @category   Enterprise
- * @package    Enterprise_Cms
+ * @category    Enterprise
+ * @package     Enterprise_Cms
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Cms_Model_Mysql4_Hierarchy_Lock extends Mage_Core_Model_Mysql4_Abstract
+class Enterprise_Cms_Model_Mysql4_Hierarchy_Lock extends Enterprise_Cms_Model_Resource_Hierarchy_Lock
 {
-    /**
-     * Initialize connection and define main table and field
-     *
-     */
-    protected function _construct()
-    {
-        $this->_init('enterprise_cms/hierarchy_lock', 'lock_id');
-    }
-
-    /**
-     * Return last lock information
-     *
-     * @return array
-     */
-    public function getLockData()
-    {
-        $select = $this->_getReadAdapter()->select()
-            ->from($this->getMainTable())
-            ->order('lock_id DESC')
-            ->limit(1);
-        $data = $this->_getReadAdapter()->fetchRow($select);
-        return is_array($data) ? $data : array();
-    }
 }

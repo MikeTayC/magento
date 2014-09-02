@@ -21,14 +21,14 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCard
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_GiftCard>
-             <version>0.0.9</version>
+             <version>1.11.0.0</version>
         </Enterprise_GiftCard>
     </modules>
     <global>
@@ -40,35 +40,31 @@
                 </setup>
             </enterprise_giftcard_setup>
         </resources>
-
         <models>
             <enterprise_giftcard>
                 <class>Enterprise_GiftCard_Model</class>
-                <resourceModel>enterprise_giftcard_mysql4</resourceModel>
+                <resourceModel>enterprise_giftcard_resource</resourceModel>
             </enterprise_giftcard>
-
-            <enterprise_giftcard_mysql4>
-                <class>Enterprise_GiftCard_Model_Mysql4</class>
+            <enterprise_giftcard_resource>
+                <class>Enterprise_GiftCard_Model_Resource</class>
+                <deprecatedNode>enterprise_giftcard_mysql4</deprecatedNode>
                 <entities>
                     <amount>
                         <table>enterprise_giftcard_amount</table>
                     </amount>
                 </entities>
-            </enterprise_giftcard_mysql4>
+            </enterprise_giftcard_resource>
         </models>
-
         <blocks>
             <enterprise_giftcard>
                 <class>Enterprise_GiftCard_Block</class>
             </enterprise_giftcard>
         </blocks>
-
         <helpers>
             <enterprise_giftcard>
                 <class>Enterprise_GiftCard_Helper</class>
             </enterprise_giftcard>
         </helpers>
-
         <catalog>
             <product>
                 <type>
@@ -76,7 +72,6 @@
                         <label>Gift Card</label>
                         <model>enterprise_giftcard/catalog_product_type_giftcard</model>
                         <price_model>enterprise_giftcard/catalog_product_price_giftcard</price_model>
-<!--                        <index_data_retreiver>enterprise_giftcard/catalogIndex_data_giftcard</index_data_retreiver>-->
                         <index_priority>45</index_priority>
                         <composite>0</composite>
                         <is_qty>1</is_qty>
@@ -85,37 +80,34 @@
                 </type>
             </product>
         </catalog>
-
         <template>
             <email>
-               <giftcard_email_template translate="label" module="enterprise_giftcard">
-                   <label>Gift Card Accounts Generated From Gift Card</label>
-                   <file>enterprise/giftcard_generated.html</file>
-                   <type>html</type>
-               </giftcard_email_template>
+                <giftcard_email_template translate="label" module="enterprise_giftcard">
+                    <label>Gift Card Accounts Generated From Gift Card</label>
+                    <file>enterprise/giftcard_generated.html</file>
+                    <type>html</type>
+                </giftcard_email_template>
             </email>
         </template>
-
         <sales>
             <quote>
                 <item>
                     <product_attributes>
-                        <giftcard_type />
-                        <giftcard_amounts />
-                        <allow_open_amount />
-                        <open_amount_min />
-                        <open_amount_max />
-                        <use_config_lifetime />
-                        <lifetime />
-                        <use_config_is_redeemable />
-                        <is_redeemable />
-                        <use_config_email_template />
-                        <email_template />
+                        <giftcard_type/>
+                        <giftcard_amounts/>
+                        <allow_open_amount/>
+                        <open_amount_min/>
+                        <open_amount_max/>
+                        <use_config_lifetime/>
+                        <lifetime/>
+                        <use_config_is_redeemable/>
+                        <is_redeemable/>
+                        <use_config_email_template/>
+                        <email_template/>
                     </product_attributes>
                 </item>
             </quote>
         </sales>
-
         <events>
             <sales_convert_quote_item_to_order_item>
                 <observers>
@@ -154,15 +146,15 @@
         <product>
             <collection>
                 <attributes>
-                    <giftcard_type />
-                    <giftcard_amounts />
-                    <allow_open_amount />
-                    <open_amount_min />
-                    <open_amount_max />
-                    <use_config_lifetime />
-                    <lifetime />
-                    <use_config_is_redeemable />
-                    <is_redeemable />
+                    <giftcard_type/>
+                    <giftcard_amounts/>
+                    <allow_open_amount/>
+                    <open_amount_min/>
+                    <open_amount_max/>
+                    <use_config_lifetime/>
+                    <lifetime/>
+                    <use_config_is_redeemable/>
+                    <is_redeemable/>
                 </attributes>
             </collection>
         </product>

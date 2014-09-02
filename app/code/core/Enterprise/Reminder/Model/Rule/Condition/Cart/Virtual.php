@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -103,7 +103,7 @@ class Enterprise_Reminder_Model_Rule_Condition_Cart_Virtual
         $select->where('quote.is_active = 1');
         $select->where("quote.is_virtual = ?", $this->getValue());
         $select->where($this->_createCustomerFilter($customer, 'quote.customer_id'));
-        $select->limit(1);
+        Mage::getResourceHelper('enterprise_reminder')->setRuleLimit($select, 1);
 
         return $select;
     }

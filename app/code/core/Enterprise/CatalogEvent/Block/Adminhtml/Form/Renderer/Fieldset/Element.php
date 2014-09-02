@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogEvent
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -109,13 +109,13 @@ class Enterprise_CatalogEvent_Block_Adminhtml_Form_Renderer_Fieldset_Element ext
             return $html;
         }
         if ($element->getScope() == 'global' || $element->getScope() === null) {
-            $html.= '[GLOBAL]';
+            $html .= '[GLOBAL]';
         }
         elseif ($element->getScope() == 'website') {
-            $html.= '[WEBSITE]';
+            $html .= '[WEBSITE]';
         }
         elseif ($element->getScope() == 'store') {
-            $html.= '[STORE VIEW]';
+            $html .= '[STORE VIEW]';
         }
 
         return $html;

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Banner
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -138,8 +138,7 @@ class Enterprise_Banner_Block_Widget_Banner
     {
         if (!$this->_getData('banner_ids')) {
             $this->setData('banner_ids', array(0));
-        }
-        elseif (is_string($this->_getData('banner_ids'))) {
+        } elseif (is_string($this->_getData('banner_ids'))) {
             $bannerIds = explode(',', $this->_getData('banner_ids'));
             foreach ($bannerIds as $_key => $_id) {
                 $bannerIds[$_key] = (int)trim($_id);
@@ -174,7 +173,7 @@ class Enterprise_Banner_Block_Widget_Banner
      */
     public function getUniqueId()
     {
-        if (!$this->_getData('unique_id')){
+        if (!$this->_getData('unique_id')) {
             $this->setData('unique_id', md5(implode('-', $this->getBannerIds())));
         }
         return $this->_getData('unique_id');
@@ -190,10 +189,12 @@ class Enterprise_Banner_Block_Widget_Banner
         $bannersContent = array();
         $aplliedRules = null;
         $segmentIds = array();
-        if (Mage::getSingleton('customer/session')->isLoggedIn()) {
-            $segmentIds = Mage::getSingleton('enterprise_customersegment/customer')->getCustomerSegmentIds(
-                Mage::getSingleton('customer/session')->getCustomer()
-            );
+        $customer = Mage::registry('segment_customer');
+        if (Mage::getSingleton('customer/session')->isLoggedIn() || $customer) {
+            if (!$customer) {
+                $customer = Mage::getSingleton('customer/session')->getCustomer();
+            }
+            $segmentIds = Mage::getSingleton('enterprise_customersegment/customer')->getCustomerSegmentIds($customer);
         }
 
         $this->_bannerResource->filterByTypes($this->getTypes());

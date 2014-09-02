@@ -20,24 +20,18 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
 
 /**
  * Staging Resource Adapter Interface
  *
- * @category   Enterprise
- * @package    Enterprise_Staging
- * @author     Magento Core Team <core@magentocommerce.com>
+ * @category    Enterprise
+ * @package     Enterprise_Staging
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
-interface Enterprise_Staging_Model_Mysql4_Adapter_Interface
+class Enterprise_Staging_Model_Mysql4_Adapter_Interface extends Enterprise_Staging_Model_Resource_Adapter_Interface
 {
-    public function checkfrontendRun(Enterprise_Staging_Model_Staging $staging, $event = null);
-    public function createRun(Enterprise_Staging_Model_Staging $staging, $event = null);
-    public function updateRun(Enterprise_Staging_Model_Staging $staging, $event = null);
-    public function backupRun(Enterprise_Staging_Model_Staging $staging, $event = null);
-    public function mergeRun(Enterprise_Staging_Model_Staging $staging, $event = null);
-    public function rollbackRun(Enterprise_Staging_Model_Staging $staging, $event = null);
-
 }

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -108,7 +108,7 @@ class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
             //French
             'fr' => array('fr_CA', 'fr_FR'),
             //German
-            'de' => array('de_DE','de_DE','de_AT'),
+            'de' => array('de_DE','de_CH','de_AT'),
             //Italian
             'it' => array('it_IT','it_CH'),
             //Norwegian
@@ -322,6 +322,8 @@ class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
             $field = 'attr_select_'. $field;
         } elseif ($backendType == 'decimal') {
             $field = 'attr_decimal_'. $field;
+        } elseif ($backendType == 'datetime') {
+            $field = 'attr_datetime_'. $field;
         } elseif (in_array($backendType, $this->_textFieldTypes)) {
             $locale = Mage::app()->getStore()->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE);
             $languageCode = $this->getLanguageCodeByLocaleCode($locale);
@@ -374,9 +376,18 @@ class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
     public function getIsEngineAvailableForNavigation($isCatalog = true)
     {
         if (is_null($this->_isEngineAvailableForNavigation)) {
-            $this->_isEngineAvailableForNavigation = $this->isActiveEngine()
-                && ($this->getSearchConfigData('solr_server_use_in_catalog_navigation') || !$isCatalog)
-                && !$this->getTaxInfluence();
+            $this->_isEngineAvailableForNavigation = false;
+            if ($this->isActiveEngine()) {
+                if ($isCatalog) {
+                    if ($this->getSearchConfigData('solr_server_use_in_catalog_navigation')
+                        && !$this->getTaxInfluence()
+                    ) {
+                        $this->_isEngineAvailableForNavigation = true;
+                    }
+                } else {
+                    $this->_isEngineAvailableForNavigation = true;
+                }
+            }
         }
 
         return $this->_isEngineAvailableForNavigation;

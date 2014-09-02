@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -74,25 +74,25 @@ class Enterprise_GiftWrapping_Block_Adminhtml_Order_View_Info
     {
         $data = array();
         $order = $this->getOrder();
-        if ($order && $order->getGwAddPrintedCard()) {
+        if ($order && $order->getGwAddCard()) {
             if ($this->getDisplayCardBothPrices()) {
                 $data['price_excl_tax'] = $this->_preparePrices(
-                    $order->getGwPrintedCardBasePrice(),
-                    $order->getGwPrintedCardPrice()
+                    $order->getGwCardBasePrice(),
+                    $order->getGwCardPrice()
                 );
                 $data['price_incl_tax'] = $this->_preparePrices(
-                    $order->getGwPrintedCardBasePrice() + $order->getGwPrintedCardBaseTaxAmount(),
-                    $order->getGwPrintedCardPrice() + $order->getGwPrintedCardTaxAmount()
+                    $order->getGwCardBasePrice() + $order->getGwCardBaseTaxAmount(),
+                    $order->getGwCardPrice() + $order->getGwCardTaxAmount()
                 );
             } else if ($this->getDisplayCardPriceInclTax()) {
                 $data['price'] = $this->_preparePrices(
-                    $order->getGwPrintedCardBasePrice() + $order->getGwPrintedCardBaseTaxAmount(),
-                    $order->getGwPrintedCardPrice() + $order->getGwPrintedCardTaxAmount()
+                    $order->getGwCardBasePrice() + $order->getGwCardBaseTaxAmount(),
+                    $order->getGwCardPrice() + $order->getGwCardTaxAmount()
                 );
             } else {
                 $data['price'] = $this->_preparePrices(
-                    $order->getGwPrintedCardBasePrice(),
-                    $order->getGwPrintedCardPrice()
+                    $order->getGwCardBasePrice(),
+                    $order->getGwCardPrice()
                 );
             }
         }
@@ -106,7 +106,7 @@ class Enterprise_GiftWrapping_Block_Adminhtml_Order_View_Info
      */
     public function getPrintedCard()
     {
-        return (bool)$this->getOrder()->getGwAddPrintedCard();
+        return (bool)$this->getOrder()->getGwAddCard();
     }
 
     /**

@@ -20,15 +20,38 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Invitation
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Invitation data model
  *
- * @category   Enterprise
- * @package    Enterprise_Invitation
+ * @method Enterprise_Invitation_Model_Resource_Invitation _getResource()
+ * @method Enterprise_Invitation_Model_Resource_Invitation getResource()
+ * @method int getCustomerId()
+ * @method Enterprise_Invitation_Model_Invitation setCustomerId(int $value)
+ * @method string getDate()
+ * @method Enterprise_Invitation_Model_Invitation setDate(string $value)
+ * @method string getEmail()
+ * @method Enterprise_Invitation_Model_Invitation setEmail(string $value)
+ * @method int getReferralId()
+ * @method Enterprise_Invitation_Model_Invitation setReferralId(int $value)
+ * @method string getProtectionCode()
+ * @method Enterprise_Invitation_Model_Invitation setProtectionCode(string $value)
+ * @method string getSignupDate()
+ * @method Enterprise_Invitation_Model_Invitation setSignupDate(string $value)
+ * @method Enterprise_Invitation_Model_Invitation setStoreId(int $value)
+ * @method int getGroupId()
+ * @method Enterprise_Invitation_Model_Invitation setGroupId(int $value)
+ * @method string getMessage()
+ * @method Enterprise_Invitation_Model_Invitation setMessage(string $value)
+ * @method string getStatus()
+ * @method Enterprise_Invitation_Model_Invitation setStatus(string $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Invitation
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_Invitation_Model_Invitation extends Mage_Core_Model_Abstract
 {
@@ -48,6 +71,12 @@ class Enterprise_Invitation_Model_Invitation extends Mage_Core_Model_Abstract
 
     protected $_eventPrefix = 'enterprise_invitation';
     protected $_eventObject = 'invitation';
+
+    /**
+     * Mapping old field names
+     * @var array
+     */
+    protected $_oldFieldsMap = array('invitation_date' => 'date');
 
     /**
      * Intialize resource
@@ -103,7 +132,7 @@ class Enterprise_Invitation_Model_Invitation extends Mage_Core_Model_Abstract
             $this->addData(array(
                 'protection_code' => Mage::helper('core')->uniqHash(),
                 'status'          => self::STATUS_NEW,
-                'date'            => $this->getResource()->formatDate(time()),
+                'invitation_date' => $this->getResource()->formatDate(time()),
                 'store_id'        => $this->getStoreId(),
             ));
             $inviter = $this->getInviter();

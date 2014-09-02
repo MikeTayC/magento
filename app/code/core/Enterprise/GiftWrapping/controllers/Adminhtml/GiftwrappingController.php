@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -294,5 +294,15 @@ class Enterprise_GiftWrapping_Adminhtml_GiftwrappingController extends Mage_Admi
             $wrappingRawData['image_name']['value'] = basename($wrappingRawData['image_name']['value']);
         }
         return $wrappingRawData;
+    }
+
+    /**
+     * Ajax action for GiftWrapping content in backend order creation
+     *
+     * @return void
+     */
+    public function orderOptionsAction() {
+        $this->loadLayout();
+        $this->renderLayout();
     }
 }

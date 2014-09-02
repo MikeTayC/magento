@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCard
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -41,15 +41,23 @@ class Enterprise_GiftCard_Block_Adminhtml_Renderer_Amount
         return Mage::registry('product');
     }
 
+    /**
+     *  Render Amounts Element
+     *
+     * @param Varien_Data_Form_Element_Abstract $element
+     * @return string
+     */
     public function render(Varien_Data_Form_Element_Abstract $element)
     {
         $this->setElement($element);
+        $isAddButtonDisabled = ($element->getData('readonly_disabled') === true) ? true : false;
         $this->setChild('add_button',
             $this->getLayout()->createBlock('adminhtml/widget_button')
                 ->setData(array(
                     'label'     => Mage::helper('enterprise_giftcard')->__('Add Amount'),
-                    'onclick'   => "giftcardAmountsControl.addItem('".$this->getElement()->getHtmlId()."')",
-                    'class' => 'add'
+                    'onclick'   => "giftcardAmountsControl.addItem('" . $this->getElement()->getHtmlId() . "')",
+                    'class'     => 'add',
+                    'disabled'  => $isAddButtonDisabled
                 )));
 
         return $this->toHtml();

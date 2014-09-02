@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -85,9 +85,7 @@ class Mage_Sales_Model_Quote_Address_Total_Subtotal extends Mage_Sales_Model_Quo
             $quoteItem = $item;
         }
         $product = $quoteItem->getProduct();
-        if (!$product->hasCustomerGroupId()) {
-            $product->setCustomerGroupId($quoteItem->getQuote()->getCustomerGroupId());
-        }
+        $product->setCustomerGroupId($quoteItem->getQuote()->getCustomerGroupId());
 
         /**
          * Quote super mode flag mean what we work with quote without restriction

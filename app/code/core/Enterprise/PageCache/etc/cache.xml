@@ -7,6 +7,12 @@
             <container>Enterprise_PageCache_Model_Container_Viewedproducts</container>
             <cache_lifetime>86400</cache_lifetime>
         </last_viewed_products>
+        <last_viewed_products_widget>
+            <block>reports/product_widget_viewed</block>
+            <placeholder>VIEWED_PRODUCTS_WIDGET</placeholder>
+            <container>Enterprise_PageCache_Model_Container_Viewedproducts</container>
+            <cache_lifetime>86400</cache_lifetime>
+        </last_viewed_products_widget>
         <catalog_navigation>
             <block>catalog/navigation</block>
             <name>catalog.topnav</name>
@@ -33,6 +39,13 @@
             <container>Enterprise_PageCache_Model_Container_Messages</container>
             <cache_lifetime>86400</cache_lifetime>
         </messages>
+        <global_messages>
+            <block>core/messages</block>
+            <placeholder>GLOBAL_MESSAGES</placeholder>
+            <name>global_messages</name>
+            <container>Enterprise_PageCache_Model_Container_Messages</container>
+            <cache_lifetime>86400</cache_lifetime>
+        </global_messages>
         <recently_compared_sidebar>
             <block>reports/product_compared</block>
             <placeholder>RECENTLYCOMPARED_SIDEBAR</placeholder>
@@ -73,7 +86,7 @@
         <poll_activepoll>
             <block>poll/activePoll</block>
             <placeholder>POLL</placeholder>
-            <container>Enterprise_PageCache_Model_Container_Blackhole</container>
+            <container>Enterprise_PageCache_Model_Container_Sidebar_Poll</container>
             <cache_lifetime>86400</cache_lifetime>
         </poll_activepoll>
         <widget_enterprise_banner>

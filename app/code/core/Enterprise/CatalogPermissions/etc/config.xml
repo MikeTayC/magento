@@ -21,30 +21,37 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogPermissions
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_CatalogPermissions>
-            <version>0.0.9</version>
+            <version>1.11.0.0</version>
         </Enterprise_CatalogPermissions>
     </modules>
     <global>
         <models>
             <enterprise_catalogpermissions>
                 <class>Enterprise_CatalogPermissions_Model</class>
-                <resourceModel>enterprise_catalogpermissions_mysql4</resourceModel>
+                <resourceModel>enterprise_catalogpermissions_resource</resourceModel>
             </enterprise_catalogpermissions>
-            <enterprise_catalogpermissions_mysql4>
-                <class>Enterprise_CatalogPermissions_Model_Mysql4</class>
+            <enterprise_catalogpermissions_resource>
+                <class>Enterprise_CatalogPermissions_Model_Resource</class>
+                <deprecatedNode>enterprise_catalogpermissions_mysql4</deprecatedNode>
                 <entities>
-                    <permission><table>enterprise_catalogpermissions</table></permission>
-                    <permission_index><table>enterprise_catalogpermissions_index</table></permission_index>
-                    <permission_index_product><table>enterprise_catalogpermissions_index_product</table></permission_index_product>
+                    <permission>
+                        <table>enterprise_catalogpermissions</table>
+                    </permission>
+                    <permission_index>
+                        <table>enterprise_catalogpermissions_index</table>
+                    </permission_index>
+                    <permission_index_product>
+                        <table>enterprise_catalogpermissions_index_product</table>
+                    </permission_index_product>
                 </entities>
-            </enterprise_catalogpermissions_mysql4>
+            </enterprise_catalogpermissions_resource>
         </models>
         <helpers>
             <enterprise_catalogpermissions>
@@ -60,7 +67,7 @@
             <enterprise_catalogpermissions_setup>
                 <setup>
                     <module>Enterprise_CatalogPermissions</module>
-                    <class>Enterprise_CatalogPermissions_Model_Mysql4_Setup</class>
+                    <class>Enterprise_CatalogPermissions_Model_Resource_Setup</class>
                 </setup>
             </enterprise_catalogpermissions_setup>
         </resources>
@@ -133,7 +140,7 @@
             </adminhtml_catalog_category_tabs>
             <catalog_product_import_after>
                 <observers>
-                     <enterprise_catalogpermissions>
+                    <enterprise_catalogpermissions>
                         <class>enterprise_catalogpermissions/adminhtml_observer</class>
                         <method>reindexProducts</method>
                     </enterprise_catalogpermissions>
@@ -271,14 +278,14 @@
                     </enterprise_catalogpermissions>
                 </observers>
             </checkout_cart_product_add_after>
-            <sales_quote_item_qty_set_after>
+            <checkout_cart_save_before>
                 <observers>
                     <enterprise_catalogpermissions>
                         <class>enterprise_catalogpermissions/observer</class>
-                        <method>checkQuoteItem</method>
+                        <method>checkQuotePermissions</method>
                     </enterprise_catalogpermissions>
                 </observers>
-            </sales_quote_item_qty_set_after>
+            </checkout_cart_save_before>
             <controller_action_predispatch_catalogsearch>
                 <observers>
                     <enterprise_catalogpermissions>
@@ -352,7 +359,7 @@
                 <grant_catalog_product_price>0</grant_catalog_product_price>
                 <grant_checkout_items>0</grant_checkout_items>
                 <restricted_landing_page>no-route</restricted_landing_page>
-                <deny_catalog_search></deny_catalog_search>
+                <deny_catalog_search/>
                 <enabled>0</enabled>
             </enterprise_catalogpermissions>
         </catalog>

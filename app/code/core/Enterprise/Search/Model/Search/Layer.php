@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -78,8 +78,6 @@ class Enterprise_Search_Model_Search_Layer extends Mage_CatalogSearch_Model_Laye
         /* @var $collection Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Attribute_Collection */
         $collection = Mage::getResourceModel('catalog/product_attribute_collection')
             ->setItemObjectClass('catalog/resource_eav_attribute');
-
-        $collection->getSelect()->distinct(true);
 
         if (Mage::helper('enterprise_search')->getTaxInfluence()) {
             $collection->removePriceFilter();

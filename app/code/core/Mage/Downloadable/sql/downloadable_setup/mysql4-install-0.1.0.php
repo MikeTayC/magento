@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Downloadable
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -43,10 +43,10 @@ $fieldList = array(
 
 // make these attributes applicable to downloadable products
 foreach ($fieldList as $field) {
-    $applyTo = explode(',', $installer->getAttribute('catalog_product', $field, 'apply_to'));
+    $applyTo = explode(',', $installer->getAttribute(Mage_Catalog_Model_Product::ENTITY, $field, 'apply_to'));
     if (!in_array('downloadable', $applyTo)) {
         $applyTo[] = 'downloadable';
-        $installer->updateAttribute('catalog_product', $field, 'apply_to', join(',', $applyTo));
+        $installer->updateAttribute(Mage_Catalog_Model_Product::ENTITY, $field, 'apply_to', join(',', $applyTo));
     }
 }
 

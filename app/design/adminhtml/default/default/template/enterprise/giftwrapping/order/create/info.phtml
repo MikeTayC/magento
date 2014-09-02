@@ -20,82 +20,13 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
 
-<?php if ($this->canDisplayGiftWrappingForOrder()): ?>
-<div class="entry-edit box-right">
-
-    <?php if ($this->isGiftWrappingForEntireOrder()): ?>
-    <div><?php echo Mage::helper('sales')->__('Gift Wrapping for the Entire Order') ?></div>
-    <?php endif; ?>
-    <br />
-    <fieldset>
-
-        <div id="wrapping-container">
-            <?php if ($this->isGiftWrappingForEntireOrder()): ?>
-            <p><?php echo $this->__('You can leave a box blank if you don\'t wish to add a gift wrap for whole order') ?></p>
-            <div class="gift-wrapping-form">
-                <label><?php echo $this->__('Gift Wrapping Design') ?></label><?php echo $this->getDesignSelectHtml() ?>
-                <div id="wrapping-price-box" class="gift-wrapping-design no-display">
-                    <img id="wrapping-image-box" class="image-box no-display" height="75" width="75" alt="" src="" />
-                    <?php if ($this->getDisplayWrappingBothPrices()): ?>
-                    <div>
-                        <span class="label"><?php echo $this->__('Price Excl. Tax') ?>:</span>
-                        <span class="price" id="wrapping-price-excl-tax"></span>
-                    </div>
-                    <div>
-                        <span class="label"><?php echo $this->__('Price Incl. Tax') ?>:</span>
-                        <span class="price" id="wrapping-price-incl-tax"></span>
-                    </div>
-                    <?php else: ?>
-                    <div>
-                        <span class="label"><?php echo $this->__('Price') ?>:</span>
-                        <span class="price" id="wrapping-price"></span>
-                    </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-            <?php endif; ?>
-
-            <div class="no-display">
-                <input type="hidden" value="quote" name="giftwrapping[<?php echo $this->getEntityId() ?>][type]" />
-            </div>
-
-            <?php if ($this->getAllowGiftReceipt()): ?>
-            <p>
-                <input type="checkbox" id="allow-gift-receipt" class="checkbox" value="1" name="giftwrapping[<?php echo $this->getEntityId() ?>][allow_gift_receipt]" />
-                <label for="allow-gift-receipt"><?php echo $this->__('Send Gift Receipt') ?></label>
-            </p>
-            <?php endif; ?>
-
-            <?php if ($this->getAllowPrintedCard()): ?>
-            <p>
-                <input type="checkbox" id="add-printed-card" class="checkbox" value="1" name="giftwrapping[<?php echo $this->getEntityId() ?>][add_printed_card]" />
-                <label for="add-printed-card"><?php echo $this->__('Add Printed Card') ?></label>
-            </p>
-            <div id="card-price-box" class="no-display">
-            <?php if ($this->getDisplayCardBothPrices()): ?>
-                <div>
-                    <span class="label"><?php echo $this->__('Price Excl. Tax') ?>:</span>
-                    <span class="price" id="card-price-excl-tax"></span>
-                </div>
-                <div>
-                    <span class="label"><?php echo $this->__('Price Incl. Tax') ?>:</span>
-                    <span class="price" id="card-price-incl-tax"></span>
-                </div>
-            <?php else: ?>
-                <div>
-                    <span class="label"><?php echo $this->__('Price') ?>:</span>
-                    <span class="price" id="card-price"></span>
-                </div>
-            <?php endif; ?>
-            </div>
-            <?php endif; ?>
-        </div>
-    </fieldset>
+<div id="orderCreateGiftWrapping" class="entry-edit box-right">
+    <?php echo $this->getChildHtml('wrapping.order.create.info.content'); ?>
 </div>
 
 <script type="text/javascript">
@@ -119,8 +50,10 @@ var giftWrappingOrder = {
             if (this.cardInfo.price && $('card-price')) {
                 $('card-price').update(this.cardInfo.price);
             }
-            $('card-price-box').removeClassName('no-display');
-        } else {
+            if ($('card-price-box')) {
+                $('card-price-box').removeClassName('no-display');
+            }
+        } else if ($('card-price-box')) {
             $('card-price-box').addClassName('no-display');
         }
         if (event) {
@@ -130,10 +63,10 @@ var giftWrappingOrder = {
 
     setDesign : function(value) {
         var imageBox = $('wrapping-image-box');
-        if (this.designsInfo[value].path) {
+        if (this.designsInfo[value].path && imageBox) {
             imageBox.src = this.designsInfo[value].path;
             imageBox.removeClassName('no-display');
-        } else {
+        } else if (imageBox) {
             imageBox.src = '';
             imageBox.addClassName('no-display');
         }
@@ -153,7 +86,9 @@ var giftWrappingOrder = {
             if ($('wrapping-price')) {
                 $('wrapping-price').update(this.designsInfo[value].price);
             }
-            $('wrapping-price-box').removeClassName('no-display');
+            if ($('wrapping-price-box')) {
+                $('wrapping-price-box').removeClassName('no-display');
+            }
         }
     },
 
@@ -195,11 +130,18 @@ var giftWrappingOrder = {
             Event.observe($('allow-gift-receipt'), 'change', this.saveData.bind(this));
             $('allow-gift-receipt').checked = <?php echo $this->getWrappingGiftReceiptValue() ?>;
         }
+    },
+
+    refresh: function(event) {
+        new Ajax.Updater('orderCreateGiftWrapping', '<?php echo $this->getRefreshWrappingUrl() ?>', {
+            onComplete: this.init.bind(this)
+        })
     }
 }
 giftWrappingOrder.init();
 giftWrappingOrder.setWrapping(null, <?php echo $this->getWrappingDesignValue() ?>);
 giftWrappingOrder.setCardPrice(null, <?php echo $this->getWrappingPrintedCardValue() ?>);
+Event.observe(document, 'quote_items:afterIFrameLoaded',  giftWrappingOrder.refresh.bind(giftWrappingOrder));
+Event.observe(document, 'product_to_add:afterIFrameLoaded',  giftWrappingOrder.refresh.bind(giftWrappingOrder));
 //]]>
 </script>
-<?php endif; ?>

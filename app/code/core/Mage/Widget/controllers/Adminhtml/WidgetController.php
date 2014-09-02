@@ -20,16 +20,16 @@
  *
  * @category    Mage
  * @package     Mage_Widget
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Widgets management controller
  *
- * @category   Mage
- * @package    Mage_Widget
- * @author     Magento Core Team <core@magentocommerce.com>
+ * @category    Mage
+ * @package     Mage_Widget
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Widget_Adminhtml_WidgetController extends Mage_Adminhtml_Controller_Action
 {

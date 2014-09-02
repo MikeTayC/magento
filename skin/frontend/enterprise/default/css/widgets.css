@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 /* Widgets =============================================================================== */
@@ -30,6 +30,9 @@
 .widget .widget-products { margin:0 -20px 0; }
 .cms-home .col1-layout .widget .widget-products,
 .cms-index-index .col1-layout .widget .widget-products { margin:0 0 20px; }
+.col-main > .widget { display:block; margin:40px 0 0; }
+.col-main > .widget + .widget { margin-top:20px; }
+
 /* std class reset */
 .widget .products-grid { list-style:none; margin-bottom:0; padding-left:20px; }
 .widget .products-grid p,

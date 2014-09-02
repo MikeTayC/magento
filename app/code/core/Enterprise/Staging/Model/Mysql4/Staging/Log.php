@@ -20,59 +20,18 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
-class Enterprise_Staging_Model_Mysql4_Staging_Log extends Mage_Core_Model_Mysql4_Abstract
+
+/**
+ * Enter description here ...
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Staging
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
+class Enterprise_Staging_Model_Mysql4_Staging_Log extends Enterprise_Staging_Model_Resource_Staging_Log
 {
-    protected function _construct()
-    {
-        $this->_init('enterprise_staging/staging_log', 'log_id');
-    }
-
-    /**
-     * Prepare some data before save processing
-     *
-     * @param   Mage_Core_Model_Abstract $object
-     * @return  Enterprise_Staging_Model_Mysql4_Staging_Event
-     */
-    protected function _beforeSave(Mage_Core_Model_Abstract $object)
-    {
-        if (!$object->getId()) {
-            $object->setIsNew(true);
-            $value = Mage::getModel('core/date')->gmtDate();
-            $object->setCreatedAt($value);
-        }
-
-        $user = Mage::getSingleton('admin/session')->getUser();
-        if ($user) {
-            $object->setUserId($user->getId());
-            $object->setUsername($user->getName());
-        } else {
-            $object->setUsername('CRON');
-        }
-
-        $object->setIp(Mage::helper('core/http')->getRemoteAddr(true));
-
-        return parent::_beforeSave($object);
-    }
-
-    /**
-     * Retrieve action of last log by staging id
-     *
-     * @param int $stagingId
-     * @return int
-     */
-    public function getLastLogAction($stagingId)
-    {
-        if ($stagingId) {
-            $select = $this->_getReadAdapter()->select()
-                ->from(array('main_table' => $this->getMainTable()), array('action'))
-                ->where('main_table.staging_id=?', $stagingId)
-                ->order('log_id DESC');
-            return $this->_getReadAdapter()->fetchOne($select);
-        }
-        return false;
-    }
 }

@@ -31,5 +31,11 @@
                 <ee>Enterprise_PageCache_Model_Processor</ee>
             </request_processors>
         </cache>
+        <full_page_cache>
+            <backend_options>
+                <cache_dir>full_page_cache</cache_dir>
+            </backend_options>
+        </full_page_cache>
+        <skip_process_modules_updates>0</skip_process_modules_updates>
     </global>
 </config>

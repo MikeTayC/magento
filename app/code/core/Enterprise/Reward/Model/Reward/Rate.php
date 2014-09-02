@@ -20,13 +20,24 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 
 /**
  * Reward rate model
+ *
+ * @method Enterprise_Reward_Model_Resource_Reward_Rate _getResource()
+ * @method Enterprise_Reward_Model_Resource_Reward_Rate getResource()
+ * @method int getWebsiteId()
+ * @method Enterprise_Reward_Model_Reward_Rate setWebsiteId(int $value)
+ * @method int getCustomerGroupId()
+ * @method Enterprise_Reward_Model_Reward_Rate setCustomerGroupId(int $value)
+ * @method int getDirection()
+ * @method Enterprise_Reward_Model_Reward_Rate setDirection(int $value)
+ * @method Enterprise_Reward_Model_Reward_Rate setPoints(int $value)
+ * @method Enterprise_Reward_Model_Reward_Rate setCurrencyAmount(float $value)
  *
  * @category    Enterprise
  * @package     Enterprise_Reward

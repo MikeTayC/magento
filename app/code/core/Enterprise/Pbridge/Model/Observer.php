@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -34,6 +34,20 @@
  */
 class Enterprise_Pbridge_Model_Observer
 {
+    /**
+     * Add HTTP header to response that allows browsers accept third-party cookies
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_Pbridge_Model_Observer
+     */
+    public function addPrivacyHeader(Varien_Event_Observer $observer)
+    {
+        /* @var $controllerAction Mage_Core_Controller_Varien_Action */
+        $controllerAction = $observer->getEvent()->getData('controller_action');
+        $controllerAction->getResponse()->setHeader("P3P", 'CP="CAO PSA OUR"', true);
+        return $this;
+    }
+
     /**
      * Check payment methods availability
      *

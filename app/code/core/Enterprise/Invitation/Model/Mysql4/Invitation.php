@@ -20,39 +20,18 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Invitation
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
 
 /**
  * Invitation data resource model
  *
- * @category   Enterprise
- * @package    Enterprise_Invitation
+ * @category    Enterprise
+ * @package     Enterprise_Invitation
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Invitation_Model_Mysql4_Invitation extends Mage_Core_Model_Mysql4_Abstract
+class Enterprise_Invitation_Model_Mysql4_Invitation extends Enterprise_Invitation_Model_Resource_Invitation
 {
-    /**
-     * Intialize resource model
-     *
-     * @return void
-     */
-    protected function _construct ()
-    {
-        $this->_init('enterprise_invitation/invitation', 'invitation_id');
-    }
-
-    /**
-     * Save invitation tracking info
-     *
-     * @param int $inviterId
-     * @param int $referralId
-     */
-    public function trackReferral($inviterId, $referralId)
-    {
-        $inviterId  = (int)$inviterId;
-        $referralId = (int)$referralId;
-        $this->_getWriteAdapter()->query("REPLACE INTO {$this->getTable('enterprise_invitation/invitation_track')}
-            (inviter_id, referral_id) VALUES ({$inviterId}, {$referralId})");
-    }
 }

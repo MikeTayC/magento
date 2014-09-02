@@ -20,12 +20,32 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Entity items data model
+ *
+ * @method Enterprise_GiftRegistry_Model_Resource_Item _getResource()
+ * @method Enterprise_GiftRegistry_Model_Resource_Item getResource()
+ * @method Enterprise_GiftRegistry_Model_Item setEntityId(int $value)
+ * @method int getProductId()
+ * @method Enterprise_GiftRegistry_Model_Item setProductId(int $value)
+ * @method float getQty()
+ * @method Enterprise_GiftRegistry_Model_Item setQty(float $value)
+ * @method float getQtyFulfilled()
+ * @method Enterprise_GiftRegistry_Model_Item setQtyFulfilled(float $value)
+ * @method string getNote()
+ * @method Enterprise_GiftRegistry_Model_Item setNote(string $value)
+ * @method string getAddedAt()
+ * @method Enterprise_GiftRegistry_Model_Item setAddedAt(string $value)
+ * @method string getCustomOptions()
+ * @method Enterprise_GiftRegistry_Model_Item setCustomOptions(string $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_GiftRegistry
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_GiftRegistry_Model_Item extends Mage_Core_Model_Abstract
     implements Mage_Catalog_Model_Product_Configuration_Item_Interface

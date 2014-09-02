@@ -20,13 +20,53 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 
 /**
  * Reward history model
+ *
+ * @method Enterprise_Reward_Model_Resource_Reward_History _getResource()
+ * @method Enterprise_Reward_Model_Resource_Reward_History getResource()
+ * @method int getRewardId()
+ * @method Enterprise_Reward_Model_Reward_History setRewardId(int $value)
+ * @method int getWebsiteId()
+ * @method Enterprise_Reward_Model_Reward_History setWebsiteId(int $value)
+ * @method int getStoreId()
+ * @method Enterprise_Reward_Model_Reward_History setStoreId(int $value)
+ * @method int getAction()
+ * @method Enterprise_Reward_Model_Reward_History setAction(int $value)
+ * @method int getEntity()
+ * @method Enterprise_Reward_Model_Reward_History setEntity(int $value)
+ * @method int getPointsBalance()
+ * @method Enterprise_Reward_Model_Reward_History setPointsBalance(int $value)
+ * @method int getPointsDelta()
+ * @method Enterprise_Reward_Model_Reward_History setPointsDelta(int $value)
+ * @method int getPointsUsed()
+ * @method Enterprise_Reward_Model_Reward_History setPointsUsed(int $value)
+ * @method float getCurrencyAmount()
+ * @method Enterprise_Reward_Model_Reward_History setCurrencyAmount(float $value)
+ * @method float getCurrencyDelta()
+ * @method Enterprise_Reward_Model_Reward_History setCurrencyDelta(float $value)
+ * @method string getBaseCurrencyCode()
+ * @method Enterprise_Reward_Model_Reward_History setBaseCurrencyCode(string $value)
+ * @method Enterprise_Reward_Model_Reward_History setAdditionalData(string $value)
+ * @method string getComment()
+ * @method Enterprise_Reward_Model_Reward_History setComment(string $value)
+ * @method string getCreatedAt()
+ * @method Enterprise_Reward_Model_Reward_History setCreatedAt(string $value)
+ * @method string getExpiredAtStatic()
+ * @method Enterprise_Reward_Model_Reward_History setExpiredAtStatic(string $value)
+ * @method string getExpiredAtDynamic()
+ * @method Enterprise_Reward_Model_Reward_History setExpiredAtDynamic(string $value)
+ * @method int getIsExpired()
+ * @method Enterprise_Reward_Model_Reward_History setIsExpired(int $value)
+ * @method int getIsDuplicateOf()
+ * @method Enterprise_Reward_Model_Reward_History setIsDuplicateOf(int $value)
+ * @method int getNotificationSent()
+ * @method Enterprise_Reward_Model_Reward_History setNotificationSent(int $value)
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
@@ -280,4 +320,3 @@ class Enterprise_Reward_Model_Reward_History extends Mage_Core_Model_Abstract
         return $this;
     }
 }
-

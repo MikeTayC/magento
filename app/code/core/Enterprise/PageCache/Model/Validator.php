@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -34,7 +34,8 @@ class Enterprise_PageCache_Model_Validator
         'Mage_Review_Model_Review',
         'Enterprise_Cms_Model_Hierarchy_Node',
         'Enterprise_Banner_Model_Banner',
-        'Mage_Core_Model_Store_Group'
+        'Mage_Core_Model_Store_Group',
+        'Mage_Poll_Model_Poll',
     );
     protected $_dataDeleteDependency = array(
         'Mage_Catalog_Model_Category',
@@ -44,6 +45,7 @@ class Enterprise_PageCache_Model_Validator
         'Enterprise_Cms_Model_Hierarchy_Node',
         'Enterprise_Banner_Model_Banner',
         'Mage_Core_Model_Store_Group',
+        'Mage_Poll_Model_Poll',
     );
 
     /**

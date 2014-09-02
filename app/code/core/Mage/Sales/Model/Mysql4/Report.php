@@ -20,25 +20,18 @@
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
-class Mage_Sales_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
-{
-    protected function _construct()
-    {}
 
-    /**
-     * Set main table and idField
-     *
-     * @param string $table
-     * @param string $field
-     * @return Mage_Sales_Model_Mysql4_Report
-     */
-    public function init($table, $field = 'id')
-    {
-        $this->_init($table, $field);
-        return $this;
-    }
+/**
+ * Enter description here ...
+ *
+ * @category    Mage
+ * @package     Mage_Sales
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
+class Mage_Sales_Model_Mysql4_Report extends Mage_Sales_Model_Resource_Report
+{
 }

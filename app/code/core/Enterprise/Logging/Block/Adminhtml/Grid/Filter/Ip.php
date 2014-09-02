@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -40,6 +40,7 @@ class Enterprise_Logging_Block_Adminhtml_Grid_Filter_Ip extends Mage_Adminhtml_B
         if (preg_match('/^(\d+\.){3}\d+$/', $value)) {
             return ip2long($value);
         }
-        return array('field_expr' => 'INET_NTOA(#?)', 'like' => "%{$this->_escapeValue($value)}%");
+        $expr = Mage::getResourceHelper('enterprise_logging')->getInetNtoaExpr();
+        return array('field_expr' => $expr, 'like' => "%{$this->_escapeValue($value)}%");
     }
 }

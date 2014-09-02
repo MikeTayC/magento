@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_AdminGws
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -87,11 +87,26 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
     /**
      * Limit products collection
      *
-     * @param Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection $collection
+     * @param Mage_Catalog_Model_Resource_Product_Collection $collection
      */
     public function limitProducts($collection)
     {
-        $collection->addWebsiteFilter($this->_role->getRelevantWebsiteIds());
+        $relevantWebsiteIds = $this->_role->getRelevantWebsiteIds();
+        $websiteIds = array();
+        $filters    = $collection->getLimitationFilters();
+
+        if (isset($filters['website_ids'])) {
+            $websiteIds = (array)$filters['website_ids'];
+        }
+        if (isset($filters['store_id'])) {
+            $websiteIds[] = Mage::app()->getStore($filters['store_id'])->getWebsiteId();
+        }
+
+        if (count($websiteIds)) {
+            $collection->addWebsiteFilter(array_intersect($websiteIds, $relevantWebsiteIds));
+        } else {
+            $collection->addWebsiteFilter($relevantWebsiteIds);
+        }
     }
 
     /**
@@ -101,8 +116,10 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
      */
     public function limitCustomers($collection)
     {
-        $collection->addAttributeToFilter('website_id',
-                          array('website_id' => array('in' => $this->_role->getRelevantWebsiteIds())));
+        $collection->addAttributeToFilter(
+            'website_id',
+            array('website_id' => array('in' => $this->_role->getRelevantWebsiteIds()))
+        );
     }
 
     /**

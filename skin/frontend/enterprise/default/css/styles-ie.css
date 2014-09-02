@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -46,6 +46,7 @@
 .top-cart  { _width:10px; }
 .cart .crosssell { _height:400px; }
 .event  .event-bottom { _bottom:-14px }
+* html .window-overlay { background:#ccc; filter:alpha(opacity=50); }
 
 /* Doubled Margin Fixes */
 #bundle-product-wrapper,

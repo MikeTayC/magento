@@ -1059,27 +1059,132 @@
   
     <searchComponent name="spellcheck" class="solr.SpellCheckComponent">
         <str name="queryAnalyzerFieldType">textSpell</str>
-        <lst name="spellchecker"><str name="name">magento_spell</str><str name="field">fulltext1</str><str name="field">fulltext2</str><str name="field">fulltext3</str><str name="field">fulltext4</str><str name="field">fulltext5</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_en</str><str name="field">fulltext1_en</str><str name="field">fulltext2_en</str><str name="field">fulltext3_en</str><str name="field">fulltext4_en</str><str name="field">fulltext5_en</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_fr</str><str name="field">fulltext1_fr</str><str name="field">fulltext2_fr</str><str name="field">fulltext3_fr</str><str name="field">fulltext4_fr</str><str name="field">fulltext5_fr</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_de</str><str name="field">fulltext1_de</str><str name="field">fulltext2_de</str><str name="field">fulltext3_de</str><str name="field">fulltext4_de</str><str name="field">fulltext5_de</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_da</str><str name="field">fulltext1_da</str><str name="field">fulltext2_da</str><str name="field">fulltext3_da</str><str name="field">fulltext4_da</str><str name="field">fulltext5_da</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_nl</str><str name="field">fulltext1_nl</str><str name="field">fulltext2_nl</str><str name="field">fulltext3_nl</str><str name="field">fulltext4_nl</str><str name="field">fulltext5_nl</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_fi</str><str name="field">fulltext1_fi</str><str name="field">fulltext2_fi</str><str name="field">fulltext3_fi</str><str name="field">fulltext4_fi</str><str name="field">fulltext5_fi</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_it</str><str name="field">fulltext1_it</str><str name="field">fulltext2_it</str><str name="field">fulltext3_it</str><str name="field">fulltext4_it</str><str name="field">fulltext5_it</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_nb</str><str name="field">fulltext1_nb</str><str name="field">fulltext2_nb</str><str name="field">fulltext3_nb</str><str name="field">fulltext4_nb</str><str name="field">fulltext5_nb</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_pt</str><str name="field">fulltext1_pt</str><str name="field">fulltext2_pt</str><str name="field">fulltext3_pt</str><str name="field">fulltext4_pt</str><str name="field">fulltext5_pt</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_ro</str><str name="field">fulltext1_ro</str><str name="field">fulltext2_ro</str><str name="field">fulltext3_ro</str><str name="field">fulltext4_ro</str><str name="field">fulltext5_ro</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_ru</str><str name="field">fulltext1_ru</str><str name="field">fulltext2_ru</str><str name="field">fulltext3_ru</str><str name="field">fulltext4_ru</str><str name="field">fulltext5_ru</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_es</str><str name="field">fulltext1_es</str><str name="field">fulltext2_es</str><str name="field">fulltext3_es</str><str name="field">fulltext4_es</str><str name="field">fulltext5_es</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_sv</str><str name="field">fulltext1_sv</str><str name="field">fulltext2_sv</str><str name="field">fulltext3_sv</str><str name="field">fulltext4_sv</str><str name="field">fulltext5_sv</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_tr</str><str name="field">fulltext1_tr</str><str name="field">fulltext2_tr</str><str name="field">fulltext3_tr</str><str name="field">fulltext4_tr</str><str name="field">fulltext5_tr</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_cs</str><str name="field">fulltext1_cs</str><str name="field">fulltext2_cs</str><str name="field">fulltext3_cs</str><str name="field">fulltext4_cs</str><str name="field">fulltext5_cs</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_el</str><str name="field">fulltext1_el</str><str name="field">fulltext2_el</str><str name="field">fulltext3_el</str><str name="field">fulltext4_el</str><str name="field">fulltext5_el</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_th</str><str name="field">fulltext1_th</str><str name="field">fulltext2_th</str><str name="field">fulltext3_th</str><str name="field">fulltext4_th</str><str name="field">fulltext5_th</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_zh</str><str name="field">fulltext1_zh</str><str name="field">fulltext2_zh</str><str name="field">fulltext3_zh</str><str name="field">fulltext4_zh</str><str name="field">fulltext5_zh</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_ja</str><str name="field">fulltext1_ja</str><str name="field">fulltext2_ja</str><str name="field">fulltext3_ja</str><str name="field">fulltext4_ja</str><str name="field">fulltext5_ja</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
-        <lst name="spellchecker"><str name="name">magento_spell_ko</str><str name="field">fulltext1_ko</str><str name="field">fulltext2_ko</str><str name="field">fulltext3_ko</str><str name="field">fulltext4_ko</str><str name="field">fulltext5_ko</str><str name="buildOnCommit">true</str><str name="spellcheckIndexDir">./spellchecker</str></lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell</str>
+            <str name="field">fulltext_spell</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_en</str>
+            <str name="field">fulltext_spell_en</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_fr</str>
+            <str name="field">fulltext_spell_fr</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_de</str>
+            <str name="field">fulltext_spell_de</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_da</str>
+            <str name="field">fulltext_spell_da</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_nl</str>
+            <str name="field">fulltext_spell_nl</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_fi</str>
+            <str name="field">fulltext_spell_fi</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_it</str>
+            <str name="field">fulltext_spell_it</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_nb</str>
+            <str name="field">fulltext_spell_nb</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_pt</str>
+            <str name="field">fulltext_spell_pt</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_ro</str>
+            <str name="field">fulltext_spell_ro</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_ru</str>
+            <str name="field">fulltext_spell_ru</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_es</str>
+            <str name="field">fulltext_spell_es</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_sv</str>
+            <str name="field">fulltext_spell_sv</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_tr</str>
+            <str name="field">fulltext_spell_tr</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_cs</str>
+            <str name="field">fulltext_spell_cs</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_el</str>
+            <str name="field">fulltext_spell_el</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_th</str>
+            <str name="field">fulltext_spell_th</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_zh</str>
+            <str name="field">fulltext_spell_zh</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_ja</str>
+            <str name="field">fulltext_spell_ja</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
+        <lst name="spellchecker">
+            <str name="name">magento_spell_ko</str>
+            <str name="field">fulltext_spell_ko</str>
+            <str name="buildOnCommit">true</str>
+            <str name="spellcheckIndexDir">./spellchecker</str>
+        </lst>
     </searchComponent>
     
     <requestHandler name="/spell" class="solr.SearchHandler" lazy="true">

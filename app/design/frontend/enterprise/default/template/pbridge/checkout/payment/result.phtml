@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -32,10 +32,14 @@
         var jsonParams = <?php echo $this->getJsonHiddenPbridgeParams() ?>;
         if (jsonParams.original_payment_method) {
             var containerElement = parent.document.getElementById('payment_form_pbridge_' + jsonParams.original_payment_method);
+            if (!containerElement) {
+                containerElement = parent.document.getElementById('payment_form_' + jsonParams.original_payment_method);
+            }
             var listElements = containerElement.getElementsByTagName('LI');
             if (listElements.length) {
                 containerElement = listElements[0];
             }
+            containerElement = parent.$(containerElement);
             var methodParam;
             parent.$H(jsonParams).each(function(param) {
                 var paramId = 'pbridge_' + jsonParams.original_payment_method + '_' + param.key;
@@ -58,6 +62,7 @@
             });
             try {
                 paymentObj.save();
+
                 var buttonsContainer = parent.document.getElementById('payment-buttons-container');
                 var continueButton = buttonsContainer.getElementsByTagName('BUTTON');
                 if (continueButton.length) {
@@ -66,13 +71,18 @@
                 if (buttonsContainer && continueButton) {
                     continueButton.style.display = '';
                 }
+
+                if (containerElement.down('span.pbridge-reload') && containerElement.down('span.pbridge-reload').down('a')) {
+                    containerElement.down('span.pbridge-reload').down('a').hide();
+                }
+
+                var message = document.getElementById('payment-method-message');
+                message.innerHTML = '<?php echo Mage::helper('enterprise_pbridge')->__('Your payment information has been submitted to the server. If you need to make changes, please click <a style="color: #1E75B4" href="#" onclick="parent.reloadIframe(paymentObj.currentMethod); return false;">here</a> .') ?>';
             } catch (e) {}
         }
-        var message = document.getElementById('payment-method-message');
-        message.innerHTML = '<?php echo Mage::helper('enterprise_pbridge')->__('Payment Bridge Selected') ?>';
     }
     window.onload = setPaymentMethod;
 //]]>
 </script>
 
-<div id="payment-method-message"></div>
+<div id="payment-method-message" style="font: normal normal normal 11px/1.35 Arial, Helvetica, sans-serif;color: #444;float: left;font-size: 12px;font-weight: bold;padding: 2px 15px 0px 0px;text-align: left;"></div>

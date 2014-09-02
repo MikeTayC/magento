@@ -20,32 +20,18 @@
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
 
 /**
  * Customers collection
  *
- * @category   Mage
- * @package    Mage_Customer
+ * @category    Mage
+ * @package     Mage_Customer
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Mage_Customer_Model_Entity_Address_Collection extends Mage_Eav_Model_Entity_Collection_Abstract
+class Mage_Customer_Model_Entity_Address_Collection extends Mage_Customer_Model_Resource_Address_Collection
 {
-    protected function _construct()
-    {
-        $this->_init('customer/address');
-    }
-    
-    public function setCustomerFilter($customer)
-    {
-        if ($customer->getId()) {
-            $this->addAttributeToFilter('parent_id', $customer->getId());
-        }
-        else {
-            $this->addAttributeToFilter('parent_id', '-1');
-        }
-        return $this;
-    }
 }

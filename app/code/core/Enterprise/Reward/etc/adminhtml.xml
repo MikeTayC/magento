@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -30,20 +30,38 @@
         <resources>
             <admin>
                 <children>
-                    <enterprise_reward translate="title" module="enterprise_reward">
-                        <title>Reward Points</title>
-                        <sort_order>100</sort_order>
+                    <customer>
                         <children>
-                            <balance translate="title">
-                                <title>Manage Balances</title>
-                                <sort_order>10</sort_order>
-                            </balance>
-                            <affect translate="title">
-                                <title>Can Spend Reward Points when Creating Orders</title>
-                                <sort_order>30</sort_order>
-                            </affect>
+                            <manage translate="title" module="enterprise_reward">
+                                <children>
+                                    <reward_balance translate="title" module="enterprise_reward">
+                                        <title>Manage Reward Points Balances</title>
+                                        <sort_order>10</sort_order>
+                                    </reward_balance>
+                                </children>
+                            </manage>
                         </children>
-                    </enterprise_reward>
+                    </customer>
+                    <sales>
+                        <children>
+                            <order>
+                                <children>
+                                    <actions>
+                                        <children>
+                                            <create>
+                                                <children>
+                                                    <reward_spend translate="title" module="enterprise_reward">
+                                                        <title>Can Spend Reward Points</title>
+                                                        <sort_order>30</sort_order>
+                                                    </reward_spend>
+                                                </children>
+                                            </create>
+                                        </children>
+                                    </actions>
+                                </children>
+                            </order>
+                        </children>
+                    </sales>
                     <customer>
                         <children>
                             <rates translate="title">

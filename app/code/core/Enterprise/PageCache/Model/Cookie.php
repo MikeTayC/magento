@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -42,9 +42,12 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
     const COOKIE_MESSAGE            = 'NEWMESSAGE';
     const COOKIE_CART               = 'CART';
     const COOKIE_COMPARE_LIST       = 'COMPARE';
+    const COOKIE_POLL               = 'POLL';
     const COOKIE_RECENTLY_COMPARED  = 'RECENTLYCOMPARED';
     const COOKIE_WISHLIST           = 'WISHLIST';
     const COOKIE_WISHLIST_ITEMS     = 'WISHLIST_CNT';
+
+    const COOKIE_CUSTOMER_LOGGED_IN = 'CUSTOMER_AUTH';
 
     /**
      * Subprocessors cookie names
@@ -67,10 +70,10 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
     {
         if ($this->_salt === null) {
             $saltCacheId = 'full_page_cache_key';
-            $this->_salt = Mage::app()->getCache()->load($saltCacheId);
+            $this->_salt = Enterprise_PageCache_Model_Cache::getCacheInstance()->load($saltCacheId);
             if (!$this->_salt) {
                 $this->_salt = md5(microtime() . rand());
-                Mage::app()->getCache()->save($this->_salt, $saltCacheId,
+                Enterprise_PageCache_Model_Cache::getCacheInstance()->save($this->_salt, $saltCacheId,
                     array(Enterprise_PageCache_Model_Processor::CACHE_TAG));
             }
         }
@@ -103,12 +106,30 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
     {
         /** @var Mage_Customer_Model_Session $session */
         $session = Mage::getSingleton('customer/session');
-        if ($session->isLoggedIn()) {
-            $this->setObscure(self::COOKIE_CUSTOMER, 'customer_' . $session->getCustomerId());
-            $this->setObscure(self::COOKIE_CUSTOMER_GROUP, 'customer_group_' . $session->getCustomerGroupId());
+        $customerId = $session->getCustomerId();
+        $customerGroupId = $session->getCustomerGroupId();
+        if (!$customerId || is_null($customerGroupId)) {
+            $customerCookies = new Varien_Object();
+            Mage::dispatchEvent('update_customer_cookies', array('customer_cookies' => $customerCookies));
+            if (!$customerId) {
+                $customerId = $customerCookies->getCustomerId();
+            }
+            if (is_null($customerGroupId)) {
+                $customerGroupId = $customerCookies->getCustomerGroupId();
+            }
+        }
+        if ($customerId && !is_null($customerGroupId)) {
+            $this->setObscure(self::COOKIE_CUSTOMER, 'customer_' . $customerId);
+            $this->setObscure(self::COOKIE_CUSTOMER_GROUP, 'customer_group_' . $customerGroupId);
+            if ($session->isLoggedIn()) {
+                $this->setObscure(self::COOKIE_CUSTOMER_LOGGED_IN, 'customer_logged_in_' . $session->isLoggedIn());
+            } else {
+                $this->delete(self::COOKIE_CUSTOMER_LOGGED_IN);
+            }
         } else {
             $this->delete(self::COOKIE_CUSTOMER);
             $this->delete(self::COOKIE_CUSTOMER_GROUP);
+            $this->delete(self::COOKIE_CUSTOMER_LOGGED_IN);
         }
     }
 

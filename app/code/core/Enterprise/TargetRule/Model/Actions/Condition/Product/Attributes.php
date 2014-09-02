@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -278,29 +278,32 @@ class Enterprise_TargetRule_Model_Actions_Condition_Product_Attributes
 
         if ($attributeCode == 'category_ids') {
             $select = $object->select()
-                ->from($resource->getTable('catalog/category_product'), 'COUNT(*) > 0')
+                ->from($resource->getTable('catalog/category_product'), 'COUNT(*)')
                 ->where('product_id=e.entity_id');
             if ($valueType == self::VALUE_TYPE_SAME_AS) {
+                $operator = ('!{}' == $operator) ? '!()' : '()';
                 $where = $resource->getOperatorBindCondition('category_id', 'category_ids', $operator, $bind,
                     array('bindArrayOfIds'));
                 $select->where($where);
             } else if ($valueType == self::VALUE_TYPE_CHILD_OF) {
+                $concatenated = $resource->getReadConnection()->getConcatSql(array('tp.path', "'/%'"));
                 $subSelect = $resource->select()
                     ->from(array('tc' => $resource->getTable('catalog/category')), 'entity_id')
                     ->join(
                         array('tp' => $resource->getTable('catalog/category')),
-                        "tc.path ".($operator == '!()' ? 'NOT ' : '')."LIKE CONCAT(tp.path, '/%')",
+                        "tc.path ".($operator == '!()' ? 'NOT ' : '')."LIKE {$concatenated}",
                         array())
                     ->where($resource->getOperatorBindCondition('tp.entity_id', 'category_ids', '()', $bind,
                         array('bindArrayOfIds')));
                 $select->where('category_id IN(?)', $subSelect);
             } else { //self::VALUE_TYPE_CONSTANT
                 $value = $resource->bindArrayOfIds($this->getValue());
-                $where = $resource->getOperatorCondition('category_id', $operator, $value);
+                $operator = ('!{}' == $operator) ? 'NOT' : '';
+                $where = "category_id {$operator} IN(".implode(',', $value).")";
                 $select->where($where);
             }
 
-            return new Zend_Db_Expr(sprintf('(%s)', $select->assemble()));
+            return new Zend_Db_Expr(sprintf('(%s) > 0', $select->assemble()));
         }
 
         if ($valueType == self::VALUE_TYPE_CONSTANT) {
@@ -330,7 +333,7 @@ class Enterprise_TargetRule_Model_Actions_Condition_Product_Attributes
         } else if ($attribute->isScopeGlobal()) {
             $table  = $attribute->getBackendTable();
             $select = $object->select()
-                ->from(array('table' => $table), 'COUNT(*) > 0')
+                ->from(array('table' => $table), 'COUNT(*)')
                 ->where('table.entity_id = e.entity_id')
                 ->where('table.attribute_id=?', $attribute->getId())
                 ->where('table.store_id=?', 0);
@@ -340,17 +343,19 @@ class Enterprise_TargetRule_Model_Actions_Condition_Product_Attributes
                 $select->where($resource->getOperatorCondition('table.value', $operator, $value));
             }
 
-            $where  = sprintf('IFNULL((%s), 0)', $select->assemble());
+            $select = $resource->getReadConnection()->getIfNullSql($select);
+            $where = sprintf('(%s) > 0', $select);
         } else { //scope store and website
-            $valueExpr = 'IF(attr_s.value_id > 0, attr_s.value, attr_d.value)';
-
+            $valueExpr = $resource->getReadConnection()->getCheckSql('attr_s.value_id > 0', 'attr_s.value', 'attr_d.value');
             $table  = $attribute->getBackendTable();
             $select = $object->select()
-                ->from(array('attr_d' => $table), 'COUNT(*) > 0')
+                ->from(array('attr_d' => $table), 'COUNT(*)')
                 ->joinLeft(
                     array('attr_s' => $table),
-                    'attr_s.entity_id = attr_d.entity_id AND attr_s.attribute_id = attr_d.attribute_id'
-                        . ' AND attr_s.store_id=' . $object->getStoreId(),
+                    $resource->getReadConnection()->quoteInto(
+                        'attr_s.entity_id = attr_d.entity_id AND attr_s.attribute_id = attr_d.attribute_id'
+                        . ' AND attr_s.store_id=?', $object->getStoreId()
+                    ),
                     array())
                 ->where('attr_d.entity_id = e.entity_id')
                 ->where('attr_d.attribute_id=?', $attribute->getId())
@@ -361,9 +366,8 @@ class Enterprise_TargetRule_Model_Actions_Condition_Product_Attributes
                 $select->where($resource->getOperatorCondition($valueExpr, $operator, $value));
             }
 
-            $where  = sprintf('(%s)', $select->assemble());
+            $where  = sprintf('(%s) > 0', $select);
         }
-
         return new Zend_Db_Expr($where);
     }
 }

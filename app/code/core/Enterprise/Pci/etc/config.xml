@@ -21,30 +21,31 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pci
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_Pci>
-             <version>0.0.4</version>
+            <version>1.11.0.0</version>
         </Enterprise_Pci>
     </modules>
     <global>
         <models>
             <enterprise_pci>
                 <class>Enterprise_Pci_Model</class>
-                <resourceModel>enterprise_pci_mysql4</resourceModel>
+                <resourceModel>enterprise_pci_resource</resourceModel>
             </enterprise_pci>
-            <enterprise_pci_mysql4>
-                <class>Enterprise_Pci_Model_Mysql4</class>
+            <enterprise_pci_resource>
+                <class>Enterprise_Pci_Model_Resource</class>
+                <deprecatedNode>enterprise_pci_mysql4</deprecatedNode>
                 <entities>
                     <admin_passwords>
                         <table>enterprise_admin_passwords</table>
                     </admin_passwords>
                 </entities>
-            </enterprise_pci_mysql4>
+            </enterprise_pci_resource>
         </models>
         <blocks>
             <enterprise_pci>
@@ -128,7 +129,7 @@
                     </files>
                 </Enterprise_Pci>
             </modules>
-        </translate>        
+        </translate>
     </adminhtml>
     <admin>
         <routers>
@@ -160,7 +161,7 @@
                     </files>
                 </Enterprise_Pci>
             </modules>
-        </translate>        
+        </translate>
     </frontend>
     <default>
         <admin>

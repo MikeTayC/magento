@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Customer
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -28,9 +28,10 @@
 /**
  * Enterprise Customer Setup Model
  *
- * @category   Enterprise
- * @package    Enterprise_Package
+ * @category    Enterprise
+ * @package     Enterprise_Customer
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Customer_Model_Mysql4_Setup extends Mage_Customer_Model_Entity_Setup
+class Enterprise_Customer_Model_Mysql4_Setup extends Enterprise_Customer_Model_Resource_Setup
 {
 }

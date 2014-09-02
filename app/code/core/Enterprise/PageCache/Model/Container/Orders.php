@@ -20,14 +20,14 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Orders container
  */
-class Enterprise_PageCache_Model_Container_Orders extends Enterprise_PageCache_Model_Container_Abstract
+class Enterprise_PageCache_Model_Container_Orders extends Enterprise_PageCache_Model_Container_Advanced_Abstract
 {
     const CACHE_TAG_PREFIX = 'orders';
 
@@ -48,7 +48,17 @@ class Enterprise_PageCache_Model_Container_Orders extends Enterprise_PageCache_M
      */
     protected function _getCacheId()
     {
-        return 'CONTAINER_ORDERS_' . md5($this->_placeholder->getAttribute('cache_id') . $this->_getIdentifier());
+        return md5($this->_getIdentifier());
+    }
+
+    /**
+     * Get container individual additional cache id
+     *
+     * @return string | false
+     */
+    protected function _getAdditionalCacheId()
+    {
+        return md5('CONTAINER_ORDERS_' . $this->_placeholder->getAttribute('cache_id'));
     }
 
     /**
@@ -63,23 +73,9 @@ class Enterprise_PageCache_Model_Container_Orders extends Enterprise_PageCache_M
 
         $block = new $block;
         $block->setTemplate($template);
+        $block->setLayout(Mage::app()->getLayout());
+        Mage::dispatchEvent('render_block', array('block' => $block, 'placeholder' => $this->_placeholder));
 
         return $block->toHtml();
-    }
-
-    /**
-     * Save rendered block content to cache storage
-     *
-     * @param string $blockContent
-     * @return Enterprise_PageCache_Model_Container_Abstract
-     */
-    public function saveCache($blockContent)
-    {
-        $cacheId = $this->_getCacheId();
-        if ($cacheId !== false) {
-            $cacheTag = md5(self::CACHE_TAG_PREFIX . $this->_getIdentifier());
-            $this->_saveCache($blockContent, $cacheId, array($cacheTag));
-        }
-        return $this;
     }
 }

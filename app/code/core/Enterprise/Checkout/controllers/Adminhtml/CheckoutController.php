@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -824,7 +824,13 @@ class Enterprise_Checkout_Adminhtml_CheckoutController extends Mage_Adminhtml_Co
                         $config = $productHelper->addParamsToBuyRequest($info, $params)
                             ->toArray();
                     }
-                    $this->getCartModel()->addProduct($itemInfo->getProductId(), $config);
+                    try {
+                        $this->getCartModel()->addProduct($itemInfo->getProductId(), $config);
+                    } catch (Mage_Core_Exception $e){
+                        Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+                    } catch (Exception $e){
+                        Mage::logException($e);
+                    }
                 }
             }
         }

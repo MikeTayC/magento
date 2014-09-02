@@ -19,7 +19,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 MediabrowserUtility = {
@@ -314,7 +314,7 @@ Mediabrowser.prototype = {
             i++;
         });
         new Ajax.Request(this.deleteFilesUrl, {
-            parameters: {files: ids.toJSON()},
+            parameters: {files: Object.toJSON(ids)},
             onSuccess: function(transport) {
                 try {
                     this.onAjaxSuccess(transport);

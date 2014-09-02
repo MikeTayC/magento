@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -65,7 +65,6 @@ var giftWrappingItem = {
         $$('.action-link').each(function (el) {
             Event.observe(el, 'click', this.setData.bind(this));
         }, this);
-        Event.observe($('giftwrapping_design_item'), 'change', this.setWrapping.bind(this));
     },
 
     setWrapping : function(event, value) {
@@ -137,6 +136,7 @@ var giftWrappingItem = {
         if (!this.isObserved) {
             Event.observe($('gift_options_ok_button'), 'click', this.processOk.bind(this));
             Event.observe($('gift_options_cancel_button'), 'click', this.processCancel.bind(this));
+            Event.observe($('giftwrapping_design_item'), 'change', this.setWrapping.bind(this));
             this.isObserved = true;
         }
     },

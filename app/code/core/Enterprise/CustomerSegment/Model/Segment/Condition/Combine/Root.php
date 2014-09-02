@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -111,9 +111,15 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Combine_Root
         /**
          * Add children subselects conditions
          */
+        $adapter = $this->getResource()->getReadConnection();
         foreach ($this->getConditions() as $condition) {
             if ($sql = $condition->getConditionsSql($customer, $website)) {
-                $conditions[] = "(IFNULL(($sql), 0) {$operator} 1)";
+                if($sql instanceof Varien_Db_Select) {
+                    $isnull = $adapter->getIfNullSql($sql);
+                } else {
+                    $isnull = $adapter->getCheckSql($sql, 1, 0);
+                }
+                $conditions[] = "($isnull {$operator} 1)";
             }
         }
 

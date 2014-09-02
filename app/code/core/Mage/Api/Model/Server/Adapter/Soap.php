@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Api
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -120,7 +120,7 @@ class Mage_Api_Model_Server_Adapter_Soap
 
             $template->setVariables(array('wsdl'=>$wsdlConfig));
 
-            
+
             $this->getController()->getResponse()
                 ->clearHeaders()
                 ->setHeader('Content-Type','text/xml; charset='.$apiConfigCharset)
@@ -134,11 +134,11 @@ class Mage_Api_Model_Server_Adapter_Soap
         } else {
             try {
                 $this->_instantiateServer();
-                
+
                 $this->getController()->getResponse()
                     ->clearHeaders()
                     ->setHeader('Content-Type','text/xml; charset='.$apiConfigCharset)
-                    ->setBody( 
+                    ->setBody(
                             preg_replace(
                                 '/<\?xml version="([^\"]+)"([^\>]+)>/i',
                                 '<?xml version="$1" encoding="'.$apiConfigCharset.'"?>',
@@ -151,7 +151,7 @@ class Mage_Api_Model_Server_Adapter_Soap
                 $this->fault( $e->getCode(), $e->getMessage() );
             }
         }
-        
+
         return $this;
     }
 

@@ -20,15 +20,16 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Customer Segment reports controller
  *
- * @category   Enterprise
- * @package    Enterprise_CustomerSegment
+ * @category    Enterprise
+ * @package     Enterprise_CustomerSegment
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_CustomerSegment_Adminhtml_Report_Customer_CustomersegmentController
     extends Mage_Adminhtml_Controller_Action
@@ -49,10 +50,14 @@ class Enterprise_CustomerSegment_Adminhtml_Report_Customer_CustomersegmentContro
     {
         $this->loadLayout()
             ->_setActiveMenu('report/customers')
-            ->_addBreadcrumb(Mage::helper('enterprise_customersegment')->__('Reports'),
-                Mage::helper('enterprise_customersegment')->__('Reports'))
-            ->_addBreadcrumb(Mage::helper('enterprise_customersegment')->__('Customers'),
-                Mage::helper('enterprise_customersegment')->__('Customers'));
+            ->_addBreadcrumb(
+                Mage::helper('enterprise_customersegment')->__('Reports'),
+                Mage::helper('enterprise_customersegment')->__('Reports')
+            )
+            ->_addBreadcrumb(
+                Mage::helper('enterprise_customersegment')->__('Customers'),
+                Mage::helper('enterprise_customersegment')->__('Customers')
+            );
         return $this;
     }
 
@@ -123,8 +128,8 @@ class Enterprise_CustomerSegment_Adminhtml_Report_Customer_CustomersegmentContro
              ->_title($this->__('Customer Segments'));
 
         $this->_initAction()
-            ->_addContent($this->getLayout()->createBlock(
-                'enterprise_customersegment/adminhtml_report_customer_segment')
+            ->_addContent(
+                $this->getLayout()->createBlock('enterprise_customersegment/adminhtml_report_customer_segment')
             )
             ->renderlayout();
     }
@@ -144,7 +149,10 @@ class Enterprise_CustomerSegment_Adminhtml_Report_Customer_CustomersegmentContro
             // Add help Notice to Combined Report
             if ($this->_getAdminSession()->getMassactionIds()) {
                 $collection = Mage::getResourceModel('enterprise_customersegment/segment_collection')
-                    ->addFieldToFilter('segment_id', array('in' => $this->_getAdminSession()->getMassactionIds()));
+                    ->addFieldToFilter(
+                        'segment_id',
+                        array('in' => $this->_getAdminSession()->getMassactionIds())
+                    );
 
                 $segments = array();
                 foreach ($collection as $item) {
@@ -152,12 +160,11 @@ class Enterprise_CustomerSegment_Adminhtml_Report_Customer_CustomersegmentContro
                 }
                 /* @translation $this->__('Viewing combined "%s" report from segments: %s') */
                 if ($segments) {
+                    $viewModeLabel = Mage::helper('enterprise_customersegment')->getViewModeLabel(
+                        $this->_getAdminSession()->getViewMode()
+                    );
                     Mage::getSingleton('adminhtml/session')->addNotice(
-                        $this->__('Viewing combined "%s" report from segments: %s.',
-                            Mage::helper('enterprise_customersegment')
-                                ->getViewModeLabel($this->_getAdminSession()->getViewMode()),
-                            implode(', ',$segments)
-                        )
+                        $this->__('Viewing combined "%s" report from segments: %s.', $viewModeLabel, implode(', ', $segments))
                     );
                 }
             }
@@ -262,7 +269,7 @@ class Enterprise_CustomerSegment_Adminhtml_Report_Customer_CustomersegmentContro
      */
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('customer/customersegment') &&
-            Mage::helper('enterprise_customersegment')->isEnabled();
+        return  Mage::getSingleton('admin/session')->isAllowed('customer/customersegment')
+                && Mage::helper('enterprise_customersegment')->isEnabled();
     }
 }

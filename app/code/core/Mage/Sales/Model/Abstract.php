@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -61,7 +61,7 @@ abstract class Mage_Sales_Model_Abstract extends Mage_Core_Model_Abstract
     public function getCreatedAtDate()
     {
         return Mage::app()->getLocale()->date(
-            $this->_getResource()->mktime(($this->getCreatedAt())),
+            Varien_Date::toTimestamp($this->getCreatedAt()),
             null,
             null,
             true
@@ -77,7 +77,7 @@ abstract class Mage_Sales_Model_Abstract extends Mage_Core_Model_Abstract
     {
         return Mage::app()->getLocale()->storeDate(
             $this->getStore(),
-            $this->_getResource()->mktime(($this->getCreatedAt())),
+            Varien_Date::toTimestamp($this->getCreatedAt()),
             true
         );
     }

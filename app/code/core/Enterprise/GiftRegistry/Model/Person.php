@@ -20,12 +20,30 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Entity registrants data model
+ *
+ * @method Enterprise_GiftRegistry_Model_Resource_Person _getResource()
+ * @method Enterprise_GiftRegistry_Model_Resource_Person getResource()
+ * @method Enterprise_GiftRegistry_Model_Person setEntityId(int $value)
+ * @method string getFirstname()
+ * @method Enterprise_GiftRegistry_Model_Person setFirstname(string $value)
+ * @method string getLastname()
+ * @method Enterprise_GiftRegistry_Model_Person setLastname(string $value)
+ * @method string getEmail()
+ * @method Enterprise_GiftRegistry_Model_Person setEmail(string $value)
+ * @method string getRole()
+ * @method Enterprise_GiftRegistry_Model_Person setRole(string $value)
+ * @method string getCustomValues()
+ * @method Enterprise_GiftRegistry_Model_Person setCustomValues(string $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_GiftRegistry
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_GiftRegistry_Model_Person extends Mage_Core_Model_Abstract
 {

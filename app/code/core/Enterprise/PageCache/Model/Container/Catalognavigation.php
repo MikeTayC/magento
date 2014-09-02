@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -105,7 +105,7 @@ class Enterprise_PageCache_Model_Container_Catalognavigation extends Enterprise_
                 }
                 $this->_saveCache($categoryUniqueClasses, $categoryCacheId);
             }
-            if (!Mage::app()->getCache()->test($blockCacheId)) {
+            if (!Enterprise_PageCache_Model_Cache::getCacheInstance()->getFrontend()->test($blockCacheId)) {
                 $this->_saveCache($blockContent, $blockCacheId);
             }
         }
@@ -126,6 +126,7 @@ class Enterprise_PageCache_Model_Container_Catalognavigation extends Enterprise_
         /** @var Mage_Catalog_Block_Product_Price $block */
         $block = new $block;
         $block->setTemplate($template);
+        $block->setLayout(Mage::app()->getLayout());
 
         if ($categoryPath) {
             $categoryPath = explode('/', $categoryPath);
@@ -133,6 +134,7 @@ class Enterprise_PageCache_Model_Container_Catalognavigation extends Enterprise_
             $category = Mage::getModel('catalog/category')->load($categoryId);
             Mage::register('current_category', $category);
         }
+        Mage::dispatchEvent('render_block', array('block' => $block, 'placeholder' => $this->_placeholder));
 
         return $block->toHtml();
     }

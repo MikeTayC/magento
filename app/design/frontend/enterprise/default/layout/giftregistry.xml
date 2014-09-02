@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -124,6 +124,8 @@
         <reference name="content">
             <block type="enterprise_giftregistry/view" name="enterprise.giftregistry.view" template="giftregistry/view.phtml">
                 <block type="enterprise_giftregistry/items" name="giftregistry_items" template="giftregistry/view/items.phtml">
+                    <block type="catalog/product_price" template="catalog/product/price_msrp_item.phtml" name="enterprise.giftregistry.item.price" />
+
                     <action method="addItemRender"><type>default</type><block>checkout/cart_item_renderer</block><template>giftregistry/view/items/default.phtml</template></action>
                     <action method="addItemRender"><type>simple</type><block>checkout/cart_item_renderer</block><template>giftregistry/view/items/default.phtml</template></action>
                     <action method="addItemRender"><type>grouped</type><block>checkout/cart_item_renderer_grouped</block><template>giftregistry/view/items/default.phtml</template></action>
@@ -132,6 +134,15 @@
                     <action method="addItemRender"><type>giftcard</type><block>enterprise_giftcard/checkout_cart_item_renderer</block><template>giftregistry/view/items/default.phtml</template></action>
                 </block>
                 <block type="enterprise_giftregistry/customer_items" name="giftregistry.view.items" template="giftregistry/view/items.phtml"/>
+            </block>
+        </reference>
+        <update handle="MAP_popup" />
+        <reference name="product.tooltip">
+            <block type="page/html_wrapper" name="product.info.addtocart.paypal.wrapper" translate="label">
+                <block type="paypal/express_shortcut" name="product.info.addtocart.paypal" template="paypal/express/shortcut.phtml" module="paypal">
+                    <action method="setIsInCatalogProduct"><value>1</value></action>
+                    <action method="setShowOrPosition"><value>after</value></action>
+                </block>
             </block>
         </reference>
     </enterprise_giftregistry_view_index>
@@ -173,7 +184,7 @@
             <block type="enterprise_giftregistry/cart_product_mark" name="giftregistry.product.mark" template="giftregistry/cart/product/mark.phtml"/>
         </reference>
     </checkout_multishipping_addresses>
-    
+
     <checkout_multishipping_shipping>
         <reference name="additional.product.info">
             <block type="enterprise_giftregistry/cart_product_mark" name="giftregistry.product.mark" template="giftregistry/cart/product/mark.phtml"/>

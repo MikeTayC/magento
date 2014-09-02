@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -375,7 +375,6 @@ class Enterprise_Staging_Model_Staging_Config
                 $itemModel = (string) $item->model;
                 if ($itemModel == $model) {
                     $isBackend = ((string)$item->is_backend === '1');
-                    $useStorageMethod = (string) $item->use_storage_method;
                     if ($isBackend) {
                         $ignoreTables = (array) $item->ignore_tables;
                         //ignore for specified tables

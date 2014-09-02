@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -30,11 +30,16 @@
 class Enterprise_PageCache_Model_Container_Accountlinks extends Enterprise_PageCache_Model_Container_Customer
 {
     /**
-     * Get cart hash from cookies
+     * Get identifier from cookies
+     *
+     * @return string
      */
-    protected function _isLogged()
+    protected function _getIdentifier()
     {
-        return ($this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER) ? true : false);
+        $cacheId = $this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER, '')
+            . '_'
+            . $this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER_LOGGED_IN, '');
+        return $cacheId;
     }
 
     /**
@@ -44,8 +49,7 @@ class Enterprise_PageCache_Model_Container_Accountlinks extends Enterprise_PageC
      */
     protected function _getCacheId()
     {
-        return 'CONTAINER_LINKS_' . md5($this->_placeholder->getAttribute('cache_id') .
-            (($this->_isLogged()) ? 'logged' : 'not_logged'));
+        return 'CONTAINER_LINKS_' . md5($this->_placeholder->getAttribute('cache_id') . $this->_getIdentifier());
     }
 
     /**
@@ -58,19 +62,31 @@ class Enterprise_PageCache_Model_Container_Accountlinks extends Enterprise_PageC
         $block = $this->_placeholder->getAttribute('block');
         $template = $this->_placeholder->getAttribute('template');
         $name = $this->_placeholder->getAttribute('name');
-        $links = $this->_placeholder->getAttribute('links');
 
         $block = new $block;
         $block->setTemplate($template);
         $block->setNameInLayout($name);
+        $block->setLayout(Mage::app()->getLayout());
 
-        if ($links) {
-            $links = unserialize(base64_decode($links));
-            foreach ($links as $position => $linkInfo) {
-                $block->addLink($linkInfo['label'], $linkInfo['url'], $linkInfo['title'], false, array(), $position,
-                    $linkInfo['li_params'], $linkInfo['a_params'], $linkInfo['before_text'], $linkInfo['after_text']);
+        if (!$this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER)
+            || $this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER_LOGGED_IN)
+        ) {
+            $links = $this->_placeholder->getAttribute('links');
+            if ($links) {
+                $links = unserialize(base64_decode($links));
+                foreach ($links as $position => $linkInfo) {
+                    $block->addLink($linkInfo['label'], $linkInfo['url'], $linkInfo['title'], false, array(), $position,
+                            $linkInfo['li_params'], $linkInfo['a_params'], $linkInfo['before_text'],
+                            $linkInfo['after_text']);
+                }
             }
+        } else {
+            Mage::dispatchEvent('render_block_accountlinks', array(
+                'block' => $block,
+                'placeholder' => $this->_placeholder,
+            ));
         }
+        Mage::dispatchEvent('render_block', array('block' => $block, 'placeholder' => $this->_placeholder));
 
         return $block->toHtml();
     }

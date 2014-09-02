@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -46,6 +46,10 @@
         </reference>
     </adminhtml_giftwrapping_edit>
 
+    <adminhtml_giftwrapping_orderoptions>
+        <block type="enterprise_giftwrapping/adminhtml_order_create_info_content" name="root" template="enterprise/giftwrapping/order/create/info/content.phtml" />
+    </adminhtml_giftwrapping_orderoptions>
+
     <adminhtml_sales_order_view>
         <reference name="gift_options">
             <block type="enterprise_giftwrapping/adminhtml_order_view_info" name="wrapping_order_view_info" template="enterprise/giftwrapping/order/view/info.phtml" />
@@ -67,7 +71,9 @@
     <adminhtml_sales_order_create_index>
         <block type="enterprise_giftwrapping/adminhtml_order_create_totals" name="giftwrapping_total_renderer" template="enterprise/giftwrapping/order/create/totals.phtml" />
         <reference name="gift_options">
-            <block type="enterprise_giftwrapping/adminhtml_order_create_info" name="wrapping_order_create_info" template="enterprise/giftwrapping/order/create/info.phtml" />
+            <block type="enterprise_giftwrapping/adminhtml_order_create_info" name="wrapping_order_create_info" template="enterprise/giftwrapping/order/create/info.phtml">
+                <block type="enterprise_giftwrapping/adminhtml_order_create_info_content" name="wrapping.order.create.info.content" template="enterprise/giftwrapping/order/create/info/content.phtml" />
+            </block>
         </reference>
         <reference name="popup_window">
             <block type="enterprise_giftwrapping/adminhtml_order_create_items" name="wrapping_order_create_items" template="enterprise/giftwrapping/order/create/items.phtml" />

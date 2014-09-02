@@ -20,16 +20,25 @@
  *
  * @category    Mage
  * @package     Mage_GoogleCheckout
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Google Checkout notification model
  *
- * @category   Mage
- * @package    Mage_GoogleCheckout
- * @author     Magento Core Team <core@magentocommerce.com>
+ * @method Mage_GoogleCheckout_Model_Resource_Notification _getResource()
+ * @method Mage_GoogleCheckout_Model_Resource_Notification getResource()
+ * @method string getSerialNumber()
+ * @method Mage_GoogleCheckout_Model_Notification setSerialNumber(string $value)
+ * @method string getStartedAt()
+ * @method Mage_GoogleCheckout_Model_Notification setStartedAt(string $value)
+ * @method int getStatus()
+ * @method Mage_GoogleCheckout_Model_Notification setStatus(int $value)
+ *
+ * @category    Mage
+ * @package     Mage_GoogleCheckout
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Mage_GoogleCheckout_Model_Notification extends Mage_Core_Model_Abstract
 {

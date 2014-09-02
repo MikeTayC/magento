@@ -21,14 +21,14 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_CustomerBalance>
-             <version>0.0.11</version>
+            <version>1.11.0.0</version>
         </Enterprise_CustomerBalance>
     </modules>
     <global>
@@ -36,17 +36,18 @@
             <enterprise_customerbalance_setup>
                 <setup>
                     <module>Enterprise_CustomerBalance</module>
-                    <class>Enterprise_CustomerBalance_Model_Mysql4_Setup</class>
+                    <class>Enterprise_CustomerBalance_Model_Resource_Setup</class>
                 </setup>
             </enterprise_customerbalance_setup>
         </resources>
         <models>
             <enterprise_customerbalance>
                 <class>Enterprise_CustomerBalance_Model</class>
-                <resourceModel>enterprise_customerbalance_mysql4</resourceModel>
+                <resourceModel>enterprise_customerbalance_resource</resourceModel>
             </enterprise_customerbalance>
-            <enterprise_customerbalance_mysql4>
-                <class>Enterprise_CustomerBalance_Model_Mysql4</class>
+            <enterprise_customerbalance_resource>
+                <class>Enterprise_CustomerBalance_Model_Resource</class>
+                <deprecatedNode>enterprise_customerbalance_mysql4</deprecatedNode>
                 <entities>
                     <balance>
                         <table>enterprise_customerbalance</table>
@@ -55,7 +56,7 @@
                         <table>enterprise_customerbalance_history</table>
                     </balance_history>
                 </entities>
-            </enterprise_customerbalance_mysql4>
+            </enterprise_customerbalance_resource>
         </models>
         <blocks>
             <enterprise_customerbalance>
@@ -69,11 +70,11 @@
         </helpers>
         <template>
             <email>
-               <customer_enterprise_customerbalance_email_template translate="label" module="enterprise_customerbalance">
-                   <label>Store Credit Update</label>
-                   <file>enterprise/customerbalance_update.html</file>
-                   <type>html</type>
-               </customer_enterprise_customerbalance_email_template>
+                <customer_enterprise_customerbalance_email_template translate="label" module="enterprise_customerbalance">
+                    <label>Store Credit Update</label>
+                    <file>enterprise/customerbalance_update.html</file>
+                    <type>html</type>
+                </customer_enterprise_customerbalance_email_template>
             </email>
         </template>
         <sales>
@@ -86,7 +87,6 @@
                     </customerbalance>
                 </totals>
             </quote>
-
             <order_invoice>
                 <totals>
                     <customerbalance>
@@ -94,7 +94,6 @@
                     </customerbalance>
                 </totals>
             </order_invoice>
-
             <order_creditmemo>
                 <totals>
                     <customerbalance>
@@ -102,11 +101,28 @@
                     </customerbalance>
                 </totals>
             </order_creditmemo>
+            <old_fields_map>
+                <order_creditmemo>
+                    <base_customer_balance_total_refunded>bs_customer_bal_total_refunded</base_customer_balance_total_refunded>
+                    <customer_balance_total_refunded>customer_bal_total_refunded</customer_balance_total_refunded>
+                </order_creditmemo>
+                <order>
+                    <base_customer_balance_total_refunded>bs_customer_bal_total_refunded</base_customer_balance_total_refunded>
+                    <customer_balance_total_refunded>customer_bal_total_refunded</customer_balance_total_refunded>
+                </order>
+                <quote>
+                    <base_customer_balance_amount_used>base_customer_bal_amount_used</base_customer_balance_amount_used>
+                </quote>
+            </old_fields_map>
         </sales>
         <fieldsets>
             <sales_convert_quote_address>
-                <base_customer_balance_amount><to_order>*</to_order></base_customer_balance_amount>
-                <customer_balance_amount><to_order>*</to_order></customer_balance_amount>
+                <base_customer_balance_amount>
+                    <to_order>*</to_order>
+                </base_customer_balance_amount>
+                <customer_balance_amount>
+                    <to_order>*</to_order>
+                </customer_balance_amount>
             </sales_convert_quote_address>
         </fieldsets>
         <events>
@@ -253,6 +269,7 @@
                     </enterprise_customerbalance>
                 </observers>
             </sales_order_creditmemo_refund>
+
             <website_delete_before>
                 <observers>
                     <enterprise_customerbalance>
@@ -261,6 +278,7 @@
                     </enterprise_customerbalance>
                 </observers>
             </website_delete_before>
+
             <paypal_prepare_line_items>
                 <observers>
                     <enterprise_customerbalance>
@@ -280,10 +298,9 @@
                     <display_zero>0</display_zero>
                     <sort_order>560</sort_order>
                 </enterprise_customerbalance>
-
                 <enterprise_customerbalance_total_refunded translate="title">
                     <title>Refunded to Store Credit</title>
-                    <source_field>customer_balance_total_refunded</source_field>
+                    <source_field>customer_bal_total_refunded</source_field>
                     <font_size>7</font_size>
                     <display_zero>0</display_zero>
                     <sort_order>700</sort_order>
@@ -322,7 +339,7 @@
         </secure_url>
     </frontend>
     <admin>
-         <routers>
+        <routers>
             <adminhtml>
                 <args>
                     <modules>

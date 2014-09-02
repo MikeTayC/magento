@@ -20,14 +20,25 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Staging item model
  *
- * @author     Magento Core Team <core@magentocommerce.com>
+ * @method Enterprise_Staging_Model_Resource_Staging_Item _getResource()
+ * @method Enterprise_Staging_Model_Resource_Staging_Item getResource()
+ * @method int getStagingId()
+ * @method Enterprise_Staging_Model_Staging_Item setStagingId(int $value)
+ * @method string getCode()
+ * @method Enterprise_Staging_Model_Staging_Item setCode(string $value)
+ * @method int getSortOrder()
+ * @method Enterprise_Staging_Model_Staging_Item setSortOrder(int $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Staging
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_Staging_Model_Staging_Item extends Mage_Core_Model_Abstract
 {

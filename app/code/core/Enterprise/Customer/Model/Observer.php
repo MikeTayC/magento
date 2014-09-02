@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Customer
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -176,6 +176,33 @@ class Enterprise_Customer_Model_Observer
     }
 
     /**
+     * Before save observer for customer attribute
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_Customer_Model_Observer
+     */
+    public function enterpriseCustomerAttributeBeforeSave(Varien_Event_Observer $observer)
+    {
+        $attribute = $observer->getEvent()->getAttribute();
+        if ($attribute instanceof Mage_Customer_Model_Attribute && $attribute->isObjectNew()) {
+            /**
+             * Check for maximum attribute_code length
+             */
+            $attributeCodeMaxLength = Mage_Eav_Model_Entity_Attribute::ATTRIBUTE_CODE_MAX_LENGTH - 9;
+            $validate = Zend_Validate::is($attribute->getAttributeCode(), 'StringLength', array(
+                'max' => $attributeCodeMaxLength
+            ));
+            if (!$validate) {
+                throw Mage::exception('Mage_Eav',
+                    Mage::helper('eav')->__('Maximum length of attribute code must be less then %s symbols',
+                        $attributeCodeMaxLength));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * After save observer for customer attribute
      *
      * @param Varien_Event_Observer $observer
@@ -184,9 +211,7 @@ class Enterprise_Customer_Model_Observer
     public function enterpriseCustomerAttributeSave(Varien_Event_Observer $observer)
     {
         $attribute = $observer->getEvent()->getAttribute();
-        if ($attribute instanceof Mage_Customer_Model_Attribute
-            && $attribute->isObjectNew()
-        ) {
+        if ($attribute instanceof Mage_Customer_Model_Attribute && $attribute->isObjectNew()) {
             Mage::getModel('enterprise_customer/sales_quote')
                 ->saveNewAttribute($attribute);
             Mage::getModel('enterprise_customer/sales_order')
@@ -205,9 +230,7 @@ class Enterprise_Customer_Model_Observer
     public function enterpriseCustomerAttributeDelete(Varien_Event_Observer $observer)
     {
         $attribute = $observer->getEvent()->getAttribute();
-        if ($attribute instanceof Mage_Customer_Model_Attribute
-            && !$attribute->isObjectNew()
-        ) {
+        if ($attribute instanceof Mage_Customer_Model_Attribute && !$attribute->isObjectNew()) {
             Mage::getModel('enterprise_customer/sales_quote')
                 ->deleteAttribute($attribute);
             Mage::getModel('enterprise_customer/sales_order')
@@ -226,9 +249,7 @@ class Enterprise_Customer_Model_Observer
     public function enterpriseCustomerAddressAttributeSave(Varien_Event_Observer $observer)
     {
         $attribute = $observer->getEvent()->getAttribute();
-        if ($attribute instanceof Mage_Customer_Model_Attribute
-            && $attribute->isObjectNew()
-        ) {
+        if ($attribute instanceof Mage_Customer_Model_Attribute && $attribute->isObjectNew()) {
             Mage::getModel('enterprise_customer/sales_quote_address')
                 ->saveNewAttribute($attribute);
             Mage::getModel('enterprise_customer/sales_order_address')
@@ -247,9 +268,7 @@ class Enterprise_Customer_Model_Observer
     public function enterpriseCustomerAddressAttributeDelete(Varien_Event_Observer $observer)
     {
         $attribute = $observer->getEvent()->getAttribute();
-        if ($attribute instanceof Mage_Customer_Model_Attribute
-            && !$attribute->isObjectNew()
-        ) {
+        if ($attribute instanceof Mage_Customer_Model_Attribute && !$attribute->isObjectNew()) {
             Mage::getModel('enterprise_customer/sales_quote_address')
                 ->deleteAttribute($attribute);
             Mage::getModel('enterprise_customer/sales_order_address')

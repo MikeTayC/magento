@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -60,8 +60,8 @@ class Enterprise_GiftWrapping_Model_Total_Creditmemo_Tax_Giftwrapping extends Ma
             }
         }
         if ($refunded > 0 || $baseRefunded > 0) {
-            $order->setGwItemsBaseTaxAmountRefunded($order->getGwItemsBaseTaxAmountRefunded() + $baseRefunded);
-            $order->setGwItemsTaxAmountRefunded($order->getGwItemsTaxAmountRefunded() + $refunded);
+            $order->setGwItemsBaseTaxRefunded($order->getGwItemsBaseTaxRefunded() + $baseRefunded);
+            $order->setGwItemsTaxRefunded($order->getGwItemsTaxRefunded() + $refunded);
             $creditmemo->setGwItemsBaseTaxAmount($baseRefunded);
             $creditmemo->setGwItemsTaxAmount($refunded);
         }
@@ -80,20 +80,20 @@ class Enterprise_GiftWrapping_Model_Total_Creditmemo_Tax_Giftwrapping extends Ma
         /**
          * Printed card
          */
-        if ($order->getGwAddPrintedCard() && $order->getGwPrintedCardBaseTaxAmountInvoiced()
-            && $order->getGwPrintedCardBaseTaxAmountInvoiced() != $order->getGwPrintedCardBaseTaxAmountRefunded()) {
-            $order->setGwPrintedCardBaseTaxAmountRefunded($order->getGwPrintedCardBaseTaxAmountInvoiced());
-            $order->setGwPrintedCardTaxAmountRefunded($order->getGwPrintedCardTaxAmountInvoiced());
-            $creditmemo->setGwPrintedCardBaseTaxAmount($order->getGwPrintedCardBaseTaxAmountInvoiced());
-            $creditmemo->setGwPrintedCardTaxAmount($order->getGwPrintedCardTaxAmountInvoiced());
+        if ($order->getGwAddCard() && $order->getGwCardBaseTaxInvoiced()
+            && $order->getGwCardBaseTaxInvoiced() != $order->getGwCardBaseTaxRefunded()) {
+            $order->setGwCardBaseTaxRefunded($order->getGwCardBaseTaxInvoiced());
+            $order->setGwCardTaxRefunded($order->getGwCardTaxInvoiced());
+            $creditmemo->setGwCardBaseTaxAmount($order->getGwCardBaseTaxInvoiced());
+            $creditmemo->setGwCardTaxAmount($order->getGwCardTaxInvoiced());
         }
 
         $baseTaxAmount = $creditmemo->getGwItemsBaseTaxAmount()
             + $creditmemo->getGwBaseTaxAmount()
-            + $creditmemo->getGwPrintedCardBaseTaxAmount();
+            + $creditmemo->getGwCardBaseTaxAmount();
         $taxAmount = $creditmemo->getGwItemsTaxAmount()
             + $creditmemo->getGwTaxAmount()
-            + $creditmemo->getGwPrintedCardTaxAmount();
+            + $creditmemo->getGwCardTaxAmount();
         $creditmemo->setBaseTaxAmount($creditmemo->getBaseTaxAmount() + $baseTaxAmount);
         $creditmemo->setTaxAmount($creditmemo->getTaxAmount() + $taxAmount);
         $creditmemo->setBaseGrandTotal($creditmemo->getBaseGrandTotal() + $baseTaxAmount);

@@ -20,13 +20,20 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Customer
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Customer Order model
  *
+ * @method Enterprise_Customer_Model_Resource_Sales_Order _getResource()
+ * @method Enterprise_Customer_Model_Resource_Sales_Order getResource()
+ * @method Enterprise_Customer_Model_Sales_Order setEntityId(int $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Customer
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_Customer_Model_Sales_Order extends Enterprise_Customer_Model_Sales_Abstract
 {

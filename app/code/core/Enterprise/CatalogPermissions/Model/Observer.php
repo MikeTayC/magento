@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogPermissions
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -90,7 +90,12 @@ class Enterprise_CatalogPermissions_Model_Observer
 
         $categoryCollection = $observer->getEvent()->getCategoryCollection();
 
-        $this->_getIndexModel()->addIndexToCategoryCollection($categoryCollection, $this->_getCustomerGroupId(), $this->_getWebsiteId());
+        $this->_getIndexModel()->addIndexToCategoryCollection(
+            $categoryCollection,
+            $this->_getCustomerGroupId(),
+            $this->_getWebsiteId()
+        );
+
         return $this;
     }
 
@@ -106,10 +111,17 @@ class Enterprise_CatalogPermissions_Model_Observer
             return $this;
         }
 
-
+        $permissions = array();
         $categoryCollection = $observer->getEvent()->getCategoryCollection();
         $categoryIds = $categoryCollection->getColumnValues('entity_id');
-        $permissions = $this->_getIndexModel()->getIndexForCategory($categoryIds, $this->_getCustomerGroupId(), $this->_getWebsiteId());
+
+        if ($categoryIds) {
+            $permissions = $this->_getIndexModel()->getIndexForCategory(
+                $categoryIds,
+                $this->_getCustomerGroupId(),
+                $this->_getWebsiteId()
+            );
+        }
 
         foreach ($permissions as $categoryId => $permission) {
             $categoryCollection->getItemById($categoryId)->setPermissions($permission);
@@ -134,7 +146,10 @@ class Enterprise_CatalogPermissions_Model_Observer
             return $this;
         }
 
-        $categoryIds = $this->_getIndexModel()->getRestrictedCategoryIds($this->_getCustomerGroupId(), $this->_getWebsiteId());
+        $categoryIds = $this->_getIndexModel()->getRestrictedCategoryIds(
+            $this->_getCustomerGroupId(),
+            $this->_getWebsiteId()
+        );
 
         $observer->getEvent()->getTree()->addInactiveCategoryIds($categoryIds);
 
@@ -153,7 +168,12 @@ class Enterprise_CatalogPermissions_Model_Observer
             return $this;
         }
 
-        $this->_getIndexModel()->applyPriceGrantToPriceIndex($observer->getEvent(), $this->_getCustomerGroupId(), $this->_getWebsiteId());
+        $this->_getIndexModel()->applyPriceGrantToPriceIndex(
+            $observer->getEvent(),
+            $this->_getCustomerGroupId(),
+            $this->_getWebsiteId()
+        );
+
         return $this;
     }
 
@@ -187,7 +207,11 @@ class Enterprise_CatalogPermissions_Model_Observer
         }
 
         $category = $observer->getEvent()->getCategory();
-        $permissions = $this->_getIndexModel()->getIndexForCategory($category->getId(), $this->_getCustomerGroupId(), $this->_getWebsiteId());
+        $permissions = $this->_getIndexModel()->getIndexForCategory(
+            $category->getId(),
+            $this->_getCustomerGroupId(),
+            $this->_getWebsiteId()
+        );
 
         if (isset($permissions[$category->getId()])) {
             $category->setPermissions($permissions[$category->getId()]);
@@ -248,43 +272,55 @@ class Enterprise_CatalogPermissions_Model_Observer
     }
 
     /**
-     * Checks quote item for product permissions
+     * Checks permissions for all quote items
      *
      * @param Varien_Event_Observer $observer
      * @return Enterprise_CatalogPermissions_Model_Observer
      */
-    public function checkQuoteItem(Varien_Event_Observer $observer)
+    public function checkQuotePermissions(Varien_Event_Observer $observer)
     {
         if (!$this->_helper->isEnabled()) {
             return $this;
         }
 
-        $quoteItem = $observer->getEvent()->getItem();
+        $quote = $observer->getEvent()->getCart()->getQuote();
+        $this->_initPermissionsOnQuoteItems($quote);
 
-        $this->_initPermissionsOnQuoteItems($quoteItem->getQuote());
-
-        if ($quoteItem->getParentItem()) {
-            $parentItem = $quoteItem->getParentItem();
-        } else {
-            $parentItem = false;
-        }
-
-        /* @var $quoteItem Mage_Sales_Model_Quote_Item */
-        if ($quoteItem->getDisableAddToCart() && !$quoteItem->isDeleted()) {
-            $quoteItem->getQuote()->removeItem($quoteItem->getId());
-            if ($parentItem) {
-                $quoteItem->getQuote()->setHasError(true)
-                        ->addMessage(
-                            $this->_helper->__('The product "%s" cannot be added to cart.', $parentItem->getName())
-                        );
+        foreach ($quote->getAllItems() as $quoteItem) {
+            if ($quoteItem->getParentItem()) {
+                $parentItem = $quoteItem->getParentItem();
             } else {
-                 $quoteItem->getQuote()->setHasError(true)
-                        ->addMessage(
-                            $this->_helper->__('The product "%s" cannot be added to cart.', $quoteItem->getName())
-                        );
+                $parentItem = false;
+            }
+            /* @var $quoteItem Mage_Sales_Model_Quote_Item */
+            if ($quoteItem->getDisableAddToCart() && !$quoteItem->isDeleted()) {
+                $quote->removeItem($quoteItem->getId());
+                if ($parentItem) {
+                    $quote->setHasError(true)
+                            ->addMessage(
+                                $this->_helper->__('The product "%s" cannot be added to cart.', $parentItem->getName())
+                            );
+                } else {
+                     $quote->setHasError(true)
+                            ->addMessage(
+                                $this->_helper->__('The product "%s" cannot be added to cart.', $quoteItem->getName())
+                            );
+                }
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * Checks quote item for product permissions
+     *
+     * @deprecated after 1.11.0.0
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_CatalogPermissions_Model_Observer
+     */
+    public function checkQuoteItem(Varien_Event_Observer $observer)
+    {
         return $this;
     }
 
@@ -511,8 +547,10 @@ class Enterprise_CatalogPermissions_Model_Observer
         }
 
         $action = $observer->getEvent()->getControllerAction();
-        if (!$this->_helper->isAllowedCatalogSearch() && !$action->getFlag('', Mage_Core_Controller_Varien_Action::FLAG_NO_DISPATCH)
-                && $action->getRequest()->isDispatched()) {
+        if (!$this->_helper->isAllowedCatalogSearch()
+            && !$action->getFlag('', Mage_Core_Controller_Varien_Action::FLAG_NO_DISPATCH)
+            && $action->getRequest()->isDispatched()
+        ) {
             $action->setFlag('', Mage_Core_Controller_Varien_Action::FLAG_NO_DISPATCH, true);
             $action->getResponse()->setRedirect($this->_helper->getLandingPageUrl());
         }
@@ -567,11 +605,21 @@ class Enterprise_CatalogPermissions_Model_Observer
             $row = $observer->getEvent()->getProduct()->getData();
         }
 
-        $observer->getEvent()->getProduct()
-            ->setAllowedInRss($this->_checkPermission($row, 'grant_catalog_category_view', 'isAllowedCategoryView'));
+        $observer->getEvent()->getProduct()->setAllowedInRss(
+            $this->_checkPermission(
+                $row,
+                'grant_catalog_category_view',
+                'isAllowedCategoryView'
+            )
+        );
 
-        $observer->getEvent()->getProduct()
-            ->setAllowedPriceInRss($this->_checkPermission($row, 'grant_catalog_product_price', 'isAllowedProductPrice'));
+        $observer->getEvent()->getProduct()->setAllowedPriceInRss(
+            $this->_checkPermission(
+                $row,
+                'grant_catalog_product_price',
+                'isAllowedProductPrice'
+            )
+        );
 
         return $this;
     }

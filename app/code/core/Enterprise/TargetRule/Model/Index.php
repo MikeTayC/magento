@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -28,8 +28,17 @@
 /**
  * TargetRule Product Index by Rule Product List Type Model
  *
- * @category   Enterprise
- * @package    Enterprise_TargetRule
+ * @method Enterprise_TargetRule_Model_Resource_Index _getResource()
+ * @method Enterprise_TargetRule_Model_Resource_Index getResource()
+ * @method Enterprise_TargetRule_Model_Index setEntityId(int $value)
+ * @method int getTypeId()
+ * @method Enterprise_TargetRule_Model_Index setTypeId(int $value)
+ * @method int getFlag()
+ * @method Enterprise_TargetRule_Model_Index setFlag(int $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_TargetRule
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_TargetRule_Model_Index extends Mage_Core_Model_Abstract
 {

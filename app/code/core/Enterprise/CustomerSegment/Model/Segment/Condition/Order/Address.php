@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -107,8 +107,10 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Order_Address
                 array('extra_order_address' => $extraAddressTable),
                 'order_address.entity_id = extra_order_address.entity_id',
                 array())
-            ->where($this->_createCustomerFilter($customer, 'order_address_order.customer_id'))
-            ->limit(1);
+            ->where($this->_createCustomerFilter($customer, 'order_address_order.customer_id'));
+
+        Mage::getResourceHelper('enterprise_customersegment')->setOneRowLimit($select);
+
         $this->_limitByStoreWebsite($select, $website, 'order_address_order.store_id');
 
         return $select;

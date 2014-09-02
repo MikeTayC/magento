@@ -20,7 +20,7 @@
  *
  * @category    Varien
  * @package     Varien_Data
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -243,18 +243,6 @@ abstract class Varien_Data_Form_Element_Abstract extends Varien_Data_Form_Abstra
             unset($this->_data['checked']);
         }
         return parent::serialize($attributes, $valueSeparator, $fieldSeparator, $quote);
-    }
-
-    public function setReadonly($readonly, $useDisabled = false)
-    {
-        if ($useDisabled) {
-            $this->setDisabled($readonly);
-            $this->setData('readonly_disabled', $readonly);
-        } else {
-            $this->setData('readonly', $readonly);
-        }
-
-        return $this;
     }
 
     public function getReadonly()

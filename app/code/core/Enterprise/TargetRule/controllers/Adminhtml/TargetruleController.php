@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -153,7 +153,7 @@ class Enterprise_TargetRule_Adminhtml_TargetRuleController extends Mage_Adminhtm
                     }
                 }
 
-                $validateResult = $model->validate(new Varien_Object($data));
+                $validateResult = $model->validateData(new Varien_Object($data));
                 if ($validateResult !== true) {
                     foreach ($validateResult as $errorMessage) {
                         $this->_getSession()->addError($errorMessage);
@@ -209,7 +209,7 @@ class Enterprise_TargetRule_Adminhtml_TargetRuleController extends Mage_Adminhtm
     }
 
     /**
-     * Delete targer rule
+     * Delete target rule
      */
     public function deleteAction()
     {
@@ -272,4 +272,5 @@ class Enterprise_TargetRule_Adminhtml_TargetRuleController extends Mage_Adminhtm
     {
         return Mage::getSingleton('admin/session')->isAllowed('catalog/targetrule');
     }
+
 }

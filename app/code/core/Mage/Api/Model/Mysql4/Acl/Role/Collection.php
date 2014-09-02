@@ -20,21 +20,18 @@
  *
  * @category    Mage
  * @package     Mage_Api
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
 
 /**
  * Roles collection
  *
- * @category   Mage
- * @package    Mage_Api
+ * @category    Mage
+ * @package     Mage_Api
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Mage_Api_Model_Mysql4_Acl_Role_Collection extends Mage_Core_Model_Mysql4_Collection_Abstract
+class Mage_Api_Model_Mysql4_Acl_Role_Collection extends Mage_Api_Model_Resource_Acl_Role_Collection
 {
-    protected function _construct()
-    {
-        $this->_init('api/role');
-    }
 }

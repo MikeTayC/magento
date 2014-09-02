@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 var Checkout = Class.create();
@@ -679,7 +679,7 @@ Payment.prototype = {
             element = $(el);
             if (element) {
                 element.style.display = (mode) ? 'none' : '';
-                element.select('input', 'select', 'textarea').each(function(field) {
+                element.select('input', 'select', 'textarea', 'button').each(function(field) {
                     field.disabled = mode;
                 });
             }
@@ -853,6 +853,7 @@ Review.prototype = {
                 response = {};
             }
             if (response.redirect) {
+                this.isSuccess = true;
                 location.href = response.redirect;
                 return;
             }

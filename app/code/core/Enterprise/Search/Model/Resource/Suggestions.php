@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -33,7 +33,7 @@
  * @package     Enterprise_Search
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Search_Model_Resource_Suggestions extends Mage_Core_Model_Mysql4_Abstract
+class Enterprise_Search_Model_Resource_Suggestions extends Mage_Core_Model_Resource_Db_Abstract
 {
     /**
      * Init main table

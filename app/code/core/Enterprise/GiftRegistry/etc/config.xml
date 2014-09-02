@@ -21,24 +21,25 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_GiftRegistry>
-             <version>1.9.0.0.5</version>
+            <version>1.11.0.0</version>
         </Enterprise_GiftRegistry>
     </modules>
     <global>
         <models>
-             <enterprise_giftregistry>
+            <enterprise_giftregistry>
                 <class>Enterprise_GiftRegistry_Model</class>
-                <resourceModel>enterprise_giftregistry_mysql4</resourceModel>
-             </enterprise_giftregistry>
-             <enterprise_giftregistry_mysql4>
-                <class>Enterprise_GiftRegistry_Model_Mysql4</class>
+                <resourceModel>enterprise_giftregistry_resource</resourceModel>
+            </enterprise_giftregistry>
+            <enterprise_giftregistry_resource>
+                <class>Enterprise_GiftRegistry_Model_Resource</class>
+                <deprecatedNode>enterprise_giftregistry_mysql4</deprecatedNode>
                 <entities>
                     <type><table>enterprise_giftregistry_type</table></type>
                     <info><table>enterprise_giftregistry_type_info</table></info>
@@ -49,7 +50,7 @@
                     <person><table>enterprise_giftregistry_person</table></person>
                     <data><table>enterprise_giftregistry_data</table></data>
                 </entities>
-            </enterprise_giftregistry_mysql4>
+            </enterprise_giftregistry_resource>
         </models>
         <helpers>
             <enterprise_giftregistry>
@@ -57,15 +58,15 @@
             </enterprise_giftregistry>
         </helpers>
         <blocks>
-             <enterprise_giftregistry>
+            <enterprise_giftregistry>
                 <class>Enterprise_GiftRegistry_Block</class>
-             </enterprise_giftregistry>
+            </enterprise_giftregistry>
         </blocks>
         <resources>
             <enterprise_giftregistry_setup>
                 <setup>
                     <module>Enterprise_GiftRegistry</module>
-                    <class>Enterprise_GiftRegistry_Model_Mysql4_Setup</class>
+                    <class>Enterprise_GiftRegistry_Model_Resource_Setup</class>
                 </setup>
             </enterprise_giftregistry_setup>
         </resources>
@@ -124,16 +125,19 @@
         </events>
         <fieldsets>
             <customer_address>
-                <giftregistry_item_id><to_quote_address>*</to_quote_address></giftregistry_item_id>
+                <giftregistry_item_id>
+                    <to_quote_address>*</to_quote_address>
+                </giftregistry_item_id>
             </customer_address>
             <sales_convert_quote_address>
-                <giftregistry_item_id><to_order_address>*</to_order_address></giftregistry_item_id>
+                <giftregistry_item_id>
+                    <to_order_address>*</to_order_address>
+                </giftregistry_item_id>
             </sales_convert_quote_address>
         </fieldsets>
     </global>
-
     <admin>
-         <routers>
+        <routers>
             <adminhtml>
                 <args>
                     <modules>
@@ -143,7 +147,6 @@
             </adminhtml>
         </routers>
     </admin>
-
     <adminhtml>
         <layout>
             <updates>
@@ -172,7 +175,6 @@
             </customer_address_format>
         </events>
     </adminhtml>
-
     <frontend>
         <layout>
             <updates>
@@ -218,7 +220,6 @@
             </customer_address_format>
         </events>
     </frontend>
-
     <default>
         <enterprise_giftregistry>
             <general>

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -48,7 +48,7 @@ class Enterprise_CustomerBalance_Model_Total_Quote_Customerbalance extends Mage_
         }
         $quote = $address->getQuote();
         if (!$quote->getCustomerBalanceCollected()) {
-            $quote->setBaseCustomerBalanceAmountUsed(0);
+            $quote->setBaseCustomerBalAmountUsed(0);
             $quote->setCustomerBalanceAmountUsed(0);
 
             $quote->setCustomerBalanceCollected(true);
@@ -70,7 +70,7 @@ class Enterprise_CustomerBalance_Model_Total_Quote_Customerbalance extends Mage_
             }
         }
 
-        $baseAmountLeft = $baseBalance - $quote->getBaseCustomerBalanceAmountUsed();
+        $baseAmountLeft = $baseBalance - $quote->getBaseCustomerBalAmountUsed();
         $amountLeft = $balance - $quote->getCustomerBalanceAmountUsed();
 
         if ($baseAmountLeft >= $address->getBaseGrandTotal()) {
@@ -87,10 +87,10 @@ class Enterprise_CustomerBalance_Model_Total_Quote_Customerbalance extends Mage_
             $address->setGrandTotal($address->getGrandTotal()-$amountLeft);
         }
 
-        $baseTotalUsed = $quote->getBaseCustomerBalanceAmountUsed() + $baseUsed;
+        $baseTotalUsed = $quote->getBaseCustomerBalAmountUsed() + $baseUsed;
         $totalUsed = $quote->getCustomerBalanceAmountUsed() + $used;
 
-        $quote->setBaseCustomerBalanceAmountUsed($baseTotalUsed);
+        $quote->setBaseCustomerBalAmountUsed($baseTotalUsed);
         $quote->setCustomerBalanceAmountUsed($totalUsed);
 
         $address->setBaseCustomerBalanceAmount($baseUsed);

@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -318,7 +318,7 @@
             //    }
             //}
             this.collectChilds(this.treeRoot);
-            $('nodes_data').value = this.treeData.toJSON();
+            $('nodes_data').value = Object.toJSON(this.treeData);
             $('removed_nodes').value = this.removedNodes.join(',');
             editForm.submit();
         },
@@ -614,9 +614,11 @@
 
             var allowedTypes = this.menuListTypes[listType];
             this.addOptionToSelect('menu_list_type', '', '<?php echo $this->__('Default') ?>');
-            Object.keys(allowedTypes).each(function(k) {
-                this.addOptionToSelect('menu_list_type', k, allowedTypes[k]);
-            }.bind(this));
+            if(allowedTypes) {
+                Object.keys(allowedTypes).each(function(k) {
+                    this.addOptionToSelect('menu_list_type', k, allowedTypes[k]);
+                }.bind(this));
+            }
 
             // select 'Default' value by default
             $('menu_list_type').value = '';

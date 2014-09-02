@@ -20,13 +20,48 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 
 /**
  * Cms page revision model
+ *
+ * @method Enterprise_Cms_Model_Resource_Page_Revision _getResource()
+ * @method Enterprise_Cms_Model_Resource_Page_Revision getResource()
+ * @method int getVersionId()
+ * @method Enterprise_Cms_Model_Page_Revision setVersionId(int $value)
+ * @method int getPageId()
+ * @method Enterprise_Cms_Model_Page_Revision setPageId(int $value)
+ * @method string getRootTemplate()
+ * @method Enterprise_Cms_Model_Page_Revision setRootTemplate(string $value)
+ * @method string getMetaKeywords()
+ * @method Enterprise_Cms_Model_Page_Revision setMetaKeywords(string $value)
+ * @method string getMetaDescription()
+ * @method Enterprise_Cms_Model_Page_Revision setMetaDescription(string $value)
+ * @method string getContentHeading()
+ * @method Enterprise_Cms_Model_Page_Revision setContentHeading(string $value)
+ * @method string getContent()
+ * @method Enterprise_Cms_Model_Page_Revision setContent(string $value)
+ * @method string getCreatedAt()
+ * @method Enterprise_Cms_Model_Page_Revision setCreatedAt(string $value)
+ * @method string getLayoutUpdateXml()
+ * @method Enterprise_Cms_Model_Page_Revision setLayoutUpdateXml(string $value)
+ * @method string getCustomTheme()
+ * @method Enterprise_Cms_Model_Page_Revision setCustomTheme(string $value)
+ * @method string getCustomRootTemplate()
+ * @method Enterprise_Cms_Model_Page_Revision setCustomRootTemplate(string $value)
+ * @method string getCustomLayoutUpdateXml()
+ * @method Enterprise_Cms_Model_Page_Revision setCustomLayoutUpdateXml(string $value)
+ * @method string getCustomThemeFrom()
+ * @method Enterprise_Cms_Model_Page_Revision setCustomThemeFrom(string $value)
+ * @method string getCustomThemeTo()
+ * @method Enterprise_Cms_Model_Page_Revision setCustomThemeTo(string $value)
+ * @method int getUserId()
+ * @method Enterprise_Cms_Model_Page_Revision setUserId(int $value)
+ * @method int getRevisionNumber()
+ * @method Enterprise_Cms_Model_Page_Revision setRevisionNumber(int $value)
  *
  * @category    Enterprise
  * @package     Enterprise_Cms

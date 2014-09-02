@@ -21,14 +21,14 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_GiftWrapping>
-             <version>1.10.0.0.8</version>
+             <version>1.11.0.0</version>
         </Enterprise_GiftWrapping>
     </modules>
 
@@ -39,7 +39,8 @@
                 <resourceModel>enterprise_giftwrapping_resource</resourceModel>
             </enterprise_giftwrapping>
             <enterprise_giftwrapping_resource>
-                <class>Enterprise_GiftWrapping_Model_Resource_Mysql4</class>
+                <class>Enterprise_GiftWrapping_Model_Resource</class>
+                <resourceModel>enterprise_giftwrapping_mysql4</resourceModel>
                 <entities>
                     <wrapping><table>enterprise_giftwrapping</table></wrapping>
                     <attribute><table>enterprise_giftwrapping_store_attributes</table></attribute>
@@ -112,6 +113,53 @@
                     </tax_giftwrapping>
                 </totals>
             </order_creditmemo>
+            <old_fields_map>
+                <order>
+                    <gw_add_printed_card>gw_add_card</gw_add_printed_card>
+                    <gw_printed_card_base_price>gw_card_base_price</gw_printed_card_base_price>
+                    <gw_printed_card_price>gw_card_price</gw_printed_card_price>
+                    <gw_printed_card_base_tax_amount>gw_card_base_tax_amount</gw_printed_card_base_tax_amount>
+                    <gw_printed_card_tax_amount>gw_card_tax_amount</gw_printed_card_tax_amount>
+                    <gw_printed_card_base_price_invoiced>gw_card_base_price_invoiced</gw_printed_card_base_price_invoiced>
+                    <gw_printed_card_price_invoiced>gw_card_price_invoiced</gw_printed_card_price_invoiced>
+                    <gw_items_base_tax_amount_invoiced>gw_items_base_tax_invoiced</gw_items_base_tax_amount_invoiced>
+                    <gw_items_tax_amount_invoiced>gw_items_tax_invoiced</gw_items_tax_amount_invoiced>
+                    <gw_printed_card_base_tax_amount_invoiced>gw_card_base_tax_invoiced</gw_printed_card_base_tax_amount_invoiced>
+                    <gw_printed_card_tax_amount_invoiced>gw_card_tax_invoiced</gw_printed_card_tax_amount_invoiced>
+                    <gw_printed_card_base_price_refunded>gw_card_base_price_refunded</gw_printed_card_base_price_refunded>
+                    <gw_printed_card_price_refunded>gw_card_price_refunded</gw_printed_card_price_refunded>
+                    <gw_items_base_tax_amount_refunded>gw_items_base_tax_refunded</gw_items_base_tax_amount_refunded>
+                    <gw_items_tax_amount_refunded>gw_items_tax_refunded</gw_items_tax_amount_refunded>
+                    <gw_printed_card_base_tax_amount_refunded>gw_card_base_tax_refunded</gw_printed_card_base_tax_amount_refunded>
+                    <gw_printed_card_tax_amount_refunded>gw_card_tax_refunded</gw_printed_card_tax_amount_refunded>
+                </order>
+                <quote>
+                    <gw_add_printed_card>gw_add_card</gw_add_printed_card>
+                    <gw_printed_card_base_price>gw_card_base_price</gw_printed_card_base_price>
+                    <gw_printed_card_price>gw_card_price</gw_printed_card_price>
+                    <gw_printed_card_base_tax_amount>gw_card_base_tax_amount</gw_printed_card_base_tax_amount>
+                    <gw_printed_card_tax_amount>gw_card_tax_amount</gw_printed_card_tax_amount>
+                </quote>
+                <quote_address>
+                    <gw_add_printed_card>gw_add_card</gw_add_printed_card>
+                    <gw_printed_card_base_price>gw_card_base_price</gw_printed_card_base_price>
+                    <gw_printed_card_price>gw_card_price</gw_printed_card_price>
+                    <gw_printed_card_base_tax_amount>gw_card_base_tax_amount</gw_printed_card_base_tax_amount>
+                    <gw_printed_card_tax_amount>gw_card_tax_amount</gw_printed_card_tax_amount>
+                </quote_address>
+                <order_creditmemo>
+                    <gw_printed_card_base_price>gw_card_base_price</gw_printed_card_base_price>
+                    <gw_printed_card_price>gw_card_price</gw_printed_card_price>
+                    <gw_printed_card_base_tax_amount>gw_card_base_tax_amount</gw_printed_card_base_tax_amount>
+                    <gw_printed_card_tax_amount>gw_card_tax_amount</gw_printed_card_tax_amount>
+                </order_creditmemo>
+                <order_invoice>
+                    <gw_printed_card_base_price>gw_card_base_price</gw_printed_card_base_price>
+                    <gw_printed_card_price>gw_card_price</gw_printed_card_price>
+                    <gw_printed_card_base_tax_amount>gw_card_base_tax_amount</gw_printed_card_base_tax_amount>
+                    <gw_printed_card_tax_amount>gw_card_tax_amount</gw_printed_card_tax_amount>
+                </order_invoice>
+            </old_fields_map>
         </sales>
         <events>
             <sales_quote_collect_totals_before>
@@ -150,36 +198,36 @@
             <sales_convert_quote>
                 <gw_id><to_order>*</to_order></gw_id>
                 <gw_allow_gift_receipt><to_order>*</to_order></gw_allow_gift_receipt>
-                <gw_add_printed_card><to_order>*</to_order></gw_add_printed_card>
+                <gw_add_card><to_order>*</to_order></gw_add_card>
                 <gw_base_price><to_order>*</to_order></gw_base_price>
                 <gw_price><to_order>*</to_order></gw_price>
                 <gw_items_base_price><to_order>*</to_order></gw_items_base_price>
                 <gw_items_price><to_order>*</to_order></gw_items_price>
-                <gw_printed_card_base_price><to_order>*</to_order></gw_printed_card_base_price>
-                <gw_printed_card_price><to_order>*</to_order></gw_printed_card_price>
+                <gw_card_base_price><to_order>*</to_order></gw_card_base_price>
+                <gw_card_price><to_order>*</to_order></gw_card_price>
                 <gw_base_tax_amount><to_order>*</to_order></gw_base_tax_amount>
                 <gw_tax_amount><to_order>*</to_order></gw_tax_amount>
                 <gw_items_base_tax_amount><to_order>*</to_order></gw_items_base_tax_amount>
                 <gw_items_tax_amount><to_order>*</to_order></gw_items_tax_amount>
-                <gw_printed_card_base_tax_amount><to_order>*</to_order></gw_printed_card_base_tax_amount>
-                <gw_printed_card_tax_amount><to_order>*</to_order></gw_printed_card_tax_amount>
+                <gw_card_base_tax_amount><to_order>*</to_order></gw_card_base_tax_amount>
+                <gw_card_tax_amount><to_order>*</to_order></gw_card_tax_amount>
             </sales_convert_quote>
             <sales_convert_quote_address>
                 <gw_id><to_order>*</to_order></gw_id>
                 <gw_allow_gift_receipt><to_order>*</to_order></gw_allow_gift_receipt>
-                <gw_add_printed_card><to_order>*</to_order></gw_add_printed_card>
+                <gw_add_card><to_order>*</to_order></gw_add_card>
                 <gw_base_price><to_order>*</to_order></gw_base_price>
                 <gw_price><to_order>*</to_order></gw_price>
                 <gw_items_base_price><to_order>*</to_order></gw_items_base_price>
                 <gw_items_price><to_order>*</to_order></gw_items_price>
-                <gw_printed_card_base_price><to_order>*</to_order></gw_printed_card_base_price>
-                <gw_printed_card_price><to_order>*</to_order></gw_printed_card_price>
+                <gw_card_base_price><to_order>*</to_order></gw_card_base_price>
+                <gw_card_price><to_order>*</to_order></gw_card_price>
                 <gw_base_tax_amount><to_order>*</to_order></gw_base_tax_amount>
                 <gw_tax_amount><to_order>*</to_order></gw_tax_amount>
                 <gw_items_base_tax_amount><to_order>*</to_order></gw_items_base_tax_amount>
                 <gw_items_tax_amount><to_order>*</to_order></gw_items_tax_amount>
-                <gw_printed_card_base_tax_amount><to_order>*</to_order></gw_printed_card_base_tax_amount>
-                <gw_printed_card_tax_amount><to_order>*</to_order></gw_printed_card_tax_amount>
+                <gw_card_base_tax_amount><to_order>*</to_order></gw_card_base_tax_amount>
+                <gw_card_tax_amount><to_order>*</to_order></gw_card_tax_amount>
             </sales_convert_quote_address>
         </fieldsets>
     </global>

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Customer
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -186,32 +186,7 @@ class Enterprise_Customer_Adminhtml_Customer_AttributeController
      */
     protected function _filterPostData($data)
     {
-        if ($data) {
-            /* @var $helper Enterprise_Customer_Helper_Data */
-            $helper = Mage::helper('enterprise_customer');
-            //labels
-            foreach ($data['frontend_label'] as & $value) {
-                if ($value) {
-                    $value = $helper->stripTags($value);
-                }
-            }
-            //options
-            if (!empty($data['option']['value'])) {
-                foreach ($data['option']['value'] as &$options) {
-                    foreach ($options as &$label) {
-                        $label = $helper->stripTags($label);
-                    }
-                }
-            }
-            //default value
-            if (!empty($data['default_value_text'])) {
-                $data['default_value_text'] = $helper->stripTags($data['default_value_text']);
-            }
-            if (!empty($data['default_value_textarea'])) {
-                $data['default_value_textarea'] = $helper->stripTags($data['default_value_textarea']);
-            }
-        }
-        return $data;
+        return Mage::helper('enterprise_customer/customer')->filterPostData($data);
     }
 
     /**
@@ -227,7 +202,18 @@ class Enterprise_Customer_Adminhtml_Customer_AttributeController
             /* @var $helper Enterprise_Customer_Helper_Data */
             $helper = Mage::helper('enterprise_customer');
 
-            $data = $this->_filterPostData($data);
+            //filtering
+            try {
+                $data = $this->_filterPostData($data);
+            } catch (Mage_Core_Exception $e) {
+                    $this->_getSession()->addError($e->getMessage());
+                    if (isset($data['attribute_id'])) {
+                        $this->_redirect('*/*/edit', array('_current' => true));
+                    } else {
+                        $this->_redirect('*/*/new', array('_current' => true));
+                    }
+                    return;
+            }
 
             $attributeId = $this->getRequest()->getParam('attribute_id');
             if ($attributeId) {
@@ -285,6 +271,9 @@ class Enterprise_Customer_Adminhtml_Customer_AttributeController
             }
 
             try {
+                Mage::dispatchEvent('enterprise_customer_attribute_before_save', array(
+                    'attribute' => $attributeObject
+                ));
                 $attributeObject->save();
                 Mage::dispatchEvent('enterprise_customer_attribute_save', array(
                     'attribute' => $attributeObject

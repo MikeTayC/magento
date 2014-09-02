@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -49,9 +49,9 @@
                 <?php endif; ?>
             <?php $_i++; endforeach; ?>
             <?php endif; ?>
-        </p>    
+        </p>
         <?php endif; ?>
-    
+
         <div class="sort-by">
             <label><?php echo $this->__('Sort By') ?></label>
             <select onchange="setLocation(this.value)">
@@ -69,7 +69,7 @@
         </div>
     </div>
     <?php endif; ?>
-    
+
     <div class="pager">
         <p class="amount">
             <?php if($this->getLastPageNum()>1): ?>
@@ -78,7 +78,7 @@
                 <?php echo $this->__('%s Item(s)', $this->getTotalNum()) ?>
             <?php endif; ?>
         </p>
-    
+
         <div class="limiter">
             <label><?php echo $this->__('Show') ?></label>
             <select onchange="setLocation(this.value)">

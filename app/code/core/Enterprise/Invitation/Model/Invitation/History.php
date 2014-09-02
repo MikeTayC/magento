@@ -20,18 +20,34 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Invitation
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Invitation status history model
  *
- * @category   Enterprise
- * @package    Enterprise_Invitation
+ * @method Enterprise_Invitation_Model_Resource_Invitation_History _getResource()
+ * @method Enterprise_Invitation_Model_Resource_Invitation_History getResource()
+ * @method int getInvitationId()
+ * @method Enterprise_Invitation_Model_Invitation_History setInvitationId(int $value)
+ * @method string getDate()
+ * @method Enterprise_Invitation_Model_Invitation_History setDate(string $value)
+ * @method string getStatus()
+ * @method Enterprise_Invitation_Model_Invitation_History setStatus(string $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Invitation
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_Invitation_Model_Invitation_History extends Mage_Core_Model_Abstract
 {
+    /**
+     * Mapping old names
+     * @var array
+     */
+    protected $_oldFieldsMap = array('invitation_date' => 'date');
+
     /**
      * Initialize model
      *

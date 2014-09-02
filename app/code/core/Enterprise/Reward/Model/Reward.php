@@ -20,13 +20,22 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 
 /**
  * Reward model
+ *
+ * @method Enterprise_Reward_Model_Resource_Reward _getResource()
+ * @method Enterprise_Reward_Model_Resource_Reward getResource()
+ * @method int getCustomerId()
+ * @method Enterprise_Reward_Model_Reward setCustomerId(int $value)
+ * @method Enterprise_Reward_Model_Reward setWebsiteId(int $value)
+ * @method int getPointsBalance()
+ * @method Enterprise_Reward_Model_Reward setPointsBalance(int $value)
+ * @method Enterprise_Reward_Model_Reward setWebsiteCurrencyCode(string $value)
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
@@ -729,4 +738,3 @@ class Enterprise_Reward_Model_Reward extends Mage_Core_Model_Abstract
         return parent::setData('action_entity', $entity);
     }
 }
-

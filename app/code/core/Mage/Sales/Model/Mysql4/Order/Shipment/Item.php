@@ -20,20 +20,18 @@
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
 
 /**
  * Flat sales order shipment item resource
  *
+ * @category    Mage
+ * @package     Mage_Sales
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Mage_Sales_Model_Mysql4_Order_Shipment_Item extends Mage_Sales_Model_Mysql4_Order_Abstract
+class Mage_Sales_Model_Mysql4_Order_Shipment_Item extends Mage_Sales_Model_Resource_Order_Shipment_Item
 {
-    protected $_eventPrefix = 'sales_order_shipment_item_resource';
-
-    protected function _construct()
-    {
-        $this->_init('sales/shipment_item', 'entity_id');
-    }
 }

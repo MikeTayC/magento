@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -37,6 +37,7 @@ class Enterprise_Reminder_Block_Adminhtml_Reminder_Edit_Tab_General
      */
     protected function _prepareForm()
     {
+        $isEditable = ($this->getCanEditReminderRule() !== false) ? true : false;
         $form = new Varien_Data_Form();
         $model = Mage::registry('current_reminder_rule');
 
@@ -69,6 +70,7 @@ class Enterprise_Reminder_Block_Adminhtml_Reminder_Edit_Tab_General
             'class' => 'widget-option',
             'value' => $model->getSalesruleId(),
             'note'  => Mage::helper('enterprise_reminder')->__('Promotion rule this reminder will advertise.'),
+            'readonly' => !$isEditable
         ));
 
         $model->unsSalesruleId();
@@ -132,6 +134,10 @@ class Enterprise_Reminder_Block_Adminhtml_Reminder_Edit_Tab_General
 
         $form->setValues($model->getData());
         $this->setForm($form);
+
+        if (!$isEditable) {
+            $this->getForm()->setReadonly(true, true);
+        }
 
         return parent::_prepareForm();
     }

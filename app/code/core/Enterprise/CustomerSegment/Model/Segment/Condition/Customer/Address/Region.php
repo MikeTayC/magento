@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -119,13 +119,17 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Address_Region
      */
     public function getConditionsSql($customer, $website)
     {
-        $inversion = ((int)$this->getValue() ? '' : '!');
+        $inversion = ((int)$this->getValue() ? '' : ' NOT ');
         $attribute = Mage::getSingleton('eav/config')->getAttribute('customer_address', 'region');
         $select = $this->getResource()->createSelect();
-        $select->from(array('caev'=>$attribute->getBackendTable()), "{$inversion}(IFNULL(caev.value, '') <> '')");
+
+        $ifnull = $this->getResource()->getReadConnection()
+                ->getCheckSql("caev.value IS {$inversion} NULL", 0, 1);
+        $select->from(array('caev' => $attribute->getBackendTable()), "({$ifnull})");
         $select->where('caev.attribute_id = ?', $attribute->getId())
             ->where("caev.entity_id = customer_address.entity_id");
-        $select->limit(1);
+
+        Mage::getResourceHelper('enterprise_customersegment')->setOneRowLimit($select);
 
         return $select;
     }

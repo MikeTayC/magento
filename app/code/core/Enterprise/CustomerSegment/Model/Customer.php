@@ -20,13 +20,30 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Segment/customer relatio model. Model working in website scope. If website is not declared
  * all methods are working in current ran website scoupe
+ *
+ * @method Enterprise_CustomerSegment_Model_Resource_Customer _getResource()
+ * @method Enterprise_CustomerSegment_Model_Resource_Customer getResource()
+ * @method int getSegmentId()
+ * @method Enterprise_CustomerSegment_Model_Customer setSegmentId(int $value)
+ * @method int getCustomerId()
+ * @method Enterprise_CustomerSegment_Model_Customer setCustomerId(int $value)
+ * @method string getAddedDate()
+ * @method Enterprise_CustomerSegment_Model_Customer setAddedDate(string $value)
+ * @method string getUpdatedDate()
+ * @method Enterprise_CustomerSegment_Model_Customer setUpdatedDate(string $value)
+ * @method int getWebsiteId()
+ * @method Enterprise_CustomerSegment_Model_Customer setWebsiteId(int $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_CustomerSegment
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_CustomerSegment_Model_Customer extends Mage_Core_Model_Abstract
 {

@@ -20,34 +20,19 @@
  *
  * @category    Enterprise
  * @package     Enterprise_SalesArchive
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
 
 /**
  * Order archive collection
  *
+ * @category    Enterprise
+ * @package     Enterprise_SalesArchive
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_SalesArchive_Model_Mysql4_Order_Collection
-    extends Mage_Sales_Model_Mysql4_Order_Grid_Collection
+    extends Enterprise_SalesArchive_Model_Resource_Order_Collection
 {
-    protected function _construct()
-    {
-        parent::_construct();
-        $this->setMainTable('enterprise_salesarchive/order_grid');
-    }
-
-    /**
-     * Generate select based on order grid select for getting archived order fields.
-     *
-     * @param Zend_Db_Select $gridSelect
-     * @return Zend_Db_Select
-     */
-    public function getOrderGridArchiveSelect(Zend_Db_Select $gridSelect)
-    {
-        $select = clone $gridSelect;
-        $select->reset('from');
-        $select->from(array('main_table' => $this->getTable('enterprise_salesarchive/order_grid')), '');
-        return $select;
-    }
 }

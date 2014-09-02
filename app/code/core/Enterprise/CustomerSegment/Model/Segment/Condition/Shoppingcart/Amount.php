@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -109,8 +109,9 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Shoppingcart_Amount
 
         $select = $this->getResource()->createSelect();
         $select->from(array('quote'=>$table), array(new Zend_Db_Expr(1)))
-            ->where('quote.is_active=1')
-            ->limit(1);
+            ->where('quote.is_active=1');
+
+        Mage::getResourceHelper('enterprise_customersegment')->setOneRowLimit($select);
         $this->_limitByStoreWebsite($select, $website, 'quote.store_id');
 
         $joinAddress = false;

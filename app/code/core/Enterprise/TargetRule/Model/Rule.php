@@ -20,10 +20,42 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
+
+/**
+ * TargetRule Rule Model
+ *
+ * @method Enterprise_TargetRule_Model_Resource_Rule _getResource()
+ * @method Enterprise_TargetRule_Model_Resource_Rule getResource()
+ * @method string getName()
+ * @method Enterprise_TargetRule_Model_Rule setName(string $value)
+ * @method string getFromDate()
+ * @method Enterprise_TargetRule_Model_Rule setFromDate(string $value)
+ * @method string getToDate()
+ * @method Enterprise_TargetRule_Model_Rule setToDate(string $value)
+ * @method int getIsActive()
+ * @method Enterprise_TargetRule_Model_Rule setIsActive(int $value)
+ * @method string getConditionsSerialized()
+ * @method Enterprise_TargetRule_Model_Rule setConditionsSerialized(string $value)
+ * @method string getActionsSerialized()
+ * @method Enterprise_TargetRule_Model_Rule setActionsSerialized(string $value)
+ * @method Enterprise_TargetRule_Model_Rule setPositionsLimit(int $value)
+ * @method int getApplyTo()
+ * @method Enterprise_TargetRule_Model_Rule setApplyTo(int $value)
+ * @method int getSortOrder()
+ * @method Enterprise_TargetRule_Model_Rule setSortOrder(int $value)
+ * @method int getUseCustomerSegment()
+ * @method Enterprise_TargetRule_Model_Rule setUseCustomerSegment(int $value)
+ * @method string getActionSelect()
+ * @method Enterprise_TargetRule_Model_Rule setActionSelect(string $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_TargetRule
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
 class Enterprise_TargetRule_Model_Rule extends Mage_Rule_Model_Rule
 {
     const BOTH_SELECTED_AND_RULE_BASED  = 0;
@@ -320,14 +352,27 @@ class Enterprise_TargetRule_Model_Rule extends Mage_Rule_Model_Rule
      */
     public function validate(Varien_Object $object)
     {
+        $errorsArray = array();
+        $validator = new Zend_Validate_Regex(array('pattern' => '/^[a-z][a-z0-9_\/]{1,255}$/'));
+        $actionArgsList = $object->getData('rule');
+        if(is_array($actionArgsList) && isset($actionArgsList['actions'])) {
+            foreach ($actionArgsList['actions'] AS $actionArgsIndex=>$actionArgs) {
+                if(1 === $actionArgsIndex) {
+                    continue;
+                }
+                if (!$validator->isValid($actionArgs['type']) || !$validator->isValid($actionArgs['attribute'])) {
+                    $errorsArray[] = Mage::helper('catalog/product')->__('Attribute code is invalid. Please use only letters (a-z), numbers (0-9) or underscore(_) in this field, first character should be a letter.');
+                }
+            }
+        }
         if($object->getData('from_date') && $object->getData('to_date')){
             $dateStartUnixTime = strtotime($object->getData('from_date'));
             $dateEndUnixTime   = strtotime($object->getData('to_date'));
 
             if ($dateEndUnixTime < $dateStartUnixTime) {
-                return array(Mage::helper('enterprise_targetrule')->__("End Date should be greater than Start Date"));
+                $errorsArray[] = (Mage::helper('enterprise_targetrule')->__("End Date should be greater than Start Date"));
             }
         }
-        return true;
+        return empty($errorsArray) ? true : $errorsArray;
     }
 }

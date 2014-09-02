@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -52,4 +52,3 @@ $installer->addAttribute('creditmemo', 'base_reward_currency_amount', array('typ
 $installer->addAttribute('creditmemo', 'reward_currency_amount', array('type' => 'decimal'));
 
 $installer->endSetup();
-

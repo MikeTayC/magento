@@ -20,12 +20,41 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Reminder rules processing model
+ *
+ * @method Enterprise_Reminder_Model_Resource_Rule _getResource()
+ * @method Enterprise_Reminder_Model_Resource_Rule getResource()
+ * @method string getName()
+ * @method Enterprise_Reminder_Model_Rule setName(string $value)
+ * @method string getDescription()
+ * @method Enterprise_Reminder_Model_Rule setDescription(string $value)
+ * @method string getConditionsSerialized()
+ * @method Enterprise_Reminder_Model_Rule setConditionsSerialized(string $value)
+ * @method string getConditionSql()
+ * @method Enterprise_Reminder_Model_Rule setConditionSql(string $value)
+ * @method int getIsActive()
+ * @method Enterprise_Reminder_Model_Rule setIsActive(int $value)
+ * @method int getSalesruleId()
+ * @method Enterprise_Reminder_Model_Rule setSalesruleId(int $value)
+ * @method string getSchedule()
+ * @method Enterprise_Reminder_Model_Rule setSchedule(string $value)
+ * @method string getDefaultLabel()
+ * @method Enterprise_Reminder_Model_Rule setDefaultLabel(string $value)
+ * @method string getDefaultDescription()
+ * @method Enterprise_Reminder_Model_Rule setDefaultDescription(string $value)
+ * @method string getActiveFrom()
+ * @method Enterprise_Reminder_Model_Rule setActiveFrom(string $value)
+ * @method string getActiveTo()
+ * @method Enterprise_Reminder_Model_Rule setActiveTo(string $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Reminder
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Rule
 {

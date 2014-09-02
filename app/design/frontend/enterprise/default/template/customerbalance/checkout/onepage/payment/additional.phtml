@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 /* @var $this Enterprise_CustomerBalance_Block_Checkout_Onepage_Payment_Additional */
@@ -50,7 +50,7 @@
     var customerBalanceSubstracted = <?php if ($this->isCustomerBalanceUsed()): ?>true<?php else: ?>false<?php endif; ?>;
 
     if (customerBalanceSubstracted) {
-        quoteBaseGrandTotal += <?php echo (float)$this->getQuote()->getBaseCustomerBalanceAmountUsed(); ?>;
+        quoteBaseGrandTotal += <?php echo (float)$this->getQuote()->getBaseCustomerBalAmountUsed(); ?>;
         checkQuoteBaseGrandTotal = quoteBaseGrandTotal;
         customerBalanceSubstracted = false;
     }

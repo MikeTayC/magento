@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -80,5 +80,19 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Combine
 
         $conditions = array_merge_recursive(parent::getNewChildSelectOptions(), $conditions);
         return $conditions;
+    }
+
+    /**
+     * Prepare base condition select which related with current condition combine
+     *
+     * @param $customer
+     * @param $website
+     * @return Varien_Db_Select
+     */
+    protected function _prepareConditionsSql($customer, $website)
+    {
+        $select = parent::_prepareConditionsSql($customer, $website);
+        $select->limit(1);
+        return $select;
     }
 }

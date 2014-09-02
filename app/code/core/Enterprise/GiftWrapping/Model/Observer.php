@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -66,7 +66,7 @@ class Enterprise_GiftWrapping_Model_Observer
                 $wrappingInfo['gw_id'] = $wrapping->getId();
             }
             $wrappingInfo['gw_allow_gift_receipt'] = isset($data['allow_gift_receipt']);
-            $wrappingInfo['gw_add_printed_card'] = isset($data['add_printed_card']);
+            $wrappingInfo['gw_add_card'] = isset($data['add_printed_card']);
             if ($entity->getShippingAddress()) {
                 $entity->getShippingAddress()->addData($wrappingInfo);
             }
@@ -85,9 +85,9 @@ class Enterprise_GiftWrapping_Model_Observer
     {
         $request = $observer->getEvent()->getRequest();
         $giftWrappingInfo = $request->getParam('giftwrapping');
+        $quote = $observer->getEvent()->getQuote();
 
         if (is_array($giftWrappingInfo)) {
-            $quote = $observer->getEvent()->getQuote();
             $giftOptionsInfo = $request->getParam('giftoptions');
             foreach ($giftWrappingInfo as $entityId => $data) {
                 $info = array();
@@ -108,12 +108,18 @@ class Enterprise_GiftWrapping_Model_Observer
                         $this->_saveOrderInfo($entity, $data);
                         break;
                     case 'quote_address_item':
-                        $entity = $quote->getAddressById($giftOptionsInfo[$entityId]['address'])->getItemById($entityId);
+                        $entity = $quote
+                            ->getAddressById($giftOptionsInfo[$entityId]['address'])
+                            ->getItemById($entityId);
                         $this->_saveItemInfo($entity, $data);
                         break;
                 }
             }
         }
+
+        $quote->setTotalsCollectedFlag(false);
+        $quote->collectTotals();
+
         return $this;
     }
 
@@ -179,8 +185,8 @@ class Enterprise_GiftWrapping_Model_Observer
                 if ($salesEntity->getGwId() && $salesEntity->getGwBasePrice()) {
                     $totalWrapping += $salesEntity->getGwBasePrice();
                 }
-                if ($salesEntity->getGwAddPrintedCard() && $salesEntity->getGwPrintedCardBasePrice()) {
-                    $totalCard += $salesEntity->getGwPrintedCardBasePrice();
+                if ($salesEntity->getGwAddCard() && $salesEntity->getGwCardBasePrice()) {
+                    $totalCard += $salesEntity->getGwCardBasePrice();
                 }
             } else {
                 foreach ($salesEntity->getAllItems() as $_item) {
@@ -191,8 +197,8 @@ class Enterprise_GiftWrapping_Model_Observer
                 if ($salesEntity->getGwId() && $salesEntity->getGwBasePrice()) {
                     $totalWrapping += $salesEntity->getGwBasePrice();
                 }
-                if ($salesEntity->getGwAddPrintedCard() && $salesEntity->getGwPrintedCardBasePrice()) {
-                    $totalCard += $salesEntity->getGwPrintedCardBasePrice();
+                if ($salesEntity->getGwAddCard() && $salesEntity->getGwCardBasePrice()) {
+                    $totalCard += $salesEntity->getGwCardBasePrice();
                 }
             }
             if ($totalWrapping) {
@@ -234,7 +240,7 @@ class Enterprise_GiftWrapping_Model_Observer
         foreach ($quote->getAllItems() as $item) {
             $item->setGwId(false);
         }
-        $quote->setGwAddPrintedCard(false);
+        $quote->setGwAddCard(false);
         $quote->setGwId(false);
     }
 
@@ -256,7 +262,7 @@ class Enterprise_GiftWrapping_Model_Observer
         $quote = $observer->getEvent()->getQuote();
         $quote->setGwId($order->getGwId())
             ->setGwAllowGiftReceipt($order->getGwAllowGiftReceipt())
-            ->setGwAddPrintedCard($order->getGwAddPrintedCard());
+            ->setGwAddCard($order->getGwAddCard());
         return $this;
     }
 
@@ -273,7 +279,10 @@ class Enterprise_GiftWrapping_Model_Observer
         // Do not import giftwrapping data if order is reordered or GW is not available for items
         $order = $orderItem->getOrder();
         $giftWrappingHelper = Mage::helper('enterprise_giftwrapping');
-        if ($order && ($order->getReordered() || !$giftWrappingHelper->isGiftWrappingAvailableForItems($order->getStore()->getId()))) {
+        if (
+            $order && ($order->getReordered() ||
+            !$giftWrappingHelper->isGiftWrappingAvailableForItems($order->getStore()->getId()))
+        ) {
             return $this;
         }
         $quoteItem = $observer->getEvent()->getQuoteItem();

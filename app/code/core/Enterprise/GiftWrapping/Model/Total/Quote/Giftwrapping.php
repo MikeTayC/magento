@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -84,13 +84,13 @@ class Enterprise_GiftWrapping_Model_Total_Quote_Giftwrapping extends Mage_Sales_
             $address->getBaseGrandTotal()
             + $address->getGwItemsBasePrice()
             + $address->getGwBasePrice()
-            + $address->getGwPrintedCardPrice()
+            + $address->getGwCardPrice()
         );
         $address->setGrandTotal(
             $address->getGrandTotal()
             + $address->getGwItemsPrice()
             + $address->getGwPrice()
-            + $address->getGwPrintedCardBasePrice()
+            + $address->getGwCardBasePrice()
         );
 
         if ($quote->getIsNewGiftWrappingCollecting()) {
@@ -98,16 +98,16 @@ class Enterprise_GiftWrapping_Model_Total_Quote_Giftwrapping extends Mage_Sales_
             $quote->setGwItemsPrice(0);
             $quote->setGwBasePrice(0);
             $quote->setGwPrice(0);
-            $quote->setGwPrintedCardBasePrice(0);
-            $quote->setGwPrintedCardPrice(0);
+            $quote->setGwCardBasePrice(0);
+            $quote->setGwCardPrice(0);
             $quote->setIsNewGiftWrappingCollecting(false);
         }
         $quote->setGwItemsBasePrice($address->getGwItemsBasePrice() + $quote->getGwItemsBasePrice());
         $quote->setGwItemsPrice($address->getGwItemsPrice() + $quote->getGwItemsPrice());
         $quote->setGwBasePrice($address->getGwBasePrice() + $quote->getGwBasePrice());
         $quote->setGwPrice($address->getGwPrice() + $quote->getGwPrice());
-        $quote->setGwPrintedCardBasePrice($address->getGwPrintedCardBasePrice() + $quote->getGwPrintedCardBasePrice());
-        $quote->setGwPrintedCardPrice($address->getGwPrintedCardPrice() + $quote->getGwPrintedCardPrice());
+        $quote->setGwCardBasePrice($address->getGwCardBasePrice() + $quote->getGwCardBasePrice());
+        $quote->setGwCardPrice($address->getGwCardPrice() + $quote->getGwCardPrice());
 
         return $this;
     }
@@ -176,12 +176,12 @@ class Enterprise_GiftWrapping_Model_Total_Quote_Giftwrapping extends Mage_Sales_
     {
         $printedCardBasePrice = false;
         $printedCardPrice = false;
-        if ($this->_quoteEntity->getGwAddPrintedCard()) {
+        if ($this->_quoteEntity->getGwAddCard()) {
             $printedCardBasePrice = Mage::helper('enterprise_giftwrapping')->getPrintedCardPrice($this->_store);
             $printedCardPrice = $this->_store->convertPrice($printedCardBasePrice);
         }
-        $address->setGwPrintedCardBasePrice($printedCardBasePrice);
-        $address->setGwPrintedCardPrice($printedCardPrice);
+        $address->setGwCardBasePrice($printedCardBasePrice);
+        $address->setGwCardPrice($printedCardPrice);
         return $this;
     }
 
@@ -214,8 +214,8 @@ class Enterprise_GiftWrapping_Model_Total_Quote_Giftwrapping extends Mage_Sales_
             'gw_base_price' => $address->getGwBasePrice(),
             'gw_items_price' => $address->getGwItemsPrice(),
             'gw_items_base_price' => $address->getGwItemsBasePrice(),
-            'gw_printed_card_price' => $address->getGwPrintedCardPrice(),
-            'gw_printed_card_base_price' => $address->getGwPrintedCardBasePrice()
+            'gw_card_price' => $address->getGwCardPrice(),
+            'gw_card_base_price' => $address->getGwCardBasePrice()
         ));
         return $this;
     }

@@ -20,53 +20,19 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
 
 /**
  * Balance history collection
  *
+ * @category    Enterprise
+ * @package     Enterprise_CustomerBalance
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_CustomerBalance_Model_Mysql4_Balance_History_Collection extends Mage_Core_Model_Mysql4_Collection_Abstract
+class Enterprise_CustomerBalance_Model_Mysql4_Balance_History_Collection
+    extends Enterprise_CustomerBalance_Model_Resource_Balance_History_Collection
 {
-    /**
-     * Initialize resource
-     *
-     */
-    protected function _construct()
-    {
-        $this->_init('enterprise_customerbalance/balance_history');
-    }
-
-    /**
-     * Instantiate select joined to balance
-     *
-     * @return Enterprise_CustomerBalance_Model_Mysql4_Balance_History_Collection
-     */
-    protected function _initSelect()
-    {
-        parent::_initSelect();
-        $this->getSelect()
-            ->joinInner(array('b' => $this->getTable('enterprise_customerbalance/balance')),
-                'main_table.balance_id = b.balance_id', array('customer_id'         => 'b.customer_id',
-                                                              'website_id'          => 'b.website_id',
-                                                              'base_currency_code'  => 'b.base_currency_code'))
-        ;
-        return $this;
-    }
-
-    /**
-     * Filter collection by specified websites
-     *
-     * @param array|int $websiteIds
-     * @return Enterprise_CustomerBalance_Model_Mysql4_Balance_History_Collection
-     */
-    public function addWebsitesFilter($websiteIds)
-    {
-        $this->getSelect()->where(
-            $this->getConnection()->quoteInto('b.website_id IN (?)', $websiteIds)
-        );
-        return $this;
-    }
 }

@@ -1,13 +1,13 @@
 <?php
 /**
- * Magento
+ * Magento Enterprise Edition
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * http://www.magentocommerce.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
  * to license@magentocommerce.com so we can send you a copy immediately.
@@ -20,8 +20,8 @@
  *
  * @category    Mage
  * @package     Mage_XmlConnect
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
@@ -54,7 +54,8 @@ class Mage_XmlConnect_Block_Adminhtml_Mobile_Edit_Tab_Social
         /**
          * Default values for social networks is DISABLED
          */
-        $twitterStatus = $facebookStatus = $linkedinStatus = 0;
+        $twitterStatus  = $facebookStatus = $linkedinStatus = 0;
+        $noteText       = $this->__('Please <a href="%s" target="_blank">click here</a> to see how to setup and retrieve API credentials.');
 
         /**
          * Twitter fieldset options
@@ -112,6 +113,17 @@ class Mage_XmlConnect_Block_Adminhtml_Mobile_Edit_Tab_Social
             )
         );
 
+        $fieldsetTwitter->addField(
+            'twitterNote',
+            'note',
+            array(
+                'text'  => sprintf(
+                    $noteText,
+                    Mage::getStoreConfig(Mage_XmlConnect_Model_Application::XML_PATH_HOWTO_TWITTER_URL)
+                ),
+            )
+        );
+
         /**
          * Facebook fieldset options
          */
@@ -148,6 +160,17 @@ class Mage_XmlConnect_Block_Adminhtml_Mobile_Edit_Tab_Social
                 'name'      => 'conf[native][socialNetworking][facebook][appID]',
                 'required'  => true,
                 'value'     => $facebookAppID
+            )
+        );
+
+        $fieldsetFacebook->addField(
+            'facebookNote',
+            'note',
+            array(
+                'text'  => sprintf(
+                    $noteText,
+                    Mage::getStoreConfig(Mage_XmlConnect_Model_Application::XML_PATH_HOWTO_FACEBOOK_URL)
+                ),
             )
         );
 
@@ -204,6 +227,17 @@ class Mage_XmlConnect_Block_Adminhtml_Mobile_Edit_Tab_Social
                 'name'      => 'conf[native][socialNetworking][linkedin][secretKey]',
                 'required'  => true,
                 'value'     => $linkedinSecretKey
+            )
+        );
+
+        $fieldsetLinkedin->addField(
+            'linkedinNote',
+            'note',
+            array(
+                'text'  => sprintf(
+                    $noteText,
+                    Mage::getStoreConfig(Mage_XmlConnect_Model_Application::XML_PATH_HOWTO_LINKEDIN_URL)
+                ),
             )
         );
 

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -28,62 +28,10 @@
 /**
  * Enterprise Cms Resource Setup model
  *
- * @category   Enterprise
- * @package    Enterprise_Cms
+ * @category    Enterprise
+ * @package     Enterprise_Cms
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Cms_Model_Mysql4_Setup extends Mage_Core_Model_Resource_Setup
+class Enterprise_Cms_Model_Mysql4_Setup extends Enterprise_Cms_Model_Resource_Setup
 {
-    /**
-     * Fix xpath for hierarchy node table
-     *
-     * @return Enterprise_Cms_Model_Mysql4_Setup
-     */
-    public function fixXpathForHierarchyNode()
-    {
-        $connection = $this->getConnection();
-        $nodes  = array();
-        $select = $connection->select()->from(
-            $this->getTable('enterprise_cms/hierarchy_node'),
-            array('node_id', 'parent_node_id')
-        );
-        $rowSet = $select->query()->fetchAll();
-        foreach ($rowSet as $k => $row) {
-            $nodes[(int)$row['parent_node_id']][] = (int)$row['node_id'];
-            unset($rowSet[$k]);
-        }
-
-        $this->_updateXpathCallback($nodes, null, 0);
-
-        return $this;
-    }
-
-    /**
-     * Update Hierarchy nodes Xpath Callback method
-     *
-     * @param array $nodes
-     * @param string $xpath
-     * @param int $parentNodeId
-     * @return Enterprise_Cms_Model_Mysql4_Setup
-     */
-    protected function _updateXpathCallback(array $nodes, $xpath = '', $parentNodeId = 0)
-    {
-        if (!isset($nodes[$parentNodeId])) {
-            return $this;
-        }
-        foreach ($nodes[$parentNodeId] as $nodeId) {
-            $nodeXpath = $xpath ? $xpath . '/' . $nodeId : $nodeId;
-
-            $bind  = array(
-                'xpath' => $nodeXpath
-            );
-            $where = $this->getConnection()->quoteInto('node_id=?', $nodeId);
-
-            $this->getConnection()->update($this->getTable('enterprise_cms/hierarchy_node'), $bind, $where);
-            if (isset($nodes[$nodeId])) {
-                $this->_updateXpathCallback($nodes, $nodeXpath, $nodeId);
-            }
-        }
-
-        return $this;
-    }
 }

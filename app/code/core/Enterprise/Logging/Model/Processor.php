@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 class Enterprise_Logging_Model_Processor
@@ -144,7 +144,7 @@ class Enterprise_Logging_Model_Processor
     {
         $this->_actionName = $actionName;
 
-        if(!$this->_initAction){
+        if (!$this->_initAction) {
             $this->_initAction = $fullActionName;
         }
 
@@ -260,7 +260,7 @@ class Enterprise_Logging_Model_Processor
             $additionalData = array_diff($additionalData, $skipData);
 
             $className = Mage::getConfig()->getModelClassName(str_replace('__', '/', $expect));
-            if ($model instanceof $className){
+            if ($model instanceof $className) {
                 $classMap = $this->_getCallbackFunction(trim($callback), $this->_modelsHandler,
                     sprintf('model%sAfter', ucfirst($action)));
                 $handler  = $classMap['handler'];
@@ -349,7 +349,7 @@ class Enterprise_Logging_Model_Processor
                 }
                 $loggingEvent->save();
                 if ($eventId = $loggingEvent->getId()) {
-                    foreach ($this->_eventChanges as $changes){
+                    foreach ($this->_eventChanges as $changes) {
                         if ($changes && ($changes->getOriginalData() || $changes->getResultData())) {
                             $changes->setEventId($eventId);
                             $changes->save();
@@ -416,7 +416,7 @@ class Enterprise_Logging_Model_Processor
     {
         $attributes = array_unique($attributes);
         if ($model->getId()) {
-            foreach ($attributes as $attribute){
+            foreach ($attributes as $attribute) {
                 $value = $model->getDataUsingMethod($attribute);
                 if (!empty($value)) {
                     $this->_collectedAdditionalData[get_class($model)][$model->getId()][$attribute] = $value;

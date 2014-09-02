@@ -21,14 +21,14 @@
  *
  * @category    Enterprise
  * @package     Enterprise_SalesArchive
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_SalesArchive>
-            <version>1.7.0.0</version>
+            <version>1.11.0.0</version>
         </Enterprise_SalesArchive>
     </modules>
     <global>
@@ -37,41 +37,44 @@
                 <class>Enterprise_SalesArchive_Block</class>
             </enterprise_salesarchive>
         </blocks>
-
         <models>
             <enterprise_salesarchive>
                 <class>Enterprise_SalesArchive_Model</class>
-                <resourceModel>enterprise_salesarchive_mysql4</resourceModel>
+                <resourceModel>enterprise_salesarchive_resource</resourceModel>
             </enterprise_salesarchive>
-
-            <enterprise_salesarchive_mysql4>
-                <class>Enterprise_SalesArchive_Model_Mysql4</class>
+            <enterprise_salesarchive_resource>
+                <class>Enterprise_SalesArchive_Model_Resource</class>
+                <deprecatedNode>enterprise_salesarchive_mysql4</deprecatedNode>
                 <entities>
-                    <order_grid><table>enterprise_sales_order_grid_archive</table></order_grid>
-                    <invoice_grid><table>enterprise_sales_invoice_grid_archive</table></invoice_grid>
-                    <creditmemo_grid><table>enterprise_sales_creditmemo_grid_archive</table></creditmemo_grid>
-                    <shipment_grid><table>enterprise_sales_shipment_grid_archive</table></shipment_grid>
+                    <order_grid>
+                        <table>enterprise_sales_order_grid_archive</table>
+                    </order_grid>
+                    <invoice_grid>
+                        <table>enterprise_sales_invoice_grid_archive</table>
+                    </invoice_grid>
+                    <creditmemo_grid>
+                        <table>enterprise_sales_creditmemo_grid_archive</table>
+                    </creditmemo_grid>
+                    <shipment_grid>
+                        <table>enterprise_sales_shipment_grid_archive</table>
+                    </shipment_grid>
                 </entities>
-            </enterprise_salesarchive_mysql4>
+            </enterprise_salesarchive_resource>
         </models>
-
         <helpers>
             <enterprise_salesarchive>
                 <class>Enterprise_SalesArchive_Helper</class>
             </enterprise_salesarchive>
         </helpers>
-
         <resources>
             <enterprise_salesarchive_setup>
                 <setup>
                     <module>Enterprise_SalesArchive</module>
-                    <class>Enterprise_SalesArchive_Model_Mysql4_Setup</class>
+                    <class>Enterprise_SalesArchive_Model_Resource_Setup</class>
                 </setup>
             </enterprise_salesarchive_setup>
         </resources>
-
         <events>
-            <!-- Handle order grid records update -->
             <sales_order_resource_update_grid_records>
                 <observers>
                     <enterprise_salesarchive>
@@ -81,7 +84,6 @@
                     </enterprise_salesarchive>
                 </observers>
             </sales_order_resource_update_grid_records>
-            <!-- Handle invoice grid records update -->
             <sales_order_invoice_resource_update_grid_records>
                 <observers>
                     <enterprise_salesarchive>
@@ -91,7 +93,6 @@
                     </enterprise_salesarchive>
                 </observers>
             </sales_order_invoice_resource_update_grid_records>
-            <!-- Handle shipments grid records update -->
             <sales_order_shipment_resource_update_grid_records>
                 <observers>
                     <enterprise_salesarchive>
@@ -101,7 +102,6 @@
                     </enterprise_salesarchive>
                 </observers>
             </sales_order_shipment_resource_update_grid_records>
-            <!-- Handle creditmemo grid records update -->
             <sales_order_creditmemo_resource_update_grid_records>
                 <observers>
                     <enterprise_salesarchive>
@@ -133,7 +133,6 @@
             </updates>
         </layout>
         <events>
-            <!-- Mark order as archived -->
             <sales_order_load_after>
                 <observers>
                     <enterprise_salesarchive>
@@ -143,7 +142,6 @@
                     </enterprise_salesarchive>
                 </observers>
             </sales_order_load_after>
-            <!-- Mark invoice as archived -->
             <sales_order_invoice_load_after>
                 <observers>
                     <enterprise_salesarchive>
@@ -153,7 +151,6 @@
                     </enterprise_salesarchive>
                 </observers>
             </sales_order_invoice_load_after>
-            <!-- Mark shipment as archived -->
             <sales_order_shipment_load_after>
                 <observers>
                     <enterprise_salesarchive>
@@ -163,7 +160,6 @@
                     </enterprise_salesarchive>
                 </observers>
             </sales_order_shipment_load_after>
-            <!-- Mark creditmemo as archived -->
             <sales_order_creditmemo_load_after>
                 <observers>
                     <enterprise_salesarchive>
@@ -184,7 +180,6 @@
             </sales_order_grid_collection_load_before>
         </events>
     </adminhtml>
-    
     <default>
         <sales>
             <enterprise_salesarchive>
@@ -197,8 +192,12 @@
     <crontab>
         <jobs>
             <enterprise_salesarchive_archive_orders>
-                <schedule><cron_expr>0 0 * * *</cron_expr></schedule>
-                <run><model>enterprise_salesarchive/observer::archiveOrdersByCron</model></run>
+                <schedule>
+                    <cron_expr>0 0 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>enterprise_salesarchive/observer::archiveOrdersByCron</model>
+                </run>
             </enterprise_salesarchive_archive_orders>
         </jobs>
     </crontab>

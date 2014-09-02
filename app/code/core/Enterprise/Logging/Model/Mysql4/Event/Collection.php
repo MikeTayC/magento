@@ -20,30 +20,18 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
+
 /**
  * Log items collection
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Logging
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Logging_Model_Mysql4_Event_Collection extends Mage_Core_Model_Mysql4_Collection_Abstract
+class Enterprise_Logging_Model_Mysql4_Event_Collection extends Enterprise_Logging_Model_Resource_Event_Collection
 {
-    /**
-     * Initialize resource
-     */
-    protected function _construct()
-    {
-        $this->_init('enterprise_logging/event');
-    }
-
-    /**
-     * Minimize usual count select
-     *
-     * @return Varien_Db_Select
-     */
-    public function getSelectCountSql()
-    {
-        return parent::getSelectCountSql()->resetJoinLeft();
-    }
 }

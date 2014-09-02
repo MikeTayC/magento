@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogEvent
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -28,9 +28,10 @@
 /**
  * Catalog Event resource setup
  *
- * @category   Enterprise
- * @package    Enterprise_CatalogEvent
+ * @category    Enterprise
+ * @package     Enterprise_CatalogEvent
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_CatalogEvent_Model_Mysql4_Setup extends Mage_Sales_Model_Mysql4_Setup
+class Enterprise_CatalogEvent_Model_Mysql4_Setup extends Enterprise_CatalogEvent_Model_Resource_Setup
 {
 }

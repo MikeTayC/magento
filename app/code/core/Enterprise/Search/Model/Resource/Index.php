@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -32,7 +32,7 @@
  * @author     Magento Core Team <core@magentocommerce.com>
  */
 
-class Enterprise_Search_Model_Resource_Index extends Mage_CatalogSearch_Model_Mysql4_Fulltext
+class Enterprise_Search_Model_Resource_Index extends Mage_CatalogSearch_Model_Resource_Fulltext
 {
     /**
      * Define product count processed at one iteration
@@ -88,11 +88,9 @@ class Enterprise_Search_Model_Resource_Index extends Mage_CatalogSearch_Model_My
     {
         $adapter = $this->_getWriteAdapter();
         $prefix  = $this->_engine->getFieldsPrefix();
+
         $columns = array(
-            'product_id'    => 'product_id',
-            'parents'       => new Zend_Db_Expr("GROUP_CONCAT(IF(is_parent = 1, category_id, '') SEPARATOR ' ')"),
-            'anchors'       => new Zend_Db_Expr("GROUP_CONCAT(IF(is_parent = 0, category_id, '') SEPARATOR ' ')"),
-            'positions'     => new Zend_Db_Expr("GROUP_CONCAT(CONCAT(category_id, '_', position) SEPARATOR ' ')"),
+            'product_id' => 'product_id',
         );
 
         if ($visibility) {
@@ -104,6 +102,12 @@ class Enterprise_Search_Model_Resource_Index extends Mage_CatalogSearch_Model_My
             ->where('product_id IN (?)', $productIds)
             ->where('store_id = ?', $storeId)
             ->group('product_id');
+
+        $helper = Mage::getResourceHelper('core');
+        $helper->addGroupConcatColumn($select, 'parents', 'category_id', ' ', ',', 'is_parent = 1');
+        $helper->addGroupConcatColumn($select, 'anchors', 'category_id', ' ', ',', 'is_parent = 0');
+        $helper->addGroupConcatColumn($select, 'positions', array('category_id', 'position'), ' ', '_');
+        $select  = $helper->getQueryUsingAnalyticFunction($select);
 
         $result = array();
         foreach ($adapter->fetchAll($select) as $row) {
@@ -159,7 +163,7 @@ class Enterprise_Search_Model_Resource_Index extends Mage_CatalogSearch_Model_My
     /**
      * Prepare advanced index for products
      *
-     * @see Mage_CatalogSearch_Model_Mysql4_Fulltext->_getSearchableProducts()
+     * @see Mage_CatalogSearch_Model_Resource_Fulltext->_getSearchableProducts()
      *
      * @param   array $index
      * @param   int $storeId

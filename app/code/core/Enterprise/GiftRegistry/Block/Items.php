@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -59,8 +59,18 @@ class Enterprise_GiftRegistry_Block_Items extends Mage_Checkout_Block_Cart
                     ->setOptions($item->getOptions());
 
                 $product->setCustomOptions($item->getOptionsByCode());
-
-                $quoteItem->setGiftRegistryPrice($product->getFinalPrice());
+                if (Mage::helper('catalog')->canApplyMsrp($product)) {
+                    $quoteItem->setCanApplyMsrp(true);
+                    $product->setRealPriceHtml(
+                        Mage::app()->getStore()->formatPrice(Mage::app()->getStore()->convertPrice(
+                            Mage::helper('tax')->getPrice($product, $product->getFinalPrice(), true)
+                        ))
+                    );
+                    $product->setAddToCartUrl($this->helper('checkout/cart')->getAddUrl($product));
+                } else {
+                    $quoteItem->setGiftRegistryPrice($product->getFinalPrice());
+                    $quoteItem->setCanApplyMsrp(false);
+                }
 
                 $quoteItemsCollection[] = $quoteItem;
             }

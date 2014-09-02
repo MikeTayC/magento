@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -46,6 +46,7 @@ class Enterprise_GiftRegistry_Block_Adminhtml_Customer_Grid extends Mage_Adminht
      */
     protected function _prepareCollection()
     {
+        /** @var $collection Enterprise_GiftRegistry_Model_Resource_Entity_Collection */
         $collection = Mage::getModel('enterprise_giftregistry/entity')->getCollection();
         $collection->filterByCustomerId($this->getRequest()->getParam('id'));
         $collection->addRegistryInfo();

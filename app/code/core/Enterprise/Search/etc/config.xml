@@ -21,24 +21,22 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_Search>
-             <version>1.8.0.0.2</version>
+             <version>1.11.0.0</version>
         </Enterprise_Search>
     </modules>
-
     <global>
         <models>
              <enterprise_search>
                 <class>Enterprise_Search_Model</class>
                 <resourceModel>enterprise_search_resource</resourceModel>
              </enterprise_search>
-
              <enterprise_search_resource>
                  <class>Enterprise_Search_Model_Resource</class>
                  <entities>
@@ -126,6 +124,51 @@
                     </enterprise_search>
                 </observers>
             </customer_group_save_after>
+
+            <website_delete_before>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>saveStoreIdsBeforeScopeDelete</method>
+                    </enterprise_search>
+                </observers>
+            </website_delete_before>
+
+            <store_group_delete_before>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>saveStoreIdsBeforeScopeDelete</method>
+                    </enterprise_search>
+                </observers>
+            </store_group_delete_before>
+
+            <website_delete_after>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>clearIndexForStores</method>
+                    </enterprise_search>
+                </observers>
+            </website_delete_after>
+
+            <store_group_delete_after>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>clearIndexForStores</method>
+                    </enterprise_search>
+                </observers>
+            </store_group_delete_after>
+
+            <store_delete_after>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>clearIndexForStores</method>
+                    </enterprise_search>
+                </observers>
+            </store_delete_after>
         </events>
         <translate>
             <modules>
@@ -146,16 +189,36 @@
                 </enterprise_search>
             </updates>
         </layout>
+
         <events>
-            <catalog_controller_category_init_after>
+            <controller_action_predispatch_catalog_category_view>
                 <observers>
                     <enterprise_search>
                         <class>enterprise_search/observer</class>
                         <method>resetCurrentCatalogLayer</method>
                     </enterprise_search>
                 </observers>
-            </catalog_controller_category_init_after>
+            </controller_action_predispatch_catalog_category_view>
+
+            <controller_action_predispatch_catalogsearch_result_index>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>resetCurrentSearchLayer</method>
+                    </enterprise_search>
+                </observers>
+            </controller_action_predispatch_catalogsearch_result_index>
+
+            <controller_action_predispatch_catalogsearch_advanced_result>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>resetCurrentSearchLayer</method>
+                    </enterprise_search>
+                </observers>
+            </controller_action_predispatch_catalogsearch_advanced_result>
         </events>
+
         <translate>
             <modules>
                 <Enterprise_Search>

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -28,24 +28,10 @@
 /**
  * TargetRule Crosssell Catalog Product List Index Resource Model
  *
- * @category   Enterprise
- * @package    Enterprise_TargetRule
+ * @category    Enterprise
+ * @package     Enterprise_TargetRule
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_TargetRule_Model_Mysql4_Index_Crosssell extends Enterprise_TargetRule_Model_Mysql4_Index_Abstract
+class Enterprise_TargetRule_Model_Mysql4_Index_Crosssell extends Enterprise_TargetRule_Model_Resource_Index_Crosssell
 {
-    /**
-     * Product List Type identifier
-     *
-     * @var int
-     */
-    protected $_listType    = Enterprise_TargetRule_Model_Rule::CROSS_SELLS;
-
-    /**
-     * Initialize connection and define main table
-     *
-     */
-    protected function _construct()
-    {
-        $this->_init('enterprise_targetrule/index_crosssell', 'entity_id');
-    }
 }

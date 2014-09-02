@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -206,7 +206,8 @@ class Enterprise_Staging_Model_Observer
     /**
      * Take down entire frontend if required
      *
-     * @param Varien_Event_Observer $observer
+     * @param   Varien_Event_Observer $observer
+     * @return  Enterprise_Staging_Model_Observer|void
      */
     public function takeFrontendDown($observer)
     {
@@ -247,6 +248,68 @@ class Enterprise_Staging_Model_Observer
                 }
             }
             return $this;
+        }
+    }
+
+    /**
+     * Remember product original website ids before save
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function rememberProductOriginalWebsiteIds(Varien_Event_Observer $observer)
+    {
+        /* var Mage_Catalog_Model_Product $product */
+        $product = $observer->getEvent()->getProduct();
+
+        /* Website ids don't save at origData
+         because they are not collected before request parameters are set to product model */
+        $origWebsiteIds = Mage::getModel('catalog/product')->setId($product->getId())->getWebsiteIds();
+        $product->setOrigData('website_ids', $origWebsiteIds);
+    }
+
+    /**
+     * Change unlinked product association for staging website on product save
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function changeUnlinkedProductWebsiteAssociation(Varien_Event_Observer $observer)
+    {
+        /* var Mage_Catalog_Model_Product $product */
+        $product    = $observer->getEvent()->getProduct();
+        $productId  = $product->getId();
+
+        $newWebsiteIds      = $product->getWebsiteIds();
+        $productOrigData    = $product->getOrigData();
+        $oldWebsiteIds      = $productOrigData['website_ids'];
+        unset($productOrigData);
+        $productUnlinkedSingleton = Mage::getSingleton('enterprise_staging/staging_product_unlinked');
+
+        $unlinkedWebsiteIds = array_diff($oldWebsiteIds, $newWebsiteIds);
+        $productUnlinkedSingleton->addProductsUnlinkAssociations($productId, $unlinkedWebsiteIds);
+        unset($unlinkedWebsiteIds);
+
+        $linkedWebsiteIds = array_diff($newWebsiteIds, $oldWebsiteIds);
+        $productUnlinkedSingleton->removeProductsUnlinkAssociations($productId, $linkedWebsiteIds);
+        unset($linkedWebsiteIds);
+    }
+
+    /**
+     * Change unlinked product association for staging websites on mass products website update
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function massProductWebsiteUpdate(Varien_Event_Observer $observer)
+    {
+        $websiteIds = $observer->getEvent()->getWebsiteIds();
+        $productIds = $observer->getEvent()->getProductIds();
+        $action     = $observer->getEvent()->getAction();
+
+        $productUnlinkedSingleton = Mage::getSingleton('enterprise_staging/staging_product_unlinked');
+
+        if ($action == 'add') {
+            $productUnlinkedSingleton->removeProductsUnlinkAssociations($productIds, $websiteIds);
+        } elseif ($action == 'remove') {
+            $productUnlinkedSingleton->addProductsUnlinkAssociations($productIds, $websiteIds);
         }
     }
 }

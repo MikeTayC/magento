@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -93,7 +93,7 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
      * @param int $storeId
      * @param string $date
      *
-     * @return string
+     * @return string|null
      */
     protected function _getSolrDate($storeId, $date = null)
     {
@@ -163,7 +163,7 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
                 } else {
                     $result = array();
                     foreach ($value as $val) {
-                        if (is_array($value)) {
+                        if (is_array($val)) {
                             $result = array_merge($result, explode($this->_separator, $val));
                         }
                     }
@@ -179,7 +179,7 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
                 unset($data[$key]);
             } elseif (in_array($backendType, $this->_textFieldTypes) || in_array($key, $this->_searchTextFields)) {
                 /*
-                 * for groupped products imploding all possible unique values
+                 * for grouped products imploding all possible unique values
                  */
                 if (is_array($value)) {
                     $value = implode(' ', array_unique($value));
@@ -196,14 +196,19 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
 
                 if ($backendType == 'datetime') {
                     if (is_array($value)) {
-                        foreach ($value as &$val) {
+                        foreach ($value as $k => &$val) {
                             $val = $this->_getSolrDate($data['store_id'], $val);
+                            if (empty($val)) {
+                                unset($value[$k]);
+                            }
                         }
                     } else {
                         $value = $this->_getSolrDate($data['store_id'], $value);
                     }
                 }
-                $data['attr_'. $backendType .'_'. $key] = $value;
+                if (!empty($value)) {
+                    $data['attr_'. $backendType .'_'. $key] = $value;
+                }
                 unset($data[$key]);
             }
         }
@@ -232,8 +237,7 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
                             ? $this->_prepareQueryText($value['to'])
                             : '*';
                         $fieldCondition = "$field:[$from TO $to]";
-                    }
-                    else {
+                    } else {
                         $fieldCondition = array();
                         foreach ($value as $part) {
                             $part = $this->_prepareFilterQueryText($part);
@@ -241,8 +245,7 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
                         }
                         $fieldCondition = '('. implode(' OR ', $fieldCondition) .')';
                     }
-                }
-                else {
+                } else {
                     if ($value != '*') {
                         $value = $this->_prepareQueryText($value);
                     }
@@ -253,8 +256,7 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
             }
 
             $searchConditions = implode(' AND ', $searchConditions);
-        }
-        else {
+        } else {
             $searchConditions = $this->_prepareQueryText($query);
         }
 
@@ -276,10 +278,10 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
             foreach ($facetFields as $facetField => $facetFieldConditions) {
                 if (empty($facetFieldConditions)) {
                     $result['facet.field'][] = $facetField;
-                }
-                else {
+                } else {
                     foreach ($facetFieldConditions as $facetCondition) {
-                        if (is_array($facetCondition) && isset($facetCondition['from']) && isset($facetCondition['to'])) {
+                        if (is_array($facetCondition) && isset($facetCondition['from'])
+                                && isset($facetCondition['to'])) {
                             $from = (isset($facetCondition['from']) && strlen(trim($facetCondition['from'])))
                                 ? $this->_prepareQueryText($facetCondition['from'])
                                 : '*';
@@ -287,8 +289,7 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
                                 ? $this->_prepareQueryText($facetCondition['to'])
                                 : '*';
                             $fieldCondition = "$facetField:[$from TO $to]";
-                        }
-                        else {
+                        } else {
                             $facetCondition = $this->_prepareQueryText($facetCondition);
                             $fieldCondition = $this->_prepareFieldCondition($facetField, $facetCondition);
                         }
@@ -316,11 +317,14 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
             foreach ($filters as $field => $value) {
                 if (is_array($value)) {
                     if ($field == 'price' || isset($value['from']) || isset($value['to'])) {
-                        $from = (isset($value['from']) && !empty($value['from'])) ? $this->_prepareFilterQueryText($value['from']) : '*';
-                        $to = (isset($value['to']) && !empty($value['to'])) ? $this->_prepareFilterQueryText($value['to']) : '*';
+                        $from = (isset($value['from']) && !empty($value['from']))
+                            ? $this->_prepareFilterQueryText($value['from'])
+                            : '*';
+                        $to = (isset($value['to']) && !empty($value['to']))
+                            ? $this->_prepareFilterQueryText($value['to'])
+                            : '*';
                         $fieldCondition = "$field:[$from TO $to]";
-                    }
-                    else {
+                    } else {
                         $fieldCondition = array();
                         foreach ($value as $part) {
                             $part = $this->_prepareFilterQueryText($part);
@@ -328,8 +332,7 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
                         }
                         $fieldCondition = '(' . implode(' OR ', $fieldCondition) . ')';
                     }
-                }
-                else {
+                } else {
                     $value = $this->_prepareFilterQueryText($value);
                     $fieldCondition = $this->_prepareFieldCondition($field, $value);
                 }
@@ -419,10 +422,9 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
     }
 
     /**
-     * Retrive attribute field's name for sorting
+     * Retrieve attribute field's name for sorting
      *
-     * @param Mage_Catalog_Model_Resource_Eav_Attribute $attribute
-     *
+     * @param string $attributeCode
      * @return string
      */
     public function getAttributeSolrFieldName($attributeCode)
@@ -432,25 +434,7 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
         }
         $entityType     = Mage::getSingleton('eav/config')->getEntityType('catalog_product');
         $attribute      = Mage::getSingleton('eav/config')->getAttribute($entityType, $attributeCode);
-        $field          = $attributeCode;
-        $backendType    = $attribute->getBackendType();
-        $frontendInput  = $attribute->getFrontendInput();
 
-        if ($frontendInput == 'multiselect') {
-            $field = 'attr_multi_'. $field;
-        } elseif ($frontendInput == 'select' || $frontendInput == 'boolean') {
-            $field = 'attr_select_'. $field;
-        } elseif ($backendType == 'decimal') {
-            $field = 'attr_decimal_'. $field;
-        } elseif (in_array($backendType, $this->_textFieldTypes)) {
-            $languageCode = $this->_getLanguageCodeByLocaleCode(
-                Mage::app()->getStore()
-                ->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE));
-            $languageSuffix = ($languageCode) ? '_' . $languageCode : '';
-
-            $field .= $languageSuffix;
-        }
-
-        return $field;
+        return Mage::helper('enterprise_search')->getAttributeSolrFieldName($attribute);
     }
 }

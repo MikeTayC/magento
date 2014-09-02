@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -76,7 +76,11 @@ class Enterprise_Reminder_Model_Rule_Condition_Wishlist_Quantity
         $wishlistItemTable = $this->getResource()->getTable('wishlist/item');
         $operator = $this->getResource()->getSqlOperator($this->getOperator());
         $value = (int) $this->getValue();
-        $result = "IF (COUNT(*) {$operator} $value, 1, 0)";
+        $result = $this->getResource()->getReadConnection()->getCheckSql(
+            "COUNT(*) {$operator} {$value}",
+            1,
+            0
+        );
 
         $select = $this->getResource()->createSelect();
         $select->from(array('item' => $wishlistItemTable), array(new Zend_Db_Expr($result)));

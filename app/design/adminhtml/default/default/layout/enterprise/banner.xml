@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -102,6 +102,7 @@
                 </block>
             </block>
             <action method="addTab"><name>banners_section</name><block>catalogrule.related.banners</block></action>
+            <block type="enterprise_banner/adminhtml_permission_monitor" name="bannner.permission.monitor"/>
         </reference>
     </adminhtml_promo_catalog_edit>
 
@@ -129,6 +130,7 @@
                 </block>
             </block>
             <action method="addTab"><name>banners_section</name><block>salesrule.related.banners</block></action>
+            <block type="enterprise_banner/adminhtml_permission_monitor" name="bannner.permission.monitor"/>
         </reference>
     </adminhtml_promo_quote_edit>
 

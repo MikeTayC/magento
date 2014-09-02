@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 /* @var $this Enterprise_Customer_Block_Adminhtml_Customer_Formtype_Edit_Tab_Tree */
@@ -287,7 +287,7 @@ var formType = {
     },
     save: function(continueEdit) {
         this.collectChilds(this.treeRoot);
-        $('form_type_data').value = this.treeData.toJSON();
+        $('form_type_data').value = Object.toJSON(this.treeData);
         $('continue_edit').value = continueEdit ? 1 : 0;
         editForm.submit();
     }

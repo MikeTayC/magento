@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -540,13 +540,13 @@ class Enterprise_Logging_Model_Handler_Controllers
         $change = Mage::getModel('enterprise_logging/event_changes');
         $data = $request->getParam('rate');
         $values = array();
-        if(!is_array($data)){
+        if (!is_array($data)) {
             return false;
         }
         foreach ($data as $currencyCode => $rate) {
-            foreach( $rate as $currencyTo => $value ) {
+            foreach ($rate as $currencyTo => $value) {
                 $value = abs($value);
-                if( $value == 0 ) {
+                if ($value == 0) {
                     continue;
                 }
                 $values[] = $currencyCode . '=>' . $currencyTo . ': ' . $value;

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -62,11 +62,15 @@ class Enterprise_Reward_Block_Adminhtml_Sales_Order_Create_Payment extends Mage_
     public function canUseRewardPoints()
     {
         $websiteId = Mage::app()->getStore($this->getQuote()->getStoreId())->getWebsiteId();
-        $minPointsBalance = (int)Mage::getStoreConfig(Enterprise_Reward_Model_Reward::XML_PATH_MIN_POINTS_BALANCE, $this->getQuote()->getStoreId());
+        $minPointsBalance = (int)Mage::getStoreConfig(
+            Enterprise_Reward_Model_Reward::XML_PATH_MIN_POINTS_BALANCE,
+            $this->getQuote()->getStoreId()
+        );
 
-        return $this->getReward()->getPointsBalance() >= $minPointsBalance 
+        return $this->getReward()->getPointsBalance() >= $minPointsBalance
             && Mage::helper('enterprise_reward')->isEnabledOnFront($websiteId)
-            && Mage::getSingleton('admin/session')->isAllowed('enterprise_reward/affect')
+            && Mage::getSingleton('admin/session')
+                ->isAllowed(Enterprise_Reward_Helper_Data::XML_PATH_PERMISSION_AFFECT)
             && (float)$this->getCurrencyAmount();
     }
 

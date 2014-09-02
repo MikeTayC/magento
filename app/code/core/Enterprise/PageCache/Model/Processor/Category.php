@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -34,6 +34,13 @@ class Enterprise_PageCache_Model_Processor_Category extends Enterprise_PageCache
     );
 
     /**
+     * Query params
+     *
+     * @var string
+     */
+    protected $_queryParams;
+
+    /**
      * Return cache page id with application. Depends on catalog session and GET super global array.
      *
      * @param Enterprise_PageCache_Model_Processor $processor
@@ -41,13 +48,10 @@ class Enterprise_PageCache_Model_Processor_Category extends Enterprise_PageCache
      */
     public function getPageIdInApp(Enterprise_PageCache_Model_Processor $processor)
     {
-        $this->_prepareCatalogSession();
-
-        $queryParams = array_merge($this->_getSessionParams(), $_GET);
-        ksort($queryParams);
-        $queryParams = json_encode($queryParams);
+        $queryParams = $this->_getQueryParams();
 
         Enterprise_PageCache_Model_Cookie::setCategoryCookieValue($queryParams);
+        $this->_prepareCatalogSession();
 
         return $processor->getRequestId() . '_' . md5($queryParams);
     }
@@ -114,19 +118,42 @@ class Enterprise_PageCache_Model_Processor_Category extends Enterprise_PageCache
     }
 
     /**
-     * Update catalog session from cookies
+     * Update catalog session from GET or cookies
+     *
+     * @param string $queryParams
      */
     protected function _prepareCatalogSession()
     {
-        $sessionParams = Enterprise_PageCache_Model_Cookie::getCategoryCookieValue();
-        if ($sessionParams) {
+        $queryParams = json_decode($this->_getQueryParams(), true);
+        if (empty($queryParams)) {
+            $queryParams = Enterprise_PageCache_Model_Cookie::getCategoryCookieValue();
+            $queryParams = json_decode($queryParams, true);
+        }
+
+        if (is_array($queryParams) && !empty($queryParams)) {
             $session = Mage::getSingleton('catalog/session');
-            $sessionParams = (array)json_decode($sessionParams);
-            foreach ($sessionParams as $key => $value) {
+            $flipParamsMap = array_flip($this->_paramsMap);
+            foreach ($queryParams as $key => $value) {
                 if (in_array($key, $this->_paramsMap)) {
-                    $session->setData($key, $value);
+                    $session->setData($flipParamsMap[$key], $value);
                 }
             }
         }
+    }
+
+    /**
+     * Return merged session and GET params
+     *
+     * @return string
+     */
+    protected function _getQueryParams()
+    {
+        if (is_null($this->_queryParams)) {
+            $queryParams = array_merge($this->_getSessionParams(), $_GET);
+            ksort($queryParams);
+            $this->_queryParams = json_encode($queryParams);
+        }
+
+        return $this->_queryParams;
     }
 }

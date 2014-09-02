@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -133,32 +133,30 @@ class Enterprise_Reminder_Model_Rule_Condition_Cart
 
         $this->_limitByStoreWebsite($select, $website, 'quote.store_id');
 
-        $currentDateStart = now(true);
+        $currentTime = Mage::getModel('core/date')->gmtDate('Y-m-d');
+        $daysDiffSql = Mage::getResourceHelper('enterprise_reminder')
+            ->getDateDiff('quote.updated_at', $select->getAdapter()->formatDate($currentTime));
+
         if ($operator == '=') {
-            $select
-                ->where("UNIX_TIMESTAMP('". $currentDateStart ."' - INTERVAL ? DAY) < UNIX_TIMESTAMP(quote.updated_at)",
-                    $conditionValue)
-                ->where("UNIX_TIMESTAMP('". $currentDateStart ."' - INTERVAL ? DAY) > UNIX_TIMESTAMP(quote.updated_at)",
-                    $conditionValue - 1);
+            $select->where($daysDiffSql . ' < ?', $conditionValue);
+            $select->where($daysDiffSql . ' > ?', $conditionValue - 1);
         } else {
             if ($operator == '>=') {
                 if ($conditionValue > 0) {
                     $conditionValue--;
                 } else {
-                    $currentDateStart = now();
+                    $currentTime = Mage::getModel('core/date')->gmtDate();
+                    $daysDiffSql = Mage::getResourceHelper('enterprise_reminder')
+                        ->getDateDiff('quote.updated_at', $select->getAdapter()->formatDate($currentTime));
                 }
             }
-
-            $select
-                ->where("UNIX_TIMESTAMP('". $currentDateStart ."' - INTERVAL ? DAY) {$operator} UNIX_TIMESTAMP(quote.updated_at)",
-                    $conditionValue);
+            $select->where($daysDiffSql . " {$operator} ?", $conditionValue);
         }
 
-        $select->where('quote.is_active = 1')
-            ->where('quote.items_count > 0')
-            ->where($this->_createCustomerFilter($customer, 'quote.customer_id'))
-            ->limit(1);
-
+        $select->where('quote.is_active = 1');
+        $select->where('quote.items_count > 0');
+        $select->where($this->_createCustomerFilter($customer, 'quote.customer_id'));
+        Mage::getResourceHelper('enterprise_reminder')->setRuleLimit($select, 1);
         return $select;
     }
 
@@ -179,7 +177,7 @@ class Enterprise_Reminder_Model_Rule_Condition_Cart
 
         foreach ($this->getConditions() as $condition) {
             if ($sql = $condition->getConditionsSql($customer, $website)) {
-                $conditions[] = "(IFNULL(($sql), 0) {$operator} 1)";
+                $conditions[] = "(" . $select->getAdapter()->getIfNullSql("(" . $sql . ")", 0) . " {$operator} 1)";
             }
         }
 

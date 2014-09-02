@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -29,7 +29,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 class Enterprise_PageCache_Model_Container_Banner
@@ -87,7 +87,7 @@ class Enterprise_PageCache_Model_Container_Banner
         if (!$lifetime) {
             $lifetime = false;
         }
-        Mage::app()->getCache()->save($data, $id, $tags, $lifetime);
+        Enterprise_PageCache_Model_Cache::getCacheInstance()->save($data, $id, $tags, $lifetime);
         return $this;
     }
 
@@ -246,6 +246,8 @@ class Enterprise_PageCache_Model_Container_Banner
         $suggestedParams = array();
         $suggestedParams['bannersSelected'] = $this->_bannersSelected;
         $suggestedParams['bannersSequence'] = $this->_bannersSequence;
+
+        Mage::dispatchEvent('render_block', array('block' => $block, 'placeholder' => $this->_placeholder));
 
         $renderedInfo = $block->setSuggestedParams($suggestedParams)
             ->setTemplate($placeholder->getAttribute('template'))

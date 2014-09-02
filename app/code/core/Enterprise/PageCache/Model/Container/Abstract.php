@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -146,7 +146,7 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
      */
     protected function _loadCache($id)
     {
-        return Mage::app()->getCache()->load($id);
+        return Enterprise_PageCache_Model_Cache::getCacheInstance()->load($id);
     }
 
     /**
@@ -169,7 +169,7 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
          */
         Enterprise_PageCache_Helper_Url::replaceSid($data);
 
-        Mage::app()->getCache()->save($data, $id, $tags, $lifetime);
+        Enterprise_PageCache_Model_Cache::getCacheInstance()->save($data, $id, $tags, $lifetime);
         return $this;
     }
 

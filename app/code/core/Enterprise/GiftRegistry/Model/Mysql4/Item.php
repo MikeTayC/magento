@@ -20,54 +20,18 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
+
 /**
  * Gift registry entity items resource model
+ *
+ * @category    Enterprise
+ * @package     Enterprise_GiftRegistry
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_GiftRegistry_Model_Mysql4_Item extends Mage_Core_Model_Mysql4_Abstract
+class Enterprise_GiftRegistry_Model_Mysql4_Item extends Enterprise_GiftRegistry_Model_Resource_Item
 {
-    protected function _construct() {
-        $this->_init('enterprise_giftregistry/item', 'item_id');
-    }
-
-    /**
-     * Add creation date to object
-     *
-     * @param Mage_Core_Model_Abstract $object
-     * @return Mage_Core_Model_Mysql4_Abstract
-     */
-    protected function _beforeSave(Mage_Core_Model_Abstract $object)
-    {
-        if (!$object->getAddedAt()) {
-            $object->setAddedAt($this->formatDate(time()));
-        }
-        return parent::_beforeSave($object);
-    }
-
-    /**
-     * Load item by registry id and product id
-     *
-     * @param Enterprise_GiftRegistry_Model_Item $object
-     * @param int $registryId
-     * @param int $productId
-     * @return Enterprise_GiftRegistry_Model_Mysql4_Item
-     */
-    public function loadByProductRegistry($object, $registryId, $productId)
-    {
-        $adapter = $this->_getReadAdapter();
-        $select  = $adapter->select()
-            ->from($this->getMainTable())
-            ->where('entity_id=?', $registryId)
-            ->where('product_id=?', $productId);
-
-        if ($data = $adapter->fetchRow($select)) {
-            $object->setData($data);
-        }
-
-        $this->_afterLoad($object);
-        return $this;
-    }
 }

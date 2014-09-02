@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_GoogleCheckout
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -67,10 +67,10 @@ class Mage_GoogleCheckout_Model_Shipping extends Mage_Shipping_Model_Carrier_Abs
     public function getInternallyAllowedMethods()
     {
         return array(
-            'carrier' => 'Carrier',
+            'carrier'  => 'Carrier',
             'merchant' => 'Merchant',
             'flatrate' => 'Flat Rate',
-            'pickup' => 'Pickup'
+            'pickup'   => 'Pickup'
         );
     }
 }

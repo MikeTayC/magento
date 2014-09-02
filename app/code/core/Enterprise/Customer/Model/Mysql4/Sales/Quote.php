@@ -20,29 +20,18 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Customer
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
 
 /**
  * Customer Quote Mysql4 resource
  *
+ * @category    Enterprise
+ * @package     Enterprise_Customer
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Customer_Model_Mysql4_Sales_Quote extends Enterprise_Customer_Model_Mysql4_Sales_Abstract
+class Enterprise_Customer_Model_Mysql4_Sales_Quote extends Enterprise_Customer_Model_Resource_Sales_Quote
 {
-    /**
-     * Main entity resource model name
-     *
-     * @var string
-     */
-    protected $_parentResourceModelName = 'sales/quote';
-
-    /**
-     * Initialize Mysql4 resource
-     *
-     */
-    protected function _construct()
-    {
-        $this->_init('enterprise_customer/sales_quote', 'entity_id');
-    }
 }

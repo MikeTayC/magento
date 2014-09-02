@@ -20,11 +20,11 @@
  *
  * @category    Enterprise
  * @package     Enterprise_WebsiteRestriction
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
-/* @var $installer Enterprise_WebsiteRestriction_Model_Mysql4_Setup */
+/* @var $installer Enterprise_WebsiteRestriction_Model_Resource_Setup */
 $installer = $this;
 $installer->startSetup();
 

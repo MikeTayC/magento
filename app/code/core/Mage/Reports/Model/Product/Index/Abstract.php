@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Reports
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -161,6 +161,7 @@ abstract class Mage_Reports_Model_Product_Index_Abstract extends Mage_Core_Model
     public function calculate()
     {
         $collection = $this->getCollection()
+            ->setCustomerId($this->getCustomerId())
             ->addIndexFilter();
 
         Mage::getSingleton('catalog/product_visibility')

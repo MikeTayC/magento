@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -138,21 +138,24 @@ abstract class Enterprise_CustomerSegment_Model_Condition_Combine_Abstract exten
         /**
          * Build base SQL
          */
-        $select         = $this->_prepareConditionsSql($customer, $website);
-        $required       = $this->_getRequiredValidation();
-        $whereFunction  = ($this->getAggregator() == 'all') ? 'where' : 'orWhere';
-        $operator       = $required ? '=' : '<>';
-
-        $gotConditions = false;
+        $select     = $this->_prepareConditionsSql($customer, $website);
+        $required   = $this->_getRequiredValidation();
+        $aggregator = ($this->getAggregator() == 'all') ? ' AND ' : ' OR ';
+        $operator   = $required ? '=' : '<>';
+        $conditions = array();
 
         /**
          * Add children subselects conditions
          */
+        $adapter = $this->getResource()->getReadConnection();
         foreach ($this->getConditions() as $condition) {
             if ($sql = $condition->getConditionsSql($customer, $website)) {
-                $criteriaSql = "(IFNULL(($sql), 0) {$operator} 1)";
-                $select->$whereFunction($criteriaSql);
-                $gotConditions = true;
+                if($sql instanceof Varien_Db_Select) {
+                    $isnull = $adapter->getIfNullSql($sql);
+                } else {
+                    $isnull = $adapter->getCheckSql($sql, 1, 0);
+                }
+                $conditions[] = "($isnull {$operator} 1)";
             }
         }
 
@@ -168,17 +171,14 @@ abstract class Enterprise_CustomerSegment_Model_Condition_Combine_Abstract exten
                     $condition->setCombineHistory($this->_combineHistory);
                     $subfilter = $condition->getSubfilterSql($subfilterMap[$subfilterType], $required, $website);
                     if ($subfilter) {
-                        $subfilters[] = $subfilter;
-                        $gotConditions = true;
+                        $conditions[] = $subfilter;
                     }
                 }
             }
         }
 
-        if ($gotConditions) {
-            $select->where(implode(($this->getAggregator() == 'all') ? ' AND ' : ' OR ', $subfilters));
-        } else {
-            $select->where('1=1');
+        if (!empty($conditions)) {
+            $select->where(implode($aggregator, $conditions));
         }
 
         return $select;

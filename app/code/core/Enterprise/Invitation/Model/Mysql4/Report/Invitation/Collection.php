@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Invitation
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -28,61 +28,11 @@
 /**
  * Reports invitation report collection
  *
- * @category   Enterprise
- * @package    Enterprise_Invitation
+ * @category    Enterprise
+ * @package     Enterprise_Invitation
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_Invitation_Model_Mysql4_Report_Invitation_Collection
-    extends Enterprise_Invitation_Model_Mysql4_Invitation_Collection
+    extends Enterprise_Invitation_Model_Resource_Report_Invitation_Collection
 {
-
-    /**
-     * Joins Invitation report data, and filter by date
-     *
-     * @param Zend_Date|string $from
-     * @param Zend_Date|string $to
-     * @return Enterprise_Invitation_Model_Mysql4_Report_Invitation_Collection
-     */
-    public function setDateRange($from, $to)
-    {
-        $this->_reset();
-
-        $this->addFieldToFilter('date', array('from' => $from, 'to' => $to, 'time'=>true))
-            ->getSelect()
-            ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(array(
-                'sent' => new Zend_Db_Expr('COUNT(main_table.invitation_id)'),
-                'accepted' => new Zend_Db_Expr('COUNT(DISTINCT main_table.referral_id)'),
-                'canceled' => new Zend_Db_Expr('COUNT(DISTINCT IF(main_table.status = \'canceled\', main_table.invitation_id, NULL)) '),
-                'canceled_rate' => new Zend_Db_Expr('COUNT(DISTINCT IF(main_table.status = \'canceled\', main_table.invitation_id, NULL)) / COUNT(main_table.invitation_id) * 100'),
-                'accepted_rate' => new Zend_Db_Expr('COUNT(DISTINCT main_table.referral_id) / COUNT(main_table.invitation_id) * 100')
-            ))->group('("*")');
-
-        $this->_joinFields($from, $to);
-
-        return $this;
-    }
-
-    /**
-     * Join custom fields
-     *
-     * @return Enterprise_Invitation_Model_Mysql4_Report_Invitation_Collection
-     */
-    protected function _joinFields()
-    {
-        return $this;
-    }
-
-    /**
-     * Filters report by stores
-     *
-     * @param array $storeIds
-     * @return Enterprise_Invitation_Model_Mysql4_Report_Invitation_Collection
-     */
-    public function setStoreIds($storeIds)
-    {
-        if ($storeIds) {
-            $this->addFieldToFilter('main_table.store_id', array('in' => (array)$storeIds));
-        }
-        return $this;
-    }
 }

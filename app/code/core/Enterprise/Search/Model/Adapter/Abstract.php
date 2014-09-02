@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -234,8 +234,9 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
              * Merge attributes to fulltext fields according to their search weights
              */
             $attributesWeights = array();
+            $attributesSpell = array();
             $needToReplaceSeparator = ($this->_separator != ' ');
-            $currentCurrency = Mage::app()->getStore($index['store_id'])->getCurrentCurrency();
+            $currentCurrency = Mage::app()->getStore($index['store_id'])->getDefaultCurrency();
             foreach ($index as $code => $value) {
                 $weight = 0;
                 $isSearchable = 0;
@@ -270,8 +271,10 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
                     }
 
                     $attributesWeights['fulltext' . $weight][] = $value;
+                    $attributesSpell[] = $value;
                 }
             }
+            $index['fulltext_spell'] = $this->_implodeIndexData($attributesSpell);
 
             foreach ($attributesWeights as $key => $value) {
                 $index[$key] = $this->_implodeIndexData($value);
@@ -295,6 +298,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
             }
             $docs[] = $doc;
         }
+
         return $docs;
     }
 
@@ -340,21 +344,23 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
 
         try {
             $this->_client->ping();
-            $response = $this->_client->addDocuments($_docs);
+            $this->_client->addDocuments($_docs);
         } catch (Exception $e) {
             $this->rollback();
             Mage::logException($e);
         }
+
         $this->optimize();
+
         return $this;
     }
 
     /**
      * Remove documents from Solr index
      *
-     * @param int|string|array $docIDs
-     * @param string|array $queries if "all" specified and $docIDs are empty, then all documents will be removed
-     * @return unknown
+     * @param  int|string|array $docIDs
+     * @param  string|array|null $queries if "all" specified and $docIDs are empty, then all documents will be removed
+     * @return Enterprise_Search_Model_Adapter_Abstract
      */
     public function deleteDocs($docIDs = array(), $queries = null)
     {
@@ -375,16 +381,18 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
             $_deleteBySuffix = 'Queries';
             $params = $queries;
         }
+
         if ($params) {
             $deleteMethod = sprintf('deleteBy%s', $_deleteBySuffix);
 
             try {
                 $this->_client->ping();
-                $response = $this->_client->$deleteMethod($params);
+                $this->_client->$deleteMethod($params);
             } catch (Exception $e) {
                 $this->rollback();
                 Mage::logException($e);
             }
+
             $this->optimize();
         }
 
@@ -692,9 +700,8 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
             return array();
         }
 
-        //$data = array_intersect_key($data, array_flip($this->_usedFields));
         foreach ($data as $code => $value) {
-            if( !in_array($code, $this->_usedFields) && strpos($code, 'fulltext') !== 0 ) {
+            if(!in_array($code, $this->_usedFields) && strpos($code, 'fulltext') !== 0 ) {
                 unset($data[$code]);
             }
         }
@@ -702,7 +709,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
         $languageCode = $this->_getLanguageCodeByLocaleCode($localeCode);
         if ($languageCode) {
             foreach ($data as $key => $value) {
-                if ( in_array($key, $this->_searchTextFields) || strpos($key, 'fulltext') === 0) {
+                if (in_array($key, $this->_searchTextFields) || strpos($key, 'fulltext') === 0) {
                     $data[$key . '_' . $languageCode] = $value;
                     unset($data[$key]);
                 }
@@ -759,12 +766,13 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
     /**
      * Escape a value for special query characters such as ':', '(', ')', '*', '?', etc.
      *
+     * @link http://lucene.apache.org/java/docs/queryparsersyntax.html#Escaping%20Special%20Characters
+     *
      * @param string $value
      * @return string
      */
     public function _escape($value)
     {
-        //list taken from http://lucene.apache.org/java/docs/queryparsersyntax.html#Escaping%20Special%20Characters
         $pattern = '/(\+|-|&&|\|\||!|\(|\)|\{|}|\[|]|\^|"|~|\*|\?|:|\\\)/';
         $replace = '\\\$1';
 
@@ -810,6 +818,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
         } else {
             $fieldCondition = $field .':'. $value;
         }
+
         return $fieldCondition;
     }
 
@@ -849,7 +858,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
 
         $res = array();
         foreach ($object['facet_fields'] as $attr => $val) {
-            foreach ((array)$val as $key => $value) {
+            foreach ($val as $key => $value) {
                 $res[$attr][$key] = $value;
             }
         }

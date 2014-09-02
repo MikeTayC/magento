@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Customer
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -32,15 +32,6 @@
  * @package     Enterprise_Customer
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Customer_Block_Form_Renderer_Select extends Enterprise_Customer_Block_Form_Renderer_Abstract
+class Enterprise_Customer_Block_Form_Renderer_Select extends Enterprise_Eav_Block_Form_Renderer_Select
 {
-    /**
-     * Return array of select options
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->getAttributeObject()->getSource()->getAllOptions();
-    }
 }

@@ -20,28 +20,19 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Customer
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
 
 /**
  * Customer Order Address Mysql4 model
  *
+ * @category    Enterprise
+ * @package     Enterprise_Customer
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Customer_Model_Mysql4_Sales_Order_Address extends Enterprise_Customer_Model_Mysql4_Sales_Address_Abstract
+class Enterprise_Customer_Model_Mysql4_Sales_Order_Address
+    extends Enterprise_Customer_Model_Resource_Sales_Order_Address
 {
-    /**
-     * Main entity resource model name
-     *
-     * @var string
-     */
-    protected $_parentResourceModelName = 'sales/order_address';
-
-    /**
-     * Initializes Mysql4 resource
-     */
-    protected function _construct()
-    {
-        $this->_init('enterprise_customer/sales_order_address', 'entity_id');
-    }
 }

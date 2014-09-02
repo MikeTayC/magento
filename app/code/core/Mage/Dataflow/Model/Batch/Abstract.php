@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Dataflow
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -44,13 +44,13 @@ abstract class Mage_Dataflow_Model_Batch_Abstract extends Mage_Core_Model_Abstra
     public function setBatchData($data)
     {
         if ('"libiconv"' == ICONV_IMPL) {
-            foreach ($data as $key => &$value) {
+            foreach ($data as &$value) {
                 $value = iconv('utf-8', 'utf-8//IGNORE', $value);
             }
         }
 
         $this->setData('batch_data', serialize($data));
-        
+
         return $this;
     }
 

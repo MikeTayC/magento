@@ -20,8 +20,16 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+
+/**
+ * Search engine resource model
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Search
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_Search_Model_Resource_Engine
 {
@@ -105,6 +113,14 @@ class Enterprise_Search_Model_Resource_Engine
         return $this->_adapter->getIdsByQuery($query, $params);
     }
 
+    /**
+     * Retrieve found document statuses
+     *
+     * @param string $query
+     * @param array $params
+     * @param string $entityType
+     * @return array
+     */
     public function getStats($query, $params = array(), $entityType = 'product')
     {
         return $this->_adapter->getStats($query, $params);
@@ -191,37 +207,42 @@ class Enterprise_Search_Model_Resource_Engine
     /**
      * Remove entity data from search index
      *
-     * @param int $storeId
-     * @param int $entityId
-     * @param string $entityType 'product'|'cms'
+     * For deletion of all documents parameters should be null. Empty array will do nothing.
+     *
+     * @param  int|array|null $storeIds
+     * @param  int|array|null $entityIds
+     * @param  string $entityType 'product'|'cms'
      * @return Enterprise_Search_Model_Resource_Engine
      */
-    public function cleanIndex($storeId = null, $entityId = null, $entityType = 'product')
+    public function cleanIndex($storeIds = null, $entityIds = null, $entityType = 'product')
     {
-        if ($storeId == Mage_Core_Model_App::ADMIN_STORE_ID) {
-            foreach (Mage::app()->getStores(false) as $store) {
-                $this->cleanIndex($store->getId(), $entityId, $entityType);
-            }
-
+        if ($storeIds === array() || $entityIds === array()) {
             return $this;
         }
 
-        if (is_null($storeId) && is_null($entityId)) {
-            $this->_adapter->deleteDocs(array(), 'all');
-        } else if (is_null($storeId) && !is_null($entityId)) {
-            $this->_adapter->deleteDocs($entityId);
-        } else if (!is_null($storeId) && is_null($entityId)) {
-            $this->_adapter->deleteDocs(array(), array('store_id:' . $storeId));
-        } else if (!is_null($storeId) && !is_null($entityId)) {
-            $idsQuery = array();
-            if (!is_array($entityId)) {
-                $entityId = array($entityId);
-            }
-            foreach ($entityId as $id) {
-                $idsQuery[] = $this->_adapter->getUniqueKey() . ':' . $id . '|' . $storeId;
-            }
-            $this->_adapter->deleteDocs(array(), array('store_id:' . $storeId . ' AND (' . implode(' OR ', $idsQuery) . ')'));
+        if (is_null($storeIds) || $storeIds == Mage_Core_Model_App::ADMIN_STORE_ID) {
+            $storeIds = array_keys(Mage::app()->getStores());
+        } else {
+            $storeIds = (array) $storeIds;
         }
+
+        $queries = array();
+        if (empty($entityIds)) {
+            foreach ($storeIds as $storeId) {
+                $queries[] = 'store_id:' . $storeId;
+            }
+        } else {
+            $entityIds = (array) $entityIds;
+            $uniqueKey = $this->_adapter->getUniqueKey();
+            foreach ($storeIds as $storeId) {
+                foreach ($entityIds as $entityId) {
+                    $queries[] = $uniqueKey . ':' . $entityId . '|' . $storeId;
+                }
+            }
+        }
+
+        $this->_adapter->deleteDocs(array(), $queries);
+
         return $this;
     }
 
@@ -278,8 +299,9 @@ class Enterprise_Search_Model_Resource_Engine
 
         foreach ($productData as $field => $value) {
             if (in_array($field, $this->_advancedStaticIndexFields)
-                || $this->_isDynamicField($field)) {
-                if (!empty($value)){
+                || $this->_isDynamicField($field)
+            ) {
+                if (!empty($value)) {
                     $advancedIndex[$field] = $value;
                 }
             }
@@ -310,7 +332,7 @@ class Enterprise_Search_Model_Resource_Engine
     /**
      * Prepare advanced index for products
      *
-     * @see Mage_CatalogSearch_Model_Mysql4_Fulltext->_getSearchableProducts()
+     * @see Mage_CatalogSearch_Model_Resource_Fulltext->_getSearchableProducts()
      *
      * @param array $index
      * @param int $storeId

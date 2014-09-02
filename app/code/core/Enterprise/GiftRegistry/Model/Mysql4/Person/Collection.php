@@ -20,36 +20,19 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
+
 /**
  * Gift registry entity registrants collection
+ *
+ * @category    Enterprise
+ * @package     Enterprise_GiftRegistry
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_GiftRegistry_Model_Mysql4_Person_Collection
-    extends Mage_Core_Model_Mysql4_Collection_Abstract
+    extends Enterprise_GiftRegistry_Model_Resource_Person_Collection
 {
-
-    /**
-     * Intialize collection
-     *
-     * @return void
-     */
-    protected function _construct()
-    {
-        $this->_init('enterprise_giftregistry/person');
-    }
-
-    /**
-     * Apply entity filter to collection
-     *
-     * @param int $entityId
-     * @return Enterprise_GiftRegistry_Model_Mysql4_Entity_Collection
-     */
-    public function addRegistryFilter($entityId)
-    {
-        $this->getSelect()->where('main_table.entity_id = ?', $entityId);
-        return $this;
-    }
 }

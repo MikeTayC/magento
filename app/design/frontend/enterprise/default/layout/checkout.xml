@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -201,8 +201,13 @@ Multi address shipping checkout selection of address per item page
     <checkout_multishipping_customer_address translate="label">
         <label>Multishipping Checkout Customer Address Edit Form</label>
         <reference name="content">
-            <block type="customer/address_edit" name="customer_address_edit" template="customer/address/edit.phtml"/>
+            <block type="customer/address_edit" name="customer_address_edit" template="customer/address/edit.phtml">
+                <block type="enterprise_customer/form" template="customer/form/userattributes.phtml" name="customer_form_user_attributes">
+                    <action method="setFormCode"><code>customer_address_edit</code></action>
+                </block>
+            </block>
         </reference>
+        <update handle="customer_form_template_handle"/>
     </checkout_multishipping_customer_address>
 
 <!--

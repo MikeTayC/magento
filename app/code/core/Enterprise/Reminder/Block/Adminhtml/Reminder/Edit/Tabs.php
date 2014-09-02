@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -53,17 +53,20 @@ class Enterprise_Reminder_Block_Adminhtml_Reminder_Edit_Tabs
     {
         $this->addTab('general_section', array(
             'label'   => Mage::helper('enterprise_reminder')->__('Rule Information'),
-            'content' => $this->getLayout()->createBlock('enterprise_reminder/adminhtml_reminder_edit_tab_general')->toHtml(),
+            'content' => $this->getLayout()->createBlock('enterprise_reminder/adminhtml_reminder_edit_tab_general',
+                'adminhtml_reminder_edit_tab_general')->toHtml(),
         ));
 
         $this->addTab('conditions_section', array(
             'label'   => Mage::helper('enterprise_reminder')->__('Conditions'),
-            'content' => $this->getLayout()->createBlock('enterprise_reminder/adminhtml_reminder_edit_tab_conditions')->toHtml()
+            'content' => $this->getLayout()->createBlock('enterprise_reminder/adminhtml_reminder_edit_tab_conditions',
+                'adminhtml_reminder_edit_tab_conditions')->toHtml()
         ));
 
         $this->addTab('template_section', array(
             'label'   => Mage::helper('enterprise_reminder')->__('Emails and Labels'),
-            'content' => $this->getLayout()->createBlock('enterprise_reminder/adminhtml_reminder_edit_tab_templates')->toHtml()
+            'content' => $this->getLayout()->createBlock('enterprise_reminder/adminhtml_reminder_edit_tab_templates',
+                'adminhtml_reminder_edit_tab_templates')->toHtml()
         ));
 
         $rule = Mage::registry('current_reminder_rule');

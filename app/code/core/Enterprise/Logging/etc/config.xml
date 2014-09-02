@@ -21,20 +21,25 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_Logging>
-            <version>0.2.3</version>
+            <version>1.11.0.0</version>
         </Enterprise_Logging>
     </modules>
     <global>
         <models>
-            <enterprise_logging_mysql4>
-                <class>Enterprise_Logging_Model_Mysql4</class>
+            <enterprise_logging>
+                <class>Enterprise_Logging_Model</class>
+                <resourceModel>enterprise_logging_resource</resourceModel>
+            </enterprise_logging>
+            <enterprise_logging_resource>
+                <class>Enterprise_Logging_Model_Resource</class>
+                <deprecatedNode>enterprise_logging_mysql4</deprecatedNode>
                 <entities>
                     <event>
                         <table>enterprise_logging_event</table>
@@ -43,11 +48,7 @@
                         <table>enterprise_logging_event_changes</table>
                     </event_changes>
                 </entities>
-            </enterprise_logging_mysql4>
-            <enterprise_logging>
-                <class>Enterprise_Logging_Model</class>
-                <resourceModel>enterprise_logging_mysql4</resourceModel>
-            </enterprise_logging>
+            </enterprise_logging_resource>
         </models>
         <blocks>
             <enterprise_logging>
@@ -78,7 +79,6 @@
                     </enterprise_logging>
                 </observers>
             </controller_action_predispatch>
-
             <controller_action_postdispatch_adminhtml>
                 <observers>
                     <enterprise_logging>
@@ -87,7 +87,6 @@
                     </enterprise_logging>
                 </observers>
             </controller_action_postdispatch_adminhtml>
-
             <model_save_after>
                 <observers>
                     <enterprise_logging>
@@ -96,7 +95,6 @@
                     </enterprise_logging>
                 </observers>
             </model_save_after>
-
             <model_delete_after>
                 <observers>
                     <enterprise_logging>
@@ -105,7 +103,6 @@
                     </enterprise_logging>
                 </observers>
             </model_delete_after>
-
             <model_load_after>
                 <observers>
                     <enterprise_logging>
@@ -114,7 +111,6 @@
                     </enterprise_logging>
                 </observers>
             </model_load_after>
-
             <admin_session_user_login_success>
                 <observers>
                     <enterprise_logging>
@@ -123,7 +119,6 @@
                     </enterprise_logging>
                 </observers>
             </admin_session_user_login_success>
-
             <admin_session_user_login_failed>
                 <observers>
                     <enterprise_logging>
@@ -152,11 +147,9 @@
         <enterprise>
             <logging>
                 <skip_fields>updated_at,form_key</skip_fields>
-                <!--Coma separated list of fields that should not be logged for all models-->
             </logging>
         </enterprise>
     </adminhtml>
-
     <admin>
         <routers>
             <adminhtml>
@@ -168,7 +161,6 @@
             </adminhtml>
         </routers>
     </admin>
-
     <default>
         <system>
             <rotation translate="frequency">
@@ -177,14 +169,16 @@
             </rotation>
         </system>
     </default>
-
     <crontab>
         <jobs>
             <enterprise_logging_rotate_logs>
-                <schedule><cron_expr>1 2 * * *</cron_expr></schedule>
-                <run><model>enterprise_logging/observer::rotateLogs</model></run>
+                <schedule>
+                    <cron_expr>1 2 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>enterprise_logging/observer::rotateLogs</model>
+                </run>
             </enterprise_logging_rotate_logs>
         </jobs>
     </crontab>
-
 </config>

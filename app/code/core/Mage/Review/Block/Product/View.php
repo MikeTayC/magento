@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Review
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -74,7 +74,7 @@ class Mage_Review_Block_Product_View extends Mage_Catalog_Block_Product_View
         if (null === $this->_reviewsCollection) {
             $this->_reviewsCollection = Mage::getModel('review/review')->getCollection()
                 ->addStoreFilter(Mage::app()->getStore()->getId())
-                ->addStatusFilter('approved')
+                ->addStatusFilter(Mage_Review_Model_Review::STATUS_APPROVED)
                 ->addEntityFilter('product', $this->getProduct()->getId())
                 ->setDateOrder();
         }

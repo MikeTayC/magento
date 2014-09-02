@@ -20,7 +20,7 @@
  *
  * @category    Varien
  * @package     Varien_Image
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -118,7 +118,7 @@ class Varien_Image
      */
     public function crop($top=0, $left=0, $right=0, $bottom=0)
     {
-        $this->_getAdapter()->crop($left, $top, $right, $bottom);
+        $this->_getAdapter()->crop($top, $left, $right, $bottom);
     }
 
     /**

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -113,8 +113,8 @@ class Enterprise_Reminder_Adminhtml_ReminderController extends Mage_Adminhtml_Co
 
         $model->getConditions()->setJsFormObject('rule_conditions_fieldset');
 
-        $block =  $this->getLayout()->createBlock('enterprise_reminder/adminhtml_reminder_edit')
-            ->setData('form_action_url', $this->getUrl('*/*/save'));
+        $block =  $this->getLayout()->createBlock('enterprise_reminder/adminhtml_reminder_edit',
+            'adminhtml_reminder_edit')->setData('form_action_url', $this->getUrl('*/*/save'));
 
         $this->_initAction();
 
@@ -126,8 +126,8 @@ class Enterprise_Reminder_Adminhtml_ReminderController extends Mage_Adminhtml_Co
                 $model->getId() ? $this->__('Edit Rule') : $this->__('New Rule'),
                 $model->getId() ? $this->__('Edit Rule') : $this->__('New Rule'))
             ->_addContent($block)
-            ->_addLeft($this->getLayout()->createBlock('enterprise_reminder/adminhtml_reminder_edit_tabs'))
-            ->renderLayout();
+            ->_addLeft($this->getLayout()->createBlock('enterprise_reminder/adminhtml_reminder_edit_tabs',
+                'adminhtml_reminder_edit_tabs'))->renderLayout();
     }
 
     /**

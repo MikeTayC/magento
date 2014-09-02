@@ -20,12 +20,23 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Gift registry types processing model
+ *
+ * @method Enterprise_GiftRegistry_Model_Resource_Type _getResource()
+ * @method Enterprise_GiftRegistry_Model_Resource_Type getResource()
+ * @method string getCode()
+ * @method Enterprise_GiftRegistry_Model_Type setCode(string $value)
+ * @method string getMetaXml()
+ * @method Enterprise_GiftRegistry_Model_Type setMetaXml(string $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_GiftRegistry
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_GiftRegistry_Model_Type extends Mage_Core_Model_Abstract
 {
@@ -45,7 +56,7 @@ class Enterprise_GiftRegistry_Model_Type extends Mage_Core_Model_Abstract
      */
     protected function _beforeSave()
     {
-        if (!$this->getStoreId()) {
+        if (!$this->hasStoreId() && !$this->getStoreId()) {
             $xmlModel = Mage::getModel('enterprise_giftregistry/attribute_processor');
             $this->setMetaXml($xmlModel->processData($this));
             $this->_cleanupData();

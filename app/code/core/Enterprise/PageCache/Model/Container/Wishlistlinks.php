@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -59,6 +59,8 @@ class Enterprise_PageCache_Model_Container_Wishlistlinks extends Enterprise_Page
     {
         $block = $this->_placeholder->getAttribute('block');
         $block = new $block;
+        $block->setLayout(Mage::app()->getLayout());
+        Mage::dispatchEvent('render_block', array('block' => $block, 'placeholder' => $this->_placeholder));
         return $block->toHtml();
     }
 }

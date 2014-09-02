@@ -20,12 +20,40 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Entity data model
+ *
+ * @method Enterprise_GiftRegistry_Model_Resource_Entity _getResource()
+ * @method Enterprise_GiftRegistry_Model_Resource_Entity getResource()
+ * @method Enterprise_GiftRegistry_Model_Entity setTypeId(int $value)
+ * @method int getCustomerId()
+ * @method Enterprise_GiftRegistry_Model_Entity setCustomerId(int $value)
+ * @method int getWebsiteId()
+ * @method Enterprise_GiftRegistry_Model_Entity setWebsiteId(int $value)
+ * @method int getIsPublic()
+ * @method Enterprise_GiftRegistry_Model_Entity setIsPublic(int $value)
+ * @method string getUrlKey()
+ * @method Enterprise_GiftRegistry_Model_Entity setUrlKey(string $value)
+ * @method string getTitle()
+ * @method Enterprise_GiftRegistry_Model_Entity setTitle(string $value)
+ * @method string getMessage()
+ * @method Enterprise_GiftRegistry_Model_Entity setMessage(string $value)
+ * @method string getShippingAddress()
+ * @method Enterprise_GiftRegistry_Model_Entity setShippingAddress(string $value)
+ * @method string getCustomValues()
+ * @method Enterprise_GiftRegistry_Model_Entity setCustomValues(string $value)
+ * @method int getIsActive()
+ * @method Enterprise_GiftRegistry_Model_Entity setIsActive(int $value)
+ * @method string getCreatedAt()
+ * @method Enterprise_GiftRegistry_Model_Entity setCreatedAt(string $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_GiftRegistry
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_GiftRegistry_Model_Entity extends Mage_Core_Model_Abstract
 {

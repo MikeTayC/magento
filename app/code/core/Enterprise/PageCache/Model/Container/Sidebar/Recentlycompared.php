@@ -20,14 +20,15 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Recently compared sidebar container
  */
-class Enterprise_PageCache_Model_Container_Sidebar_Recentlycompared extends Enterprise_PageCache_Model_Container_Abstract
+class Enterprise_PageCache_Model_Container_Sidebar_Recentlycompared
+    extends Enterprise_PageCache_Model_Container_Abstract
 {
     /**
      * Get identifier from cookies
@@ -47,7 +48,8 @@ class Enterprise_PageCache_Model_Container_Sidebar_Recentlycompared extends Ente
      */
     protected function _getCacheId()
     {
-        return 'CONTAINER_RECENTLYCOMPARED_' . md5($this->_placeholder->getAttribute('cache_id') . $this->_getIdentifier());
+        return 'CONTAINER_RECENTLYCOMPARED_' . md5($this->_placeholder->getAttribute('cache_id')
+                . $this->_getIdentifier());
     }
 
     /**
@@ -62,6 +64,7 @@ class Enterprise_PageCache_Model_Container_Sidebar_Recentlycompared extends Ente
 
         $block = new $block;
         $block->setTemplate($template);
+        $block->setLayout(Mage::app()->getLayout());
 
         return $block->toHtml();
     }

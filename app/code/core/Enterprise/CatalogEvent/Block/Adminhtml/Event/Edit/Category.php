@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogEvent
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -101,7 +101,7 @@ class Enterprise_CatalogEvent_Block_Adminhtml_Event_Edit_Category extends Mage_A
             'parent_id'      => (int)$node->getParentId(),
             'children_count' => (int)$node->getChildrenCount(),
             'is_active'      => (bool)$node->getIsActive(),
-            'disabled'     => ($node->getLevel() <= 1 || in_array(
+            'disabled'       => ($node->getLevel() <= 1 || in_array(
                                     $node->getId(),
                                     $this->helper('enterprise_catalogevent/adminhtml_event')->getInEventCategoryIds()
                                 )),

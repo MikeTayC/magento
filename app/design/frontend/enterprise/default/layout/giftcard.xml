@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -125,7 +125,7 @@
             </action>
         </reference>
     </default>
-    
+
     <wishlist_index_index>
         <reference name="customer.wishlist">
             <action method="addOptionsRenderCfg"><type>giftcard</type><helper>enterprise_giftcard/catalog_product_configuration</helper></action>
@@ -311,13 +311,94 @@
         </reference>
     </sales_order_printcreditmemo>
 
+<!--
+For guests
+-->
+    <sales_guest_view>
+        <reference name="order_items">
+            <action method="addItemRender">
+                <type>giftcard</type>
+                <block>enterprise_giftcard/sales_order_item_renderer</block>
+                <template>sales/order/items/renderer/default.phtml</template>
+            </action>
+        </reference>
+    </sales_guest_view>
 
+    <sales_guest_invoice>
+        <reference name="invoice_items">
+            <action method="addItemRender">
+                <type>giftcard</type>
+                <block>enterprise_giftcard/sales_order_item_renderer</block>
+                <template>sales/order/invoice/items/renderer/default.phtml</template>
+            </action>
+        </reference>
+    </sales_guest_invoice>
+
+    <sales_guest_shipment>
+        <reference name="shipment_items">
+            <action method="addItemRender">
+                <type>giftcard</type>
+                <block>enterprise_giftcard/sales_order_item_renderer</block>
+                <template>sales/order/shipment/items/renderer/default.phtml</template>
+            </action>
+        </reference>
+    </sales_guest_shipment>
+
+    <sales_guest_creditmemo>
+        <reference name="creditmemo_items">
+            <action method="addItemRender">
+                <type>giftcard</type>
+                <block>enterprise_giftcard/sales_order_item_renderer</block>
+                <template>sales/order/creditmemo/items/renderer/default.phtml</template>
+            </action>
+        </reference>
+    </sales_guest_creditmemo>
+
+    <sales_guest_print>
+        <reference name="sales.order.print">
+            <action method="addItemRender">
+                <type>giftcard</type>
+                <block>enterprise_giftcard/sales_order_item_renderer_noquote</block>
+                <template>sales/order/items/renderer/default.phtml</template>
+            </action>
+        </reference>
+    </sales_guest_print>
+
+    <sales_guest_printinvoice>
+        <reference name="sales.order.print.invoice">
+            <action method="addItemRender">
+                <type>giftcard</type>
+                <block>enterprise_giftcard/sales_order_item_renderer_noquote</block>
+                <template>sales/order/invoice/items/renderer/default.phtml</template>
+            </action>
+        </reference>
+    </sales_guest_printinvoice>
+
+    <sales_guest_printshipment>
+        <reference name="sales.order.print.shipment">
+            <action method="addItemRender">
+                <type>giftcard</type>
+                <block>enterprise_giftcard/sales_order_item_renderer_noquote</block>
+                <template>sales/order/shipment/items/renderer/default.phtml</template>
+            </action>
+        </reference>
+    </sales_guest_printshipment>
+
+    <sales_guest_printcreditmemo>
+        <reference name="sales.order.print.creditmemo">
+            <action method="addItemRender">
+                <type>giftcard</type>
+                <block>enterprise_giftcard/sales_order_item_renderer_noquote</block>
+                <template>sales/order/creditmemo/items/renderer/default.phtml</template>
+            </action>
+        </reference>
+    </sales_guest_printcreditmemo>
 
     <sales_email_order_items>
         <reference name="items">
             <action method="addItemRender">
                 <type>giftcard</type>
-                <block>enterprise_giftcard/sales_order_item_renderer</block>
+                <block>enterprise_giftcard/sales_order_item_renderer_noquote</block>
                 <template>email/order/items/order/default.phtml</template>
             </action>
         </reference>
@@ -327,7 +408,7 @@
         <reference name="items">
             <action method="addItemRender">
                 <type>giftcard</type>
-                <block>enterprise_giftcard/sales_order_item_renderer</block>
+                <block>enterprise_giftcard/sales_order_item_renderer_noquote</block>
                 <template>email/order/items/invoice/default.phtml</template>
             </action>
         </reference>
@@ -337,7 +418,7 @@
         <reference name="items">
             <action method="addItemRender">
                 <type>giftcard</type>
-                <block>enterprise_giftcard/sales_order_item_renderer</block>
+                <block>enterprise_giftcard/sales_order_item_renderer_noquote</block>
                 <template>email/order/items/shipment/default.phtml</template>
             </action>
         </reference>
@@ -347,7 +428,7 @@
         <reference name="items">
             <action method="addItemRender">
                 <type>giftcard</type>
-                <block>enterprise_giftcard/sales_order_item_renderer</block>
+                <block>enterprise_giftcard/sales_order_item_renderer_noquote</block>
                 <template>email/order/items/creditmemo/default.phtml</template>
             </action>
         </reference>

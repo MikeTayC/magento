@@ -20,11 +20,33 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 
+/**
+ * Enter description here ...
+ *
+ * @method Enterprise_GiftCardAccount_Model_Resource_History _getResource()
+ * @method Enterprise_GiftCardAccount_Model_Resource_History getResource()
+ * @method int getGiftcardaccountId()
+ * @method Enterprise_GiftCardAccount_Model_History setGiftcardaccountId(int $value)
+ * @method string getUpdatedAt()
+ * @method Enterprise_GiftCardAccount_Model_History setUpdatedAt(string $value)
+ * @method int getAction()
+ * @method Enterprise_GiftCardAccount_Model_History setAction(int $value)
+ * @method float getBalanceAmount()
+ * @method Enterprise_GiftCardAccount_Model_History setBalanceAmount(float $value)
+ * @method float getBalanceDelta()
+ * @method Enterprise_GiftCardAccount_Model_History setBalanceDelta(float $value)
+ * @method string getAdditionalInfo()
+ * @method Enterprise_GiftCardAccount_Model_History setAdditionalInfo(string $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_GiftCardAccount
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
 class Enterprise_GiftCardAccount_Model_History extends Mage_Core_Model_Abstract
 {
     const ACTION_CREATED  = 0;

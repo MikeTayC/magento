@@ -20,13 +20,13 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Gift wrapping resource setup
  */
-class Enterprise_GiftWrapping_Model_Resource_Mysql4_Setup extends Mage_Sales_Model_Mysql4_Setup
+class Enterprise_GiftWrapping_Model_Resource_Mysql4_Setup extends Enterprise_GiftWrapping_Model_Resource_Setup
 {
 }

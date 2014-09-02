@@ -20,23 +20,19 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
-abstract class Enterprise_GiftCardAccount_Model_Mysql4_Pool_Abstract extends Mage_Core_Model_Mysql4_Abstract
-{
-    /**
-     * Delete records in db using specified status as criteria
-     *
-     * @param int $status
-     * @return Enterprise_GiftCardAccount_Model_Mysql4_Pool_Abstract
-     */
-    public function cleanupByStatus($status)
-    {
 
-        $where = $this->_getWriteAdapter()->quoteInto('status = ?', $status);
-        $this->_getWriteAdapter()->delete($this->getMainTable(), $where);
-        return $this;
-    }
+/**
+ * Enter description here ...
+ *
+ * @category    Enterprise
+ * @package     Enterprise_GiftCardAccount
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
+class Enterprise_GiftCardAccount_Model_Mysql4_Pool_Abstract
+    extends Enterprise_GiftCardAccount_Model_Resource_Pool_Abstract
+{
 }

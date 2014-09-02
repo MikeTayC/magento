@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -31,13 +31,6 @@
  * @package     Enterprise_GiftRegistry
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_GiftRegistry_Model_Mysql4_Item_Option extends Mage_Core_Model_Mysql4_Abstract
+class Enterprise_GiftRegistry_Model_Mysql4_Item_Option extends Enterprise_GiftRegistry_Model_Resource_Item_Option
 {
-    /**
-     * Internal constructor
-     */
-    protected function _construct()
-    {
-        $this->_init('enterprise_giftregistry/item_option', 'option_id');
-    }
 }

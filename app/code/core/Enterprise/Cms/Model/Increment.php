@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -39,6 +39,17 @@
  * In case we will add something after revision something like sub-revision
  * we will need to use node = revision_id and level = 2  (for future).
  * Type is only one value '0' at this time bc revision control used only for pages.
+ *
+ * @method Enterprise_Cms_Model_Resource_Increment _getResource()
+ * @method Enterprise_Cms_Model_Resource_Increment getResource()
+ * @method int getType()
+ * @method Enterprise_Cms_Model_Increment setType(int $value)
+ * @method int getNode()
+ * @method Enterprise_Cms_Model_Increment setNode(int $value)
+ * @method int getLevel()
+ * @method Enterprise_Cms_Model_Increment setLevel(int $value)
+ * @method int getLastId()
+ * @method Enterprise_Cms_Model_Increment setLastId(int $value)
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
@@ -65,6 +76,21 @@ class Enterprise_Cms_Model_Increment extends Mage_Core_Model_Abstract
     {
         parent::_construct();
         $this->_init('enterprise_cms/increment');
+    }
+
+    /**
+     * Init mapping array of short fields to
+     * its full names
+     *
+     * @resturn Varien_Object
+     */
+    protected function _initOldFieldsMap()
+    {
+        $this->_oldFieldsMap = array(
+            'type'  => 'increment_type',
+            'node'  => 'increment_node',
+            'level' => 'increment_level'
+        );
     }
 
     /**

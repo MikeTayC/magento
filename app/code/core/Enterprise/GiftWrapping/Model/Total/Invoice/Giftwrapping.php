@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -49,7 +49,7 @@ class Enterprise_GiftWrapping_Model_Total_Invoice_Giftwrapping extends Mage_Sale
         foreach ($invoice->getAllItems() as $invoiceItem) {
             if (!$invoiceItem->getQty() || $invoiceItem->getQty() == 0) {
                 continue;
-            }   
+            }
             $orderItem = $invoiceItem->getOrderItem();
             if ($orderItem->getGwId() && $orderItem->getGwBasePrice()
                 && $orderItem->getGwBasePrice() != $orderItem->getGwBasePriceInvoiced()) {
@@ -80,25 +80,25 @@ class Enterprise_GiftWrapping_Model_Total_Invoice_Giftwrapping extends Mage_Sale
         /**
          * Printed card
          */
-        if ($order->getGwAddPrintedCard() && $order->getGwPrintedCardBasePrice()
-            && $order->getGwPrintedCardBasePrice() != $order->getGwPrintedCardBasePriceInvoiced()) {
-            $order->setGwPrintedCardBasePriceInvoiced($order->getGwPrintedCardBasePrice());
-            $order->setGwPrintedCardPriceInvoiced($order->getGwPrintedCardPrice());
-            $invoice->setGwPrintedCardBasePrice($order->getGwPrintedCardBasePrice());
-            $invoice->setGwPrintedCardPrice($order->getGwPrintedCardPrice());
+        if ($order->getGwAddCard() && $order->getGwCardBasePrice()
+            && $order->getGwCardBasePrice() != $order->getGwCardBasePriceInvoiced()) {
+            $order->setGwCardBasePriceInvoiced($order->getGwCardBasePrice());
+            $order->setGwCardPriceInvoiced($order->getGwCardPrice());
+            $invoice->setGwCardBasePrice($order->getGwCardBasePrice());
+            $invoice->setGwCardPrice($order->getGwCardPrice());
         }
 
         $invoice->setBaseGrandTotal(
             $invoice->getBaseGrandTotal()
             + $invoice->getGwItemsBasePrice()
             + $invoice->getGwBasePrice()
-            + $invoice->getGwPrintedCardBasePrice()
+            + $invoice->getGwCardBasePrice()
         );
         $invoice->setGrandTotal(
             $invoice->getGrandTotal()
             + $invoice->getGwItemsPrice()
             + $invoice->getGwPrice()
-            + $invoice->getGwPrintedCardPrice()
+            + $invoice->getGwCardPrice()
         );
         return $this;
     }

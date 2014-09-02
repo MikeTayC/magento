@@ -20,24 +20,19 @@
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
 
 /**
  * Customer region attribute source
  *
- * @category   Mage
- * @package    Mage_Customer
+ * @category    Mage
+ * @package     Mage_Customer
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Mage_Customer_Model_Entity_Address_Attribute_Source_Region extends Mage_Eav_Model_Entity_Attribute_Source_Table
+class Mage_Customer_Model_Entity_Address_Attribute_Source_Region
+    extends Mage_Customer_Model_Resource_Address_Attribute_Source_Region
 {
-    public function getAllOptions()
-    {
-        if (!$this->_options) {
-            $this->_options = Mage::getResourceModel('directory/region_collection')->load()->toOptionArray();
-        }
-        return $this->_options;
-    }
 }

@@ -20,10 +20,17 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
+/**
+ * Gift Registry controller
+ *
+ * @category    Enterprise
+ * @package     Enterprise_GiftRegistry
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
 class Enterprise_GiftRegistry_Adminhtml_Giftregistry_CustomerController extends Mage_Adminhtml_Controller_Action
 {
     protected function _initEntity($requestParam = 'id')
@@ -57,10 +64,10 @@ class Enterprise_GiftRegistry_Adminhtml_Giftregistry_CustomerController extends 
             $model = $this->_initEntity();
             $customer = Mage::getModel('customer/customer')->load($model->getCustomerId());
 
-            $this->_title($this->__('Customers'));
-            $this->_title($this->__('Manage Customers'));
-            $this->_title($this->__($customer->getName()));
-            $this->_title($this->__("Edit '%s' Gift Registry", $model->getTitle()));
+            $this->_title($this->__('Customers'))
+                ->_title($this->__('Manage Customers'))
+                ->_title($customer->getName())
+                ->_title($this->__("Edit '%s' Gift Registry", $model->getTitle()));
 
             $this->loadLayout()->renderLayout();
         } catch (Mage_Core_Exception $e) {
@@ -139,8 +146,9 @@ class Enterprise_GiftRegistry_Adminhtml_Giftregistry_CustomerController extends 
                     }
                 }
                 if ($updatedCount) {
-                    Mage::getSingleton('adminhtml/session')
-                        ->addSuccess($this->__('Gift registry items have been updated.'));
+                    Mage::getSingleton('adminhtml/session')->addSuccess(
+                        $this->__('Gift registry items have been updated.')
+                    );
                 }
             } catch (Mage_Core_Exception $e) {
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
@@ -177,8 +185,11 @@ class Enterprise_GiftRegistry_Adminhtml_Giftregistry_CustomerController extends 
                 $failedCount = 0;
                 foreach ($emails as $email) {
                     if (!empty($email)) {
-                        if ($model->sendShareRegistryEmail($email, $storeId, $this->getRequest()
-                            ->getParam('message'))
+                        if ($model->sendShareRegistryEmail(
+                                $email,
+                                $storeId,
+                                $this->getRequest()->getParam('message')
+                            )
                         ) {
                             $sentCount++;
                         } else {
@@ -199,8 +210,9 @@ class Enterprise_GiftRegistry_Adminhtml_Giftregistry_CustomerController extends 
                 $this->_getSession()->addSuccess($this->__('%d email(s) were sent.', $sentCount));
             }
             if ($failedCount) {
-                $this->_getSession()
-                    ->addError($this->__('Failed to send %1$d of %2$d email(s).', $failedCount, count($emailsForSend)));
+                $this->_getSession()->addError(
+                    $this->__('Failed to send %1$d of %2$d email(s).', $failedCount, count($emailsForSend))
+                );
             }
         }
         $this->_redirect('*/*/edit', array('id' => $model->getId()));
@@ -215,8 +227,9 @@ class Enterprise_GiftRegistry_Adminhtml_Giftregistry_CustomerController extends 
             $model = $this->_initEntity();
             $customerId = $model->getCustomerId();
             $model->delete();
-            Mage::getSingleton('adminhtml/session')
-                ->addSuccess($this->__('The gift registry entity has been deleted.'));
+            Mage::getSingleton('adminhtml/session')->addSuccess(
+                $this->__('The gift registry entity has been deleted.')
+            );
         }
         catch (Mage_Core_Exception $e) {
             Mage::getSingleton('adminhtml/session')->addError($e->getMessage());

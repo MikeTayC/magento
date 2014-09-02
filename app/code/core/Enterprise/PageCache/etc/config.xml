@@ -21,25 +21,26 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_PageCache>
-             <version>1.6.0.0.0</version>
+            <version>1.11.0.0</version>
         </Enterprise_PageCache>
     </modules>
     <global>
         <models>
             <enterprise_pagecache>
                 <class>Enterprise_PageCache_Model</class>
-                <resourceModel>enterprise_pagecache_mysql4</resourceModel>
+                <resourceModel>enterprise_pagecache_resource</resourceModel>
             </enterprise_pagecache>
-            <enterprise_pagecache_mysql4>
-                <class>Enterprise_PageCache_Model_Mysql4</class>
-            </enterprise_pagecache_mysql4>
+            <enterprise_pagecache_resource>
+                <class>Enterprise_PageCache_Model_Resource</class>
+                <deprecatedNode>enterprise_pagecache_mysql4</deprecatedNode>
+            </enterprise_pagecache_resource>
         </models>
         <blocks>
             <enterprise_pagecache>
@@ -53,7 +54,9 @@
         </helpers>
         <resources>
             <enterprise_pagecache_setup>
-                <setup><module>Enterprise_PageCache</module></setup>
+                <setup>
+                    <module>Enterprise_PageCache</module>
+                </setup>
             </enterprise_pagecache_setup>
         </resources>
         <cache>
@@ -148,7 +151,30 @@
                     </enterprise_pagecache>
                 </observers>
             </core_config_backend_design_exception_save_after>
-
+            <adminhtml_cache_refresh_type>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>cleanCache</method>
+                    </enterprise_pagecache>
+                </observers>
+            </adminhtml_cache_refresh_type>
+            <adminhtml_cache_flush_system>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>cleanCache</method>
+                    </enterprise_pagecache>
+                </observers>
+            </adminhtml_cache_flush_system>
+            <adminhtml_cache_flush_all>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>cleanCache</method>
+                    </enterprise_pagecache>
+                </observers>
+            </adminhtml_cache_flush_all>
         </events>
     </adminhtml>
     <frontend>
@@ -216,16 +242,20 @@
                         <class>enterprise_pagecache/observer</class>
                         <method>customerLogin</method>
                     </enterprise_pagecache>
+                    <enterprise_pagecache_compare_list_change>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>registerCompareListChange</method>
+                    </enterprise_pagecache_compare_list_change>
                 </observers>
             </customer_login>
-            <customer_logout>
+            <controller_action_postdispatch_customer_account_logoutSuccess>
                 <observers>
                     <enterprise_pagecache>
                         <class>enterprise_pagecache/observer</class>
                         <method>customerLogout</method>
                     </enterprise_pagecache>
                 </observers>
-            </customer_logout>
+            </controller_action_postdispatch_customer_account_logoutSuccess>
             <sales_quote_save_after>
                 <observers>
                     <enterprise_pagecache>
@@ -306,19 +336,28 @@
                     </enterprise_pagecache>
                 </observers>
             </sales_order_place_after>
-
+            <poll_vote_add>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>registerPollChange</method>
+                    </enterprise_pagecache>
+                </observers>
+            </poll_vote_add>
         </events>
         <cache>
             <requests>
-                <!--
-                    Supported definitions:
-                    <module_front_name>processor_model</module_front_name> - all module urls
-                    <module_front_name><controller>processor_model</controller></module_front_name> - all module controller actions
-                    <module_front_name><controller><action>processor_model</action></controller></module_front_name> - specific action
-                 -->
                 <cms>enterprise_pagecache/processor_default</cms>
-                <catalog><category><view>enterprise_pagecache/processor_category</view></category></catalog>
-                <catalog><product><view>enterprise_pagecache/processor_product</view></product></catalog>
+                <catalog>
+                    <category>
+                        <view>enterprise_pagecache/processor_category</view>
+                    </category>
+                </catalog>
+                <catalog>
+                    <product>
+                        <view>enterprise_pagecache/processor_product</view>
+                    </product>
+                </catalog>
             </requests>
         </cache>
     </frontend>
@@ -335,7 +374,7 @@
                 <multicurrency>1</multicurrency>
             </page_crawl>
         </system>
-        
+
         <dev>
             <translate_inline>
                 <invalid_caches>
@@ -347,8 +386,12 @@
     <crontab>
         <jobs>
             <enterprise_page_cache_crawler>
-                <schedule><cron_expr>0 3 * * *</cron_expr></schedule>
-                <run><model>enterprise_pagecache/crawler::crawl</model></run>
+                <schedule>
+                    <cron_expr>0 3 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>enterprise_pagecache/crawler::crawl</model>
+                </run>
             </enterprise_page_cache_crawler>
         </jobs>
     </crontab>

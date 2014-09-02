@@ -20,13 +20,26 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Customer balance model
  *
+ * @method Enterprise_CustomerBalance_Model_Resource_Balance _getResource()
+ * @method Enterprise_CustomerBalance_Model_Resource_Balance getResource()
+ * @method int getCustomerId()
+ * @method Enterprise_CustomerBalance_Model_Balance setCustomerId(int $value)
+ * @method int getWebsiteId()
+ * @method Enterprise_CustomerBalance_Model_Balance setWebsiteId(int $value)
+ * @method Enterprise_CustomerBalance_Model_Balance setAmount(float $value)
+ * @method string getBaseCurrencyCode()
+ * @method Enterprise_CustomerBalance_Model_Balance setBaseCurrencyCode(string $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_CustomerBalance
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_CustomerBalance_Model_Balance extends Mage_Core_Model_Abstract
 {
@@ -232,7 +245,7 @@ class Enterprise_CustomerBalance_Model_Balance extends Mage_Core_Model_Abstract
             return false;
         }
         return $this->getAmount() >=
-            ((float)$quote->getBaseGrandTotal() + (float)$quote->getBaseCustomerBalanceAmountUsed());
+            ((float)$quote->getBaseGrandTotal() + (float)$quote->getBaseCustomerBalAmountUsed());
     }
 
     /**

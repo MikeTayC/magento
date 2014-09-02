@@ -20,14 +20,19 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
-class Enterprise_GiftCardAccount_Model_Mysql4_Pool_Collection extends Mage_Core_Model_Mysql4_Collection_Abstract
+
+/**
+ * Enter description here ...
+ *
+ * @category    Enterprise
+ * @package     Enterprise_GiftCardAccount
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
+class Enterprise_GiftCardAccount_Model_Mysql4_Pool_Collection
+    extends Enterprise_GiftCardAccount_Model_Resource_Pool_Collection
 {
-    protected function _construct()
-    {
-        $this->_init('enterprise_giftcardaccount/pool');
-    }
 }

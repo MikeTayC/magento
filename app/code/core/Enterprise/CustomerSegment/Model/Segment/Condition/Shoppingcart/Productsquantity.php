@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -86,9 +86,10 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Shoppingcart_Productsqu
         $operator = $this->getResource()->getSqlOperator($this->getOperator());
 
         $select = $this->getResource()->createSelect();
-        $select->from(array('quote'=>$table), array(new Zend_Db_Expr(1)))
-            ->limit(1);
+        $select->from(array('quote'=>$table), array(new Zend_Db_Expr(1)));
+
         $this->_limitByStoreWebsite($select, $website, 'quote.store_id');
+        Mage::getResourceHelper('enterprise_customersegment')->setOneRowLimit($select);
 
         $select->where("quote.items_qty {$operator} ?", $this->getValue());
         $select->where($this->_createCustomerFilter($customer, 'quote.customer_id'));

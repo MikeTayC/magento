@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_GoogleOptimizer
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -67,7 +67,7 @@ class Mage_GoogleOptimizer_Model_Code_Product extends Mage_GoogleOptimizer_Model
         $attributesFlag = false;
         if ($attributes = $this->getAttributes()) {
             $attributesCount = 0;
-            foreach ($attributes as $_attributeId=>$_attributeValue) {
+            foreach ($attributes as $_attributeId => $_attributeValue) {
                 if ($_attributeValue != '') {
                     $attributesCount++;
                 }

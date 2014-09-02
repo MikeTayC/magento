@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -89,7 +89,7 @@ Enterprise.Staging.Mapper.prototype = {
             element.grid = grid;
             element.mapper = this;
             element.tableContainer = this.tableContainer;
-            Event.observe(element, 'change', selectWebsiteMap);
+            Event.observe(element, 'change', function (e) { selectWebsiteMap.call(this, e);});
         }.bind(this));
     },
     addWebsiteMap : function()
@@ -547,7 +547,10 @@ Enterprise.Staging.Form.prototype = {
 
     frontendAuthenticationCallback: function(event)
     {
-        var element = Event.element(event);
+        var element = null;
+        try {
+            element = Event.element(event);
+        } catch (e) { }
         if (!element) {
             element = event;
         }

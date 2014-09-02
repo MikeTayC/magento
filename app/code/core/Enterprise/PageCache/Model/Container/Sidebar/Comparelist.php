@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -60,6 +60,7 @@ class Enterprise_PageCache_Model_Container_Sidebar_Comparelist extends Enterpris
 
         $block = Mage::app()->getLayout()->createBlock('catalog/product_compare_list');
         $block->setTemplate($template);
+        $block->setLayout(Mage::app()->getLayout());
 
         return $block->toHtml();
     }

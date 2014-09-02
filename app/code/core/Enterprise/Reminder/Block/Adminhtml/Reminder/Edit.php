@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -43,7 +43,6 @@ class Enterprise_Reminder_Block_Adminhtml_Reminder_Edit extends Mage_Adminhtml_B
 
         parent::__construct();
         $rule = Mage::registry('current_reminder_rule');
-
         if ($rule) {
             $this->_updateButton('save', 'label', Mage::helper('enterprise_reminder')->__('Save'));
             $this->_updateButton('delete', 'label', Mage::helper('enterprise_reminder')->__('Delete'));
@@ -62,7 +61,7 @@ class Enterprise_Reminder_Block_Adminhtml_Reminder_Edit extends Mage_Adminhtml_B
             $this->_addButton('save_and_continue_edit', array(
                 'class'   => 'save',
                 'label'   => Mage::helper('enterprise_reminder')->__('Save and Continue Edit'),
-                'onclick' => 'editForm.submit($(\'edit_form\').action + \'back/edit/\')',
+                'onclick' => 'editForm.submit($(\'edit_form\').action + \'back/edit/\')'
             ), 3);
         }
     }

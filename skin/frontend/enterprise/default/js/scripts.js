@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -158,7 +158,9 @@ Enterprise.Bundle = {
                 }
              }
 
-             $('bundle-summary').update(summaryHTML).childElements().last().addClassName('last');
+             if (typeof($('bundle-summary').update(summaryHTML).childElements().last()) != 'undefined') {
+                 $('bundle-summary').update(summaryHTML).childElements().last().addClassName('last');
+             }
          }
          return result;
      },
@@ -566,7 +568,6 @@ Enterprise.PopUpMenu = {
     hideDelay: 2000,
     hideOnClick: true,
     hideInterval: null,
-    //
     initializeDocumentHandler: function () {
         if (!this.documentHandlerInitialized) {
             this.documentHandlerInitialized = true;

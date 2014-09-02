@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -41,4 +41,3 @@ class Enterprise_Pbridge_Block_Adminhtml_Sales_Order_Create_Payflow_Pro extends 
      */
     protected $_code = 'verisign';
 }
-

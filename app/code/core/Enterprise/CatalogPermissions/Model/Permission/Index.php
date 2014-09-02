@@ -20,15 +20,31 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogPermissions
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Permission indexer
  *
- * @category   Enterprise
- * @package    Enterprise_CatalogPermissions
+ * @method Enterprise_CatalogPermissions_Model_Resource_Permission_Index _getResource()
+ * @method Enterprise_CatalogPermissions_Model_Resource_Permission_Index getResource()
+ * @method int getCategoryId()
+ * @method Enterprise_CatalogPermissions_Model_Permission_Index setCategoryId(int $value)
+ * @method int getWebsiteId()
+ * @method Enterprise_CatalogPermissions_Model_Permission_Index setWebsiteId(int $value)
+ * @method int getCustomerGroupId()
+ * @method Enterprise_CatalogPermissions_Model_Permission_Index setCustomerGroupId(int $value)
+ * @method int getGrantCatalogCategoryView()
+ * @method Enterprise_CatalogPermissions_Model_Permission_Index setGrantCatalogCategoryView(int $value)
+ * @method int getGrantCatalogProductPrice()
+ * @method Enterprise_CatalogPermissions_Model_Permission_Index setGrantCatalogProductPrice(int $value)
+ * @method int getGrantCheckoutItems()
+ * @method Enterprise_CatalogPermissions_Model_Permission_Index setGrantCheckoutItems(int $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_CatalogPermissions
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_CatalogPermissions_Model_Permission_Index extends Mage_Core_Model_Abstract
 {

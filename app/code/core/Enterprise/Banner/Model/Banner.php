@@ -20,10 +20,25 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Banner
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
+/**
+ * Enter description here ...
+ *
+ * @method Enterprise_Banner_Model_Resource_Banner _getResource()
+ * @method Enterprise_Banner_Model_Resource_Banner getResource()
+ * @method string getName()
+ * @method Enterprise_Banner_Model_Banner setName(string $value)
+ * @method int getIsEnabled()
+ * @method Enterprise_Banner_Model_Banner setIsEnabled(int $value)
+ * @method Enterprise_Banner_Model_Banner setTypes(string $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Banner
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
 class Enterprise_Banner_Model_Banner extends Mage_Core_Model_Abstract
 {
     /**
@@ -119,13 +134,11 @@ class Enterprise_Banner_Model_Banner extends Mage_Core_Model_Abstract
             $contents = $this->_getData('store_contents');
             if (isset($contents[$storeId])) {
                 return $contents[$storeId];
-            }
-            elseif ($contents[0]) {
+            } elseif ($contents[0]) {
                 return $contents[0];
             }
             return false;
-        }
-        elseif (!isset($this->_contents[$storeId])) {
+        } elseif (!isset($this->_contents[$storeId])) {
             $this->_contents[$storeId] = $this->_getResource()->getStoreContent($this->getId(), $storeId);
         }
         return $this->_contents[$storeId];

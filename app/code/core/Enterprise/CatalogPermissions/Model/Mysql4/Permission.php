@@ -20,39 +20,19 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogPermissions
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
 
 /**
  * Permission resource model
  *
- * @category   Enterprise
- * @package    Enterprise_CatalogPermissions
+ * @category    Enterprise
+ * @package     Enterprise_CatalogPermissions
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_CatalogPermissions_Model_Mysql4_Permission extends Mage_Core_Model_Mysql4_Abstract
+class Enterprise_CatalogPermissions_Model_Mysql4_Permission
+    extends Enterprise_CatalogPermissions_Model_Resource_Permission
 {
-    /**
-     * Intialize resource
-     *
-     * @return void
-     */
-    protected function _construct()
-    {
-        $this->_init('enterprise_catalogpermissions/permission', 'permission_id');
-    }
-
-    /**
-     * Initialize unique scope for permission
-     *
-     * @return Enterprise_CatalogPermissions_Model_Mysql4_Permission
-     */
-    protected function _initUniqueFields()
-    {
-        parent::_initUniqueFields();
-        $this->_uniqueFields[] = array(
-            'field' => array('category_id', 'website_id', 'customer_group_id'),
-            'title' => Mage::helper('enterprise_catalogpermissions')->__('Permission with the same scope')
-        );
-    }
 }

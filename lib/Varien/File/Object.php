@@ -20,7 +20,7 @@
  *
  * @category    Varien
  * @package     Varien_File
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -74,7 +74,7 @@ class Varien_File_Object extends SplFileObject implements IFactory {
     {
         if($this->_isCorrect){
             if($files===null)
-                return $this->_filename;
+            return $this->_filename;
             $files[] = $this->_filename;
         }
     }
@@ -195,9 +195,9 @@ class Varien_File_Object extends SplFileObject implements IFactory {
             $path_parts = pathinfo($fileName);
         }
         if(isset($path_parts["extension"]))
-            return $path_parts["extension"];
+        return $path_parts["extension"];
         else
-            return '';
+        return '';
     }
     /**
      * get name of file

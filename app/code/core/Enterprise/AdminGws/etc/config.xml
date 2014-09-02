@@ -21,25 +21,26 @@
  *
  * @category    Enterprise
  * @package     Enterprise_AdminGws
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_AdminGws>
-             <version>0.0.1</version>
+            <version>1.11.0.0</version>
         </Enterprise_AdminGws>
     </modules>
     <global>
         <models>
             <enterprise_admingws>
                 <class>Enterprise_AdminGws_Model</class>
-                <resourceModel>enterprise_admingws_mysql4</resourceModel>
+                <resourceModel>enterprise_admingws_resource</resourceModel>
             </enterprise_admingws>
-            <enterprise_admingws_mysql4>
-                <class>Enterprise_AdminGws_Model_Mysql4</class>
-            </enterprise_admingws_mysql4>
+            <enterprise_admingws_resource>
+                <class>Enterprise_AdminGws_Model_Resource</class>
+                <deprecatedNode>enterprise_admingws_mysql4</deprecatedNode>
+            </enterprise_admingws_resource>
         </models>
         <blocks>
             <enterprise_admingws>
@@ -316,11 +317,10 @@
             <admingws>
                 <acl_deny>
                     <website_level>
-                        <!-- it is possible to disable entire ACL resource just if user has website-scope permissions -->
-                        <!--<attributes>admin/catalog/attributes</attributes>-->
+                        
+                        
                     </website_level>
                     <store_level>
-                        <!-- the same, but if store-level permissions. Amplifies with website_level denies -->
                         <sales_order_create>admin/sales/order/actions/create</sales_order_create>
                         <customer_attributes>admin/customer/attributes</customer_attributes>
                     </store_level>
@@ -397,7 +397,7 @@
                     <enterprise_catalogevent__event>catalogEventSaveBefore</enterprise_catalogevent__event>
                     <core__website>coreWebsiteSaveBefore</core__website>
                     <core__store_group>coreStoreGroupSaveBefore</core__store_group>
-                    <core__store>coreStoreGroupSaveBefore</core__store><!-- same method as for store group -->
+                    <core__store>coreStoreGroupSaveBefore</core__store>
                     <catalog__entity_attribute>catalogEntityAttributeSaveBefore</catalog__entity_attribute>
                     <eav__entity_attribute_set>eavEntityAttributeSetSaveBefore</eav__entity_attribute_set>
                     <eav__entity_attribute_group>eavEntityAttributeGroupSaveBefore</eav__entity_attribute_group>
@@ -422,7 +422,7 @@
                     <enterprise_catalogevent__event>catalogEventDeleteBefore</enterprise_catalogevent__event>
                     <core__website>coreWebsiteDeleteBefore</core__website>
                     <core__store_group>coreStoreGroupDeleteBefore</core__store_group>
-                    <core__store>coreStoreGroupDeleteBefore</core__store><!-- same method as for store group -->
+                    <core__store>coreStoreGroupDeleteBefore</core__store>
                     <catalog__entity_attribute>catalogEntityAttributeDeleteBefore</catalog__entity_attribute>
                     <eav__entity_attribute_set>eavEntityAttributeSetDeleteBefore</eav__entity_attribute_set>
                     <eav__entity_attribute_group>eavEntityAttributeGroupDeleteBefore</eav__entity_attribute_group>
@@ -439,18 +439,13 @@
                     <catalog__product>catalogProductLoadAfter</catalog__product>
                     <enterprise_catalogevent__event>catalogEventLoadAfter</enterprise_catalogevent__event>
                     <catalog__category>catalogCategoryLoadAfter</catalog__category>
-                    <!-- Commented out bc affects original store_id data
-                            and disallow determine if user has exclusive access for page or block
-                    <cms__page>cmsPageBlockLoadAfter</cms__page>
-                    <cms__block>cmsPageBlockLoadAfter</cms__block>
-                    -->
                     <customer__customer>customerLoadAfter</customer__customer>
                     <sales__order>salesOrderLoadAfter</sales__order>
                     <sales__order_payment_transaction>salesOrderTransactionLoadAfter</sales__order_payment_transaction>
                     <rule__rule>ruleLoadAfter</rule__rule>
                     <core__website>coreWebsiteLoadAfter</core__website>
                     <core__store_group>coreStoreGroupLoadAfter</core__store_group>
-                    <core__store>coreStoreGroupLoadAfter</core__store><!-- same method as for store group -->
+                    <core__store>coreStoreGroupLoadAfter</core__store>
                     <core__url_rewrite>coreUrlRewriteLoadAfter</core__url_rewrite>
                     <newsletter__queue>newsletterQueueLoadAfter</newsletter__queue>
                     <enterprise_banner__banner>bannerLoadAfter</enterprise_banner__banner>
@@ -459,25 +454,24 @@
                     <enterprise_customersegment__segment>customerSegmentLoadAfter</enterprise_customersegment__segment>
                 </model_load_after>
                 <controller_predispatch>
-                    <adminhtml__system_config__>validateSystemConfig</adminhtml__system_config__><!-- system config saving and browsing -->
-                    <adminhtml__catalog_product__>validateCatalogProduct</adminhtml__catalog_product__><!-- catalog product submitting -->
-                    <adminhtml__catalog_product__edit>validateCatalogProductEdit</adminhtml__catalog_product__edit><!-- catalog product viewing -->
-                    <adminhtml__promo_catalog__>validatePromoCatalog</adminhtml__promo_catalog__><!-- catalog price rules creation and saving -->
-                    <adminhtml__promo_catalog__applyRules>validatePromoCatalogApplyRules</adminhtml__promo_catalog__applyRules><!-- catalog price rules applying rules -->
-                    <adminhtml__promo_quote__>validatePromoQuote</adminhtml__promo_quote__><!-- shopping cart price rules creation and saving -->
-                    <adminhtml__customer__>validateNoWebsiteGeneric</adminhtml__customer__><!-- customers creation and saving -->
-                    <adminhtml__customer__edit>validateCustomerEdit</adminhtml__customer__edit><!-- viewing a customer account -->
-                    <adminhtml__customerbalance__>validateCustomerbalance</adminhtml__customerbalance__><!-- viewing a customerbalance -->
-                    <adminhtml__giftcardaccount__>validateGiftCardAccount</adminhtml__giftcardaccount__><!-- gift card accounts creation and saving, generating code pool -->
-                    <adminhtml__catalog_category__>validateCatalogCategories</adminhtml__catalog_category__><!-- categories index, root category creation, category creation -->
-                    <adminhtml__catalog_event__>validateCatalogEvents</adminhtml__catalog_event__><!-- catalog events creation, submiting -->
-                    <adminhtml__catalog_event__edit>validateCatalogEventEdit</adminhtml__catalog_event__edit><!-- catalog events creation, submiting -->
-                    <adminhtml__sales_order_create__>validateSalesOrderCreation</adminhtml__sales_order_create__><!-- catalog events viewing -->
+                    <adminhtml__system_config__>validateSystemConfig</adminhtml__system_config__>
+                    <adminhtml__catalog_product__>validateCatalogProduct</adminhtml__catalog_product__>
+                    <adminhtml__catalog_product__edit>validateCatalogProductEdit</adminhtml__catalog_product__edit>
+                    <adminhtml__promo_catalog__>validatePromoCatalog</adminhtml__promo_catalog__>
+                    <adminhtml__promo_catalog__applyRules>validatePromoCatalogApplyRules</adminhtml__promo_catalog__applyRules>
+                    <adminhtml__promo_quote__>validatePromoQuote</adminhtml__promo_quote__>
+                    <adminhtml__customer__>validateNoWebsiteGeneric</adminhtml__customer__>
+                    <adminhtml__customer__edit>validateCustomerEdit</adminhtml__customer__edit>
+                    <adminhtml__customerbalance__>validateCustomerbalance</adminhtml__customerbalance__>
+                    <adminhtml__giftcardaccount__>validateGiftCardAccount</adminhtml__giftcardaccount__>
+                    <adminhtml__catalog_category__>validateCatalogCategories</adminhtml__catalog_category__>
+                    <adminhtml__catalog_event__>validateCatalogEvents</adminhtml__catalog_event__>
+                    <adminhtml__catalog_event__edit>validateCatalogEventEdit</adminhtml__catalog_event__edit>
+                    <adminhtml__sales_order_create__>validateSalesOrderCreation</adminhtml__sales_order_create__>
                     <adminhtml__system_store__>validateSystemStore</adminhtml__system_store__>
                     <adminhtml__urlrewrite__edit>validateUrlRewriteEditAction</adminhtml__urlrewrite__edit>
                     <adminhtml__system_currency__>validateManageCurrencyRates</adminhtml__system_currency__>
                     <adminhtml__system_email_template__>validateTransactionalEmails</adminhtml__system_email_template__>
-
                     <adminhtml__sales_order__view>validateSalesOrderViewAction</adminhtml__sales_order__view>
                     <adminhtml__sales_order__addComment>validateSalesOrderViewAction</adminhtml__sales_order__addComment>
                     <adminhtml__sales_order__cancel>validateSalesOrderViewAction</adminhtml__sales_order__cancel>
@@ -487,7 +481,6 @@
                     <adminhtml__sales_order__shipments>validateSalesOrderViewAction</adminhtml__sales_order__shipments>
                     <adminhtml__sales_order__creditmemos>validateSalesOrderViewAction</adminhtml__sales_order__creditmemos>
                     <adminhtml__sales_order__commentsHistory>validateSalesOrderViewAction</adminhtml__sales_order__commentsHistory>
-
                     <adminhtml__sales_order__massCancel>validateSalesOrderMassAction</adminhtml__sales_order__massCancel>
                     <adminhtml__sales_order__massHold>validateSalesOrderMassAction</adminhtml__sales_order__massHold>
                     <adminhtml__sales_order__massUnhold>validateSalesOrderMassAction</adminhtml__sales_order__massUnhold>
@@ -495,43 +488,33 @@
                     <adminhtml__sales_order__pdfshipments>validateSalesOrderMassAction</adminhtml__sales_order__pdfshipments>
                     <adminhtml__sales_order__pdfcreditmemos>validateSalesOrderMassAction</adminhtml__sales_order__pdfcreditmemos>
                     <adminhtml__sales_order__pdfdocs>validateSalesOrderMassAction</adminhtml__sales_order__pdfdocs>
-
                     <adminhtml__sales_order_edit__start>validateSalesOrderEditStartAction</adminhtml__sales_order_edit__start>
-
                     <adminhtml__sales_order_creditmemo__view>validateSalesOrderCreditmemoViewAction</adminhtml__sales_order_creditmemo__view>
                     <adminhtml__sales_order_creditmemo__addComment>validateSalesOrderCreditmemoViewAction</adminhtml__sales_order_creditmemo__addComment>
                     <adminhtml__sales_order_creditmemo__print>validateSalesOrderCreditmemoViewAction</adminhtml__sales_order_creditmemo__print>
                     <adminhtml__sales_order_creditmemo__>validateSalesOrderCreditmemoCreateAction</adminhtml__sales_order_creditmemo__>
-
                     <adminhtml__sales_order_invoice__view>validateSalesOrderInvoiceViewAction</adminhtml__sales_order_invoice__view>
                     <adminhtml__sales_order_invoice__addComment>validateSalesOrderInvoiceViewAction</adminhtml__sales_order_invoice__addComment>
                     <adminhtml__sales_order_invoice__print>validateSalesOrderInvoiceViewAction</adminhtml__sales_order_invoice__print>
                     <adminhtml__sales_order_invoice__>validateSalesOrderInvoiceCreateAction</adminhtml__sales_order_invoice__>
-
                     <adminhtml__sales_order_shipment__view>validateSalesOrderShipmentViewAction</adminhtml__sales_order_shipment__view>
                     <adminhtml__sales_order_shipment__addComment>validateSalesOrderShipmentViewAction</adminhtml__sales_order_shipment__addComment>
                     <adminhtml__sales_order_shipment__print>validateSalesOrderShipmentViewAction</adminhtml__sales_order_shipment__print>
                     <adminhtml__sales_order_shipment__>validateSalesOrderShipmentCreateAction</adminhtml__sales_order_shipment__>
-
                     <adminhtml__sales_order_shipment__removeTrack>validateSalesOrderShipmentTrackAction</adminhtml__sales_order_shipment__removeTrack>
                     <adminhtml__sales_order_shipment__viewTrack>validateSalesOrderShipmentTrackAction</adminhtml__sales_order_shipment__viewTrack>
-
                     <adminhtml__checkout_agreement__edit>validateCheckoutAgreementEditAction</adminhtml__checkout_agreement__edit>
-
                     <adminhtml__permissions_user__edit>validateAdminUserAction</adminhtml__permissions_user__edit>
                     <adminhtml__permissions_user__save>validateAdminUserAction</adminhtml__permissions_user__save>
                     <adminhtml__permissions_user__delete>validateAdminUserAction</adminhtml__permissions_user__delete>
-
                     <adminhtml__permissions_role__editrole>validateAdminRoleAction</adminhtml__permissions_role__editrole>
                     <adminhtml__permissions_role__editrolegrid>validateAdminRoleAction</adminhtml__permissions_role__editrolegrid>
                     <adminhtml__permissions_role__saverole>validateAdminRoleAction</adminhtml__permissions_role__saverole>
                     <adminhtml__permissions_role__delete>validateAdminRoleAction</adminhtml__permissions_role__delete>
-
                     <adminhtml__catalog_product_attribute__delete>validateCatalogProductAttributeActions</adminhtml__catalog_product_attribute__delete>
                     <adminhtml__catalog_product_attribute__save>validateCatalogProductAttributeActions</adminhtml__catalog_product_attribute__save>
                     <adminhtml__catalog_product_attribute__edit>validateCatalogProductAttributeCreateAction</adminhtml__catalog_product_attribute__edit>
                     <adminhtml__catalog_product__massDelete>catalogProductMassDeleteAction</adminhtml__catalog_product__massDelete>
-
                     <adminhtml__catalog_product_set__add>validateAttributeSetActions</adminhtml__catalog_product_set__add>
                     <adminhtml__catalog_product_set__save>validateAttributeSetActions</adminhtml__catalog_product_set__save>
                     <adminhtml__catalog_product_set__delete>validateAttributeSetActions</adminhtml__catalog_product_set__delete>
@@ -552,15 +535,11 @@
                     <adminhtml__process__massReindex>blockIndexAction</adminhtml__process__massReindex>
                     <adminhtml__process__reindexProcess>blockIndexAction</adminhtml__process__reindexProcess>
                     <adminhtml__process__reindexAllAction>blockIndexAction</adminhtml__process__reindexAllAction>
-
                     <adminhtml__targetrule__new>blockIndexAction</adminhtml__targetrule__new>
                     <adminhtml__targetrule__save>blockIndexAction</adminhtml__targetrule__save>
                     <adminhtml__targetrule__delete>blockIndexAction</adminhtml__targetrule__delete>
-
                     <adminhtml__cms_hierarchy__save>blockIndexAction</adminhtml__cms_hierarchy__save>
-
                     <adminhtml__customer_group__save>blockCustomerGroupSave</adminhtml__customer_group__save>
-
                     <adminhtml__tax_rule__save>blockTaxChange</adminhtml__tax_rule__save>
                     <adminhtml__tax_rule__delete>blockTaxChange</adminhtml__tax_rule__delete>
                     <adminhtml__tax_rate__save>blockTaxChange</adminhtml__tax_rate__save>
@@ -572,7 +551,6 @@
                     <adminhtml__giftregistry_customer__edit>validateGiftregistryEntityAction</adminhtml__giftregistry_customer__edit>
                     <adminhtml__giftregistry_customer__delete>validateGiftregistryEntityAction</adminhtml__giftregistry_customer__delete>
                     <adminhtml__giftregistry_customer__share>validateGiftregistryEntityAction</adminhtml__giftregistry_customer__share>
-
                     <adminhtml__customer_attribute__>validateCustomerAttributeActions</adminhtml__customer_attribute__>
                     <adminhtml__customer_address_attribute__>validateCustomerAttributeActions</adminhtml__customer_address_attribute__>
                 </controller_predispatch>
@@ -627,7 +605,6 @@
                     <adminhtml__customer_group>removeCustomerGroupAddButton</adminhtml__customer_group>
                     <adminhtml__customer_group_edit>removeCustomerGroupControlButtons</adminhtml__customer_group_edit>
                     <adminhtml__sales_transactions_detail>removeSalesTransactionControlButtons</adminhtml__sales_transactions_detail>
-
                     <adminhtml__tax_rule>removeTaxRuleAddButton</adminhtml__tax_rule>
                     <adminhtml__tax_rule_edit>removeTaxRuleControlButtons</adminhtml__tax_rule_edit>
                     <adminhtml__tax_rate_toolbar_add>removeTaxRateAddButton</adminhtml__tax_rate_toolbar_add>
@@ -635,7 +612,6 @@
                     <adminhtml__tax_rate_ImportExport>removeTaxRateImport</adminhtml__tax_rate_ImportExport>
                     <adminhtml__tax_class>removeTaxRuleAddButton</adminhtml__tax_class>
                     <adminhtml__tax_class_edit>removeTaxRuleControlButtons</adminhtml__tax_class_edit>
-
                     <enterprise_customer__adminhtml_customer_attribute>removeAddNewCustomerAttributeButton</enterprise_customer__adminhtml_customer_attribute>
                     <enterprise_customer__adminhtml_customer_address_attribute>removeAddNewCustomerAttributeButton</enterprise_customer__adminhtml_customer_address_attribute>
                     <enterprise_customer__adminhtml_customer_attribute_edit>removeDeleteCustomerAttributeButton</enterprise_customer__adminhtml_customer_attribute_edit>
@@ -646,9 +622,9 @@
         <translate>
             <modules>
                 <Enterprise_AdminGws>
-                     <files>
-                          <default>Enterprise_AdminGws.csv</default>
-                     </files>
+                    <files>
+                        <default>Enterprise_AdminGws.csv</default>
+                    </files>
                 </Enterprise_AdminGws>
             </modules>
         </translate>

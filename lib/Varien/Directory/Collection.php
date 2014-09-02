@@ -20,7 +20,7 @@
  *
  * @category    Varien
  * @package     Varien_Directory
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -280,7 +280,7 @@ class Varien_Directory_Collection extends Varien_Data_Collection implements IFac
     {
         $this->walk('getDirsName', array(&$dirs));
         if($this->getRecursionLevel()>0)
-            $dirs[] = $this->getDirName();
+        $dirs[] = $this->getDirName();
     }
     /**
      * set filters for files
@@ -341,7 +341,7 @@ class Varien_Directory_Collection extends Varien_Data_Collection implements IFac
         if($recursionLevel==0 ){
             $xml = '';
             if($addOpenTag)
-                $xml.= '<?xml version="1.0" encoding="UTF-8"?>'."\n";
+            $xml.= '<?xml version="1.0" encoding="UTF-8"?>'."\n";
             $xml.= '<'.$rootName.'>'."\n";
         }
         $recursionLevel = $this->getRecursionLevel();
@@ -361,8 +361,8 @@ class Varien_Directory_Collection extends Varien_Data_Collection implements IFac
         $exts = array();
         $names = array();
         $regName = array();
-          foreach ($this->_filters as $filter){
-              switch ($filter['field']){
+        foreach ($this->_filters as $filter){
+            switch ($filter['field']){
                 case 'extension':
                     if(is_array($filter['value'])){
                         foreach ($filter['value'] as $value){
@@ -371,7 +371,7 @@ class Varien_Directory_Collection extends Varien_Data_Collection implements IFac
                     } else {
                         $exts[] = $filter['value'];
                     }
-                break;
+                    break;
                 case 'name':
                     if(is_array($filter['value'])){
                         foreach ($filter['value'] as $value){
@@ -380,7 +380,7 @@ class Varien_Directory_Collection extends Varien_Data_Collection implements IFac
                     } else {
                         $names[] = $filter['value'];
                     }
-                break;
+                    break;
                 case 'regName':
                     if(is_array($filter['value'])){
                         foreach ($filter['value'] as $value){
@@ -389,27 +389,27 @@ class Varien_Directory_Collection extends Varien_Data_Collection implements IFac
                     } else {
                         $regName[] = $filter['value'];
                     }
-                break;
+                    break;
             }
-          }
-          $filter = array();
-          if(count($exts)>0) {
-              $filter['extension'] = $exts;
-          } else {
-              $filter['extension'] = null;
-          }
-          if(count($names)>0) {
-              $filter['name']=$names;
-          } else {
-              $filter['name']=null;
-          }
-          if(count($regName)>0) {
+        }
+        $filter = array();
+        if(count($exts)>0) {
+            $filter['extension'] = $exts;
+        } else {
+            $filter['extension'] = null;
+        }
+        if(count($names)>0) {
+            $filter['name']=$names;
+        } else {
+            $filter['name']=null;
+        }
+        if(count($regName)>0) {
 
-              $filter['regName']=$regName;
-          } else {
-              $filter['regName']=null;
-          }
-          $this->setFilesFilter($filter);
+            $filter['regName']=$regName;
+        } else {
+            $filter['regName']=null;
+        }
+        $this->setFilesFilter($filter);
     }
     /**
      * add filter

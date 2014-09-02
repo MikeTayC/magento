@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -132,7 +132,7 @@ class Enterprise_Logging_Block_Adminhtml_Details extends Mage_Adminhtml_Block_Wi
      */
     public function getEventUser()
     {
-        if(null === $this->_eventUser){
+        if (null === $this->_eventUser) {
             $this->_eventUser = Mage::getModel('admin/user')->load($this->getUserId());
         }
         return $this->_eventUser;
@@ -149,8 +149,7 @@ class Enterprise_Logging_Block_Adminhtml_Details extends Mage_Adminhtml_Block_Wi
         $data = $this->getCurrentEvent()->getInfo();
         try {
             $info = unserialize($data);
-        }
-        catch (Exception $e){
+        } catch (Exception $e) {
             $info = $data;
         }
         return $info;

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -92,11 +92,54 @@ class Enterprise_Search_Model_Observer
      */
     public function customerGroupSaveAfter(Varien_Event_Observer $observer)
     {
-        $object = $observer->getEvent()->getDataObject();
+        $helper = Mage::helper('enterprise_search');
+        if ($helper->isThirdPartSearchEngine() && $helper->isActiveEngine()) {
+            $object = $observer->getEvent()->getDataObject();
 
-        if ($object->isObjectNew() || $object->getTaxClassId() != $object->getOrigData('tax_class_id')) {
-            Mage::getSingleton('index/indexer')->getProcessByCode('catalogsearch_fulltext')
-                ->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
+            if ($object->isObjectNew() || $object->getTaxClassId() != $object->getOrigData('tax_class_id')) {
+                Mage::getSingleton('index/indexer')->getProcessByCode('catalogsearch_fulltext')
+                    ->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
+            }
+        }
+    }
+
+    /**
+     * Save store ids for website or store group before deleting
+     * because lazy load for this property is used and this info is unavailable after deletion
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function saveStoreIdsBeforeScopeDelete(Varien_Event_Observer $observer)
+    {
+        $object = $observer->getEvent()->getDataObject();
+        $object->getStoreIds();
+    }
+
+    /**
+     * Clear index data for deleted stores
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function clearIndexForStores(Varien_Event_Observer $observer)
+    {
+        $helper = Mage::helper('enterprise_search');
+        if ($helper->isThirdPartSearchEngine() && $helper->isActiveEngine()) {
+            $object = $observer->getEvent()->getDataObject();
+
+            if ($object instanceof Mage_Core_Model_Website
+                || $object instanceof Mage_Core_Model_Store_Group
+            ) {
+                $storeIds = $object->getStoreIds();
+            } elseif ($object instanceof Mage_Core_Model_Store) {
+                $storeIds = $object->getId();
+            } else {
+                $storeIds = array();
+            }
+
+            if (!empty($storeIds)) {
+                $engine = Mage::helper('catalogsearch')->getEngine();
+                $engine->cleanIndex($storeIds);
+            }
         }
     }
 
@@ -109,6 +152,18 @@ class Enterprise_Search_Model_Observer
     {
         if (Mage::helper('enterprise_search')->getIsEngineAvailableForNavigation()) {
             Mage::register('current_layer', Mage::getSingleton('enterprise_search/catalog_layer'));
+        }
+    }
+
+    /**
+     * Reset search engine if it is enabled for search navigation
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function resetCurrentSearchLayer(Varien_Event_Observer $observer)
+    {
+        if (Mage::helper('enterprise_search')->getIsEngineAvailableForNavigation(false)) {
+            Mage::register('current_layer', Mage::getSingleton('enterprise_search/search_layer'));
         }
     }
 }

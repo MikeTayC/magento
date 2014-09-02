@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -332,9 +332,10 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Attributes
         $addressTable = $this->getResource()->getTable('customer/address_entity');
 
         $select = $this->getResource()->createSelect();
-        $select->from(array('main'=>$table), array(new Zend_Db_Expr(1)))
-            ->limit(1);
+        $select->from(array('main'=>$table), array(new Zend_Db_Expr(1)));
+
         $select->where($this->_createCustomerFilter($customer, 'main.entity_id'));
+        Mage::getResourceHelper('enterprise_customersegment')->setOneRowLimit($select);
 
         if (!in_array($attribute->getAttributeCode(), array('default_billing', 'default_shipping')) ) {
             $value    = $this->getValue();

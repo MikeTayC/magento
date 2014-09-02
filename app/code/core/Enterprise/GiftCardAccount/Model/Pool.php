@@ -20,10 +20,24 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
+/**
+ * Enter description here ...
+ *
+ * @method Enterprise_GiftCardAccount_Model_Resource_Pool _getResource()
+ * @method Enterprise_GiftCardAccount_Model_Resource_Pool getResource()
+ * @method string getCode()
+ * @method Enterprise_GiftCardAccount_Model_Pool setCode(string $value)
+ * @method int getStatus()
+ * @method Enterprise_GiftCardAccount_Model_Pool setStatus(int $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_GiftCardAccount
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
 class Enterprise_GiftCardAccount_Model_Pool extends Enterprise_GiftCardAccount_Model_Pool_Abstract
 {
     const CODE_FORMAT_ALPHANUM = 'alphanum';

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -33,7 +33,7 @@
  */
 
 class Enterprise_Search_Model_Resource_Collection
-    extends Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection
+    extends Mage_Catalog_Model_Resource_Product_Collection
 {
 
     /**
@@ -114,7 +114,7 @@ class Enterprise_Search_Model_Resource_Collection
     protected $_facetedConditions = array();
 
     /**
-     * Return field facated data from faceted search result
+     * Return field faceted data from faceted search result
      *
      * @param string $field
      *
@@ -139,7 +139,7 @@ class Enterprise_Search_Model_Resource_Collection
     }
 
     /**
-     * Allow to set faceted search conditions to retrive result by single query
+     * Allow to set faceted search conditions to retrieve result by single query
      *
      * @param string $field
      * @param string | array $condition
@@ -149,7 +149,7 @@ class Enterprise_Search_Model_Resource_Collection
     public function setFacetCondition($field, $condition = null)
     {
         if (array_key_exists($field, $this->_facetedConditions)) {
-            if (!empty($this->_facetedConditions[$field])){
+            if (!empty($this->_facetedConditions[$field])) {
                 $this->_facetedConditions[$field] = array($this->_facetedConditions[$field]);
             }
             $this->_facetedConditions[$field][] = $condition;
@@ -164,13 +164,21 @@ class Enterprise_Search_Model_Resource_Collection
      * Add search query filter
      * Set search query
      *
-     * @param   string $query
+     * @param   string $queryText
      *
      * @return  Enterprise_Search_Model_Resource_Collection
      */
-    public function addSearchFilter($query)
+    public function addSearchFilter($queryText)
     {
-        $this->_searchQueryText = $query;
+        /**
+         * @var Mage_CatalogSearch_Model_Query $query
+         */
+        $query = Mage::helper('catalogsearch')->getQuery();
+        $this->_searchQueryText = $queryText;
+        $synonymFor = $query->getSynonymFor();
+        if (!empty($synonymFor)) {
+            $this->_searchQueryText .= ' ' . $synonymFor;
+        }
 
         return $this;
     }
@@ -197,6 +205,11 @@ class Enterprise_Search_Model_Resource_Collection
         return $this;
     }
 
+    /**
+     * Get extended search parameters
+     *
+     * @return array
+     */
     public function getExtendedSearchParams()
     {
         $result = $this->_searchQueryFilters;
@@ -299,6 +312,7 @@ class Enterprise_Search_Model_Resource_Collection
             'locale_code'   => $store->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE),
             'filters'       => $this->_searchQueryFilters
         );
+        $params['filters']     = $this->_searchQueryFilters;
 
         if (!empty($this->_searchQueryParams)) {
             $params['ignore_handler'] = true;
@@ -391,8 +405,8 @@ class Enterprise_Search_Model_Resource_Collection
                         $searchSuggestionsCount = 1;
                     }
                     $params['solr_params']['spellcheck.count'] = $searchSuggestionsCount;
-                    $params['spellcheck_result_counts'] = (bool) $helper
-                        ->getSolrConfigData('server_suggestion_count_results_enabled');
+                    $params['spellcheck_result_counts'] = (bool) $helper->getSolrConfigData(
+                        'server_suggestion_count_results_enabled');
                 }
             }
 
@@ -486,7 +500,7 @@ class Enterprise_Search_Model_Resource_Collection
      * Adding product count to categories collection
      *
      * @param   Mage_Eav_Model_Entity_Collection_Abstract $categoryCollection
-     * @return  Mage_Eav_Model_Entity_Collection_Abstract
+     * @return  Enterprise_Search_Model_Resource_Collection
      */
     public function addCountToCategories($categoryCollection)
     {
@@ -497,7 +511,7 @@ class Enterprise_Search_Model_Resource_Collection
      * Set product visibility filter for enabled products
      *
      * @param   array $visibility
-     * @return  Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection
+     * @return  Mage_Catalog_Model_Resource_Product_Collection
      */
     public function setVisibility($visibility)
     {

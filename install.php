@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -83,6 +83,7 @@
  * --db_host                    // required, You can specify server port, ex.: localhost:3307
  *                              // If you are not using default UNIX socket, you can specify it
  *                              // here instead of host, ex.: /var/run/mysqld/mysqld.sock
+ * --db_model                   // Database type (mysql4 by default)
  * --db_name                    // required, Database Name
  * --db_user                    // required, Database User Name
  * --db_pass                    // required, Database User Password

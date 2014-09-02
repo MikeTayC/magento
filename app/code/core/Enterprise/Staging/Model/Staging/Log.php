@@ -20,11 +20,51 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 
+/**
+ * Enter description here ...
+ *
+ * @method Enterprise_Staging_Model_Resource_Staging_Log _getResource()
+ * @method Enterprise_Staging_Model_Resource_Staging_Log getResource()
+ * @method int getStagingId()
+ * @method Enterprise_Staging_Model_Staging_Log setStagingId(int $value)
+ * @method int getIp()
+ * @method Enterprise_Staging_Model_Staging_Log setIp(int $value)
+ * @method string getAction()
+ * @method Enterprise_Staging_Model_Staging_Log setAction(string $value)
+ * @method string getStatus()
+ * @method Enterprise_Staging_Model_Staging_Log setStatus(string $value)
+ * @method int getIsBackuped()
+ * @method Enterprise_Staging_Model_Staging_Log setIsBackuped(int $value)
+ * @method string getCreatedAt()
+ * @method Enterprise_Staging_Model_Staging_Log setCreatedAt(string $value)
+ * @method int getUserId()
+ * @method Enterprise_Staging_Model_Staging_Log setUserId(int $value)
+ * @method string getUsername()
+ * @method Enterprise_Staging_Model_Staging_Log setUsername(string $value)
+ * @method int getIsAdminNotified()
+ * @method Enterprise_Staging_Model_Staging_Log setIsAdminNotified(int $value)
+ * @method string getAdditionalData()
+ * @method Enterprise_Staging_Model_Staging_Log setAdditionalData(string $value)
+ * @method string getMap()
+ * @method Enterprise_Staging_Model_Staging_Log setMap(string $value)
+ * @method int getStagingWebsiteId()
+ * @method Enterprise_Staging_Model_Staging_Log setStagingWebsiteId(int $value)
+ * @method string getStagingWebsiteName()
+ * @method Enterprise_Staging_Model_Staging_Log setStagingWebsiteName(string $value)
+ * @method int getMasterWebsiteId()
+ * @method Enterprise_Staging_Model_Staging_Log setMasterWebsiteId(int $value)
+ * @method string getMasterWebsiteName()
+ * @method Enterprise_Staging_Model_Staging_Log setMasterWebsiteName(string $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Staging
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
 class Enterprise_Staging_Model_Staging_Log extends Mage_Core_Model_Abstract
 {
     /**
@@ -90,7 +130,9 @@ class Enterprise_Staging_Model_Staging_Log extends Mage_Core_Model_Abstract
         if ($process == 'update') {
             return $this;
         }
-        if ($onState == 'before' && (($process == 'merge' && $staging->getIsMergeLater()) || $process == 'reset' || $process == 'unscheduleMerge')) {
+        if ($onState == 'before' && (($process == 'merge' && $staging->getIsMergeLater())
+            || $process == 'reset' || $process == 'unscheduleMerge')
+        ) {
             return $this;
         }
 

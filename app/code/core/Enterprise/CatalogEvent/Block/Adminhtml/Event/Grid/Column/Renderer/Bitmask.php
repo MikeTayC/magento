@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogEvent
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -39,7 +39,7 @@ class Enterprise_CatalogEvent_Block_Adminhtml_Event_Grid_Column_Renderer_Bitmask
     {
         $value = (int) $row->getData($this->getColumn()->getIndex());
         $result = array();
-        foreach ($this->getColumn()->getOptions() as $option=>$label) {
+        foreach ($this->getColumn()->getOptions() as $option => $label) {
             if (($value & $option) == $option) {
                 $result[] = $label;
             }

@@ -20,11 +20,12 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
 <?php $_item = $this->getItem() ?>
+<?php $canApplyMsrp = Mage::helper('catalog')->canApplyMsrp($_item->getProduct(), Mage_Catalog_Model_Product_Attribute_Source_Msrp_Type::TYPE_BEFORE_ORDER_CONFIRM); ?>
 <li class="item">
     <?php if ($this->hasProductUrl()): ?>
         <a href="<?php echo $this->getProductUrl()?>" title="<?php echo $this->htmlEscape($this->getProductName()) ?>" class="product-image"><img src="<?php echo $this->getProductThumbnail()->resize(50)->setWatermarkSize('30x10'); ?>" alt="<?php echo $this->htmlEscape($this->getProductName()) ?>" /></a>
@@ -43,6 +44,13 @@
             <?php endif; ?>
         </p>
         <table cellpadding="0">
+
+        <?php if ($canApplyMsrp): ?>
+
+            <tr><th><?php echo $this->__('Price'); ?></th><td><span class="map-cart-sidebar-item"><?php echo $this->__('See price before order confirmation.'); ?></span></td></tr>
+
+        <?php else: ?>
+
         <?php if ($this->helper('tax')->displayCartPriceExclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
             <tr>
             <?php if ($this->helper('tax')->displayCartBothPrices()): ?>
@@ -141,6 +149,8 @@
                 <?php endif; ?>
             <?php endif; ?>
         <?php endif; ?>
+
+        <?php endif; //Can apply MSRP ?>
             <tr>
                 <th><?php echo $this->__('Qty'); ?></th>
                 <td><?php echo $this->getQty() ?></td>

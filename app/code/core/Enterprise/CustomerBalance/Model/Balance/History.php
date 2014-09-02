@@ -20,13 +20,33 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Customerbalance history model
  *
+ * @method Enterprise_CustomerBalance_Model_Resource_Balance_History _getResource()
+ * @method Enterprise_CustomerBalance_Model_Resource_Balance_History getResource()
+ * @method int getBalanceId()
+ * @method Enterprise_CustomerBalance_Model_Balance_History setBalanceId(int $value)
+ * @method string getUpdatedAt()
+ * @method Enterprise_CustomerBalance_Model_Balance_History setUpdatedAt(string $value)
+ * @method int getAction()
+ * @method Enterprise_CustomerBalance_Model_Balance_History setAction(int $value)
+ * @method float getBalanceAmount()
+ * @method Enterprise_CustomerBalance_Model_Balance_History setBalanceAmount(float $value)
+ * @method float getBalanceDelta()
+ * @method Enterprise_CustomerBalance_Model_Balance_History setBalanceDelta(float $value)
+ * @method string getAdditionalInfo()
+ * @method Enterprise_CustomerBalance_Model_Balance_History setAdditionalInfo(string $value)
+ * @method int getIsCustomerNotified()
+ * @method Enterprise_CustomerBalance_Model_Balance_History setIsCustomerNotified(int $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_CustomerBalance
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_CustomerBalance_Model_Balance_History extends Mage_Core_Model_Abstract
 {

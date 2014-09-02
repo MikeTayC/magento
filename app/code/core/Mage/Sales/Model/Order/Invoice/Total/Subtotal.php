@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -57,8 +57,10 @@ class Mage_Sales_Model_Order_Invoice_Total_Subtotal extends Mage_Sales_Model_Ord
 
         $allowedSubtotal = $order->getSubtotal() - $order->getSubtotalInvoiced();
         $baseAllowedSubtotal = $order->getBaseSubtotal() -$order->getBaseSubtotalInvoiced();
-        $allowedSubtotalInclTax = $allowedSubtotal + $order->getTaxAmount() - $order->getTaxInvoiced();
-        $baseAllowedSubtotalInclTax = $baseAllowedSubtotal + $order->getBaseTaxAmount() - $order->getBaseTaxInvoiced();
+        $allowedSubtotalInclTax = $allowedSubtotal + $order->getHiddenTaxAmount()
+                + $order->getTaxAmount() - $order->getTaxInvoiced();
+        $baseAllowedSubtotalInclTax = $baseAllowedSubtotal + $order->getBaseHiddenTaxAmount()
+                + $order->getBaseTaxAmount() - $order->getBaseTaxInvoiced();
 
         if ($invoice->isLast()) {
             $subtotal = $allowedSubtotal;

@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 /* Reset ================================================================================= */
@@ -397,7 +397,7 @@ p.error-msg { border-color:#e9581f; background-color:#fff5f3; color:#d91a00; }
 /* Toolbar */
 .toolbar { margin-top:-1px; }
 .toolbar .pager { margin:0 0 0; border-width:1px 0; }
-.toolbar-bottom { display:none; }
+.toolbar-bottom { /*display:none;*/ }
 
 /* Data Table */
 .table-caption { border:1px solid #ddd; border-bottom:0; margin:-1px 0 0; background:#fff url(../images/bkg_block-title.gif) 0 100% repeat-x; font:14px/1.25 Arial, Helvetica, sans-serif; padding:3px 7px 4px; color:#444; }
@@ -1971,6 +1971,16 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 
 .account-create {}
 
+.window-overlay { background:url(../images/window_overlay.png) repeat; background:rgba(0, 0, 0, 0.35); position:absolute; top:0; left:0; height:100%; width:100%; z-index:990; }
+
+.remember-me input { margin-right:6px; }
+
+.remember-me-popup { background:#fff; border:1px solid #999; left:50%; top:50%; position:absolute; margin:-85px 0 0 -200px; width:400px; text-align:left; -moz-box-shadow:0 0 6px #999; -webkit-box-shadow:0 0 6px #999; box-shadow:0 0 6px #999; z-index:1000; }
+.remember-me-popup h3 { background:url(../images/bkg_block-title.gif) repeat-x center #bbb; color:#444; font-size:14px; margin:0; padding:5px 10px; text-shadow:0 1px 0 #fff; }
+.remember-me-popup .remember-me-popup-head { position:relative; }
+.remember-me-popup .remember-me-popup-head .remember-me-popup-close { background:url(../images/btn_window_close.gif) no-repeat; display:block; position:absolute; top:7px; right:7px; height:15px; width:15px; text-indent:-9999em; }
+.remember-me-popup .remember-me-popup-body { padding:10px; }
+.remember-me-popup .remember-me-popup-body p { margin:0 0 15px; }
 
 /* My Account ============================================================================= */
 /********** < Dashboard */
@@ -2118,6 +2128,27 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .sidebar .block-gr-search .form-alt input.input-text { width:142px; }
 .sidebar .block-gr-search .form-alt select { width:148px; }
 .block-gr-search p.note { margin:0 0 3px; text-align:right; color:#f15c22; }
+/* ======================================================================================= */
+
+
+/* MAP Popup============================================================================== */
+.cart-msrp-totals { color:red; font-size:12px !important; font-weight:bold; padding:10px 20px 20px; text-align:right; text-transform:uppercase;}
+.map-cart-sidebar-total { color:red; display:block; font-size:10px; line-height:14px; font-weight:bold; padding:5px 2px; text-shadow:0 1px 0 #fff; }
+
+.map-popup { background:#fff; border:1px solid #aaa; margin:12px 0 0; position:absolute; -moz-box-shadow:0 0 6px #ccc; -webkit-box-shadow:0 0 6px #ccc; box-shadow:0 0 6px #ccc; text-align:left; width:300px; z-index:100; }
+.map-popup-heading { background:#efefef ; border-bottom:1px solid #ccc; padding:5px 30px 5px 10px; width:260px; }
+.map-popup-heading h2 { color:#333; font-size:14px; font-weight:bold; margin:0; text-shadow:0 1px 0 #f6f6f6; overflow:hidden; white-space:nowrap; word-wrap:break-word; text-align:left; text-overflow:ellipsis; }
+.map-popup-arrow { background:url(../images/map_popup_arrow.gif) no-repeat; position:absolute; left:50%; top:-10px; height:10px; width:19px; }
+.map-popup-close { background:url(../images/btn_window_close.gif) no-repeat; display:block; position:absolute; top:6px; right:8px; height:15px; width:15px; text-align:left; text-indent:-9999em; }
+.map-popup-content { border-top:1px solid #eee; padding:10px; overflow:hidden; width:280px; }
+.map-popup-checkout { display:inline; float:right; text-align:right; }
+.map-popup-checkout span { display:block; padding-right:30px; }
+.map-popup-checkout .paypal-logo { margin:0 0 5px; }
+.map-popup-price .price-box,
+.map-popup-price .price-box .special-price { margin:0; padding:0; }
+.map-popup-price { margin:5px 0 0; }
+.map-popup-text { background:#fefefe; clear:right; line-height:1.5; margin:0 10px; padding:10px 0; text-align:left; word-wrap:break-word; }
+.map-popup-only-text { border-top:1px solid #ddd; }
 /* ======================================================================================= */
 
 
@@ -2278,3 +2309,5 @@ address.copyright { margin-top:6px; }
 .addresses-list .col-2 li:after,
 .product-view .product-shop:after { display:block; content:"."; clear:both; font-size:0; line-height:0; height:0; overflow:hidden; }
 /* ======================================================================================= */
+
+.guest-select {width:305px !important;}

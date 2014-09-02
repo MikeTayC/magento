@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -30,7 +30,7 @@ class Enterprise_TargetRule_Block_Adminhtml_Rule_Conditions implements Varien_Da
     public function render(Varien_Data_Form_Element_Abstract $element)
     {
         if ($element->getRule() && $element->getRule()->getConditions()) {
-           return $element->getRule()->getConditions()->asHtmlRecursive();
+            return $element->getRule()->getConditions()->asHtmlRecursive();
         }
         return '';
     }

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Customer
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -32,37 +32,6 @@
  * @package     Enterprise_Customer
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Customer_Block_Form_Renderer_Multiselect extends Enterprise_Customer_Block_Form_Renderer_Select
+class Enterprise_Customer_Block_Form_Renderer_Multiselect extends Enterprise_Eav_Block_Form_Renderer_Multiselect
 {
-    /**
-     * Return array of select options
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->getAttributeObject()->getSource()->getAllOptions();
-    }
-
-    /**
-     * Return array of values
-     *
-     * @return array
-     */
-    public function getValues()
-    {
-        $value = $this->getValue();
-        return explode(',', $value);
-    }
-
-    /**
-     * Check is value selected
-     *
-     * @param string $value
-     * @return boolean
-     */
-    public function isValueSelected($value)
-    {
-        return in_array($value, $this->getValues());
-    }
 }

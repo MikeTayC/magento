@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -62,5 +62,27 @@ class Enterprise_Search_Block_Catalog_Layer_Filter_Attribute extends Mage_Catalo
     {
         $this->_filter->addFacetCondition();
         return $this;
+    }
+
+    /**
+     * Get filter items count
+     *
+     * @return int
+     */
+    public function getItemsCount()
+    {
+        $attributeIsFilterable = $this->getAttributeModel()->getIsFilterable();
+        if ($attributeIsFilterable == Mage_Catalog_Model_Layer_Filter_Attribute::OPTIONS_ONLY_WITH_RESULTS) {
+            return parent::getItemsCount();
+        }
+
+        $count = 0;
+        foreach ($this->getItems() as $item) {
+            if ($item->getCount()) {
+                $count++;
+            }
+        }
+
+        return $count;
     }
 }

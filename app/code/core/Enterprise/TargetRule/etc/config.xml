@@ -21,20 +21,25 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_TargetRule>
-             <version>1.6.0.0.4</version>
+            <version>1.11.0.0</version>
         </Enterprise_TargetRule>
     </modules>
     <global>
         <models>
-            <enterprise_targetrule_mysql4>
-                <class>Enterprise_TargetRule_Model_Mysql4</class>
+            <enterprise_targetrule>
+                <class>Enterprise_TargetRule_Model</class>
+                <resourceModel>enterprise_targetrule_resource</resourceModel>
+            </enterprise_targetrule>
+            <enterprise_targetrule_resource>
+                <class>Enterprise_TargetRule_Model_Resource</class>
+                <deprecatedNode>enterprise_targetrule_mysql4</deprecatedNode>
                 <entities>
                     <rule>
                         <table>enterprise_targetrule</table>
@@ -58,17 +63,13 @@
                         <table>enterprise_targetrule_index_upsell</table>
                     </index_upsell>
                 </entities>
-            </enterprise_targetrule_mysql4>
-            <enterprise_targetrule>
-                <class>Enterprise_TargetRule_Model</class>
-                <resourceModel>enterprise_targetrule_mysql4</resourceModel>
-            </enterprise_targetrule>
+            </enterprise_targetrule_resource>
         </models>
         <resources>
             <enterprise_targetrule_setup>
                 <setup>
                     <module>Enterprise_TargetRule</module>
-                    <class>Enterprise_TargetRule_Model_Mysql4_Setup</class>
+                    <class>Enterprise_TargetRule_Model_Resource_Setup</class>
                 </setup>
             </enterprise_targetrule_setup>
         </resources>
@@ -82,6 +83,14 @@
                 <class>Enterprise_TargetRule_Helper</class>
             </enterprise_targetrule>
         </helpers>
+        <catalog_product>
+            <old_fields_map>
+                <related_targetrule_position_limit>related_tgtr_position_limit</related_targetrule_position_limit>
+                <related_targetrule_position_behavior>related_tgtr_position_behavior</related_targetrule_position_behavior>
+                <upsell_targetrule_position_limit>upsell_tgtr_position_limit</upsell_targetrule_position_limit>
+                <upsell_targetrule_position_behavior>upsell_tgtr_position_behavior</upsell_targetrule_position_behavior>
+            </old_fields_map>
+        </catalog_product>
     </global>
     <adminhtml>
         <events>
@@ -93,14 +102,6 @@
                     </enterprise_targetrule>
                 </observers>
             </catalog_product_save_after>
-<!--            <catalog_product_prepare_save>-->
-<!--                <observers>-->
-<!--                    <enterprise_targetrule>-->
-<!--                        <class>enterprise_targetrule/observer</class>-->
-<!--                        <method>prepareTargetRuleSave</method>-->
-<!--                    </enterprise_targetrule>-->
-<!--                </observers>-->
-<!--            </catalog_product_prepare_save>-->
         </events>
         <translate>
             <modules>
@@ -130,7 +131,6 @@
             </adminhtml>
         </routers>
     </admin>
-
     <frontend>
         <layout>
             <updates>
@@ -140,7 +140,6 @@
             </updates>
         </layout>
     </frontend>
-
     <default>
         <catalog>
             <enterprise_targetrule>
@@ -153,12 +152,15 @@
             </enterprise_targetrule>
         </catalog>
     </default>
-
     <crontab>
         <jobs>
             <enterprise_targetrule_index_reindex>
-                <schedule><cron_expr>0 * * * *</cron_expr></schedule>
-                <run><model>enterprise_targetrule/index::cron</model></run>
+                <schedule>
+                    <cron_expr>0 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>enterprise_targetrule/index::cron</model>
+                </run>
             </enterprise_targetrule_index_reindex>
         </jobs>
     </crontab>

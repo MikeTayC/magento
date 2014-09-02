@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -28,8 +28,26 @@
 /**
  * Cms Hierarchy Pages Node Model
  *
- * @category   Enterprise
- * @package    Enterprise_Cms
+ * @method Enterprise_Cms_Model_Resource_Hierarchy_Node _getResource()
+ * @method Enterprise_Cms_Model_Resource_Hierarchy_Node getResource()
+ * @method int getParentNodeId()
+ * @method Enterprise_Cms_Model_Hierarchy_Node setParentNodeId(int $value)
+ * @method int getPageId()
+ * @method Enterprise_Cms_Model_Hierarchy_Node setPageId(int $value)
+ * @method Enterprise_Cms_Model_Hierarchy_Node setIdentifier(string $value)
+ * @method Enterprise_Cms_Model_Hierarchy_Node setLabel(string $value)
+ * @method int getLevel()
+ * @method Enterprise_Cms_Model_Hierarchy_Node setLevel(int $value)
+ * @method int getSortOrder()
+ * @method Enterprise_Cms_Model_Hierarchy_Node setSortOrder(int $value)
+ * @method string getRequestUrl()
+ * @method Enterprise_Cms_Model_Hierarchy_Node setRequestUrl(string $value)
+ * @method string getXpath()
+ * @method Enterprise_Cms_Model_Hierarchy_Node setXpath(string $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Cms
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_Cms_Model_Hierarchy_Node extends Mage_Core_Model_Abstract
 {
@@ -158,7 +176,8 @@ class Enterprise_Cms_Model_Hierarchy_Node extends Mage_Core_Model_Abstract
             }
 
             $object = clone $this;
-            $object->setData($v)->save();
+            $object->setData($v)
+                ->save();
 
             if (isset($nodes[$k])) {
                 $this->_collectTree($nodes, $object->getId(), $object->getRequestUrl(), $object->getXpath(), $k);

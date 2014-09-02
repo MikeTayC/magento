@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -77,7 +77,8 @@ class Enterprise_PageCache_Model_Processor_Default
         try {
             foreach ($placeholders as $definition) {
                 $this->_placeholder = Mage::getModel('enterprise_pagecache/container_placeholder', $definition);
-                $content = preg_replace_callback($this->_placeholder->getPattern(), array($this, '_getPlaceholderReplacer'), $content);
+                $content = preg_replace_callback($this->_placeholder->getPattern(),
+                    array($this, '_getPlaceholderReplacer'), $content);
             }
             $this->_placeholder = null;
         } catch (Exception $e) {
@@ -143,7 +144,8 @@ class Enterprise_PageCache_Model_Processor_Default
      * @param Zend_Controller_Request_Http $request
      * @return string
      */
-    public function getRequestUri(Enterprise_PageCache_Model_Processor $processor, Zend_Controller_Request_Http $request)
-    {
+    public function getRequestUri(Enterprise_PageCache_Model_Processor $processor,
+        Zend_Controller_Request_Http $request
+    ) {
     }
 }

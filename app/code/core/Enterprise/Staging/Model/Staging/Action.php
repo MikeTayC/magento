@@ -20,11 +20,45 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 
+/**
+ * Enter description here ...
+ *
+ * @method Enterprise_Staging_Model_Resource_Staging_Action _getResource()
+ * @method Enterprise_Staging_Model_Resource_Staging_Action getResource()
+ * @method int getStagingId()
+ * @method Enterprise_Staging_Model_Staging_Action setStagingId(int $value)
+ * @method string getType()
+ * @method Enterprise_Staging_Model_Staging_Action setType(string $value)
+ * @method string getName()
+ * @method Enterprise_Staging_Model_Staging_Action setName(string $value)
+ * @method string getStatus()
+ * @method Enterprise_Staging_Model_Staging_Action setStatus(string $value)
+ * @method string getCreatedAt()
+ * @method Enterprise_Staging_Model_Staging_Action setCreatedAt(string $value)
+ * @method string getUpdatedAt()
+ * @method Enterprise_Staging_Model_Staging_Action setUpdatedAt(string $value)
+ * @method string getStagingTablePrefix()
+ * @method Enterprise_Staging_Model_Staging_Action setStagingTablePrefix(string $value)
+ * @method string getMap()
+ * @method Enterprise_Staging_Model_Staging_Action setMap(string $value)
+ * @method string getMageVersion()
+ * @method Enterprise_Staging_Model_Staging_Action setMageVersion(string $value)
+ * @method string getMageModulesVersion()
+ * @method Enterprise_Staging_Model_Staging_Action setMageModulesVersion(string $value)
+ * @method int getStagingWebsiteId()
+ * @method Enterprise_Staging_Model_Staging_Action setStagingWebsiteId(int $value)
+ * @method int getMasterWebsiteId()
+ * @method Enterprise_Staging_Model_Staging_Action setMasterWebsiteId(int $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Staging
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
 class Enterprise_Staging_Model_Staging_Action extends Mage_Core_Model_Abstract
 {
     /**
@@ -87,6 +121,7 @@ class Enterprise_Staging_Model_Staging_Action extends Mage_Core_Model_Abstract
                 ->setName($name)
                 ->setStatus(Enterprise_Staging_Model_Staging_Config::STATUS_COMPLETED)
                 ->setCreatedAt(Mage::registry($log->getAction() . "_event_start_time"))
+                ->setUpdatedAt(now())
                 ->setStagingTablePrefix($tablePrefix)
                 ->setMap($staging->getMapperInstance()->serialize())
                 ->setMageVersion(Mage::getVersion())

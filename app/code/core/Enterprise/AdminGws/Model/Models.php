@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_AdminGws
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -207,11 +207,14 @@ class Enterprise_AdminGws_Model_Models extends Enterprise_AdminGws_Model_Observe
             $model->setGiftCardReadonly(true);
             $model->setIsDeleteable(false);
             $model->setIsDuplicable(false);
+            $model->unlockAttribute('category_ids');
 
             foreach ($model->getCategoryCollection() as $category) {
                 $path = implode("/", array_reverse($category->getPathIds()));
                 if(!$this->_role->hasExclusiveCategoryAccess($path)) {
                     $model->setCategoriesReadonly(true);
+                    $model->lockAttribute('category_ids');
+                    break;
                 }
             }
 

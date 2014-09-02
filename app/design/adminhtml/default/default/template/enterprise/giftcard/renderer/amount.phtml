@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -57,7 +57,7 @@
                 </td>
                 <td class="last">
                     <input type="hidden" name="<?php echo $_htmlName ?>[__index__][delete]" class="delete" disabled="no-template" value=""  id="#{prefix}_giftcard_amounts_row___index___delete" />
-                    <button title="<?php echo Mage::helper('enterprise_giftcard')->__('Delete Amount'); ?>" class="scalable delete icon-btn delete-product-option" onclick="giftcardAmountsControl.deleteItem('<?php echo $_htmlId ?>', event);return false"><span><?php echo Mage::helper('enterprise_giftcard')->__('Delete'); ?></span></button>
+                    <button title="<?php echo Mage::helper('enterprise_giftcard')->__('Delete Amount'); ?>" class="scalable delete icon-btn delete-product-option" onclick="giftcardAmountsControl.deleteItem('<?php echo $_htmlId ?>', event); return false;"><span><?php echo Mage::helper('enterprise_giftcard')->__('Delete'); ?></span></button>
                 </td>
             </tr>
         </thead>
@@ -70,7 +70,7 @@
         <tbody id="<?php echo $_htmlId ?>_container">
         </tbody>
     </table>
-    <input type="hidden" id="giftcard_amounts_total" name="giftcard_amounts_total" value="" class="required-entry">
+    <input type="hidden" id="giftcard_amounts_total" name="giftcard_amounts_total" value="" <?php if (!$_readonly): ?>class="required-entry"<?php endif; ?>>
 
 <script type="text/javascript">
 //<![CDATA[
@@ -100,14 +100,14 @@
             <?php if ($_readonly): ?>
             $('<?php echo $_htmlId ?>_container').select('input', 'select')
                 .each(this.disableElement);
-            $('<?php echo $_htmlId ?>_container').up('table').select('button')
+            $('<?php echo $_htmlId ?>_container').select('button')
                 .each(this.disableElement);
             <?php endif; ?>
             this.updateTotalAmounts();
         },
         disableElement: function(elem) {
-            elem.disabled = true
-            elem.addClassName('disabled');
+            elem.disabled = true;
+            $(elem).addClassName('disabled');
         },
 
         deleteItem : function(prefix, event) {
@@ -150,7 +150,9 @@
         }
         updatePriceAmountValidation();
     }
+    <?php if (!$_readonly): ?>
     Event.observe(window, 'load', setupPriceAmountEvents);
+    <?php endif; ?>
 //]]>
 </script>
 </td>

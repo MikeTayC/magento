@@ -21,33 +21,43 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Banner
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_Banner>
-             <version>1.6.0.0.4</version>
+            <version>1.11.0.0</version>
         </Enterprise_Banner>
     </modules>
-
     <global>
         <models>
-             <enterprise_banner>
+            <enterprise_banner>
                 <class>Enterprise_Banner_Model</class>
-                <resourceModel>enterprise_banner_mysql4</resourceModel>
-             </enterprise_banner>
-             <enterprise_banner_mysql4>
-                <class>Enterprise_Banner_Model_Mysql4</class>
+                <resourceModel>enterprise_banner_resource</resourceModel>
+            </enterprise_banner>
+            <enterprise_banner_resource>
+                <class>Enterprise_Banner_Model_Resource</class>
+                <deprecatedNode>enterprise_banner_mysql4</deprecatedNode>
                 <entities>
-                    <banner><table>enterprise_banner</table></banner>
-                    <content><table>enterprise_banner_content</table></content>
-                    <customersegment><table>enterprise_banner_customersegment</table></customersegment>
-                    <catalogrule><table>enterprise_banner_catalogrule</table></catalogrule>
-                    <salesrule><table>enterprise_banner_salesrule</table></salesrule>
+                    <banner>
+                        <table>enterprise_banner</table>
+                    </banner>
+                    <content>
+                        <table>enterprise_banner_content</table>
+                    </content>
+                    <customersegment>
+                        <table>enterprise_banner_customersegment</table>
+                    </customersegment>
+                    <catalogrule>
+                        <table>enterprise_banner_catalogrule</table>
+                    </catalogrule>
+                    <salesrule>
+                        <table>enterprise_banner_salesrule</table>
+                    </salesrule>
                 </entities>
-            </enterprise_banner_mysql4>
+            </enterprise_banner_resource>
         </models>
         <helpers>
             <enterprise_banner>
@@ -55,15 +65,15 @@
             </enterprise_banner>
         </helpers>
         <blocks>
-             <enterprise_banner>
+            <enterprise_banner>
                 <class>Enterprise_Banner_Block</class>
-             </enterprise_banner>
+            </enterprise_banner>
         </blocks>
         <resources>
             <enterprise_banner_setup>
                 <setup>
                     <module>Enterprise_Banner</module>
-                    <class>Enterprise_Banner_Model_Mysql4_Setup</class>
+                    <class>Enterprise_Banner_Model_Resource_Setup</class>
                 </setup>
             </enterprise_banner_setup>
         </resources>
@@ -79,9 +89,8 @@
             </banner>
         </enterprise>
     </global>
-
     <admin>
-         <routers>
+        <routers>
             <adminhtml>
                 <args>
                     <modules>
@@ -91,7 +100,6 @@
             </adminhtml>
         </routers>
     </admin>
-
     <adminhtml>
         <layout>
             <updates>
@@ -100,7 +108,6 @@
                 </enterprise_banner>
             </updates>
         </layout>
-
         <translate>
             <modules>
                 <Enterprise_Banner>

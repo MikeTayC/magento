@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -33,6 +33,13 @@
  */
 class Enterprise_TargetRule_Block_Checkout_Cart_Crosssell extends Mage_Catalog_Block_Product_Abstract
 {
+    /**
+     * Default MAP renderer type
+     *
+     * @var string
+     */
+    protected $_mapRenderer = 'msrp_item';
+
     /**
      * Array of cross-sell products
      *

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -60,8 +60,8 @@ class Enterprise_GiftWrapping_Model_Total_Invoice_Tax_Giftwrapping extends Mage_
             }
         }
         if ($invoiced > 0 || $baseInvoiced > 0) {
-            $order->setGwItemsBaseTaxAmountInvoiced($order->getGwItemsBaseTaxAmountInvoiced() + $baseInvoiced);
-            $order->setGwItemsTaxAmountInvoiced($order->getGwItemsTaxAmountInvoiced() + $invoiced);
+            $order->setGwItemsBaseTaxInvoiced($order->getGwItemsBaseTaxInvoiced() + $baseInvoiced);
+            $order->setGwItemsTaxInvoiced($order->getGwItemsTaxInvoiced() + $invoiced);
             $invoice->setGwItemsBaseTaxAmount($baseInvoiced);
             $invoice->setGwItemsTaxAmount($invoiced);
         }
@@ -80,21 +80,21 @@ class Enterprise_GiftWrapping_Model_Total_Invoice_Tax_Giftwrapping extends Mage_
         /**
          * Printed card
          */
-        if ($order->getGwAddPrintedCard() && $order->getGwPrintedCardBaseTaxAmount()
-            && $order->getGwPrintedCardBaseTaxAmount() != $order->getGwPrintedCardBaseTaxAmountInvoiced()) {
-            $order->setGwPrintedCardBaseTaxAmountInvoiced($order->getGwPrintedCardBaseTaxAmount());
-            $order->setGwPrintedCardTaxAmountInvoiced($order->getGwPrintedCardTaxAmount());
-            $invoice->setGwPrintedCardBaseTaxAmount($order->getGwPrintedCardBaseTaxAmount());
-            $invoice->setGwPrintedCardTaxAmount($order->getGwPrintedCardTaxAmount());
+        if ($order->getGwAddCard() && $order->getGwCardBaseTaxAmount()
+            && $order->getGwCardBaseTaxAmount() != $order->getGwCardBaseTaxInvoiced()) {
+            $order->setGwCardBaseTaxInvoiced($order->getGwCardBaseTaxAmount());
+            $order->setGwCardTaxInvoiced($order->getGwCardTaxAmount());
+            $invoice->setGwCardBaseTaxAmount($order->getGwCardBaseTaxAmount());
+            $invoice->setGwCardTaxAmount($order->getGwCardTaxAmount());
         }
 
         if (!$invoice->isLast()) {
             $baseTaxAmount = $invoice->getGwItemsBaseTaxAmount()
                 + $invoice->getGwBaseTaxAmount()
-                + $invoice->getGwPrintedCardBaseTaxAmount();
+                + $invoice->getGwCardBaseTaxAmount();
             $taxAmount = $invoice->getGwItemsTaxAmount()
                 + $invoice->getGwTaxAmount()
-                + $invoice->getGwPrintedCardTaxAmount();
+                + $invoice->getGwCardTaxAmount();
             $invoice->setBaseTaxAmount($invoice->getBaseTaxAmount() + $baseTaxAmount);
             $invoice->setTaxAmount($invoice->getTaxAmount() + $taxAmount);
             $invoice->setBaseGrandTotal($invoice->getBaseGrandTotal() + $baseTaxAmount);

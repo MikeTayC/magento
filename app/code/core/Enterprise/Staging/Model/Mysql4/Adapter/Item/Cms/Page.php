@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -29,45 +29,6 @@
  *
  * @author     Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Staging_Model_Mysql4_Adapter_Item_Cms_Page extends Enterprise_Staging_Model_Mysql4_Adapter_Item_Default
+class Enterprise_Staging_Model_Mysql4_Adapter_Item_Cms_Page extends Enterprise_Staging_Model_Resource_Adapter_Item_Cms_Page
 {
-    /**
-     * Executed before merging staging store to master store
-     *
-     * @param string $entityName
-     * @param mixed $fields
-     * @param int $masterStoreId
-     * @param int $stagingStoreId
-     *
-     * @return Enterprise_Staging_Model_Mysql4_Adapter_Item_Cms_Page
-     */
-    protected function _beforeStoreMerge($entityName, $fields, $masterStoreId, $stagingStoreId)
-    {
-        if ($entityName == 'cms/page_store') {
-            $model = Mage::getResourceSingleton('cms/page_service');
-            $model->unlinkConflicts($masterStoreId, $stagingStoreId);
-        }
-        return $this;
-    }
-
-    /**
-     * Executed before rolling back backup to master store
-     *
-     * @param string $srcTable
-     * @param string $targetTable
-     * @param object $connection
-     * @param mixed $fields
-     * @param int $masterStoreId
-     * @param int $stagingStoreId
-     *
-     * @return Enterprise_Staging_Model_Mysql4_Adapter_Item_Cms_Page
-     */
-    protected function _beforeStoreRollback($srcTable, $targetTable, $connection, $fields, $masterStoreId, $stagingStoreId)
-    {
-        if ($targetTable == 'cms/page_store') {
-            $model = Mage::getResourceSingleton('cms/page_service');
-            $model->unlinkConflicts($masterStoreId, $masterStoreId, $this->getTable($srcTable));
-        }
-        return $this;
-    }
 }

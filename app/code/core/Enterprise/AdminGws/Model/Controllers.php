@@ -20,12 +20,16 @@
  *
  * @category    Enterprise
  * @package     Enterprise_AdminGws
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Controllers AdminGws validator
+ *
+ * @category    Enterprise
+ * @package     Enterprise_AdminGws
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_AdminGws_Model_Controllers extends Enterprise_AdminGws_Model_Observer_Abstract
 {
@@ -966,8 +970,34 @@ class Enterprise_AdminGws_Model_Controllers extends Enterprise_AdminGws_Model_Ob
      */
     public function validatePromoCatalogApplyRules($controller)
     {
-        $this->_forward();
-        return false;
+        if (!$this->_role->getIsAll()) {
+            $result = false;
+            if (Mage::getSingleton('admin/session')->isAllowed('admin/promo/catalog')) {
+                /** @var $ruleModel Mage_Catalogrule_Model_Rule */
+                $ruleModel = Mage::getModel('catalogrule/rule')->load(
+                    Mage::app()->getRequest()->getParam('rule_id')
+                );
+                if ($ruleModel->getId()) {
+                    $websites = array();
+                    if (is_string($ruleModel->getWebsiteIds())) {
+                        $websites = explode(',', $ruleModel->getWebsiteIds());
+                    } elseif (is_array($ruleModel->getWebsiteIds())) {
+                        $websites = $ruleModel->getWebsiteIds();
+                    }
+                    foreach ($this->_role->getWebsiteIds() as $roleWebsite) {
+                        if (in_array($roleWebsite, $websites)) {
+                            $result = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!$result) {
+                $this->_forward();
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

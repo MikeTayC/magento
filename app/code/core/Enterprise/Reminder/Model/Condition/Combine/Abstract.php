@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -137,7 +137,7 @@ abstract class Enterprise_Reminder_Model_Condition_Combine_Abstract extends Mage
          */
         foreach ($this->getConditions() as $condition) {
             if ($sql = $condition->getConditionsSql($customer, $website)) {
-                $criteriaSql = "(IFNULL(($sql), 0) {$operator} 1)";
+                $criteriaSql = "(". $select->getAdapter()->getIfNullSql("(" . $sql . ")", 0) . " {$operator} 1)";
                 $select->$whereFunction($criteriaSql);
                 $gotConditions = true;
             }

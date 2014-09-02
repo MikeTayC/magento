@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -90,11 +90,13 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Storecredit
         $operator = $this->getResource()->getSqlOperator($this->getOperator());
 
         $select = $this->getResource()->createSelect();
-        $select->from($table, array(new Zend_Db_Expr(1)))
-            ->limit(1);
+        $select->from($table, array(new Zend_Db_Expr(1)));
+
         $select->where($this->_createCustomerFilter($customer, 'customer_id'));
         $select->where('website_id=?', $website);
         $select->where("amount {$operator} ?", $this->getValue());
+
+        Mage::getResourceHelper('enterprise_customersegment')->setOneRowLimit($select);
 
         return $select;
     }

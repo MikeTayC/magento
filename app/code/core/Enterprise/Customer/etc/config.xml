@@ -21,24 +21,25 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Customer
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_Customer>
-             <version>0.1.2</version>
+            <version>1.11.0.0</version>
         </Enterprise_Customer>
     </modules>
     <global>
         <models>
             <enterprise_customer>
                 <class>Enterprise_Customer_Model</class>
-                <resourceModel>enterprise_customer_mysql4</resourceModel>
+                <resourceModel>enterprise_customer_resource</resourceModel>
             </enterprise_customer>
-            <enterprise_customer_mysql4>
-                <class>Enterprise_Customer_Model_Mysql4</class>
+            <enterprise_customer_resource>
+                <class>Enterprise_Customer_Model_Resource</class>
+                <deprecatedNode>enterprise_customer_mysql4</deprecatedNode>
                 <entities>
                     <sales_order>
                         <table>enterprise_customer_sales_flat_order</table>
@@ -53,7 +54,7 @@
                         <table>enterprise_customer_sales_flat_quote_address</table>
                     </sales_quote_address>
                 </entities>
-            </enterprise_customer_mysql4>
+            </enterprise_customer_resource>
         </models>
         <blocks>
             <enterprise_customer>
@@ -69,7 +70,7 @@
             <enterprise_customer_setup>
                 <setup>
                     <module>Enterprise_Customer</module>
-                    <class>Enterprise_Customer_Model_Mysql4_Setup</class>
+                    <class>Enterprise_Customer_Model_Resource_Setup</class>
                 </setup>
             </enterprise_customer_setup>
         </resources>
@@ -138,6 +139,14 @@
                     </enterprise_customer>
                 </observers>
             </sales_order_address_save_after>
+            <enterprise_customer_attribute_before_save>
+                <observers>
+                    <enterprise_customer>
+                        <class>enterprise_customer/observer</class>
+                        <method>enterpriseCustomerAttributeBeforeSave</method>
+                    </enterprise_customer>
+                </observers>
+            </enterprise_customer_attribute_before_save>
             <enterprise_customer_attribute_save>
                 <observers>
                     <enterprise_customer>
@@ -257,14 +266,13 @@
         <translate>
             <modules>
                 <Enterprise_Customer>
-                     <files>
-                          <default>Enterprise_Customer.csv</default>
-                     </files>
+                    <files>
+                        <default>Enterprise_Customer.csv</default>
+                    </files>
                 </Enterprise_Customer>
             </modules>
         </translate>
     </adminhtml>
-
     <admin>
         <routers>
             <adminhtml>
@@ -276,7 +284,6 @@
             </adminhtml>
         </routers>
     </admin>
-
     <frontend>
         <layout>
             <updates>

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -66,7 +66,8 @@ class Enterprise_Reward_Block_Adminhtml_Customer_Edit_Tab_Reward
         $customer = Mage::registry('current_customer');
         return $customer->getId()
             && Mage::helper('enterprise_reward')->isEnabled()
-            && Mage::getSingleton('admin/session')->isAllowed('enterprise_reward/balance');
+            && Mage::getSingleton('admin/session')
+                ->isAllowed(Enterprise_Reward_Helper_Data::XML_PATH_PERMISSION_BALANCE);
     }
 
     /**

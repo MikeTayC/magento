@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -52,7 +52,9 @@ class Enterprise_Reward_Block_Adminhtml_Customer_Edit_Tab_Reward_Management_Bala
      */
     protected function _prepareLayout()
     {
-        if (!Mage::getSingleton('admin/session')->isAllowed('enterprise_reward/balance')) {
+        if (!Mage::getSingleton('admin/session')
+            ->isAllowed(Enterprise_Reward_Helper_Data::XML_PATH_PERMISSION_BALANCE)
+        ) {
             // unset template to get empty output
             $this->setTemplate(null);
         } else {

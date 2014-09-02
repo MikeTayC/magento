@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogEvent
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -28,8 +28,21 @@
 /**
  * Catalog Event model
  *
- * @category   Enterprise
- * @package    Enterprise_CatalogEvent
+ * @method Enterprise_CatalogEvent_Model_Resource_Event _getResource()
+ * @method Enterprise_CatalogEvent_Model_Resource_Event getResource()
+ * @method int getCategoryId()
+ * @method Enterprise_CatalogEvent_Model_Event setCategoryId(int $value)
+ * @method string getDateStart()
+ * @method Enterprise_CatalogEvent_Model_Event setDateStart(string $value)
+ * @method string getDateEnd()
+ * @method Enterprise_CatalogEvent_Model_Event setDateEnd(string $value)
+ * @method int getDisplayState()
+ * @method int getSortOrder()
+ * @method Enterprise_CatalogEvent_Model_Event setSortOrder(int $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_CatalogEvent
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_CatalogEvent_Model_Event extends Mage_Core_Model_Abstract
 {
@@ -92,7 +105,7 @@ class Enterprise_CatalogEvent_Model_Event extends Mage_Core_Model_Abstract
     {
         $tags = parent::getCacheIdTags();
         if ($this->getCategoryId()) {
-            $tags[] = Mage_Catalog_Model_Category::CACHE_TAG.'_'.$this->getCategoryId();
+            $tags[] = Mage_Catalog_Model_Category::CACHE_TAG . '_' . $this->getCategoryId();
         }
         return $tags;
     }

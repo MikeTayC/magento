@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -103,7 +103,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_
 
     public function getTitle()
     {
-        return parent::getTitle().' (PBridge)';
+        return parent::getTitle();
     }
 
     /**
@@ -196,6 +196,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_
             $response = $this->getPbridgeMethodInstance()->authorize($payment, $amount);
         }
         $payment->addData((array)$response);
+        $payment->setIsTransactionClosed(0);
         return $this;
     }
 
@@ -225,11 +226,22 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_
         $payment->addData((array)$response);
         return $this;
     }
+
     /**
-     * Return payment method Centinel validation status
+     * Cancel payment
      *
-     * @return bool
+     * @param Varien_Object $payment
+     * @return Enterprise_Pbridge_Model_Payment_Method_Authorizenet
      */
+    public function cancel(Varien_Object $payment)
+    {
+        if (!$payment->getOrder()->getInvoiceCollection()->count()) {
+            $response = $this->getPbridgeMethodInstance()->void($payment);
+            $payment->addData((array)$response);
+        }
+        return $this;
+    }
+
     public function getIsCentinelValidationEnabled()
     {
         return false;

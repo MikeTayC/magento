@@ -20,33 +20,19 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
-class Enterprise_Staging_Model_Mysql4_Adapter_Item_Category extends Enterprise_Staging_Model_Mysql4_Adapter_Item_Default
-{
-    /**
-     * List of table codes which shuldn't process if product item were not chosen
-     *
-     * @var array
-     */
-    protected $_ignoreIfProductNotChosen = array('category_product', 'category_product_index');
 
-    /**
-     * Create item table and records, run processes in website and store scopes
-     *
-     * @param string    $entityName
-     *
-     * @return Enterprise_Staging_Model_Staging_Adapter_Item_Abstract
-     */
-    protected function _createItem($entityName)
-    {
-        if (!$this->getStaging()->getMapperInstance()->hasStagingItem('product')) {
-            if (strpos($entityName, 'product') !== false) {
-                return $this;
-            }
-        }
-        return parent::_createItem($entityName);
-    }
+/**
+ * Enter description here ...
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Staging
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
+class Enterprise_Staging_Model_Mysql4_Adapter_Item_Category
+    extends Enterprise_Staging_Model_Resource_Adapter_Item_Category
+{
 }

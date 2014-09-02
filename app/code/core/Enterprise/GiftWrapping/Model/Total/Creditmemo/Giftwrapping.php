@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -80,36 +80,36 @@ class Enterprise_GiftWrapping_Model_Total_Creditmemo_Giftwrapping extends Mage_S
         /**
          * Printed card
          */
-        if ($order->getGwAddPrintedCard() && $order->getGwPrintedCardBasePriceInvoiced()
-            && $order->getGwPrintedCardBasePriceInvoiced() != $order->getGwPrintedCardBasePriceRefunded()) {
-            $order->setGwPrintedCardBasePriceRefunded($order->getGwPrintedCardBasePriceInvoiced());
-            $order->setGwPrintedCardPriceRefunded($order->getGwPrintedCardPriceInvoiced());
-            $creditmemo->setGwPrintedCardBasePrice($order->getGwPrintedCardBasePriceInvoiced());
-            $creditmemo->setGwPrintedCardPrice($order->getGwPrintedCardPriceInvoiced());
+        if ($order->getGwAddCard() && $order->getGwCardBasePriceInvoiced()
+            && $order->getGwCardBasePriceInvoiced() != $order->getGwCardBasePriceRefunded()) {
+            $order->setGwCardBasePriceRefunded($order->getGwCardBasePriceInvoiced());
+            $order->setGwCardPriceRefunded($order->getGwCardPriceInvoiced());
+            $creditmemo->setGwCardBasePrice($order->getGwCardBasePriceInvoiced());
+            $creditmemo->setGwCardPrice($order->getGwCardPriceInvoiced());
         }
 
         $creditmemo->setBaseGrandTotal(
             $creditmemo->getBaseGrandTotal()
             + $creditmemo->getGwItemsBasePrice()
             + $creditmemo->getGwBasePrice()
-            + $creditmemo->getGwPrintedCardBasePrice()
+            + $creditmemo->getGwCardBasePrice()
         );
         $creditmemo->setGrandTotal(
             $creditmemo->getGrandTotal()
             + $creditmemo->getGwItemsPrice()
             + $creditmemo->getGwPrice()
-            + $creditmemo->getGwPrintedCardPrice()
+            + $creditmemo->getGwCardPrice()
         );
 
         $creditmemo->setBaseCustomerBalanceReturnMax(
             $creditmemo->getBaseCustomerBalanceReturnMax()
-            + $creditmemo->getGwPrintedCardBasePrice()
+            + $creditmemo->getGwCardBasePrice()
             + $creditmemo->getGwBasePrice()
             + $creditmemo->getGwItemsBasePrice()
         );
         $creditmemo->setCustomerBalanceReturnMax(
             $creditmemo->getCustomerBalanceReturnMax()
-            + $creditmemo->getGwPrintedCardPrice()
+            + $creditmemo->getGwCardPrice()
             + $creditmemo->getGwPrice()
             + $creditmemo->getGwItemsPrice()
         );

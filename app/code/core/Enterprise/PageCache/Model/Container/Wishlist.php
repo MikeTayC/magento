@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -62,7 +62,15 @@ class Enterprise_PageCache_Model_Container_Wishlist extends Enterprise_PageCache
 
         $block = new $block;
         $block->setTemplate($template);
-        $block->setLayout(Mage::app()->getLayout());
+
+        $blockPrice = new Mage_Catalog_Block_Product_Price_Template();
+        $blockPrice->addPriceBlockType('msrp','catalog/product_price','catalog/product/price_msrp.phtml');
+
+        $layout = Mage::app()->getLayout();
+        $layout->addBlock($blockPrice,'catalog_product_price_template');
+
+        $block->setLayout($layout);
+        Mage::dispatchEvent('render_block', array('block' => $block, 'placeholder' => $this->_placeholder));
 
         return $block->toHtml();
     }

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_CatalogRule
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -45,7 +45,7 @@ class Mage_CatalogRule_Helper_Data extends Mage_Core_Helper_Abstract
                 $priceRule = $ruleAmount;
                 break;
             case 'to_percent':
-                $priceRule= $price * $ruleAmount / 100;
+                $priceRule = $price * $ruleAmount / 100;
                 break;
             case 'by_fixed':
                 $priceRule = $price - $ruleAmount;

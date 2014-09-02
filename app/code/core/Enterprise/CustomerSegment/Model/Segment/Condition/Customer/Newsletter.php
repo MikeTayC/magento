@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -135,11 +135,14 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Newsletter
         $select = $this->getResource()->createSelect()
             ->from(array('main' => $table), array(new Zend_Db_Expr($value)))
             ->where($this->_createCustomerFilter($customer, 'main.customer_id'))
-            ->where('main.subscriber_status = ?', Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
-            ->limit(1);
+            ->where('main.subscriber_status = ?', Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED);
+
+        Mage::getResourceHelper('enterprise_customersegment')->setOneRowLimit($select);
+
         $this->_limitByStoreWebsite($select, $website, 'main.store_id');
         if (!$value) {
-            $select = 'IFNULL(('.$select.'), 1)';
+            $select = $this->getResource()->getReadConnection()
+                    ->getIfNullSql($select, 1);
         }
         return $select;
     }

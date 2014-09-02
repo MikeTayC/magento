@@ -21,28 +21,35 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_Cms>
-             <version>1.6.0.0.9</version>
+            <version>1.11.0.0</version>
         </Enterprise_Cms>
     </modules>
     <global>
         <models>
             <enterprise_cms>
                 <class>Enterprise_Cms_Model</class>
-                <resourceModel>enterprise_cms_mysql4</resourceModel>
+                <resourceModel>enterprise_cms_resource</resourceModel>
             </enterprise_cms>
-            <enterprise_cms_mysql4>
-                <class>Enterprise_Cms_Model_Mysql4</class>
+            <enterprise_cms_resource>
+                <class>Enterprise_Cms_Model_Resource</class>
+                <deprecatedNode>enterprise_cms_mysql4</deprecatedNode>
                 <entities>
-                    <page_version><table>enterprise_cms_page_version</table></page_version>
-                    <page_revision><table>enterprise_cms_page_revision</table></page_revision>
-                    <increment><table>enterprise_cms_increment</table></increment>
+                    <page_version>
+                        <table>enterprise_cms_page_version</table>
+                    </page_version>
+                    <page_revision>
+                        <table>enterprise_cms_page_revision</table>
+                    </page_revision>
+                    <increment>
+                        <table>enterprise_cms_increment</table>
+                    </increment>
                     <hierarchy_metadata>
                         <table>enterprise_cms_hierarchy_metadata</table>
                     </hierarchy_metadata>
@@ -53,7 +60,7 @@
                         <table>enterprise_cms_hierarchy_lock</table>
                     </hierarchy_lock>
                 </entities>
-            </enterprise_cms_mysql4>
+            </enterprise_cms_resource>
         </models>
         <blocks>
             <enterprise_cms>
@@ -69,7 +76,7 @@
             <enterprise_cms_setup>
                 <setup>
                     <module>Enterprise_Cms</module>
-                    <class>Enterprise_Cms_Model_Mysql4_Setup</class>
+                    <class>Enterprise_Cms_Model_Resource_Setup</class>
                 </setup>
             </enterprise_cms_setup>
         </resources>
@@ -186,14 +193,13 @@
         <translate>
             <modules>
                 <Enterprise_Cms>
-                     <files>
-                          <default>Enterprise_Cms.csv</default>
-                     </files>
+                    <files>
+                        <default>Enterprise_Cms.csv</default>
+                    </files>
                 </Enterprise_Cms>
             </modules>
         </translate>
     </adminhtml>
-
     <admin>
         <routers>
             <adminhtml>
@@ -205,7 +211,6 @@
             </adminhtml>
         </routers>
     </admin>
-
     <default>
         <cms>
             <hierarchy>

@@ -21,21 +21,21 @@
  *
  * @category    Enterprise
  * @package     Enterprise_WebsiteRestriction
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_WebsiteRestriction>
-             <version>0.0.1</version>
+            <version>1.11.0.0</version>
         </Enterprise_WebsiteRestriction>
     </modules>
     <global>
         <models>
             <enterprise_websiterestriction>
                 <class>Enterprise_WebsiteRestriction_Model</class>
-                <resourceModel>enterprise_websiterestriction_mysql4</resourceModel>
+                <resourceModel>enterprise_websiterestriction_resource</resourceModel>
             </enterprise_websiterestriction>
         </models>
         <blocks>
@@ -52,7 +52,7 @@
             <enterprise_websiterestriction_setup>
                 <setup>
                     <module>Enterprise_WebsiteRestriction</module>
-                    <class>Enterprise_WebsiteRestriction_Model_Mysql4_Setup</class>
+                    <class>Enterprise_WebsiteRestriction_Model_Resource_Setup</class>
                 </setup>
             </enterprise_websiterestriction_setup>
         </resources>
@@ -106,6 +106,7 @@
                         <paypal_ipn_standard/>
                         <paypal_ipn_express/>
                         <paypal_ipn_direct/>
+                        <paypal_ipn_index/>
                         <paypaluk_ipn_express/>
                         <paypaluk_ipn_direct/>
                         <googlecheckout_api_index/>

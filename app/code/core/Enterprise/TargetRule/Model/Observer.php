@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -37,7 +37,7 @@ class Enterprise_TargetRule_Model_Observer
      */
     public function prepareTargetRuleSave(Varien_Event_Observer $observer)
     {
-        $_vars = array('targetrule_rule_based_positions', 'targetrule_position_behavior');
+        $_vars = array('targetrule_rule_based_positions', 'tgtr_position_behavior');
         $_varPrefix = array('related_', 'upsell_', 'crosssell_');
         if ($product = $observer->getEvent()->getProduct()) {
             foreach ($_vars as $var) {
@@ -63,7 +63,7 @@ class Enterprise_TargetRule_Model_Observer
         /* @var $product Mage_Catalog_Model_Product */
         $product = $observer->getEvent()->getProduct();
 
-        /* @var $indexResource Enterprise_TargetRule_Model_Mysql4_Index */
+        /* @var $indexResource Enterprise_TargetRule_Model_Resource_Index */
         $indexResource = Mage::getResourceSingleton('enterprise_targetrule/index');
 
         // remove old cache index data
@@ -72,11 +72,13 @@ class Enterprise_TargetRule_Model_Observer
         // remove old matched product index
         $indexResource->removeProductIndex($product->getId());
 
-        $ruleCollection = Mage::getResourceModel('enterprise_targetrule/rule_collection');
+        $ruleCollection = Mage::getResourceModel('enterprise_targetrule/rule_collection')
+            ->addProductFilter($product->getId())
+        ;
         foreach ($ruleCollection as $rule) {
             /* @var $rule Enterprise_TargetRule_Model_Rule */
             if ($rule->validate($product)) {
-                $indexResource->saveProductIndex($rule->getId(), $product->getId());
+                $indexResource->saveProductIndex($rule->getId(), $product->getId(), $product->getStoreId());
             }
         }
     }

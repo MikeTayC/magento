@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -46,7 +46,7 @@ class Mage_Adminhtml_Block_Report_Grid_Column_Renderer_Customer
         $id   = $row->getCustomerId();
 
         if (!$id) {
-            return '&nbsp;';
+            return Mage::helper('adminhtml')->__('Show Reviews');
         }
 
         return sprintf('<a href="%s">%s</a>',

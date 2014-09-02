@@ -1,13 +1,13 @@
 <?php
 /**
- * Magento
+ * Magento Enterprise Edition
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * http://www.magentocommerce.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
  * to license@magentocommerce.com so we can send you a copy immediately.
@@ -20,16 +20,16 @@
  *
  * @category    Mage
  * @package     Mage_XmlConnect
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Abstract Pbridge Payment method xml renderer
  *
- * @category   Mage
- * @package    Mage_XmlConnect
- * @author     Magento Core Team <core@magentocommerce.com>
+ * @category    Mage
+ * @package     Mage_XmlConnect
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_XmlConnect_Block_Checkout_Payment_Method_Pbridge_Abstract
     extends Enterprise_Pbridge_Block_Payment_Form_Abstract
@@ -72,11 +72,16 @@ abstract class Mage_XmlConnect_Block_Checkout_Payment_Method_Pbridge_Abstract
         return $paymentItemXmlObj;
     }
 
+    /**
+     * Create html page with iframe for devices
+     *
+     * @return string html
+     */
     protected function createIframe()
     {
         $code = $this->getMethodCode();
         $body = <<<EOT
-<div id="payment_form_{$code}">
+<div id="payment_form_{$code}" style="margin:0 auto; max-width:500px;">
     {$this->getIframeBlock()->toHtml()}
 </div>
 EOT;

@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -32,7 +32,7 @@ AdminCheckout.prototype = {
         this.gridProducts   = $H({});
         this.quoteAddFields = {};
         this.sourceGrids    = {};
-        
+
         this.actionUrls     = data.action_urls ? data.action_urls : {};
         this.messages       = data.messages ? data.messages : {};
         this.customerId     = data.customer_id ? data.customer_id : false;
@@ -40,13 +40,13 @@ AdminCheckout.prototype = {
         this.currencySymbol = data.currency_symbol ? data.currency_symbol : '';
         this.productPriceBase = {};
     },
-    
-    getActionUrl: function (action) 
+
+    getActionUrl: function (action)
     {
         return this.actionUrls[action];
     },
-    
-    getMessage: function (id) 
+
+    getMessage: function (id)
     {
         return this.messages[id];
     },
@@ -106,7 +106,7 @@ AdminCheckout.prototype = {
 
     searchProducts: function()
     {
-        productsGrid.reloadParams = {source: this.checkboxes.toJSON()};
+        productsGrid.reloadParams = {source: Object.toJSON(this.checkboxes)};
         productsGrid.doFilter();
     },
 
@@ -412,7 +412,10 @@ AdminCheckout.prototype = {
                         itemId = confLink.readAttribute('product_id');
                     }
                     if (typeof this.productPriceBase[itemId] == 'undefined') {
-                        var priceBase = priceCol.innerHTML.match(/.*?([0-9\.,]+)/);
+                        var priceBase = 0;
+                        if( (typeof priceCol != 'undefined') && (priceCol)) {
+                            priceBase = priceCol.innerHTML.match(/.*?([0-9\.,]+)/);
+                        }
                         if (priceBase && (priceBase.length >= 1)) {
                             priceBase = priceBase[1].replace(/,/g, '');
                         } else {
@@ -432,7 +435,9 @@ AdminCheckout.prototype = {
                         }
                         // calc and set product price
                         var productPrice = parseFloat(this._calcProductPrice() + this.productPriceBase[itemId]);
-                        priceCol.innerHTML = this.currencySymbol + productPrice.toFixed(2);
+                        if(typeof priceCol != 'undefined' && priceCol) {
+                            priceCol.innerHTML = this.currencySymbol + productPrice.toFixed(2);
+                        }
                         // and set checkbox checked
                         grid.setCheckboxChecked(checkbox, true);
                     }.bind(this));

@@ -19,7 +19,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -41,15 +41,23 @@ Ajax.Request.addMethods({
         if (!url.match(new RegExp('[?&]isAjax=true',''))) {
             url = url.match(new RegExp('\\?',"g")) ? url + '&isAjax=true' : url + '?isAjax=true';
         }
-        if (!this.options.parameters) {
-            this.options.parameters = {
+        if (Object.isString(this.options.parameters)
+            && this.options.parameters.indexOf('form_key=') == -1
+        ) {
+            this.options.parameters += '&' + Object.toQueryString({
                 form_key: FORM_KEY
-            };
+            });
+        } else {
+            if (!this.options.parameters) {
+                this.options.parameters = {
+                    form_key: FORM_KEY
+                };
+            }
+            if (!this.options.parameters.form_key) {
+                this.options.parameters.form_key = FORM_KEY;
+            }
         }
-        if (!this.options.parameters.form_key) {
-            this.options.parameters.form_key = FORM_KEY;
-        }
-        
+
         this.request(url);
     },
     respondToReadyState: function(readyState) {

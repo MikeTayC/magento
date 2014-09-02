@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -66,7 +66,7 @@ class Enterprise_PageCache_Model_Config extends Varien_Simplexml_Config
         if ($this->_placeholders === null) {
             $this->_placeholders = array();
             foreach ($this->getNode('placeholders')->children() as $placeholder) {
-                $this->_placeholders[(string)$placeholder->block] = array(
+                $this->_placeholders[(string)$placeholder->block][] = array(
                     'container'     => (string)$placeholder->container,
                     'code'          => (string)$placeholder->placeholder,
                     'cache_lifetime'=> (int) $placeholder->cache_lifetime,
@@ -87,13 +87,25 @@ class Enterprise_PageCache_Model_Config extends Varien_Simplexml_Config
     {
         $this->_initPlaceholders();
         $type = $block->getType();
+
         if (isset($this->_placeholders[$type])) {
-            if (!empty($this->_placeholders[$type]['name'])
-                && $this->_placeholders[$type]['name'] != $block->getNameInLayout()) {
+            $placeholderData = false;
+            foreach ($this->_placeholders[$type] as $placeholderInfo) {
+                if (!empty($placeholderInfo['name'])) {
+                    if ($placeholderInfo['name'] == $block->getNameInLayout()) {
+                        $placeholderData = $placeholderInfo;
+                    }
+                } else {
+                    $placeholderData = $placeholderInfo;
+                }
+            }
+
+            if (!$placeholderData) {
                 return false;
             }
-            $placeholder = $this->_placeholders[$type]['code']
-                . ' container="'.$this->_placeholders[$type]['container'].'"'
+
+            $placeholder = $placeholderData['code']
+                . ' container="' . $placeholderData['container'] . '"'
                 . ' block="' . get_class($block) . '"';
             $placeholder.= ' cache_id="' . $block->getCacheKey() . '"';
             foreach ($block->getCacheKeyInfo() as $k => $v) {

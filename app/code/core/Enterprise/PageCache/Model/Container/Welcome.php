@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -36,7 +36,10 @@ class Enterprise_PageCache_Model_Container_Welcome extends Enterprise_PageCache_
      */
     protected function _getIdentifier()
     {
-        return $this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER, '');
+        $cacheId = $this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER, '')
+            . '_'
+            . $this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER_LOGGED_IN, '');
+        return $cacheId;
     }
 
     /**
@@ -56,6 +59,8 @@ class Enterprise_PageCache_Model_Container_Welcome extends Enterprise_PageCache_
      */
     protected function _renderBlock()
     {
-        return Mage::app()->getLayout()->createBlock('page/html_header')->getWelcome();
+        $block = Mage::app()->getLayout()->createBlock('page/html_header');
+        Mage::dispatchEvent('render_block', array('block' => $block, 'placeholder' => $this->_placeholder));
+        return $block->getWelcome();
     }
 }

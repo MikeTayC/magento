@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -28,6 +28,29 @@
 /**
  * Staging model
  *
+ * @method Enterprise_Staging_Model_Resource_Staging _getResource()
+ * @method Enterprise_Staging_Model_Resource_Staging getResource()
+ * @method string getType()
+ * @method Enterprise_Staging_Model_Staging setType(string $value)
+ * @method int getMasterWebsiteId()
+ * @method Enterprise_Staging_Model_Staging setMasterWebsiteId(int $value)
+ * @method int getStagingWebsiteId()
+ * @method Enterprise_Staging_Model_Staging setStagingWebsiteId(int $value)
+ * @method string getCreatedAt()
+ * @method Enterprise_Staging_Model_Staging setCreatedAt(string $value)
+ * @method string getUpdatedAt()
+ * @method Enterprise_Staging_Model_Staging setUpdatedAt(string $value)
+ * @method string getStatus()
+ * @method Enterprise_Staging_Model_Staging setStatus(string $value)
+ * @method int getSortOrder()
+ * @method Enterprise_Staging_Model_Staging setSortOrder(int $value)
+ * @method string getMergeSchedulingDate()
+ * @method Enterprise_Staging_Model_Staging setMergeSchedulingDate(string $value)
+ * @method string getMergeSchedulingMap()
+ * @method Enterprise_Staging_Model_Staging setMergeSchedulingMap(string $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Staging
  * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_Staging_Model_Staging extends Mage_Core_Model_Abstract
@@ -242,7 +265,7 @@ class Enterprise_Staging_Model_Staging extends Mage_Core_Model_Abstract
 
         $method = $process.'Run';
 
-        $this->_getResource()->beginTransaction();
+        //$this->_getResource()->beginTransaction();
         try {
             $this->_beforeStagingProcessRun($process, $logBefore);
 
@@ -252,12 +275,12 @@ class Enterprise_Staging_Model_Staging extends Mage_Core_Model_Abstract
 
             $this->_afterStagingProcessRun($process, $logAfter);
 
-            $this->_getResource()->commit();
+            //$this->_getResource()->commit();
 
             $logAfter->saveOnProcessRun($this, $process, 'after');
         }
         catch (Exception $e) {
-            $this->_getResource()->rollBack();
+            //$this->_getResource()->rollBack();
             $logBefore->saveOnProcessRun($this, $process, 'before', $e);
             throw $e;
         }

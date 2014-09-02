@@ -21,32 +21,43 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_Reminder>
-             <version>1.8.0.0.0</version>
+            <version>1.11.0.0</version>
         </Enterprise_Reminder>
     </modules>
     <global>
         <models>
-             <enterprise_reminder>
+            <enterprise_reminder>
                 <class>Enterprise_Reminder_Model</class>
-                <resourceModel>enterprise_reminder_mysql4</resourceModel>
-             </enterprise_reminder>
-             <enterprise_reminder_mysql4>
-                <class>Enterprise_Reminder_Model_Mysql4</class>
+                <resourceModel>enterprise_reminder_resource</resourceModel>
+            </enterprise_reminder>
+            <enterprise_reminder_resource>
+                <class>Enterprise_Reminder_Model_Resource</class>
+                <deprecatedNode>enterprise_reminder_mysql4</deprecatedNode>
                 <entities>
-                    <rule><table>enterprise_reminder_rule</table></rule>
-                    <website><table>enterprise_reminder_rule_website</table></website>
-                    <template><table>enterprise_reminder_template</table></template>
-                    <coupon><table>enterprise_reminder_rule_coupon</table></coupon>
-                    <log><table>enterprise_reminder_rule_log</table></log>
+                    <rule>
+                        <table>enterprise_reminder_rule</table>
+                    </rule>
+                    <website>
+                        <table>enterprise_reminder_rule_website</table>
+                    </website>
+                    <template>
+                        <table>enterprise_reminder_template</table>
+                    </template>
+                    <coupon>
+                        <table>enterprise_reminder_rule_coupon</table>
+                    </coupon>
+                    <log>
+                        <table>enterprise_reminder_rule_log</table>
+                    </log>
                 </entities>
-            </enterprise_reminder_mysql4>
+            </enterprise_reminder_resource>
         </models>
         <helpers>
             <enterprise_reminder>
@@ -54,25 +65,25 @@
             </enterprise_reminder>
         </helpers>
         <blocks>
-             <enterprise_reminder>
+            <enterprise_reminder>
                 <class>Enterprise_Reminder_Block</class>
-             </enterprise_reminder>
+            </enterprise_reminder>
         </blocks>
         <resources>
             <enterprise_reminder_setup>
                 <setup>
                     <module>Enterprise_Reminder</module>
-                    <class>Enterprise_Reminder_Model_Mysql4_Setup</class>
+                    <class>Enterprise_Reminder_Model_Resource_Setup</class>
                 </setup>
             </enterprise_reminder_setup>
         </resources>
         <template>
             <email>
-               <enterprise_reminder_email_template translate="label" module="enterprise_reminder">
-                   <label>Rule Reminder</label>
-                   <file>enterprise/reminder.html</file>
-                   <type>html</type>
-               </enterprise_reminder_email_template>
+                <enterprise_reminder_email_template translate="label" module="enterprise_reminder">
+                    <label>Rule Reminder</label>
+                    <file>enterprise/reminder.html</file>
+                    <type>html</type>
+                </enterprise_reminder_email_template>
             </email>
         </template>
         <events>
@@ -94,9 +105,8 @@
             </adminhtml_promo_quote_edit_tab_main_prepare_form>
         </events>
     </global>
-
     <admin>
-         <routers>
+        <routers>
             <adminhtml>
                 <args>
                     <modules>
@@ -106,7 +116,6 @@
             </adminhtml>
         </routers>
     </admin>
-
     <adminhtml>
         <layout>
             <updates>
@@ -115,7 +124,6 @@
                 </enterprise_reminder>
             </updates>
         </layout>
-
         <translate>
             <modules>
                 <Enterprise_Reminder>
@@ -126,7 +134,6 @@
             </modules>
         </translate>
     </adminhtml>
-
     <default>
         <promo>
             <enterprise_reminder>
@@ -140,11 +147,15 @@
             </enterprise_reminder>
         </promo>
     </default>
-
     <crontab>
         <jobs>
             <send_notification>
-                <run><model>enterprise_reminder/observer::scheduledNotification</model></run>
+                <schedule>
+                    <cron_expr>*/15 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>enterprise_reminder/observer::scheduledNotification</model>
+                </run>
             </send_notification>
         </jobs>
     </crontab>

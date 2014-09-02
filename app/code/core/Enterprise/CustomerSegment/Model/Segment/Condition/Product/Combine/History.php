@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -149,12 +149,12 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Combine_History
                     array(new Zend_Db_Expr(1))
                 );
                 $select->joinInner(
-                    array('order' => $this->getResource()->getTable('sales/order')),
-                    'item.order_id = order.entity_id',
+                    array('sales_order' => $this->getResource()->getTable('sales/order')),
+                    'item.order_id = sales_order.entity_id',
                     array()
                 );
-                $select->where($this->_createCustomerFilter($customer, 'order.customer_id'));
-                $this->_limitByStoreWebsite($select, $website, 'order.store_id');
+                $select->where($this->_createCustomerFilter($customer, 'sales_order.customer_id'));
+                $this->_limitByStoreWebsite($select, $website, 'sales_order.store_id');
                 break;
             default:
                 $select->from(
@@ -166,7 +166,8 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Combine_History
                 break;
         }
 
-        $select->limit(1);
+        Mage::getResourceHelper('enterprise_customersegment')->setOneRowLimit($select);
+
         return $select;
     }
 

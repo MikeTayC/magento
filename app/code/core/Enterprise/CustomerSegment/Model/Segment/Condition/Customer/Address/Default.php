@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -114,11 +114,12 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Address_Defaul
         $select = $this->getResource()->createSelect();
         $attribute = Mage::getSingleton('eav/config')->getAttribute('customer', $this->getValue());
         $select->from(array('default'=>$attribute->getBackendTable()), array(new Zend_Db_Expr(1)));
-        $select->limit(1);
 
         $select->where('default.attribute_id = ?', $attribute->getId())
             ->where('default.value=customer_address.entity_id')
             ->where($this->_createCustomerFilter($customer, 'default.entity_id'));
+
+        Mage::getResourceHelper('enterprise_customersegment')->setOneRowLimit($select);
 
         return $select;
     }

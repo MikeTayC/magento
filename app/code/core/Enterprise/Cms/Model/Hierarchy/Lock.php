@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -28,8 +28,20 @@
 /**
  * Cms Hierarchy Pages Lock Model
  *
- * @category   Enterprise
- * @package    Enterprise_Cms
+ * @method Enterprise_Cms_Model_Resource_Hierarchy_Lock _getResource()
+ * @method Enterprise_Cms_Model_Resource_Hierarchy_Lock getResource()
+ * @method int getUserId()
+ * @method Enterprise_Cms_Model_Hierarchy_Lock setUserId(int $value)
+ * @method string getUserName()
+ * @method Enterprise_Cms_Model_Hierarchy_Lock setUserName(string $value)
+ * @method string getSessionId()
+ * @method Enterprise_Cms_Model_Hierarchy_Lock setSessionId(string $value)
+ * @method int getStartedAt()
+ * @method Enterprise_Cms_Model_Hierarchy_Lock setStartedAt(int $value)
+ *
+ * @category    Enterprise
+ * @package     Enterprise_Cms
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_Cms_Model_Hierarchy_Lock extends Mage_Core_Model_Abstract
 {

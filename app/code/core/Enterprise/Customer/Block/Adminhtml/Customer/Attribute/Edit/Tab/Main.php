@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Customer
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -74,6 +74,16 @@ class Enterprise_Customer_Block_Adminhtml_Customer_Attribute_Edit_Tab_Main
         $element->setValues($helper->getFrontendInputOptions());
         $element->setLabel(Mage::helper('enterprise_customer')->__('Input Type'));
         $element->setRequired(true);
+
+        // add limitation to attribute code
+        // customer attribute code can have prefix "customer_" and its length must be max length minus prefix length
+        $element      = $form->getElement('attribute_code');
+        $oldClassName = sprintf('maximum-length-%d', Mage_Eav_Model_Entity_Attribute::ATTRIBUTE_CODE_MAX_LENGTH);
+        $newClassName = sprintf('maximum-length-%d', Mage_Eav_Model_Entity_Attribute::ATTRIBUTE_CODE_MAX_LENGTH - 9);
+        $class        = str_replace($oldClassName, $newClassName, $element->getClass());
+        $element->setClass($class);
+        $element->setNote(Mage::helper('eav')->__('For internal use. Must be unique with no spaces. Maximum length of attribute code must be less then %s symbols',
+            Mage_Eav_Model_Entity_Attribute::ATTRIBUTE_CODE_MAX_LENGTH - 9));
 
         $fieldset->addField('multiline_count', 'text', array(
             'name'      => 'multiline_count',

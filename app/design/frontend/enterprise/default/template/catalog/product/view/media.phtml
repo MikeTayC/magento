@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -41,7 +41,7 @@
 <?php /* --------- jqZoom --------- */ ?>
     <?php if ($_product->getImage() != 'no_selection' && $_product->getImage()): ?>
         <?php list($_imgWidth, $_imgHeight) = $this->helper('catalog/image')->init($_product, 'image')->getOriginalSizeArray(); ?>
-        <?php if ($_imgWidth > 380 && $_imgHeight > 380):?>
+        <?php if ($_imgWidth > 380 || $_imgHeight > 380):?>
             <a class="product-image image-zoom" id="main-image" title="<?php echo $this->htmlEscape($_product->getImageLabel()); ?>" href="<?php echo $this->helper('catalog/image')->init($_product, 'image'); ?>">
                 <?php
                     $_img = '<img src="'.$this->helper('catalog/image')->init($_product, 'image')->resize(370).'" height="370" width="370" alt="'.$this->htmlEscape($_product->getImageLabel()).'" title="'.$this->htmlEscape($_product->getImageLabel()).'" />';

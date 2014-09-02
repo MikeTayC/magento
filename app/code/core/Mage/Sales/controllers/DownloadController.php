@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -143,5 +143,6 @@ class Mage_Sales_DownloadController extends Mage_Core_Controller_Front_Action
         } catch (Exception $e) {
             $this->_forward('noRoute');
         }
+        exit(0);
     }
 }

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -98,7 +98,9 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Address
         $select->from(array('customer_address' => $addressTable), array(new Zend_Db_Expr(1)));
         $select->where('customer_address.entity_type_id = ?', $addressEntityType->getId());
         $select->where($this->_createCustomerFilter($customer, 'customer_address.parent_id'));
-        $select->limit(1);
+
+        Mage::getResourceHelper('enterprise_customersegment')->setOneRowLimit($select);
+
         return $select;
     }
 

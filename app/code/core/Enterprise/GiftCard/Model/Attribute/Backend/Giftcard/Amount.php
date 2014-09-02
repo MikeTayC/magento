@@ -20,11 +20,12 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCard
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
-class Enterprise_GiftCard_Model_Attribute_Backend_Giftcard_Amount extends Mage_Catalog_Model_Product_Attribute_Backend_Price
+class Enterprise_GiftCard_Model_Attribute_Backend_Giftcard_Amount
+    extends Mage_Catalog_Model_Product_Attribute_Backend_Price
 {
     /**
      * Retrieve resource model
@@ -51,7 +52,7 @@ class Enterprise_GiftCard_Model_Attribute_Backend_Giftcard_Amount extends Mage_C
         $dup = array();
 
         foreach ($rows as $row) {
-            if (!empty($row['delete'])) {
+            if (!isset($row['price']) || !empty($row['delete'])) {
                 continue;
             }
 
@@ -116,13 +117,16 @@ class Enterprise_GiftCard_Model_Attribute_Backend_Giftcard_Amount extends Mage_C
         }
 
         foreach ($rows as $row) {
-            if (empty($row['price']) || !empty($row['delete'])) {
+            // Handle the case when model is saved whithout data received from user
+            if (((!isset($row['price']) || empty($row['price'])) && !isset($row['value']))
+                || !empty($row['delete'])
+            ) {
                 continue;
             }
 
             $data = array();
             $data['website_id']   = $row['website_id'];
-            $data['value']        = $row['price'];
+            $data['value']        = (isset($row['price'])) ? $row['price'] : $row['value'];
             $data['attribute_id'] = $this->getAttribute()->getId();
 
             $this->_getResource()->insertProductData($object, $data);

@@ -20,16 +20,9 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
- */
-
-/**
- * remove fireign keys
  */
 
 $installer = $this;
 /* @var $installer Mage_Eav_Model_Entity_Setup */
-$installer->startSetup();
-
-$installer->endSetup();

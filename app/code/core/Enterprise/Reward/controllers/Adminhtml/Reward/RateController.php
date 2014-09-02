@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -227,4 +227,3 @@ class Enterprise_Reward_Adminhtml_Reward_RateController extends Mage_Adminhtml_C
         return Mage::getSingleton('admin/session')->isAllowed('customer/rates');
     }
 }
-

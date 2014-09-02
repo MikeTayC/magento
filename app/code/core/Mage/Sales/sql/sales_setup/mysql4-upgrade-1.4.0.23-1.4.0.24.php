@@ -20,11 +20,11 @@
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 /* @var $installer Mage_Sales_Model_Entity_Setup */
 $installer = $this;
 
-$installer->getConnection()->addColumn($installer->getTable('sales_flat_invoice'),
+$installer->getConnection()->addColumn($installer->getTable('sales/invoice'),
     'base_total_refunded', 'decimal(12,4) default NULL');

@@ -20,13 +20,30 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 
 /**
  * Cms page version model
+ *
+ * @method Enterprise_Cms_Model_Resource_Page_Version _getResource()
+ * @method Enterprise_Cms_Model_Resource_Page_Version getResource()
+ * @method string getLabel()
+ * @method Enterprise_Cms_Model_Page_Version setLabel(string $value)
+ * @method string getAccessLevel()
+ * @method Enterprise_Cms_Model_Page_Version setAccessLevel(string $value)
+ * @method int getPageId()
+ * @method Enterprise_Cms_Model_Page_Version setPageId(int $value)
+ * @method int getUserId()
+ * @method Enterprise_Cms_Model_Page_Version setUserId(int $value)
+ * @method int getRevisionsCount()
+ * @method Enterprise_Cms_Model_Page_Version setRevisionsCount(int $value)
+ * @method int getVersionNumber()
+ * @method Enterprise_Cms_Model_Page_Version setVersionNumber(int $value)
+ * @method string getCreatedAt()
+ * @method Enterprise_Cms_Model_Page_Version setCreatedAt(string $value)
  *
  * @category    Enterprise
  * @package     Enterprise_Cms

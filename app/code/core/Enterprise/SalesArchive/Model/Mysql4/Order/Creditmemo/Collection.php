@@ -20,20 +20,19 @@
  *
  * @category    Enterprise
  * @package     Enterprise_SalesArchive
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
 
 /**
  * Order creditmemo archive collection
  *
+ * @category    Enterprise
+ * @package     Enterprise_SalesArchive
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_SalesArchive_Model_Mysql4_Order_Creditmemo_Collection
-    extends Mage_Sales_Model_Mysql4_Order_Creditmemo_Grid_Collection
+    extends Enterprise_SalesArchive_Model_Resource_Order_Creditmemo_Collection
 {
-    protected function _construct()
-    {
-        parent::_construct();
-        $this->setMainTable('enterprise_salesarchive/creditmemo_grid');
-    }
 }

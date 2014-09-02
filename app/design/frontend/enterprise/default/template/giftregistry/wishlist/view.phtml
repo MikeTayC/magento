@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -59,64 +59,68 @@
                         <th>&nbsp;</th>
                     </tr>
                 </thead>
-                <tbody>
                 <?php foreach ($this->getWishlistItems() as $item): ?>
                     <?php
                         $product = $item->getProduct();
                         $isVisibleProduct = $product->isVisibleInSiteVisibility();
                     ?>
-                    <tr>
-                        <td>
-                            <a class="product-image" href="<?php echo $this->getProductUrl($item) ?>" title="<?php echo $this->htmlEscape($product->getName()) ?>"><img src="<?php echo $this->helper('catalog/image')->init($product, 'small_image')->resize(113, 113); ?>" width="113" height="113" alt="<?php echo $this->htmlEscape($product->getName()) ?>" /></a>
-                            <h2 class="product-name"><a href="<?php echo $this->getProductUrl($item) ?>"><?php echo $this->htmlEscape($product->getName()) ?></a></h2>
-                            <?php echo $this->getPriceHtml($product) ?>
-                            <?php echo $this->getDetailsHtml($item) ?>
-                        </td>
-                        <td>
-                            <textarea name="description[<?php echo $item->getWishlistItemId() ?>]" rows="3" cols="5" onfocus="focusComment(this)" onblur="focusComment(this)" title="<?php echo $this->__('Comment') ?>"><?php echo $this->getCommentValue($item); ?></textarea>
-                        </td>
-                        <td>
-                            <span class="nobr"><?php echo $this->getFormatedDate($item->getAddedAt()) ?></span>
-                        </td>
-                        <?php if ($this->getEnabled() && $entityValues):?>
-                        <td>
-                            <?php if ($this->checkProductType($product)): ?>
-                            <div class="btn-gift-registry">
-                                <div class="input-box">
-                                    <select id="giftregistry_entity_<?php echo $item->getId() ?>" name="entity" title="<?php echo $this->__('Gift Registry') ?>" >
-                                        <?php foreach ($entityValues as $_entity):?>
-                                            <option value="<?php echo $_entity->getValue()?>" title="<?php echo $this->escapeHtml($_entity->getTitle())?>"><?php echo $this->escapeHtml($this->helper('core/string')->truncate($_entity->getTitle(), 40))?></option>
-                                        <?php endforeach;?>
-                                    </select>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a class="product-image" href="<?php echo $this->getProductUrl($item) ?>" title="<?php echo $this->htmlEscape($product->getName()) ?>"><img src="<?php echo $this->helper('catalog/image')->init($product, 'small_image')->resize(113, 113); ?>" width="113" height="113" alt="<?php echo $this->htmlEscape($product->getName()) ?>" /></a>
+                                <h2 class="product-name"><a href="<?php echo $this->getProductUrl($item) ?>"><?php echo $this->htmlEscape($product->getName()) ?></a></h2>
+                            </td>
+                            <td>
+                                <textarea name="description[<?php echo $item->getWishlistItemId() ?>]" rows="3" cols="5" onfocus="focusComment(this)" onblur="focusComment(this)" title="<?php echo $this->__('Comment') ?>"><?php echo $this->getCommentValue($item); ?></textarea>
+                            </td>
+                            <td>
+                                <span class="nobr"><?php echo $this->getFormatedDate($item->getAddedAt()) ?></span>
+                            </td>
+                            <?php if ($this->getEnabled() && $entityValues):?>
+                            <td>
+                                <?php if ($this->checkProductType($product)): ?>
+                                <div class="btn-gift-registry">
+                                    <div class="input-box">
+                                        <select id="giftregistry_entity_<?php echo $item->getId() ?>" name="entity" title="<?php echo $this->__('Gift Registry') ?>" >
+                                            <?php foreach ($entityValues as $_entity):?>
+                                                <option value="<?php echo $_entity->getValue()?>" title="<?php echo $this->escapeHtml($_entity->getTitle())?>"><?php echo $this->escapeHtml($this->helper('core/string')->truncate($_entity->getTitle(), 40))?></option>
+                                            <?php endforeach;?>
+                                        </select>
+                                    </div>
+                                    <button type="button" onclick="addProductToGiftregistry('<?php echo $item->getId() ?>')" class="button btn-cart"><span><span><?php echo $this->__('Add to Gift Registry') ?></span></span></button>
                                 </div>
-                                <button type="button" onclick="addProductToGiftregistry('<?php echo $item->getId() ?>')" class="button btn-cart"><span><span><?php echo $this->__('Add to Gift Registry') ?></span></span></button>
-                            </div>
+                                <?php endif;?>
+                            </td>
                             <?php endif;?>
-                        </td>
-                        <?php endif;?>
-                        <td class="a-center">
-                        <?php if ($item->canHaveQty() && $isVisibleProduct): ?>
-                            <p><input type="text" class="input-text qty" name="qty[<?php echo $item->getId() ?>]" value="<?php echo $this->getAddToCartQty($item) * 1 ?>" /></p>
-                        <?php endif; ?>
-                        <?php if ($product->isSaleable()): ?>
-                            <?php if ($isVisibleProduct): ?>
-                            <button type="button" title="<?php echo $this->__('Add to Cart') ?>" onclick="addWItemToCart(<?php echo $item->getId(); ?>)" class="button btn-cart"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
-                            <?php endif ?>
-                        <?php else: ?>
-                            <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
-                        <?php endif; ?>
-                            <?php if ($isVisibleProduct): ?>
-                            <p><a href="<?php echo $this->getItemConfigureUrl($item) ?>"><?php echo $this->__('Edit') ?></a></p>
-                            <?php endif ?>
-                        </td>
-                        <td>
-                            <a href="<?php echo $this->getItemRemoveUrl($item) ?>" title="<?php echo $this->__('Remove Item') ?>" onclick="return confirmRemoveWishlistItem();" class="btn-remove btn-remove2"><?php echo $this->__('Remove item')?></a>
-                        </td>
-                    </tr>
+                            <td class="a-center">
+                            <?php if ($item->canHaveQty() && $isVisibleProduct): ?>
+                                <p><input type="text" class="input-text qty" name="qty[<?php echo $item->getId() ?>]" value="<?php echo $this->getAddToCartQty($item) * 1 ?>" /></p>
+                            <?php endif; ?>
+                            <?php if ($product->isSaleable()): ?>
+                                <?php if ($isVisibleProduct): ?>
+                                <button type="button" title="<?php echo $this->__('Add to Cart') ?>" onclick="addWItemToCart(<?php echo $item->getId(); ?>)" class="button btn-cart"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+                                <?php endif ?>
+                            <?php else: ?>
+                                <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+                            <?php endif; ?>
+                                <?php if ($isVisibleProduct): ?>
+                                <p><a href="<?php echo $this->getItemConfigureUrl($item) ?>"><?php echo $this->__('Edit') ?></a></p>
+                                <?php endif ?>
+                            </td>
+                            <td>
+                                <a href="<?php echo $this->getItemRemoveUrl($item) ?>" title="<?php echo $this->__('Remove Item') ?>" onclick="return confirmRemoveWishlistItem();" class="btn-remove btn-remove2"><?php echo $this->__('Remove item')?></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="<?php echo ($this->getEnabled() && $entityValues)? "5" : "6"; ?>">
+                                <?php echo $this->getPriceHtml($product) ?>
+                                <?php echo $this->getDetailsHtml($item) ?>
+                            </td>
+                        </tr>
+                    </tbody>
                 <?php endforeach ?>
-                </tbody>
             </table>
-            <script type="text/javascript">decorateTable('wishlist-table')</script>
+            <script type="text/javascript">decorateTable('wishlist-table', {'tbody' : ['odd', 'even', 'first', 'last'], 'tbody tr' : ['first', 'last']})</script>
             <div class="buttons-set buttons-set2">
                 <button type="submit" onclick="this.name='save_and_share'" title="<?php echo $this->__('Share Wishlist') ?>" class="button btn-share"><span><span><?php echo $this->__('Share Wishlist') ?></span></span></button>
                 <?php if($this->isSaleable()):?>

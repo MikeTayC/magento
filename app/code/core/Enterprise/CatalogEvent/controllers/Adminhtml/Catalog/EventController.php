@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogEvent
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -121,7 +121,7 @@ class Enterprise_CatalogEvent_Adminhtml_Catalog_EventController extends Mage_Adm
                 $switchBlock->getParentBlock()->unsetChild('store_switcher');
             } else {
                 $switchBlock->setDefaultStoreName(Mage::helper('enterprise_catalogevent')->__('Default Values'))
-                    ->setSwitchUrl($this->getUrl('*/*/*', array('_current'=>true, 'store'=>null)));
+                    ->setSwitchUrl($this->getUrl('*/*/*', array('_current' => true, 'store' => null)));
             }
         }
         $this->renderLayout();
@@ -150,7 +150,7 @@ class Enterprise_CatalogEvent_Adminhtml_Catalog_EventController extends Mage_Adm
             $this->_getSession()->addError(
                 Mage::helper('enterprise_catalogevent')->__('An error occurred while saving this event.')
             );
-            $this->_redirect('*/*/edit', array('_current'=>true));
+            $this->_redirect('*/*/edit', array('_current' => true));
             return;
         }
 
@@ -178,7 +178,7 @@ class Enterprise_CatalogEvent_Adminhtml_Catalog_EventController extends Mage_Adm
                 $this->_getSession()->addError($errorMessage);
             }
             $this->_getSession()->setEventData($event->getData());
-            $this->_redirect('*/*/edit', array('_current'=>true));
+            $this->_redirect('*/*/edit', array('_current' => true));
             return;
         }
 
@@ -202,14 +202,14 @@ class Enterprise_CatalogEvent_Adminhtml_Catalog_EventController extends Mage_Adm
                 Mage::helper('enterprise_catalogevent')->__('Event has been saved.')
             );
             if ($this->getRequest()->getParam('_continue')) {
-                $this->_redirect('*/*/edit', array('_current'=>true, 'id'=>$event->getId()));
+                $this->_redirect('*/*/edit', array('_current' => true, 'id' => $event->getId()));
             } else {
                 $this->_redirect('*/*/');
             }
         } catch (Exception $e) {
             $this->_getSession()->addError($e->getMessage());
             $this->_getSession()->setEventData($event->getData());
-            $this->_redirect('*/*/edit', array('_current'=>true));
+            $this->_redirect('*/*/edit', array('_current' => true));
         }
 
 
@@ -237,7 +237,7 @@ class Enterprise_CatalogEvent_Adminhtml_Catalog_EventController extends Mage_Adm
                 }
             } catch (Exception $e) {
                 $this->_getSession()->addError($e->getMessage());
-                $this->_redirect('*/*/edit', array('_current'=>true));
+                $this->_redirect('*/*/edit', array('_current' => true));
             }
         }
     }
