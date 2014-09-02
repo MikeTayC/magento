@@ -1,3 +1,8 @@
+==== 1.10.0.2 ====
+
+=== Major Highlights ===
+Ogone module added back into release
+
 ==== 1.10.0.1 ====
 
 === Major Highlights ===
