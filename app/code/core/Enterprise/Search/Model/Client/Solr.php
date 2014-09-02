@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -31,9 +31,15 @@
  * @package    Enterprise_Search
  * @author     Magento Core Team <core@magentocommerce.com>
  */
-
 class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
 {
+    /**
+     * Suggestions servlet
+     *
+     * @deprecated
+     */
+    const SUGGESTIONS_SERVLET = 'spell';
+
     /**
      * Store user login, that needed in authentication with solr server
      *
@@ -49,16 +55,22 @@ class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
     protected $_password = '';
 
     /**
-     * Suggestions servlet
-     */
-    const SUGGESTIONS_SERVLET = 'spell';
-
-    /**
      * Constructed servlet full path URLs
+     *
+     * @deprecated
      *
      * @var string
      */
     protected $_suggestionsUrl;
+
+    /**
+     * Store curl adapter instance
+     *
+     * @var null|Varien_Http_Adapter_Curl
+     */
+    protected $_curlAdapter = null;
+
+
 
     /**
      * Initialize Solr Client
@@ -80,31 +92,31 @@ class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
             );
         }
 
+        $this->_curlAdapter = new Varien_Http_Adapter_Curl();
+
         $this->setUserLogin($options['login']);
         $this->setPassword($options['password']);
 
-        if (isset($options['timeout'])) {
-            ini_set('default_socket_timeout', $options['timeout']);
-        }
+        $this->setHost($options['hostname']);
+        $this->setPort($options['port']);
+        $this->setPath('/' . $options['path'] . '/');
 
-        parent::__construct($options['hostname'], $options['port'], '/' . $options['path'] . '/');
+        $this->_initUrls();
+
+        $this->_defaultTimeout = (isset($options['timeout']) && (float)$options['timeout'] >= 0)
+            ? (float)$options['timeout']
+            : Enterprise_Search_Model_Adapter_Solr_Abstract::DEFAULT_TIMEOUT;
+
         return $this;
     }
 
-    protected function _initUrls()
-    {
-        parent::_initUrls();
-        $this->_suggestionsUrl = $this->_constructUrl(self::SUGGESTIONS_SERVLET);
-
-    }
-
     /**
-     * Send an rollback command.
+     * Send an rollback command
      *
-     * @param float $timeout Maximum expected duration of the commit operation on the server (otherwise, will throw a communication exception)
+     * @param float|bool $timeout Maximum expected duration of the commit operation on the server
+     *                            (otherwise, will throw a communication exception)
+     *
      * @return Apache_Solr_Response
-     *
-     * @throws Exception If an error occurs during the service call
      */
     public function rollback($timeout = 3600)
     {
@@ -116,9 +128,11 @@ class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
      * Create a delete document based on a multiple queries and submit it
      *
      * @param array $rawQueries Expected to be utf-8 encoded
-     * @param boolean $fromPending
-     * @param boolean $fromCommitted
-     * @param float $timeout Maximum expected duration of the delete operation on the server (otherwise, will throw a communication exception)
+     * @param bool $fromPending
+     * @param bool $fromCommitted
+     * @param float|bool $timeout Maximum expected duration of the delete operation on the server
+     *                            (otherwise, will throw a communication exception)
+     *
      * @return Apache_Solr_Response
      *
      * @throws Exception If an error occurs during the service call
@@ -147,9 +161,11 @@ class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
      * Alias to Apache_Solr_Service::deleteByMultipleIds() method
      *
      * @param array $ids Expected to be utf-8 encoded strings
-     * @param boolean $fromPending
-     * @param boolean $fromCommitted
-     * @param float $timeout Maximum expected duration of the delete operation on the server (otherwise, will throw a communication exception)
+     * @param bool $fromPending
+     * @param bool $fromCommitted
+     * @param float|bool $timeout Maximum expected duration of the delete operation on the server
+     *                            (otherwise, will throw a communication exception)
+     *
      * @return Apache_Solr_Response
      *
      * @throws Exception If an error occurs during the service call
@@ -160,21 +176,96 @@ class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
     }
 
     /**
-     * Central method for making a get operation against this Solr Server
+     * Prepare basic options for curl adapter
      *
-     * @param string $url
-     * @param float $timeout Read timeout in seconds
+     * @param int|float|bool $timeout in seconds
+     *
+     * @return Enterprise_Search_Model_Client_Solr
+     */
+    protected function _setBasicAdapterOptions($timeout)
+    {
+        if ($timeout <= 0) {
+            $timeout = $this->_defaultTimeout;
+        }
+
+        $optionsList = array(
+            CURLOPT_RETURNTRANSFER  => 1,
+            CURLOPT_TIMEOUT         => (int)$timeout
+        );
+        if (strlen($this->getUserLogin()) && strlen($this->getPassword())) {
+            $optionsList[CURLOPT_HTTPAUTH]  = CURLAUTH_BASIC;
+            $optionsList[CURLOPT_USERPWD]   = $this->getUserLogin() . ':' . $this->getPassword();
+        }
+
+        $this->_curlAdapter->setOptions($optionsList);
+
+        return $this;
+    }
+
+    /**
+     * Call the /admin/ping servlet, can be used to quickly tell if a connection to the server is able to be made
+     *
+     * @param float $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
+     *
+     * @return float|bool
+     */
+    public function ping($timeout = 0)
+    {
+        $this->_setBasicAdapterOptions($timeout);
+        $this->_curlAdapter->addOptions(array(
+                CURLOPT_HEADER  => 0,
+                CURLOPT_NOBODY  => 1))
+            ->write(Zend_Http_Client::GET, $this->_pingUrl);
+
+        $totalTime = microtime(1);
+        $this->_curlAdapter->read();
+        $result = ($this->_curlAdapter->getInfo(CURLINFO_HTTP_CODE) == 200)
+            ? round(microtime(1) - $totalTime, 3)
+            : false;
+        $this->_curlAdapter->close();
+
+        return $result;
+    }
+
+    /**
+     * Read response for prepared curl request
+     *
      * @return Apache_Solr_Response
      *
      * @throws Exception If a non 200 response status is returned
      */
-    protected function _sendRawGet($url, $timeout = FALSE)
+    protected function _getResponse()
     {
-        stream_context_set_option(
-            $this->_getContext, 'http', 'header',
-            "Authorization: Basic " . base64_encode($this->getUserLogin() . ':' . $this->getPassword())
-        );
-        return parent::_sendRawGet($url, $timeout);
+        $response = $this->_curlAdapter->read();
+        $this->_curlAdapter->close();
+
+        list($headers, $body) = explode("\r\n\r\n", $response, 2);
+        $headers = explode("\r\n", $headers);
+        $response = new Apache_Solr_Response($body, $headers, $this->_createDocuments,
+            $this->_collapseSingleValueArrays);
+
+        $httpStatus = $response->getHttpStatus();
+        if ($httpStatus != 200) {
+            throw new Exception('"' . $httpStatus . '" Status: ' . $response->getHttpStatusMessage(), $httpStatus);
+        }
+
+        return $response;
+    }
+
+    /**
+     * Central method for making a get operation against this Solr Server
+     *
+     * @param string $url
+     * @param int|bool $timeout Read timeout in seconds
+     *
+     * @return Apache_Solr_Response
+     */
+    protected function _sendRawGet($url, $timeout = false)
+    {
+        $this->_setBasicAdapterOptions($timeout);
+        $this->_curlAdapter->write(Zend_Http_Client::GET, $url);
+
+        return $this->_getResponse();
     }
 
     /**
@@ -182,19 +273,20 @@ class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
      *
      * @param string $url
      * @param string $rawPost
-     * @param float $timeout Read timeout in seconds
+     * @param int|bool $timeout Read timeout in seconds
      * @param string $contentType
-     * @return Apache_Solr_Response
      *
-     * @throws Exception If a non 200 response status is returned
+     * @return Apache_Solr_Response
      */
-    protected function _sendRawPost($url, $rawPost, $timeout = FALSE, $contentType = 'text/xml; charset=UTF-8')
+    protected function _sendRawPost($url, $rawPost, $timeout = false, $contentType = 'text/xml; charset=UTF-8')
     {
-        stream_context_set_option(
-            $this->_postContext, 'http', 'header',
-            "Authorization: Basic " . base64_encode($this->getUserLogin() . ':' . $this->getPassword())
-        );
-        return parent::_sendRawPost($url, $rawPost, $timeout, $contentType);
+        $headers = array('Content-Type: ' . $contentType);
+
+        $this->_setBasicAdapterOptions($timeout);
+        $this->_curlAdapter->addOptions(array(CURLOPT_HEADER => 1))
+            ->write(Zend_Http_Client::POST, $url, '1.1', $headers, $rawPost);
+
+        return $this->_getResponse();
     }
 
     /**
@@ -220,11 +312,11 @@ class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
     /**
      * Setter for solr server password
      *
-     * @param string $username
+     * @param string $password
      */
-    public function setPassword($username)
+    public function setPassword($password)
     {
-        $this->_password = (string)$username;
+        $this->_password = (string)$password;
     }
 
     /**
@@ -243,19 +335,20 @@ class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
      * @deprecated after 1.9.0.0 - integrated into $this->combinedSearch()
      *
      * @param string $query The raw query string
-     * @param array $params key / value pairs for other query parameters (see Solr documentation), use arrays for parameter keys used more than once (e.g. facet.field)
+     * @param array $params key / value pairs for other query parameters (see Solr documentation),
+     *                      use arrays for parameter keys used more than once (e.g. facet.field)
+     * @param string $method
+     *
      * @return Apache_Solr_Response
      *
      * @throws Exception If an error occurs during the service call
      */
     public function searchSuggestions($query, $params = array(), $method = self::METHOD_GET)
     {
-        if (!is_array($params))
-        {
+        if (!is_array($params)) {
             $params = array();
         }
-        // construct our full parameters
-        // sending the version is important in case the format changes
+        // construct our full parameters, sending the version is important in case the format changes
         $params['version'] = self::SOLR_VERSION;
 
         // common parameters in this interface
@@ -264,24 +357,21 @@ class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
 
         $params['q'] = $query;
 
-        // use http_build_query to encode our arguments because its faster
-        // than urlencoding all the parts ourselves in a loop
+        /**
+         * use http_build_query to encode our arguments
+         * because it's faster than url encoding all the parts ourselves in a loop
+         */
         $queryString = http_build_query($params, null, $this->_queryStringDelimiter);
 
         $queryString = preg_replace('/%5B(?:[0-9]|[1-9][0-9]+)%5D=/', '=', $queryString);
 
-        if ($method == self::METHOD_GET)
-        {
+        if ($method == self::METHOD_GET) {
             return $this->_sendRawGet($this->_suggestionsUrl . $this->_queryDelimiter . $queryString);
-        }
-        else if ($method == self::METHOD_POST)
-        {
+        } elseif ($method == self::METHOD_POST) {
             return $this->_sendRawPost(
-                $this->_suggestionsUrl, $queryString, FALSE, 'application/x-www-form-urlencoded'
+                $this->_suggestionsUrl, $queryString, false, 'application/x-www-form-urlencoded'
             );
-        }
-        else
-        {
+        } else {
             throw new Exception("Unsupported method '$method', please use the Apache_Solr_Service::METHOD_* constants");
         }
     }

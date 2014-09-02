@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -42,7 +42,7 @@ class Enterprise_Rma_Block_Adminhtml_Order_View_Buttons extends Mage_Adminhtml_B
     {
         $container = $this->getParentBlock();
         if ($container instanceof Mage_Adminhtml_Block_Template && $container->getOrderId()) {
-            $isReturnable = Mage::helper('enterprise_rma')->canCreateRma($container->getOrder(), true);
+            $isReturnable = Mage::helper('enterprise_rma')->canCreateRmaByAdmin($container->getOrder());
             if ($isReturnable) {
                 $url = Mage::getSingleton('adminhtml/url')
                    ->getUrl('*/rma/new', array('order_id' => $container->getOrderId()));

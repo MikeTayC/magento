@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogSearch
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -34,6 +34,11 @@
 class Enterprise_CatalogSearch_Helper_Data extends Mage_Core_Helper_Abstract
 {
     /**
+     * Path to fulltext indexer mode
+     */
+    const XML_PATH_LIVE_FULLTEXT_REINDEX_ENABLED = 'index_management/index_options/fulltext';
+
+    /**
      * Return whether fulltext engine is on
      *
      * @return bool
@@ -42,5 +47,15 @@ class Enterprise_CatalogSearch_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $searchEngine = (string) Mage::getStoreConfig('catalog/search/engine');
         return $searchEngine === '' || $searchEngine == 'catalogsearch/fulltext_engine';
+    }
+
+    /**
+     * Return whether index update on save is on
+     *
+     * @return boolean
+     */
+    public function isLiveFulltextReindexEnabled()
+    {
+        return (bool)(string)Mage::getStoreConfig(self::XML_PATH_LIVE_FULLTEXT_REINDEX_ENABLED);
     }
 }

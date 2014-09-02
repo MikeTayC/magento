@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -31,7 +31,6 @@
  * @package    Enterprise_Search
  * @author     Magento Core Team <core@magentocommerce.com>
  */
-
 class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
 {
     /**
@@ -80,7 +79,7 @@ class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
     );
 
     /**
-     * Retrive text field types
+     * Retrieve text field types
      *
      * @return array
      */
@@ -90,7 +89,7 @@ class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-     * Retrive supported by Solr languages including locale codes (language codes) that are specified in configuration
+     * Retrieve supported by Solr languages including locale codes (language codes) that are specified in configuration
      * Array(
      *      'language_code1' => 'locale_code',
      *      'language_code2' => Array('locale_code1', 'locale_code2')

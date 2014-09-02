@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -50,7 +50,7 @@ class Enterprise_Search_Model_Adapter_HttpStream extends Enterprise_Search_Model
     {
         try {
             $this->_connect($options);
-        } catch (Exception $e){
+        } catch (Exception $e) {
             Mage::logException($e);
         }
     }
@@ -63,16 +63,7 @@ class Enterprise_Search_Model_Adapter_HttpStream extends Enterprise_Search_Model
      */
     protected function _connect($options = array())
     {
-        $helper = Mage::helper('enterprise_search');
-        $def_options = array(
-            'hostname' => $helper->getSolrConfigData('server_hostname'),
-            'login'    => $helper->getSolrConfigData('server_username'),
-            'password' => $helper->getSolrConfigData('server_password'),
-            'port'     => $helper->getSolrConfigData('server_port'),
-            'timeout'  => $helper->getSolrConfigData('server_timeout'),
-            'path'     => $helper->getSolrConfigData('server_path')
-        );
-        $options = array_merge($def_options, $options);
+        $options = $this->_initConnectOptions($options);
 
         try {
             $this->_client = Mage::getSingleton('enterprise_search/client_solr', $options);

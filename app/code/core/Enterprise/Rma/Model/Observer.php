@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -45,7 +45,7 @@ class Enterprise_Rma_Model_Observer
         /** @var $row Mage_Sales_Model_Order */
         $row = $observer->getEvent()->getRow();
 
-        if (Mage::helper('enterprise_rma')->canCreateRma($row, true)) {
+        if (Mage::helper('enterprise_rma')->canCreateRmaByAdmin($row)) {
             $reorderAction = array(
                     '@' =>  array('href' => $renderer->getUrl('*/rma/new', array('order_id'=>$row->getId()))),
                     '#' =>  Mage::helper('enterprise_rma')->__('Return')

@@ -21,14 +21,14 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogSearch
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_CatalogSearch>
-            <version>1.13.0.0</version>
+            <version>1.13.2.0</version>
         </Enterprise_CatalogSearch>
     </modules>
     <global>
@@ -52,7 +52,7 @@
         <index>
             <indexer>
                 <catalogsearch_fulltext>
-                    <model>enterprise_catalogsearch/indexer_fulltext</model>
+                    <model>enterprise_catalogsearch/indexer_dummy</model>
                     <action_model>
                         <changelog>enterprise_catalogsearch/index_action_fulltext_refresh_changelog</changelog>
                         <all>enterprise_catalogsearch/index_action_fulltext_refresh</all>
@@ -67,10 +67,42 @@
                 <observers>
                     <enterprise_catalogsearch_fulltext>
                         <class>enterprise_catalogsearch/observer</class>
-                        <method>processProductSaveEvent</method>
+                        <method>processProductSaveDeleteEvent</method>
                     </enterprise_catalogsearch_fulltext>
                 </observers>
             </catalog_product_save_commit_after>
+            <catalog_product_attribute_update_after>
+                <observers>
+                    <enterprise_catalogsearch_fulltext>
+                        <class>enterprise_catalogsearch/observer</class>
+                        <method>processProductAttributeUpdatedEvent</method>
+                    </enterprise_catalogsearch_fulltext>
+                </observers>
+            </catalog_product_attribute_update_after>
+            <catalog_product_to_website_change>
+                <observers>
+                    <enterprise_catalogsearch_fulltext>
+                        <class>enterprise_catalogsearch/observer</class>
+                        <method>processProductWebsiteUpdatedEvent</method>
+                    </enterprise_catalogsearch_fulltext>
+                </observers>
+            </catalog_product_to_website_change>
+            <catalog_product_stock_item_mass_change>
+                <observers>
+                    <enterprise_catalogsearch_fulltext>
+                        <class>enterprise_catalogsearch/observer</class>
+                        <method>processProductStockItemUpdatedEvent</method>
+                    </enterprise_catalogsearch_fulltext>
+                </observers>
+            </catalog_product_stock_item_mass_change>
+            <catalog_product_delete_commit_after>
+                <observers>
+                    <enterprise_catalogsearch_fulltext>
+                        <class>enterprise_catalogsearch/observer</class>
+                        <method>processProductSaveDeleteEvent</method>
+                    </enterprise_catalogsearch_fulltext>
+                </observers>
+            </catalog_product_delete_commit_after>
             <catalogsearch_fulltext_shell_reindex_after>
                 <observers>
                     <enterprise_index>
@@ -79,14 +111,6 @@
                     </enterprise_index>
                 </observers>
             </catalogsearch_fulltext_shell_reindex_after>
-            <enterprise_index_exclude_process_before>
-                <observers>
-                    <enterprise_catalogsearch_fulltext>
-                        <class>enterprise_catalogsearch/observer</class>
-                        <method>addExcludeProcess</method>
-                    </enterprise_catalogsearch_fulltext>
-                </observers>
-            </enterprise_index_exclude_process_before>
         </events>
     </global>
     <frontend>

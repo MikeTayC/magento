@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -148,6 +148,20 @@ class Enterprise_PageCache_Model_Processor_Default
         ksort($queryParams);
         $queryParamsHash = md5(serialize($queryParams));
         return $processor->getRequestId() . '_' . $queryParamsHash;
+    }
+
+    /**
+     * Append customer rates cookie to page id
+     *
+     * @param string $pageId
+     * @return string
+     */
+    protected function _appendCustomerRatesToPageId($pageId)
+    {
+        if (isset($_COOKIE[Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER_RATES])) {
+            $pageId .= '_' . $_COOKIE[Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER_RATES];
+        }
+        return $pageId;
     }
 
     /**

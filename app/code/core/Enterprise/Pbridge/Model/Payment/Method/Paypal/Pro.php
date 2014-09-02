@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -29,6 +29,7 @@
  * This model was created because right now PayPal Direct and PayPal Express payment methods cannot have same abstract
  */
 class Enterprise_Pbridge_Model_Payment_Method_Paypal_Pro extends Mage_Paypal_Model_Pro
+    implements Enterprise_Pbridge_Model_Payment_Method_Paypal_Interface
 {
 
     /**

@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -125,6 +125,22 @@
                     </enterprise_pagecache>
                 </observers>
             </catalog_category_save_before>
+            <review_save_after>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>registerReviewSave</method>
+                    </enterprise_pagecache>
+                </observers>
+            </review_save_after>
+            <review_delete_after>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>registerReviewDelete</method>
+                    </enterprise_pagecache>
+                </observers>
+            </review_delete_after>
 
             <!-- FULL REINDEX -->
             <cataloginventory_stock_full_reindex>

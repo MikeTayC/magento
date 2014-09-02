@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -100,9 +100,26 @@ class Enterprise_Search_Model_Observer
 
         $object = $observer->getEvent()->getDataObject();
         if ($object->isObjectNew() || $object->getTaxClassId() != $object->getOrigData('tax_class_id')) {
-            Mage::getSingleton('index/indexer')->getProcessByCode('catalogsearch_fulltext')
-                ->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
+            $this->_invalidateCatalogSearchMview();
         }
+    }
+
+    /**
+     * Invaidate the materialized view for CatalogSearch indexer
+     *
+     * @return \Enterprise_Search_Model_Observer
+     */
+    protected function _invalidateCatalogSearchMview()
+    {
+        /* @var $client Enterprise_Mview_Model_Client */
+        $client = Mage::getModel('enterprise_mview/client');
+        $client->init('catalogsearch_fulltext');
+
+        /* @var $metaData Enterprise_Mview_Model_MetaData */
+        $metaData = $client->getMetadata();
+        $metaData->setInvalidStatus();
+        $metaData->save();
+        return $this;
     }
 
     /**
@@ -265,6 +282,8 @@ class Enterprise_Search_Model_Observer
     /**
      * Reindex data after price reindex
      *
+     * @deprecated since version 1.13.2
+     *
      * @param Varien_Event_Observer $observer
      */
     public function runFulltextReindexAfterPriceReindex(Varien_Event_Observer $observer)
@@ -284,7 +303,22 @@ class Enterprise_Search_Model_Observer
         } else {
             $indexer->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
         }
+   }
+
+    /**
+     * Invalidate CatalogSearch Mview after a catalog product price full reindex
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function invalidateCatalogSearchMview(Varien_Event_Observer $observer)
+    {
+        if (!Mage::helper('enterprise_search')->isThirdPartyEngineAvailable()) {
+            return;
+        }
+
+        $this->_invalidateCatalogSearchMview();
     }
+
 
     /**
      * Retrieve Fulltext Search instance
@@ -299,10 +333,39 @@ class Enterprise_Search_Model_Observer
     /**
      * Reindex data after catalog category/product partial reindex
      *
+     * @deprecated since version 1.13.2
      * @param Varien_Event_Observer $observer
      */
     public function rebuiltIndex(Varien_Event_Observer $observer)
     {
         $this->_getIndexer()->rebuildIndex(null, $observer->getEvent()->getProductIds())->resetSearchResults();
+    }
+
+    /**
+     * Reindex affected products when a category is saved
+     *
+     * @param Varien_Event_Observer $observer
+     * @return \Enterprise_Search_Model_Observer
+     */
+    public function processCategorySaveEvent(Varien_Event_Observer $observer)
+    {
+        if (!Mage::helper('enterprise_catalogsearch')->isLiveFulltextReindexEnabled()) {
+            return;
+        }
+
+        /** @var $category Mage_Catalog_Model_Category */
+        $category = $observer->getEvent()->getCategory();
+        $productIds = $category->getAffectedProductIds();
+        if (empty($productIds)) {
+            return $this;
+        }
+
+        /* @var $client Enterprise_Mview_Model_Client */
+        $client = Mage::getModel('enterprise_mview/client');
+        $client->init('catalogsearch_fulltext');
+
+        $client->execute('enterprise_catalogsearch/index_action_fulltext_refresh_row', array(
+            'value' => $productIds,
+        ));
     }
 }

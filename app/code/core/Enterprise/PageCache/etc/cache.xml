@@ -26,6 +26,12 @@
             <container>Enterprise_PageCache_Model_Container_Sidebar_Cart</container>
             <cache_lifetime>86400</cache_lifetime>
         </cart_sidebar>
+        <minicart>
+            <block>checkout/cart_minicart</block>
+            <placeholder>MINICART</placeholder>
+            <container>Enterprise_PageCache_Model_Container_Minicart</container>
+            <cache_lifetime>86400</cache_lifetime>
+        </minicart>
         <compare_list_sidebar>
             <block>catalog/product_compare_sidebar</block>
             <placeholder>COMPARELIST_SIDEBAR</placeholder>

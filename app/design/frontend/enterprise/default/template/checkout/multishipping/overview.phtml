@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -29,7 +29,7 @@
     <h1><?php echo $this->__('Review Order') ?></h1>
 </div>
 <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
-<form action="<?php echo $this->getPostActionUrl() ?>" method="post" onsubmit="return showLoader();">
+<form id="review-order-form" action="<?php echo $this->getPostActionUrl() ?>" method="post" onsubmit="return showLoader();">
     <?php echo $this->getBlockHtml('formkey'); ?>
 <fieldset class="multiple-checkout">
     <div class="col2-set">

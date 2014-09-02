@@ -164,6 +164,8 @@
 "To use this attribute in address template you should edit it here.","要在地址模板中使用该属性，您需要在此处编辑。"
 "Use Store Credit (%s available)","使用商店信用点数（%s 可用）"
 "Use as My Default %s Address","使用并作为我的默认 %s 地址"
+"Use as My Default Billing Address","用作我的默认账单地址"
+"Use as My Default Shipping Address","用作我的默认运送地址"
 "Use as my default billing address","使用并作为我的默认账单地址"
 "Use as my default shipping address","使用并作为我的默认运送地址"
 "Use helper with defined EAV entity","使用包含已定义 EAV 实体的助手"

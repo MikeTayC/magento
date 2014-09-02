@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -30,7 +30,8 @@
     <default>
         <!-- customize bugreport URL -->
         <reference name="footer">
-            <action method="setBugreportUrl"><url>https://support.varien.com/</url></action>
+            <action method="setBugreportUrl"><url>http://enterprise.magento.com/help/support</url></action>
+            <action method="setConnectWithMagentoUrl"><url>http://enterprise.magento.com/</url></action>
         </reference>
     </default>
 </layout>

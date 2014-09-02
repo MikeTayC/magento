@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -52,7 +52,7 @@ class Enterprise_Reward_Model_Observer
         if ($data) {
             if (!isset($data['store_id'])) {
                 if ($customer->getStoreId() == 0) {
-                    $data['store_id'] = Mage::app()->getDefaultStoreView()->getStoreId();
+                    $data['store_id'] = Mage::app()->getAnyStoreView()->getStoreId();
                 } else {
                     $data['store_id'] = $customer->getStoreId();
                 }

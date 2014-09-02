@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -60,6 +60,13 @@ class Enterprise_PageCache_Model_Observer
     protected $_isEnabled;
 
     /**
+     * Cache instance
+     *
+     * @var Mage_Core_Model_Cache
+     */
+    protected $_cacheInstance;
+
+    /**
      * Class constructor
      */
     public function __construct(array $args = array())
@@ -69,6 +76,9 @@ class Enterprise_PageCache_Model_Observer
             : Mage::getSingleton('enterprise_pagecache/processor');
         $this->_config = isset($args['config']) ? $args['config'] : Mage::getSingleton('enterprise_pagecache/config');
         $this->_isEnabled = isset($args['enabled']) ? $args['enabled'] : Mage::app()->useCache('full_page');
+        $this->_cacheInstance = isset($args['cacheInstance'])
+            ? $args['cacheInstance']
+            : Enterprise_PageCache_Model_Cache::getCacheInstance();
     }
 
     /**
@@ -145,9 +155,9 @@ class Enterprise_PageCache_Model_Observer
         }
         $cacheId = Enterprise_PageCache_Model_Processor::DESIGN_EXCEPTION_KEY;
 
-        if (!Enterprise_PageCache_Model_Cache::getCacheInstance()->getFrontend()->test($cacheId)) {
+        if (!$this->_cacheInstance->getFrontend()->test($cacheId)) {
             $exception = Mage::getStoreConfig(self::XML_PATH_DESIGN_EXCEPTION);
-            Enterprise_PageCache_Model_Cache::getCacheInstance()
+            $this->_cacheInstance
                 ->save($exception, $cacheId, array(Enterprise_PageCache_Model_Processor::CACHE_TAG));
             $this->_processor->refreshRequestIds();
         }
@@ -309,7 +319,7 @@ class Enterprise_PageCache_Model_Observer
      */
     public function cleanCache()
     {
-        Enterprise_PageCache_Model_Cache::getCacheInstance()->clean(Enterprise_PageCache_Model_Processor::CACHE_TAG);
+        $this->_cacheInstance->clean(Enterprise_PageCache_Model_Processor::CACHE_TAG);
         return $this;
     }
 
@@ -324,11 +334,11 @@ class Enterprise_PageCache_Model_Observer
         /** @var $tags array */
         $tags = $observer->getEvent()->getTags();
         if (empty($tags)) {
-            Enterprise_PageCache_Model_Cache::getCacheInstance()->clean();
+            $this->_cacheInstance->clean();
             return $this;
         }
 
-        Enterprise_PageCache_Model_Cache::getCacheInstance()->clean($tags);
+        $this->_cacheInstance->clean($tags);
         return $this;
     }
 
@@ -338,7 +348,7 @@ class Enterprise_PageCache_Model_Observer
      */
     public function cleanExpiredCache()
     {
-        Enterprise_PageCache_Model_Cache::getCacheInstance()->getFrontend()->clean(Zend_Cache::CLEANING_MODE_OLD);
+        $this->_cacheInstance->getFrontend()->clean(Zend_Cache::CLEANING_MODE_OLD);
         return $this;
     }
 
@@ -426,7 +436,7 @@ class Enterprise_PageCache_Model_Observer
         $this->_getCookie()->setObscure(Enterprise_PageCache_Model_Cookie::COOKIE_CART, 'quote_' . $quote->getId());
 
         $cacheId = Enterprise_PageCache_Model_Container_Advanced_Quote::getCacheId();
-        Enterprise_PageCache_Model_Cache::getCacheInstance()->remove($cacheId);
+        $this->_cacheInstance->remove($cacheId);
 
         return $this;
     }
@@ -535,7 +545,9 @@ class Enterprise_PageCache_Model_Observer
         if (!$this->isCacheEnabled()) {
             return $this;
         }
-        $this->_getCookie()->updateCustomerCookies();
+        $cookie = $this->_getCookie();
+        $cookie->updateCustomerCookies();
+        $cookie->updateCustomerRatesCookie();
         $this->updateCustomerProductIndex();
         return $this;
     }
@@ -586,7 +598,7 @@ class Enterprise_PageCache_Model_Observer
         $this->_getCookie()->setObscure(Enterprise_PageCache_Model_Cookie::COOKIE_WISHLIST_ITEMS,
             'wishlist_item_count_' . Mage::helper('wishlist')->getItemCount());
 
-        Enterprise_PageCache_Model_Cache::getCacheInstance()->clean(
+        $this->_cacheInstance->clean(
             Mage::helper('wishlist')->getWishlist()->getCacheIdTags()
         );
 
@@ -605,7 +617,7 @@ class Enterprise_PageCache_Model_Observer
             return $this;
         }
 
-        Enterprise_PageCache_Model_Cache::getCacheInstance()->clean(
+        $this->_cacheInstance->clean(
             $observer->getEvent()->getWishlist()->getCacheIdTags()
         );
     }
@@ -623,7 +635,7 @@ class Enterprise_PageCache_Model_Observer
         }
 
         $blockContainer = Mage::getModel('enterprise_pagecache/container_wishlists');
-        Enterprise_PageCache_Model_Cache::getCacheInstance()->remove($blockContainer->getCacheId());
+        $this->_cacheInstance->remove($blockContainer->getCacheId());
 
         return $this;
     }
@@ -660,7 +672,7 @@ class Enterprise_PageCache_Model_Observer
 
         /** @var $blockContainer Enterprise_PageCache_Model_Container_Orders */
         $blockContainer = Mage::getModel('enterprise_pagecache/container_orders');
-        Enterprise_PageCache_Model_Cache::getCacheInstance()->remove($blockContainer->getCacheId());
+        $this->_cacheInstance->remove($blockContainer->getCacheId());
         return $this;
     }
 
@@ -688,7 +700,7 @@ class Enterprise_PageCache_Model_Observer
     public function registerDesignExceptionsChange(Varien_Event_Observer $observer)
     {
         $object = $observer->getDataObject();
-        Enterprise_PageCache_Model_Cache::getCacheInstance()
+        $this->_cacheInstance
             ->save($object->getValue(), Enterprise_PageCache_Model_Processor::DESIGN_EXCEPTION_KEY,
                 array(Enterprise_PageCache_Model_Processor::CACHE_TAG));
         return $this;
@@ -800,7 +812,7 @@ class Enterprise_PageCache_Model_Observer
         if ($category->isObjectNew() ||
             ($category->dataHasChangedFor('is_active') || $category->dataHasChangedFor('include_in_menu'))
         ) {
-            Enterprise_PageCache_Model_Cache::getCacheInstance()->clean(Mage_Catalog_Model_Category::CACHE_TAG);
+            $this->_cacheInstance->clean(Mage_Catalog_Model_Category::CACHE_TAG);
         }
     }
 
@@ -824,6 +836,55 @@ class Enterprise_PageCache_Model_Observer
     }
 
     /**
+     * Clean cached tags for product on saving review
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function registerReviewSave(Varien_Event_Observer $observer)
+    {
+        if (!$this->isCacheEnabled()) {
+            return;
+        }
+
+        $review = $observer->getEvent()->getDataObject();
+        $product = Mage::getModel('catalog/product')->load($review->getEntityPkValue());
+        if ($product->getId() && $this->_isChangedReviewVisibility($review)) {
+            $this->_cacheInstance->clean($product->getCacheTags());
+        }
+    }
+
+    /**
+     * Check is review visibility was changed
+     *
+     * @param Mage_Review_Model_Review $review
+     * @return bool
+     */
+    protected function _isChangedReviewVisibility($review)
+    {
+        return $review->getData('status_id') == Mage_Review_Model_Review::STATUS_APPROVED
+            || ($review->getData('status_id') != Mage_Review_Model_Review::STATUS_APPROVED
+            && $review->getOrigData('status_id') == Mage_Review_Model_Review::STATUS_APPROVED);
+    }
+
+    /**
+     * Clean cached tags for product on deleting review
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function registerReviewDelete(Varien_Event_Observer $observer)
+    {
+        if (!$this->isCacheEnabled()) {
+            return;
+        }
+
+        $review = $observer->getEvent()->getDataObject();
+        $product = Mage::getModel('catalog/product')->load($review->getOrigData('entity_pk_value'));
+        if ($product->getId() && $review->getOrigData('status_id') == Mage_Review_Model_Review::STATUS_APPROVED) {
+            $this->_cacheInstance->clean($product->getCacheTags());
+        }
+    }
+
+    /**
      * Clean cached tags for product if tags for product are saved
      *
      * @param Varien_Event_Observer $observer
@@ -841,7 +902,7 @@ class Enterprise_PageCache_Model_Observer
 
         /** @var $product Mage_Catalog_Model_Product */
         foreach ($productCollection as $product) {
-            Enterprise_PageCache_Model_Cache::getCacheInstance()->clean($product->getCacheTags());
+            $this->_cacheInstance->clean($product->getCacheTags());
         }
     }
 
@@ -858,7 +919,7 @@ class Enterprise_PageCache_Model_Observer
             return $this;
         }
         $redirect = $observer->getEvent()->getRedirect();
-        Enterprise_PageCache_Model_Cache::getCacheInstance()->clean(
+        $this->_cacheInstance->clean(
             array(
                 Enterprise_PageCache_Helper_Url::prepareRequestPathTag($redirect->getData('identifier')),
                 Enterprise_PageCache_Helper_Url::prepareRequestPathTag($redirect->getData('target_path')),

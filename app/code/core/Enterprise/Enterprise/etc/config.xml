@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Enterprise
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -77,16 +77,19 @@
         </design>
     </install>
     <default>
+        <paypal>
+            <bncode>Magento_Cart_Enterprise</bncode>
+        </paypal>
         <design>
-            <package>
-                <name>enterprise</name>
-            </package>
+            <theme>
+                <default>enterprise</default>
+            </theme>
             <head>
                 <default_title>Magento Enterprise Edition</default_title>
                 <default_keywords>Magento, Varien, E-commerce</default_keywords>
             </head>
             <footer>
-                <copyright>&amp;copy; 2013 Magento Enterprise Edition Demo Store. All Rights Reserved.</copyright>
+                <copyright>&amp;copy; 2014 Magento Enterprise Edition Demo Store. All Rights Reserved.</copyright>
             </footer>
         </design>
         <system>

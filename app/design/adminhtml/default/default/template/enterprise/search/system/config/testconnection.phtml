@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -34,10 +34,12 @@
         var elem = $('<?php echo $this->getHtmlId() ?>');
 
         params = {
-            host: $('catalog_search_solr_server_hostname').value,
-            port: $('catalog_search_solr_server_port').value,
-            timeout: $('catalog_search_solr_server_timeout').value,
-            path: $('catalog_search_solr_server_path').value
+            host:       $('catalog_search_solr_server_hostname').value,
+            port:       $('catalog_search_solr_server_port').value,
+            path:       $('catalog_search_solr_server_path').value,
+            login:      $('catalog_search_solr_server_username').value,
+            password:   $('catalog_search_solr_server_password').value,
+            timeout:    $('catalog_search_solr_server_timeout').value
         };
 
         new Ajax.Request('<?php echo $this->getAjaxUrl() ?>', {

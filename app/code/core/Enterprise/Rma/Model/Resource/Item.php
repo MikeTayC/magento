@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -206,7 +206,7 @@ class Enterprise_Rma_Model_Resource_Item extends Mage_Eav_Model_Entity_Abstract
      */
     public function getOrderItemsCollection($orderId)
     {
-        return Mage::getModel('sales/order_item')
+        $collection = Mage::getModel('sales/order_item')
             ->getCollection()
             ->addExpressionFieldToSelect(
                 'available_qty',
@@ -216,22 +216,43 @@ class Enterprise_Rma_Model_Resource_Item extends Mage_Eav_Model_Entity_Abstract
             ->addFieldToFilter('order_id', $orderId)
             ->addFieldToFilter('product_type', array("in" => $this->_aviableProductTypes))
             ->addFieldToFilter('(qty_shipped - qty_returned)', array("gt" => 0));
+
+        return $collection;
     }
 
     /**
-     * Gets available order items collection
+     * Gets order items collection for admin, filter out items that the admin does not have access to
      *
      * @param  int $orderId
-     * @param  int|bool $parentId if need retrieves only bundle and its children
      * @return Mage_Sales_Model_Resource_Order_Item_Collection
      */
-    public function getOrderItems($orderId, $parentId = false)
+    public function getOrderItemsCollectionForAdmin($orderId)
+    {
+        $collection = $this->getOrderItemsCollection($orderId);
+        foreach ($collection as $item) {
+            $websites = Mage::getModel('catalog/product_website')->getWebsites($item->getProductId());
+            $websites = array_shift($websites); //take the first item from the array
+            $hasWebsiteAccess = Mage::getSingleton('enterprise_admingws/role')->hasWebsiteAccess($websites);
+            if (!$hasWebsiteAccess) {
+                $collection->removeItemByKey($item->getId());
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * This is an internal function, given orderId and a collection, return an array of order items
+     * This function is used by both getOrderItems and getOrderItemsForAdmin
+     *
+     * @param int $orderId
+     * @param Mage_Sales_Model_Resource_Order_Item_Collection $orderItemsCollection
+     * @param int|bool $parentId if need retrieves only bundle and its children
+     * @return type
+     */
+    protected function _getOrderItemsFromCollection($orderId, $orderItemsCollection, $parentId)
     {
         $getItemsIdsByOrder     = $this->getItemsIdsByOrder($orderId);
-
-        /** @var $orderItemsCollection Mage_Sales_Model_Resource_Order_Item_Collection */
-        $orderItemsCollection   = $this->getOrderItemsCollection($orderId);
-
 
         if (!$orderItemsCollection->count()) {
             return $orderItemsCollection;
@@ -332,6 +353,36 @@ class Enterprise_Rma_Model_Resource_Item extends Mage_Eav_Model_Entity_Abstract
         }
 
         return $orderItemsCollection;
+    }
+
+    /**
+     * Gets available order items collection
+     *
+     * @param  int $orderId
+     * @param  int|bool $parentId if need retrieves only bundle and its children
+     * @return Mage_Sales_Model_Resource_Order_Item_Collection
+     */
+    public function getOrderItems($orderId, $parentId = false)
+    {
+        /** @var $orderItemsCollection Mage_Sales_Model_Resource_Order_Item_Collection */
+        $orderItemsCollection   = $this->getOrderItemsCollection($orderId);
+        return $this->_getOrderItemsFromCollection($orderId, $orderItemsCollection, $parentId);
+    }
+
+    /**
+     * Gets available order items collection for admin user, this function will filter out
+     * items that the admin user does not have access to
+     *
+     * @param  int $orderId
+     * @param  int|bool $parentId if need retrieves only bundle and its children
+     * @return Mage_Sales_Model_Resource_Order_Item_Collection
+     */
+    public function getOrderItemsForAdmin($orderId, $parentId = false)
+    {
+        /** @var $orderItemsCollection Mage_Sales_Model_Resource_Order_Item_Collection */
+        $orderItemsCollection   = $this->getOrderItemsCollectionForAdmin($orderId);
+
+        return $this->_getOrderItemsFromCollection($orderId, $orderItemsCollection, $parentId);
     }
 
     /**

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -159,6 +159,12 @@ class Mage_Adminhtml_Catalog_Product_AttributeController extends Mage_Adminhtml_
             foreach ($data['frontend_label'] as & $value) {
                 if ($value) {
                     $value = $helperCatalog->stripTags($value);
+                }
+            }
+
+            if (!empty($data['option']) && !empty($data['option']['value']) && is_array($data['option']['value'])) {
+                foreach ($data['option']['value'] as $key => $values) {
+                    $data['option']['value'][$key] = array_map(array($helperCatalog, 'stripTags'), $values);
                 }
             }
         }

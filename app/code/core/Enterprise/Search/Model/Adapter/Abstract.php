@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -89,7 +89,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      */
     protected $_defaultQueryParams = array(
         'offset' => 0,
-        'limit' => 100,
+        'limit' => Enterprise_Search_Model_Adapter_Solr_Abstract::DEFAULT_ROWS_LIMIT,
         'sort_by' => array(array('score' => 'desc')),
         'store_id' => null,
         'locale_code' => null,
@@ -372,6 +372,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
 
 
         $fulltextData = array();
+        $aggregatedPartData = array();
         foreach ($productIndexData as $attributeCode => $value) {
 
             if ($attributeCode == 'visibility') {
@@ -397,10 +398,12 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
             }
 
             $attribute->setStoreId($storeId);
+            $preparedValue = '';
 
             // Preparing data for solr fields
             if ($attribute->getIsSearchable() || $attribute->getIsVisibleInAdvancedSearch()
                 || $attribute->getIsFilterable() || $attribute->getIsFilterableInSearch()
+                || $attribute->getUsedForSortBy()
             ) {
                 $backendType = $attribute->getBackendType();
                 $frontendInput = $attribute->getFrontendInput();
@@ -409,7 +412,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
                     if ($frontendInput == 'multiselect') {
                         $preparedValue = array();
                         foreach ($value as $val) {
-                            $preparedValue = array_merge($preparedValue, explode(',', $val));
+                            $preparedValue = array_merge($preparedValue, array_filter(explode(',', $val)));
                         }
                         $preparedNavValue = $preparedValue;
                     } else {
@@ -439,16 +442,16 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
                     if ($backendType == 'datetime') {
                         if (is_array($value)) {
                             $preparedValue = array();
-                            foreach ($value as &$val) {
+                            foreach ($value as $id => &$val) {
                                 $val = $this->_getSolrDate($storeId, $val);
                                 if (!empty($val)) {
-                                    $preparedValue[] = $val;
+                                     $preparedValue[$id] = $val;
                                 }
                             }
                             unset($val); //clear link to value
                             $preparedValue = array_unique($preparedValue);
                         } else {
-                            $preparedValue = $this->_getSolrDate($storeId, $value);
+                            $preparedValue[$productId] = $this->_getSolrDate($storeId, $value);
                         }
                     }
                 }
@@ -456,6 +459,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
 
             // Preparing data for sorting field
             if ($attribute->getUsedForSortBy()) {
+                $sortValue = null;
                 if (is_array($preparedValue)) {
                     if (isset($preparedValue[$productId])) {
                         $sortValue = $preparedValue[$productId];
@@ -496,6 +500,11 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
             if ($attribute->getIsSearchable() && !empty($preparedValue)) {
                 $searchWeight = $attribute->getSearchWeight();
                 if ($searchWeight) {
+                    if ($attributeCode == 'sku') {
+                        $aggregatedPartData[$searchWeight][] = is_array($preparedValue)
+                            ? implode(' ', $preparedValue)
+                            : $preparedValue;
+                    }
                     $fulltextData[$searchWeight][] = is_array($preparedValue)
                         ? implode(' ', $preparedValue)
                         : $preparedValue;
@@ -510,9 +519,17 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
         foreach ($fulltextData as $searchWeight => $data) {
             $fieldName = $this->getAdvancedTextFieldName('fulltext', $searchWeight, $storeId);
             $productIndexData[$fieldName] = $this->_implodeIndexData($data);
-            $fulltextSpell += $data;
+            $fulltextSpell = array_merge($fulltextSpell, $data);
         }
         unset($fulltextData);
+
+        // Preparing fields with aggregated data searchable by parts
+        foreach($aggregatedPartData as $searchWeight => $data) {
+            $fieldName = $this->getAdvancedTextFieldName('aggregate', $searchWeight . '_partial');
+            $productIndexData[$fieldName] = $this->_implodeIndexData($data);
+            $fulltextSpell = array_merge($fulltextSpell, $data);
+        }
+        unset($aggregatedPartData);
 
         // Preparing field with spell info
         $fulltextSpell = array_unique($fulltextSpell);

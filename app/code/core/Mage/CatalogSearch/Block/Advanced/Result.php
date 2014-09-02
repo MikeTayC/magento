@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_CatalogSearch
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -57,9 +57,12 @@ class Mage_CatalogSearch_Block_Advanced_Result extends Mage_Core_Block_Template
 
         $availableOrders = $category->getAvailableSortByOptions();
         unset($availableOrders['position']);
-
+        $availableOrders = array_merge(array(
+            'relevance' => $this->__('Relevance')
+        ), $availableOrders);
         $this->getChild('search_result_list')
-            ->setAvailableOrders($availableOrders);
+            ->setAvailableOrders($availableOrders)
+            ->setSortBy('relevance');
     }
 
     public function setListModes() {

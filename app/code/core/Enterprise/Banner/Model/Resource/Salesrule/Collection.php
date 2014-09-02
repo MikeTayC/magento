@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Banner
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -104,10 +104,10 @@ class Enterprise_Banner_Model_Resource_Salesrule_Collection extends Mage_SalesRu
             $select = $this->getSelect();
             $select->joinLeft(
                 array('banner_segments' => $this->getTable('enterprise_banner/customersegment')),
-                'banners.banner_id = banner_segments.banner_id',
+                'rule_related_banners.banner_id = banner_segments.banner_id',
                 array()
             );
-            
+
             if (empty($matchedCustomerSegments)) {
                 $select->where('banner_segments.segment_id IS NULL');
             } else {

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Catalog
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -325,8 +325,8 @@ class Enterprise_Catalog_Model_Index_Action_Catalog_Category_Product_Refresh
             )
             ->setComment('Catalog Category Product Index Tmp');
 
-        $this->_connection->dropTable($this->_getMainTmpTable());
-        $this->_connection->createTable($table);
+        $this->_connection->dropTemporaryTable($this->_getMainTmpTable());
+        $this->_connection->createTemporaryTable($table);
     }
 
     /**
@@ -465,7 +465,7 @@ class Enterprise_Catalog_Model_Index_Action_Catalog_Category_Product_Refresh
      */
     protected function _clearTmpData()
     {
-        $this->_connection->dropTable($this->_getMainTmpTable());
+        $this->_connection->dropTemporaryTable($this->_getMainTmpTable());
     }
 
     /**

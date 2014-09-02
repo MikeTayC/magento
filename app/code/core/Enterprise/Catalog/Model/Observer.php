@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Catalog
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -265,39 +265,6 @@ class Enterprise_Catalog_Model_Observer
     }
 
     /**
-     * Fix url path for category in layer navigation
-     *
-     * @param Varien_Event_Observer $object
-     * @return Varien_Event_Observer
-     */
-    public function addUrlSuffixToUrlAlias(Varien_Event_Observer $object)
-    {
-        $matchCodes = array(
-            Enterprise_Catalog_Model_Category::URL_REWRITE_ENTITY_TYPE
-                => Mage_Catalog_Helper_Category::XML_PATH_CATEGORY_URL_SUFFIX,
-            Enterprise_Catalog_Model_Product::URL_REWRITE_ENTITY_TYPE
-                => Mage_Catalog_Helper_Product::XML_PATH_PRODUCT_URL_SUFFIX,
-        );
-        $rewrite = $object->getUrlRewrite();
-        if ($rewrite) {
-            foreach ($matchCodes as $type => $xmlPath) {
-                if ($rewrite->getEntityType() == $type) {
-                    $store = $this->_app->getStore($rewrite->getStoreId());
-                    $suffix = $store->getConfig($xmlPath);
-                    $urlPath = $rewrite->getRequestPath();
-                    if ($suffix) {
-                        $urlPath .= '.' . $suffix;
-                    }
-                    $rewrite->setRequestPath($urlPath);
-                    break;
-                }
-            }
-            $object->setUrlRewrite($rewrite);
-        }
-        return $object;
-    }
-
-    /**
      * Listener for after category/product delete event. Delete orphan redirects from index.
      *
      * @param Varien_Event_Observer $observer
@@ -363,5 +330,46 @@ class Enterprise_Catalog_Model_Observer
     public function removeUrlKey(Varien_Event_Observer $observer)
     {
         $observer->getProduct()->setData('url_key', false);
+    }
+
+    /**
+     * Add Seo suffix to category's URL if doesn't exists.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function addSeoSuffixToCategoryUrl(Varien_Event_Observer $observer)
+    {
+        $seoSuffix = (string) Mage::app()->getStore()->getConfig(
+            Mage_Catalog_Helper_Category::XML_PATH_CATEGORY_URL_SUFFIX
+        );
+        $this->_addSuffixToUrl($observer->getCollection()->getItems(), $seoSuffix);
+    }
+
+    /**
+     * Add Seo suffix to product's URL if doesn't exists.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function addSeoSuffixToProductUrl(Varien_Event_Observer $observer)
+    {
+        $seoSuffix = (string) Mage::app()->getStore()->getConfig(
+            Mage_Catalog_Helper_Product::XML_PATH_PRODUCT_URL_SUFFIX
+        );
+        $this->_addSuffixToUrl($observer->getCollection()->getItems(), $seoSuffix);
+    }
+
+    /**
+     * Iterate via items and add suffix to item's URL.
+     *
+     * @param $items
+     * @param $seoSuffix
+     */
+    protected function _addSuffixToUrl($items, $seoSuffix)
+    {
+        foreach ($items as $item) {
+            if ($item->getUrl() && strpos($item->getUrl(), $seoSuffix) === false) {
+                $item->setUrl($item->getUrl() . '.' . $seoSuffix);
+            }
+        }
     }
 }

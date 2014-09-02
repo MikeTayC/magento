@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -62,5 +62,17 @@ class Enterprise_PageCache_Model_Processor_Product extends Enterprise_PageCache_
         }
 
         return parent::prepareContent($response);
+    }
+
+    /**
+     * Return cache page id without application. Depends on GET super global array.
+     *
+     * @param Enterprise_PageCache_Model_Processor $processor
+     * @return string
+     */
+    public function getPageIdWithoutApp(Enterprise_PageCache_Model_Processor $processor)
+    {
+        $pageId = parent::getPageIdWithoutApp($processor);
+        return $this->_appendCustomerRatesToPageId($pageId);
     }
 }

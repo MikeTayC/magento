@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -124,7 +124,9 @@ class Enterprise_PageCache_Model_Container_Catalognavigation extends Enterprise_
      */
     protected function _renderBlock()
     {
-        $block = $this->_getPlaceHolderBlock();
+        $layout = $this->_getLayout('default');
+        $block = $layout->getBlock('catalog.topnav');
+        $block->setSkipRenderTag(true);
 
         $categoryId = $this->_getCategoryId();
         if (!Mage::registry('current_category') && $categoryId) {

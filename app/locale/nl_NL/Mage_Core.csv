@@ -16,6 +16,8 @@
                                 to transfer all media to that location. Media will not be available in the new
                                 location until the synchronization process is complete.","Na het selecteren van een nieuwe media opslagplaats, druk op de synchronisatiekonp om alle media naar die locatie te brengen. Media is pas beschikbaar op de nieuwe locatie als het synchronisatieproces voltooid is."
 "Allow Countries","Sta Landen toe"
+"Allow Magento Backend to run in frame","Sta Magento Backend toe om in een venster te werken"
+"Allow Magento Frontend to run in frame","Sta Magento Frontend toe om in een venster te werken"
 "Allow Symlinks","Sta Symlinks toe"
 "Allowed IPs (comma separated)","Toegestane IP's (gescheiden door komm's)"
 "Allowed file types: ICO, PNG, GIF, JPG, JPEG, APNG, SVG. Not all browsers support all these formats!","Toegestane bestandstypes: ICO, PNG, GIF, JPG, JPEG, APNG, SVG. Niet alle browsers ondersteunen deze formaten!"
@@ -286,6 +288,7 @@
 "Set Return-Path","Geef het return-path op"
 "Set as Default","Stel in als Standaard"
 "Skin (Images / CSS)","Skin (Afbeeldingen / CSS)"
+"Small Logo Image Src","Klein Logo Afbeelding Bron"
 "Sort Order","Sorteer Bestelling"
 "Specified date/time ""%1$s"" do not match format ""%2$s"".","De gespecificeerde datum/tijd ""%1$s"" komt niet overeen met formaat ""%2$s""."
 "Start date cannot be greater than end date.","Begin datum kan niet later zijn dan eind datum."

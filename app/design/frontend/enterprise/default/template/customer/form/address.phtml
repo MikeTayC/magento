@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -131,7 +131,7 @@
     </div>
     <div class="buttons-set form-buttons">
         <p class="back-link"><a href="<?php echo $this->getUrl('customer/address/') ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
-        <button class="button" type="submit"><span><span><?php echo $this->__('Save Address') ?></span></span></button>
+        <button class="button" data-action="save-customer-address" type="submit"><span><span><?php echo $this->__('Save Address') ?></span></span></button>
     </div>
     <p class="required"><?php echo $this->__('* Required Fields') ?></p>
 </form>

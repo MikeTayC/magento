@@ -164,6 +164,8 @@
 "To use this attribute in address template you should edit it here.","Um diese Einstellung in der Adressvorlage zu benutzen, sollten Sie es hier bearbeiten."
 "Use Store Credit (%s available)","Store Credit verwenden (%s verfügbar)"
 "Use as My Default %s Address","Als meine Standard %s Adresse verwenden"
+"Use as My Default Billing Address","Als meine Standard-Rechnungsadresse verwenden"
+"Use as My Default Shipping Address","Als meine Standard-Lieferadresse verwenden"
 "Use as my default billing address","Als meine Standard Rechnungsadresse verwenden"
 "Use as my default shipping address","Als meine Standard Lieferadresse verwenden"
 "Use helper with defined EAV entity","Helfer mit definierter EAV-Entity verwenden"

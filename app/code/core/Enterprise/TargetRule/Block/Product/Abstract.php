@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -201,7 +201,7 @@ abstract class Enterprise_TargetRule_Block_Product_Abstract extends Mage_Catalog
                 $this->_items = $this->_shuffleItems($this->_customItems);
                 $this->_items += $targetRuleItems;
             } else {
-                $this->_items = array_merge($this->_customItems, $this->_items);
+                $this->_items += $this->_customItems;
                 uasort($this->_items, array($this, 'compareItems'));
             }
             $this->_sliceItems();

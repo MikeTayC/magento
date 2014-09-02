@@ -2,11 +2,7 @@
 "Allowed Currencies","Zulässige Währungen"
 "Base Currency","Basiswährung"
 "Base currency is used for all online payment transactions. Scope is defined by the catalog price scope (""Catalog"" > ""Price"" > ""Catalog Price Scope"").","Die Basiswährung wird für alle Online-Transaktionen verwendet. Der Spielraum richtet sich nach dem Spielraum des Katalogpreises (""Katalog"" > ""Preis"" > ""Spielraum Katalogpreis"")."
-"Can\'t convert rate from ""%s-%s"".","Rate kann nicht von ""%s-%s"" konvertiert werden. 
-
-
-
-"
+"Can\'t convert rate from ""%s-%s"".","Rate kann nicht von ""%s-%s"" konvertiert werden."
 "Cannot retrieve rate from %s.","Kurs von %s kann nicht abgefragt werden."
 "Connection Timeout in Seconds","Verbindungstimeout in Sekunden"
 "Continue &raquo;","&raquo; fortsetzen;"
@@ -48,4 +44,6 @@
 "Undefined rate from ""%s-%s"".","Nicht definierter Satz von ""%s-%s""."
 "WARNING:","WARNUNG:"
 "Webservicex","Webservicex"
+"Your Currency","Ihre Währung"
+"Your Currency:","Ihre Währung:"
 "Your current currency is: %s","Ihre aktuelle Währung ist: %s"

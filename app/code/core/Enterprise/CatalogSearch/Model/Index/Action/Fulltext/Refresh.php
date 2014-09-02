@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogSearch
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -98,6 +98,13 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     protected $_app;
 
     /**
+     * The indexer that does the actual work
+     *
+     * @var Mage_CatalogSearch_Model_Fulltext
+     */
+    protected $_indexer;
+
+    /**
      * Constructor with parameters
      * Array of arguments with keys
      *  - 'metadata' Enterprise_Mview_Model_Metadata
@@ -112,11 +119,13 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
         $this->_metadata   = $args['metadata'];
         $this->_factory    = $args['factory'];
         $this->_app = !empty($args['app']) ? $args['app'] : Mage::app();
+        $this->_indexer = $this->_factory->getSingleton('catalogsearch/fulltext');
     }
 
     /**
      * Return whether fulltext engine is on
      *
+     * @deprecated since version 1.13.2
      * @return bool
      */
     protected function _isFulltextOn()
@@ -132,10 +141,6 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
      */
     public function execute()
     {
-        if (!$this->_isFulltextOn()) {
-            return $this;
-        }
-
         if (!$this->_metadata->isValid()) {
             throw new Enterprise_Index_Model_Action_Exception("Can't perform operation, incomplete metadata!");
         }
@@ -144,7 +149,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
             $this->_getLastVersionId();
             $this->_metadata->setInProgressStatus()->save();
             // Reindex all products
-            $this->_rebuildIndex();
+            $this->_indexer->rebuildIndex();
             // Clear search results
             $this->_resetSearchResults();
             $this->_updateMetadata();
@@ -181,6 +186,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     }
 
     /**
+     * @deprecated since version 1.13.2
      * Regenerate fulltext search index
      */
     protected function _rebuildIndex()
@@ -205,6 +211,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Return main table name
      *
+     * @deprecated since version 1.13.2
      * @return string
      */
     protected function _getMainTable()
@@ -235,6 +242,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Regenerate search index for specific store
      *
+     * @deprecated since version 1.13.2
      * @param int $storeId Store View Id
      * @return void
      */
@@ -326,6 +334,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Get select for removing entity data from fulltext search table
      *
+     * @deprecated since version 1.13.2
      * @param int $storeId
      * @return array
      */
@@ -339,6 +348,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Remove entity data from fulltext search table
      *
+     * @deprecated since version 1.13.2
      * @param int $storeId
      */
     protected function _cleanIndex($storeId)
@@ -349,6 +359,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Retrieve searchable attributes
      *
+     * @deprecated since version 1.13.2
      * @param string $backendType
      * @return array
      */
@@ -395,6 +406,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Retrieve searchable attribute by Id or code
      *
+     * @deprecated since version 1.13.2
      * @param int|string $attribute
      * @return Mage_Eav_Model_Entity_Attribute
      */
@@ -419,6 +431,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Retrieve select for getting searchable products per store
      *
+     * @deprecated since version 1.13.2
      * @param int $storeId
      * @param array $staticFields
      * @param int $lastProductId
@@ -463,6 +476,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Retrieve searchable products per store
      *
+     * @deprecated since version 1.13.2
      * @param int $storeId
      * @param array $staticFields
      * @param int $lastProductId
@@ -481,6 +495,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Return all product children ids
      *
+     * @deprecated since version 1.13.2
      * @param int $productId Product Entity Id
      * @param string $typeId Super Product Link Type
      * @return array
@@ -512,6 +527,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Load product(s) attributes
      *
+     * @deprecated since version 1.13.2
      * @param int $storeId
      * @param array $productIds
      * @param array $attributeTypes
@@ -558,6 +574,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Returns expresion for field unification
      *
+     * @deprecated since version 1.13.2
      * @param string $field
      * @param string $backendType
      * @return Zend_Db_Expr
@@ -578,6 +595,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Prepare Fulltext index value for product
      *
+     * @deprecated since version 1.13.2
      * @param array $indexData
      * @param array $productData
      * @param int $storeId
@@ -669,6 +687,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Retrieve Product Type Instance
      *
+     * @deprecated since version 1.13.2
      * @param string $typeId
      * @return Mage_Catalog_Model_Product_Type_Abstract
      */
@@ -688,6 +707,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Retrieve Product Emulator (Varien Object)
      *
+     * @deprecated since version 1.13.2
      * @return Varien_Object
      */
     protected function _getProductEmulator()
@@ -701,6 +721,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Retrieve attribute source value for search
      *
+     * @deprecated since version 1.13.2
      * @param int $attributeId
      * @param mixed $value
      * @param int $storeId
@@ -743,6 +764,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Multi add entities data to fulltext search table
      *
+     * @deprecated since version 1.13.2
      * @param int $storeId
      * @param array $entityIndexes
      * @return void
@@ -768,6 +790,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh
     /**
      * Retrieve Date value for store
      *
+     * @deprecated since version 1.13.2
      * @param int $storeId
      * @param string $date
      * @return string

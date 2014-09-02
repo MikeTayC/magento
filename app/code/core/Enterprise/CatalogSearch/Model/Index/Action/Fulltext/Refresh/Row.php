@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogSearch
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -62,7 +62,8 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh_Row
     public function __construct(array $args)
     {
         if (isset($args['value']) && !empty($args['value'])) {
-            $this->_keyColumnIdValue = is_array($args['value']) ? $args['value'] : array($args['value']);
+            $this->_keyColumnIdValue = is_array($args['value']) ?
+                    array_unique($args['value']) : array($args['value']);
         }
 
         parent::__construct($args);
@@ -76,10 +77,6 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh_Row
      */
     public function execute()
     {
-        if (!$this->_isFulltextOn()) {
-            return $this;
-        }
-
         if (!$this->_metadata->isValid() || empty($this->_keyColumnIdValue)) {
             throw new Enterprise_Index_Model_Action_Exception("Can't perform operation, incomplete metadata!");
         }
@@ -87,10 +84,10 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh_Row
         try {
             // Index basic products
             $this->_setProductIdsFromValue();
-            $this->_rebuildIndex();
+            $this->_indexer->rebuildIndex(null, $this->_productIds);
             // Index parent products
             $this->_setProductIdsFromParents();
-            $this->_rebuildIndex();
+            $this->_indexer->rebuildIndex(null, $this->_productIds);
             // Clear search results
             $this->_resetSearchResults();
         } catch (Exception $e) {
@@ -103,6 +100,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh_Row
     /**
      * Retrieve select for getting searchable products per store by key column ID
      *
+     * @deprecated since version 1.13.2
      * @param int $storeId
      * @param array $staticFields
      * @param int $lastProductId
@@ -118,6 +116,7 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh_Row
     /**
      * Get select for removing entity data from fulltext search table by key column ID
      *
+     * @deprecated since version 1.13.2
      * @param int $storeId
      * @return array
      */

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -63,8 +63,9 @@ class Enterprise_PageCache_Model_Processor_Category extends Enterprise_PageCache
             $processor->setMetadata(self::METADATA_CATEGORY_ID, $category->getId());
             $this->_updateCategoryViewedCookie($processor);
         }
+        $pageId = $processor->getRequestId() . '_' . md5($queryParams);
 
-        return $processor->getRequestId() . '_' . md5($queryParams);
+        return $this->_appendCustomerRatesToPageId($pageId);
     }
 
     /**
@@ -92,7 +93,9 @@ class Enterprise_PageCache_Model_Processor_Category extends Enterprise_PageCache
 
         Enterprise_PageCache_Model_Cookie::setCategoryCookieValue($queryParams);
 
-        return $processor->getRequestId() . '_' . md5($queryParams);
+        $pageId = $processor->getRequestId() . '_' . md5($queryParams);
+
+        return $this->_appendCustomerRatesToPageId($pageId);
     }
 
     /**

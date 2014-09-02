@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -74,7 +74,8 @@ class Enterprise_Rma_Block_Adminhtml_Rma_New_Tab_Items_Order_Grid
 
         /** @var $collection Enterprise_Rma_Model_Resource_Item */
 
-        $orderItemsCollection = Mage::getResourceModel('enterprise_rma/item')->getOrderItemsCollection($orderId);
+        $orderItemsCollection = Mage::getResourceModel('enterprise_rma/item')
+                ->getOrderItemsCollectionForAdmin($orderId);
 
         $this->setCollection($orderItemsCollection);
 
@@ -94,7 +95,8 @@ class Enterprise_Rma_Block_Adminhtml_Rma_New_Tab_Items_Order_Grid
         $orderId = Mage::registry('current_order')->getId();
         $itemsInActiveRmaArray = Mage::getResourceModel('enterprise_rma/item')->getItemsIdsByOrder($orderId);
 
-        $fullItemsCollection = Mage::getResourceModel('enterprise_rma/item')->getOrderItemsCollection($orderId);
+        $fullItemsCollection = Mage::getResourceModel('enterprise_rma/item')
+                ->getOrderItemsCollectionForAdmin($orderId);
         /**
          * contains data that defines possibility of return for an order item
          * array value ['self'] refers to item's own rules

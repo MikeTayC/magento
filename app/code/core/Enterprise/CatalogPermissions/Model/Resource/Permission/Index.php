@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogPermissions
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -569,7 +569,6 @@ class Enterprise_CatalogPermissions_Model_Resource_Permission_Index extends Mage
             ->where('product_id = :product_id')
             ->where('customer_group_id = :customer_group_id OR customer_group_id IS NULL')
             ->where('store_id = :store_id')
-            ->where('cat_index.is_parent=1')
             ->group('cat_index.product_id');
 
         $bind = array(
@@ -621,7 +620,6 @@ class Enterprise_CatalogPermissions_Model_Resource_Permission_Index extends Mage
             ->where('product_id IN(?)', $productId)
             ->where('customer_group_id = :customer_group_id OR customer_group_id IS NULL')
             ->where('store_id = :store_id')
-            ->where('cat_index.is_parent=1')
             ->group('cat_index.product_id');
 
         $bind = array(

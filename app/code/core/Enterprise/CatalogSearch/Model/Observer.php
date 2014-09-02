@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogSearch
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -68,20 +68,100 @@ class Enterprise_CatalogSearch_Model_Observer
     /**
      * Process fulltext refresh upon product save event
      *
+     * @deprecated since version 1.13.2
+     *
      * @param Varien_Event_Observer $observer
      * @return Enterprise_CatalogSearch_Model_Observer
      */
     public function processProductSaveEvent(Varien_Event_Observer $observer)
     {
+        return $this;
+    }
+
+    /**
+     * Process fulltext refresh upon product save/delete event
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_CatalogSearch_Model_Observer
+     */
+    public function processProductSaveDeleteEvent(Varien_Event_Observer $observer)
+    {
         if (!$this->_isLiveFulltextReindexEnabled()) {
             return $this;
         }
+
+        $this->_refreshCatalogSearchIndexForProducts(array($observer->getEvent()->getProduct()->getId()));
+
+        return $this;
+    }
+
+    /**
+     * Process the product massAction update attribute event
+     *
+     * @param Varien_Event_Observer $observer
+     * @return \Enterprise_CatalogSearch_Model_Observer
+     */
+    public function processProductAttributeUpdatedEvent(Varien_Event_Observer $observer)
+    {
+        if (!$this->_isLiveFulltextReindexEnabled()) {
+            return $this;
+        }
+
+        $this->_refreshCatalogSearchIndexForProducts($observer->getEvent()->getProductIds());
+
+        return $this;
+    }
+
+    /**
+     * Process the product massAction update website event
+     *
+     * @param Varien_Event_Observer $observer
+     * @return \Enterprise_CatalogSearch_Model_Observer
+     */
+    public function processProductWebsiteUpdatedEvent(Varien_Event_Observer $observer)
+    {
+        if (!$this->_isLiveFulltextReindexEnabled()) {
+            return $this;
+        }
+        $this->_refreshCatalogSearchIndexForProducts($observer->getEvent()->getProducts());
+
+        return $this;
+    }
+
+    /**
+     * Process the product massAction update inventory event
+     *
+     * @param Varien_Event_Observer $observer
+     * @return \Enterprise_CatalogSearch_Model_Observer
+     */
+    public function processProductStockItemUpdatedEvent(Varien_Event_Observer $observer)
+    {
+        if (!$this->_isLiveFulltextReindexEnabled()) {
+            return $this;
+        }
+
+        $this->_refreshCatalogSearchIndexForProducts($observer->getEvent()->getProducts());
+
+        return $this;
+    }
+
+    /**
+     * Call refresh_row with an array of product ids
+     *
+     * @param array $productIds
+     * @return \Enterprise_CatalogSearch_Model_Observer
+     */
+    protected function _refreshCatalogSearchIndexForProducts($productIds)
+    {
+        if (empty($productIds)) {
+            return $this;
+        }
+
         //Fulltext refresh
         $client = $this->_getClient('catalogsearch_fulltext');
         $client->execute('enterprise_catalogsearch/index_action_fulltext_refresh_row', array(
-            'value' => $observer->getEvent()->getProduct()->getId(),
+            'value' => $productIds,
         ));
-
         return $this;
     }
 
@@ -92,7 +172,8 @@ class Enterprise_CatalogSearch_Model_Observer
      */
     protected function _isLiveFulltextReindexEnabled()
     {
-        return (bool)(string)$this->_store->getConfig(self::XML_PATH_LIVE_FULLTEXT_REINDEX_ENABLED);
+        $helper = $this->_factory->getHelper('enterprise_catalogsearch');
+        return $helper->isLiveFulltextReindexEnabled();
     }
 
     /**
@@ -126,6 +207,7 @@ class Enterprise_CatalogSearch_Model_Observer
     /**
      * Exclude catalogsearch_fulltext indexer
      *
+     * @deprecated since version 1.13.2
      * @param Varien_Event_Observer $observer
      */
     public function addExcludeProcess(Varien_Event_Observer $observer)

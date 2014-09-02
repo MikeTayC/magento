@@ -16,6 +16,8 @@
                                 to transfer all media to that location. Media will not be available in the new
                                 location until the synchronization process is complete.","Nachdem Sie einen neuen Medienspeicherort gewählt haben, drücken Sie den ""Synchronisieren""-Knopf, um alle Medien an diesen Ort zu übertragen. Medien sind an diesem neuen Ort erst verfügbar, wenn der Synchronisierungsprozess abgeschlossen ist."
 "Allow Countries","Länder zulassen"
+"Allow Magento Backend to run in frame","Magento Backend die Ausführung im Frame erlauben"
+"Allow Magento Frontend to run in frame","Magento Frontend die Ausführung im Frame erlauben"
 "Allow Symlinks","Symlinks erlauben"
 "Allowed IPs (comma separated)","Zugelassene IPs (durch Kommata getrennt)"
 "Allowed file types: ICO, PNG, GIF, JPG, JPEG, APNG, SVG. Not all browsers support all these formats!","Erlaubte Dateitypen: ICO, PNG, GIF, JPG, JPEG, APNG, SVG. Nicht alle Browser unterstützen alle dieser Formate!"
@@ -286,6 +288,7 @@
 "Set Return-Path","Antwortpfad setzen"
 "Set as Default","Als Standard festlegen"
 "Skin (Images / CSS)","Skin (Bilder / CSS)"
+"Small Logo Image Src","Kleines Logo Image Src"
 "Sort Order","Sortierfolge"
 "Specified date/time ""%1$s"" do not match format ""%2$s"".","Angegebes Datum/Uhrzeit ""%1$s"" entspricht nicht dem Format ""%2$s""."
 "Start date cannot be greater than end date.","Das Anfangsdatum darf nicht nach dem Enddatum liegen."

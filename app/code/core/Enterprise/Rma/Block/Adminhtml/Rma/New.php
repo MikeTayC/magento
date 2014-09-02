@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -60,7 +60,7 @@ class Enterprise_Rma_Block_Adminhtml_Rma_New extends Mage_Adminhtml_Block_Widget
             }
         }
 
-        if (Mage::helper('enterprise_rma')->canCreateRma($orderId, true)) {
+        if (Mage::helper('enterprise_rma')->canCreateRmaByAdmin($orderId)) {
             $this->_updateButton('reset', 'onclick', "setLocation('" . $link . "')");
             $this->_updateButton('save', 'label', Mage::helper('enterprise_rma')->__('Submit RMA'));
         } else {

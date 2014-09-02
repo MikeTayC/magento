@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -69,13 +69,34 @@ class Enterprise_Rma_Helper_Data extends Mage_Core_Helper_Abstract
      * Checks for ability to create RMA
      *
      * @param  int|Mage_Sales_Model_Order $order
-     * @param  bool $forceCreate - set yes when you don't need to check config setting (for admin side)
+     * @param  bool $forceCreate - @deprecated since version 1.13.2.0
      * @return bool
      */
     public function canCreateRma($order, $forceCreate = false)
     {
+        if (!$this->isEnabled()) {
+            return false;
+        }
+
         $items = $this->getOrderItems($order);
-        if ($items->count() && ($forceCreate || $this->isEnabled())) {
+        if ($items->count()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks for ability to create RMA for admin user.
+     * This function checks whether admin has access to order items
+     *
+     * @param  int|Mage_Sales_Model_Order $order
+     * @return bool
+     */
+    public function canCreateRmaByAdmin($order)
+    {
+        $items = $this->getOrderItems($order, false, true);
+        if ($items->count()) {
             return true;
         }
 
@@ -87,10 +108,11 @@ class Enterprise_Rma_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @param  int|Mage_Sales_Model_Order $orderId
      * @param  bool $onlyParents If needs only parent items (only for backend)
+     * @param  bool $isAdmin whether need to check admin access to the product
      * @throws Mage_Core_Exception
      * @return Mage_Sales_Model_Resource_Order_Item_Collection
      */
-    public function getOrderItems($orderId, $onlyParents = false)
+    public function getOrderItems($orderId, $onlyParents = false, $isAdmin = false)
     {
         if ($orderId instanceof Mage_Sales_Model_Order) {
             $orderId = $orderId->getId();
@@ -99,7 +121,12 @@ class Enterprise_Rma_Helper_Data extends Mage_Core_Helper_Abstract
             Mage::throwException($this->__('It isn\'t valid order'));
         }
         if (is_null($this->_orderItems) || !isset($this->_orderItems[$orderId])) {
-            $this->_orderItems[$orderId] = Mage::getResourceModel('enterprise_rma/item')->getOrderItems($orderId);
+            if (!$isAdmin) {
+                $this->_orderItems[$orderId] = Mage::getResourceModel('enterprise_rma/item')->getOrderItems($orderId);
+            } else {
+                $this->_orderItems[$orderId] =
+                        Mage::getResourceModel('enterprise_rma/item')->getOrderItemsForAdmin($orderId);
+            }
         }
 
         if ($onlyParents) {

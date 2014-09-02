@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Catalog
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -381,14 +381,6 @@
                     </invalidate_attribute_indexer>
                 </observers>
             </cataloginventory_stock_full_reindex>
-            <enterprise_url_rewrite_load_after>
-                <observers>
-                    <add_sufix_to_url_alias>
-                        <class>enterprise_catalog/observer</class>
-                        <method>addUrlSuffixToUrlAlias</method>
-                    </add_sufix_to_url_alias>
-                </observers>
-            </enterprise_url_rewrite_load_after>
             <product_duplicate_attributes>
                 <observers>
                     <remove_url_key>
@@ -442,6 +434,22 @@
                     </enterprise_product_flat>
                 </observers>
             </controller_action_postdispatch_adminhtml_catalog_product_action_attribute_save>
+            <sitemap_categories_generating_before>
+                <observers>
+                    <set_category_url_suffix>
+                        <class>enterprise_catalog/observer</class>
+                        <method>addSeoSuffixToCategoryUrl</method>
+                    </set_category_url_suffix>
+                </observers>
+            </sitemap_categories_generating_before>
+            <sitemap_products_generating_before>
+                <observers>
+                    <set_product_url_suffix>
+                        <class>enterprise_catalog/observer</class>
+                        <method>addSeoSuffixToProductUrl</method>
+                    </set_product_url_suffix>
+                </observers>
+            </sitemap_products_generating_before>
         </events>
     </adminhtml>
     <frontend>

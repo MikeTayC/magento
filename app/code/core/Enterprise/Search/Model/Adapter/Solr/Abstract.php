@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -42,6 +42,13 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
      * Default suggestions count
      */
     const DEFAULT_SPELLCHECK_COUNT  = 1;
+
+    /**
+     * Default timeout in seconds
+     */
+    const DEFAULT_TIMEOUT = 15;
+
+
 
     /**
      * Define ping status
@@ -66,7 +73,27 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
 
 
 
+    /**
+     * Prepare connect options list and load default values for not set params
+     *
+     * @param array $options
+     *
+     * @return array
+     */
+    protected function _initConnectOptions(array $options = array())
+    {
+        $helper = Mage::helper('enterprise_search');
+        $defaultOptions = array(
+            'hostname' => $helper->getSolrConfigData('server_hostname'),
+            'login'    => $helper->getSolrConfigData('server_username'),
+            'password' => $helper->getSolrConfigData('server_password'),
+            'port'     => $helper->getSolrConfigData('server_port'),
+            'timeout'  => $helper->getSolrConfigData('server_timeout'),
+            'path'     => $helper->getSolrConfigData('server_path')
+        );
 
+        return array_merge($defaultOptions, $options);
+    }
 
     /**
      * Set advanced index fields prefix
@@ -298,7 +325,7 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
             $_sort = each($sort);
             $sortField = $_sort['key'];
             $sortType = $_sort['value'];
-            if ($sortField == 'relevance') {
+            if ($sortField == 'relevance' || $sortField == 'score') {
                 $sortField = 'score';
             } elseif ($sortField == 'position') {
                 $sortField = 'position_category_' . Mage::registry('current_category')->getId();
@@ -337,12 +364,18 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
      *
      * @param   string $filed
      * @param   string $suffix
+     * @param   null|int $storeId
+     *
      * @return  string
      */
     public function getAdvancedTextFieldName($filed, $suffix = '', $storeId = null)
     {
-        $localeCode     = Mage::app()->getStore($storeId)->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE);
-        $languageSuffix = Mage::helper('enterprise_search')->getLanguageSuffix($localeCode);
+        if ($storeId !== null) {
+            $localeCode = Mage::app()->getStore($storeId)->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE);
+            $languageSuffix = Mage::helper('enterprise_search')->getLanguageSuffix($localeCode);
+        } else {
+            $languageSuffix = '';
+        }
 
         if ($suffix) {
             $suffix = '_' . $suffix;
@@ -373,8 +406,12 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
 
         // Field type defining
         $attributeCode = $attribute->getAttributeCode();
-        if (in_array($attributeCode, array('sku'))) {
-            return $attributeCode;
+        if ($attributeCode == 'sku') {
+            if ($target == 'sort') {
+                return 'attr_sort_sku';
+            } else {
+                return 'sku';
+            }
         }
 
         if ($attributeCode == 'price') {

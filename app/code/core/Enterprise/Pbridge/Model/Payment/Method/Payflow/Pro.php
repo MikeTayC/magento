@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -33,6 +33,7 @@
  * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_Pbridge_Model_Payment_Method_Payflow_Pro extends Mage_Paypal_Model_Payflowpro
+    implements Enterprise_Pbridge_Model_Payment_Method_Paypal_Interface
 {
     /**
      * Form block type for the frontend
@@ -178,6 +179,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Payflow_Pro extends Mage_Paypal_Mo
      */
     public function authorize(Varien_Object $payment, $amount)
     {
+        $this->_setPbridgeAdditionalParams();
         $response = $this->getPbridgeMethodInstance()->authorize($payment, $amount);
         $payment->addData((array)$response);
         $payment->setIsTransactionClosed(0);
@@ -202,6 +204,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Payflow_Pro extends Mage_Paypal_Mo
      */
     public function capture(Varien_Object $payment, $amount)
     {
+        $this->_setPbridgeAdditionalParams();
         $payment->setShouldCloseParentTransaction(!$this->_getCaptureAmount($amount));
         $payment->setFirstCaptureFlag(!$this->getInfoInstance()->hasAmountPaid());
         $response = $this->getPbridgeMethodInstance()->capture($payment, $amount);
@@ -222,6 +225,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Payflow_Pro extends Mage_Paypal_Mo
      */
     public function refund(Varien_Object $payment, $amount)
     {
+        $this->_setPbridgeAdditionalParams();
         $response = $this->getPbridgeMethodInstance()->refund($payment, $amount);
         $payment->addData((array)$response);
         $payment->setShouldCloseParentTransaction(!$payment->getCreditmemo()->getInvoice()->canRefund());
@@ -236,6 +240,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Payflow_Pro extends Mage_Paypal_Mo
      */
     public function void(Varien_Object $payment)
     {
+        $this->_setPbridgeAdditionalParams();
         $response = $this->getPbridgeMethodInstance()->void($payment);
         $payment->addData((array)$response);
         return $this;
@@ -258,5 +263,16 @@ class Enterprise_Pbridge_Model_Payment_Method_Payflow_Pro extends Mage_Paypal_Mo
         $this->setData('store', $store);
         Mage::helper('enterprise_pbridge')->setStoreId(is_object($store) ? $store->getId() : $store);
         return $this;
+    }
+
+    /**
+     * Sets additional parameters for Pbridge
+     */
+    private function _setPbridgeAdditionalParams()
+    {
+        $params = array(
+            'BNCODE' => Mage::getModel('paypal/config')->getBuildNotationCode()
+        );
+        $this->getPbridgeMethodInstance()->setAdditionalRequestParameters($params);
     }
 }

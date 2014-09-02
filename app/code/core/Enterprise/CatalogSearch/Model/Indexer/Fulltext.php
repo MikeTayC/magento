@@ -20,12 +20,14 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogSearch
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Fulltext indexer switcher
+ *
+ * @deprecated since version 1.13.2
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogSearch
@@ -53,6 +55,9 @@ class Enterprise_CatalogSearch_Model_Indexer_Fulltext extends Mage_CatalogSearch
         return $this->_fulltextOn;
     }
 
+    /**
+     * Constructor
+     */
     protected function _construct()
     {
         if ($this->_isFulltextOn()) {

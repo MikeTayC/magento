@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -47,6 +47,11 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
      * @var Mage_Core_Block_Abstract
      */
     protected $_placeholderBlock;
+
+    /**
+     * @var array
+     */
+    protected $_layouts = array();
 
     /**
      * Class constructor
@@ -294,5 +299,23 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
     public function setPlaceholderBlock(Mage_Core_Block_Abstract $block) {
         $this->_placeholderBlock = $block;
         return $this;
+    }
+
+    /**
+     * Get layout with generated blocks
+     *
+     * @param string $handler
+     * @return Mage_Core_Model_Layout
+     */
+    protected function _getLayout($handler = 'default')
+    {
+        if (!isset($this->_layouts[$handler])) {
+            $layout = Mage::app()->getLayout();
+            $layout->getUpdate()->load($handler);
+            $layout->generateXml();
+            $layout->generateBlocks();
+            $this->_layouts[$handler] = $layout;
+        }
+        return $this->_layouts[$handler];
     }
 }

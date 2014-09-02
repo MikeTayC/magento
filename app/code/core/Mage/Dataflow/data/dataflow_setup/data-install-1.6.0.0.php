@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Dataflow
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -92,3 +92,5 @@ $dataflowData = array(
 foreach ($dataflowData as $bind) {
     Mage::getModel('dataflow/profile')->setData($bind)->save();
 }
+
+$installer->endSetup();

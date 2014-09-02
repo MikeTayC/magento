@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -312,7 +312,7 @@ class Enterprise_PageCache_Model_Container_CatalogProductItem
     protected function _renderBlock()
     {
         $itemId = $this->_getItemId();
-        if (!$itemId) {
+        if (!is_numeric($itemId)) {
             return '';
         }
 

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -103,11 +103,13 @@ class Enterprise_Search_Model_Resource_Engine
     /**
      * Initialize search engine adapter
      *
+     * @param array $options
+     *
      * @return Enterprise_Search_Model_Resource_Engine
      */
-    protected function _initAdapter()
+    protected function _initAdapterWithParams(array $options = array())
     {
-        $this->_adapter = $this->_getAdapterModel('solr');
+        $this->_adapter = $this->_getAdapterModelWithParams('solr', $options);
 
         $this->_adapter->setAdvancedIndexFieldPrefix($this->getFieldsPrefix());
         if (!$this->_canAllowCommit()) {
@@ -118,11 +120,23 @@ class Enterprise_Search_Model_Resource_Engine
     }
 
     /**
+     * Initialize search engine adapter
+     *
+     * @deprecated
+     *
+     * @return Enterprise_Search_Model_Resource_Engine
+     */
+    protected function _initAdapter()
+    {
+        return $this->_initAdapterWithParams();
+    }
+
+    /**
      * Set search engine adapter
      */
-    public function __construct()
+    public function __construct(array $options = array())
     {
-        $this->_initAdapter();
+        $this->_initAdapterWithParams($options);
     }
 
     /**
@@ -291,8 +305,6 @@ class Enterprise_Search_Model_Resource_Engine
     /**
      * Retrieve allowed visibility values for current engine
      *
-     * @see
-     *
      * @return array
      */
     public function getAllowedVisibility()
@@ -304,7 +316,7 @@ class Enterprise_Search_Model_Resource_Engine
      * Prepare index array
      *
      * @param array $index
-     * @param string $separator
+     * @param string|null $separator
      * @return array
      */
     public function prepareEntityIndex($index, $separator = null)
@@ -324,12 +336,13 @@ class Enterprise_Search_Model_Resource_Engine
 
     /**
      * Retrieve search engine adapter model by adapter name
-     * Now supporting only Solr search engine adapter
      *
      * @param string $adapterName
+     * @param array $options
+     *
      * @return object
      */
-    protected function _getAdapterModel($adapterName)
+    protected function _getAdapterModelWithParams($adapterName, array $options = array())
     {
         switch ($adapterName) {
             case 'solr':
@@ -342,9 +355,23 @@ class Enterprise_Search_Model_Resource_Engine
                 break;
         }
 
-        $adapter = Mage::getSingleton($modelName);
+        $adapter = Mage::getSingleton($modelName, $options);
 
         return $adapter;
+    }
+
+    /**
+     * Retrieve search engine adapter model by adapter name
+     *
+     * @deprecated
+     *
+     * @param string $adapterName
+     *
+     * @return object
+     */
+    protected function _getAdapterModel($adapterName)
+    {
+        return $this->_getAdapterModelWithParams($adapterName);
     }
 
     /**
@@ -431,8 +458,6 @@ class Enterprise_Search_Model_Resource_Engine
     {
         return $this->_adapter->getIndexNeedsOptimization();
     }
-
-    protected $_searchableAttributes = null;
 
     /**
      * Store searchable attributes

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Autoload
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -46,7 +46,7 @@ class Mage_Autoload_Simple
     {
         $classFile = str_replace(' ', DIRECTORY_SEPARATOR, ucwords(str_replace('_', ' ', $class)));
         $classFile.= '.php';
-        @include $classFile;
+        include_once($classFile);
     }
 
 }

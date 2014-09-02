@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogSearch
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -69,7 +69,8 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh_Changelog
                 'metadata'   => $this->_metadata
             )
         );
-        $this->_changedIds = $changelog->loadByMetadata($this->_getLastVersionId());
+        $this->_changedIds = $changelog->loadByMetadata();
+        $this->_changedIds = array_unique($this->_changedIds);
     }
 
     /**
@@ -80,10 +81,6 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh_Changelog
      */
     public function execute()
     {
-        if (!$this->_isFulltextOn()) {
-            return $this;
-        }
-
         if (!$this->_metadata->isValid()) {
             throw new Enterprise_Index_Model_Action_Exception("Can't perform operation, incomplete metadata!");
         }
@@ -93,10 +90,10 @@ class Enterprise_CatalogSearch_Model_Index_Action_Fulltext_Refresh_Changelog
                 $this->_metadata->setInProgressStatus()->save();
                 // Index basic products
                 $this->_setProductIdsFromValue();
-                $this->_rebuildIndex();
+                $this->_indexer->rebuildIndex(null, $this->_productIds);
                 // Index parent products
                 $this->_setProductIdsFromParents();
-                $this->_rebuildIndex();
+                $this->_indexer->rebuildIndex(null, $this->_productIds);
                 // Clear search results
                 $this->_resetSearchResults();
                 $this->_updateMetadata();

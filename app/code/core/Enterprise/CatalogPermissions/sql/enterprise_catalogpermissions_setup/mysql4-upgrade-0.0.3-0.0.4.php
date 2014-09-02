@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogPermissions
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -49,8 +49,13 @@ $installer->getConnection()->addConstraint('ENTERPRISE_CATALOGPEMISSIONS_INDEX_C
 $installer->getConnection()->addConstraint('ENTERPRISE_CATALOGPEMISSIONS_INDEX_WEBSITE', $tableName, 'website_id',
                                            $installer->getTable('core/website'), 'website_id');
 
-$installer->getConnection()->addConstraint('ENTERPRISE_CATALOGPEMISSIONS_INDEX_CUSTGROUP', $tableName, 'customer_group_id',
-                                           $installer->getTable('customer/customer_group'), 'customer_group_id');
+$installer->getConnection()->addConstraint(
+    'ENTERPRISE_CATALOGPEMISSIONS_INDEX_CUSTGROUP',
+    $tableName,
+    'customer_group_id',
+    $installer->getTable('customer/customer_group'),
+    'customer_group_id'
+);
 
 
 $tableName = $installer->getTable('enterprise_catalogpermissions/permission_index_product');
@@ -74,8 +79,14 @@ $installer->getConnection()->addConstraint('ENTERPRISE_CATALOGPEMISSIONS_INDEX_P
 $installer->getConnection()->addConstraint('ENTERPRISE_CATALOGPEMISSIONS_INDEX_PRODUCT_STORE', $tableName, 'store_id',
                                            $installer->getTable('core/store'), 'store_id');
 
-$installer->getConnection()->addConstraint('ENTERPRISE_CATALOGPEMISSIONS_INDEX_PRODUCT_CUSTGROUP', $tableName, 'customer_group_id',
-                                           $installer->getTable('customer/customer_group'), 'customer_group_id');
+$installer->getConnection()->addConstraint(
+    'ENTERPRISE_CATALOGPEMISSIONS_INDEX_PRODUCT_CUSTGROUP',
+    $tableName,
+    'customer_group_id',
+    $installer->getTable('customer/customer_group'),
+    'customer_group_id'
+);
 
 $installer->getConnection()->addConstraint('ENTERPRISE_CATALOGPEMISSIONS_INDEX_PRODUCT_CAT', $tableName, 'category_id',
                                            $installer->getTable('catalog/category'), 'entity_id');
+$installer->endSetup();

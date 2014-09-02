@@ -570,8 +570,12 @@
     -->
     <requestHandler name="magento_def" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_def^1.0 fulltext_2_def^2.0 fulltext_3_def^3.0 fulltext_4_def^4.0 fulltext_5_def^5.0</str>
-            <str name="pf">fulltext_1_def^1.0 fulltext_2_def^2.0 fulltext_3_def^3.0 fulltext_4_def^4.0 fulltext_5_def^5.0</str>
+            <str name="qf">
+                fulltext_1_def^1.0 fulltext_2_def^2.0 fulltext_3_def^3.0 fulltext_4_def^4.0 fulltext_5_def^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_def^1.0 fulltext_2_def^2.0 fulltext_3_def^3.0 fulltext_4_def^4.0 fulltext_5_def^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -586,8 +590,12 @@
     </requestHandler>
     <requestHandler name="magento_en" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_en^1.0 fulltext_2_en^2.0 fulltext_3_en^3.0 fulltext_4_en^4.0 fulltext_5_en^5.0</str>
-            <str name="pf">fulltext_1_en^1.0 fulltext_2_en^2.0 fulltext_3_en^3.0 fulltext_4_en^4.0 fulltext_5_en^5.0</str>
+            <str name="qf">
+                fulltext_1_en^1.0 fulltext_2_en^2.0 fulltext_3_en^3.0 fulltext_4_en^4.0 fulltext_5_en^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_en^1.0 fulltext_2_en^2.0 fulltext_3_en^3.0 fulltext_4_en^4.0 fulltext_5_en^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -602,8 +610,12 @@
     </requestHandler>
     <requestHandler name="magento_fr" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_fr^1.0 fulltext_2_fr^2.0 fulltext_3_fr^3.0 fulltext_4_fr^4.0 fulltext_5_fr^5.0</str>
-            <str name="pf">fulltext_1_fr^1.0 fulltext_2_fr^2.0 fulltext_3_fr^3.0 fulltext_4_fr^4.0 fulltext_5_fr^5.0</str>
+            <str name="qf">
+                fulltext_1_fr^1.0 fulltext_2_fr^2.0 fulltext_3_fr^3.0 fulltext_4_fr^4.0 fulltext_5_fr^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_fr^1.0 fulltext_2_fr^2.0 fulltext_3_fr^3.0 fulltext_4_fr^4.0 fulltext_5_fr^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -618,8 +630,12 @@
     </requestHandler>
     <requestHandler name="magento_de" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_de^1.0 fulltext_2_de^2.0 fulltext_3_de^3.0 fulltext_4_de^4.0 fulltext_5_de^5.0</str>
-            <str name="pf">fulltext_1_de^1.0 fulltext_2_de^2.0 fulltext_3_de^3.0 fulltext_4_de^4.0 fulltext_5_de^5.0</str>
+            <str name="qf">
+                fulltext_1_de^1.0 fulltext_2_de^2.0 fulltext_3_de^3.0 fulltext_4_de^4.0 fulltext_5_de^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_de^1.0 fulltext_2_de^2.0 fulltext_3_de^3.0 fulltext_4_de^4.0 fulltext_5_de^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -634,8 +650,12 @@
     </requestHandler>
     <requestHandler name="magento_da" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_da^1.0 fulltext_2_da^2.0 fulltext_3_da^3.0 fulltext_4_da^4.0 fulltext_5_da^5.0</str>
-            <str name="pf">fulltext_1_da^1.0 fulltext_2_da^2.0 fulltext_3_da^3.0 fulltext_4_da^4.0 fulltext_5_da^5.0</str>
+            <str name="qf">
+                fulltext_1_da^1.0 fulltext_2_da^2.0 fulltext_3_da^3.0 fulltext_4_da^4.0 fulltext_5_da^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_da^1.0 fulltext_2_da^2.0 fulltext_3_da^3.0 fulltext_4_da^4.0 fulltext_5_da^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -650,8 +670,12 @@
     </requestHandler>
     <requestHandler name="magento_nl" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_nl^1.0 fulltext_2_nl^2.0 fulltext_3_nl^3.0 fulltext_4_nl^4.0 fulltext_5_nl^5.0</str>
-            <str name="pf">fulltext_1_nl^1.0 fulltext_2_nl^2.0 fulltext_3_nl^3.0 fulltext_4_nl^4.0 fulltext_5_nl^5.0</str>
+            <str name="qf">
+                fulltext_1_nl^1.0 fulltext_2_nl^2.0 fulltext_3_nl^3.0 fulltext_4_nl^4.0 fulltext_5_nl^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_nl^1.0 fulltext_2_nl^2.0 fulltext_3_nl^3.0 fulltext_4_nl^4.0 fulltext_5_nl^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -666,8 +690,12 @@
     </requestHandler>
     <requestHandler name="magento_fi" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_fi^1.0 fulltext_2_fi^2.0 fulltext_3_fi^3.0 fulltext_4_fi^4.0 fulltext_5_fi^5.0</str>
-            <str name="pf">fulltext_1_fi^1.0 fulltext_2_fi^2.0 fulltext_3_fi^3.0 fulltext_4_fi^4.0 fulltext_5_fi^5.0</str>
+            <str name="qf">
+                fulltext_1_fi^1.0 fulltext_2_fi^2.0 fulltext_3_fi^3.0 fulltext_4_fi^4.0 fulltext_5_fi^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_fi^1.0 fulltext_2_fi^2.0 fulltext_3_fi^3.0 fulltext_4_fi^4.0 fulltext_5_fi^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -682,8 +710,12 @@
     </requestHandler>
     <requestHandler name="magento_it" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_it^1.0 fulltext_2_it^2.0 fulltext_3_it^3.0 fulltext_4_it^4.0 fulltext_5_it^5.0</str>
-            <str name="pf">fulltext_1_it^1.0 fulltext_2_it^2.0 fulltext_3_it^3.0 fulltext_4_it^4.0 fulltext_5_it^5.0</str>
+            <str name="qf">
+                fulltext_1_it^1.0 fulltext_2_it^2.0 fulltext_3_it^3.0 fulltext_4_it^4.0 fulltext_5_it^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_it^1.0 fulltext_2_it^2.0 fulltext_3_it^3.0 fulltext_4_it^4.0 fulltext_5_it^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -698,8 +730,12 @@
     </requestHandler>
     <requestHandler name="magento_nb" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_nb^1.0 fulltext_2_nb^2.0 fulltext_3_nb^3.0 fulltext_4_nb^4.0 fulltext_5_nb^5.0</str>
-            <str name="pf">fulltext_1_nb^1.0 fulltext_2_nb^2.0 fulltext_3_nb^3.0 fulltext_4_nb^4.0 fulltext_5_nb^5.0</str>
+            <str name="qf">
+                fulltext_1_nb^1.0 fulltext_2_nb^2.0 fulltext_3_nb^3.0 fulltext_4_nb^4.0 fulltext_5_nb^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_nb^1.0 fulltext_2_nb^2.0 fulltext_3_nb^3.0 fulltext_4_nb^4.0 fulltext_5_nb^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -714,8 +750,12 @@
     </requestHandler>
     <requestHandler name="magento_pt" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_pt^1.0 fulltext_2_pt^2.0 fulltext_3_pt^3.0 fulltext_4_pt^4.0 fulltext_5_pt^5.0</str>
-            <str name="pf">fulltext_1_pt^1.0 fulltext_2_pt^2.0 fulltext_3_pt^3.0 fulltext_4_pt^4.0 fulltext_5_pt^5.0</str>
+            <str name="qf">
+                fulltext_1_pt^1.0 fulltext_2_pt^2.0 fulltext_3_pt^3.0 fulltext_4_pt^4.0 fulltext_5_pt^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_pt^1.0 fulltext_2_pt^2.0 fulltext_3_pt^3.0 fulltext_4_pt^4.0 fulltext_5_pt^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -730,8 +770,12 @@
     </requestHandler>
     <requestHandler name="magento_ro" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_ro^1.0 fulltext_2_ro^2.0 fulltext_3_ro^3.0 fulltext_4_ro^4.0 fulltext_5_ro^5.0</str>
-            <str name="pf">fulltext_1_ro^1.0 fulltext_2_ro^2.0 fulltext_3_ro^3.0 fulltext_4_ro^4.0 fulltext_5_ro^5.0</str>
+            <str name="qf">
+                fulltext_1_ro^1.0 fulltext_2_ro^2.0 fulltext_3_ro^3.0 fulltext_4_ro^4.0 fulltext_5_ro^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_ro^1.0 fulltext_2_ro^2.0 fulltext_3_ro^3.0 fulltext_4_ro^4.0 fulltext_5_ro^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -746,8 +790,12 @@
     </requestHandler>
     <requestHandler name="magento_ru" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_ru^1.0 fulltext_2_ru^2.0 fulltext_3_ru^3.0 fulltext_4_ru^4.0 fulltext_5_ru^5.0</str>
-            <str name="pf">fulltext_1_ru^1.0 fulltext_2_ru^2.0 fulltext_3_ru^3.0 fulltext_4_ru^4.0 fulltext_5_ru^5.0</str>
+            <str name="qf">
+                fulltext_1_ru^1.0 fulltext_2_ru^2.0 fulltext_3_ru^3.0 fulltext_4_ru^4.0 fulltext_5_ru^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_ru^1.0 fulltext_2_ru^2.0 fulltext_3_ru^3.0 fulltext_4_ru^4.0 fulltext_5_ru^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -762,8 +810,12 @@
     </requestHandler>
     <requestHandler name="magento_es" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_es^1.0 fulltext_2_es^2.0 fulltext_3_es^3.0 fulltext_4_es^4.0 fulltext_5_es^5.0</str>
-            <str name="pf">fulltext_1_es^1.0 fulltext_2_es^2.0 fulltext_3_es^3.0 fulltext_4_es^4.0 fulltext_5_es^5.0</str>
+            <str name="qf">
+                fulltext_1_es^1.0 fulltext_2_es^2.0 fulltext_3_es^3.0 fulltext_4_es^4.0 fulltext_5_es^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_es^1.0 fulltext_2_es^2.0 fulltext_3_es^3.0 fulltext_4_es^4.0 fulltext_5_es^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -778,8 +830,12 @@
     </requestHandler>
     <requestHandler name="magento_sv" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_sv^1.0 fulltext_2_sv^2.0 fulltext_3_sv^3.0 fulltext_4_sv^4.0 fulltext_5_sv^5.0</str>
-            <str name="pf">fulltext_1_sv^1.0 fulltext_2_sv^2.0 fulltext_3_sv^3.0 fulltext_4_sv^4.0 fulltext_5_sv^5.0</str>
+            <str name="qf">
+                fulltext_1_sv^1.0 fulltext_2_sv^2.0 fulltext_3_sv^3.0 fulltext_4_sv^4.0 fulltext_5_sv^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_sv^1.0 fulltext_2_sv^2.0 fulltext_3_sv^3.0 fulltext_4_sv^4.0 fulltext_5_sv^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -794,8 +850,12 @@
     </requestHandler>
     <requestHandler name="magento_tr" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_tr^1.0 fulltext_2_tr^2.0 fulltext_3_tr^3.0 fulltext_4_tr^4.0 fulltext_5_tr^5.0</str>
-            <str name="pf">fulltext_1_tr^1.0 fulltext_2_tr^2.0 fulltext_3_tr^3.0 fulltext_4_tr^4.0 fulltext_5_tr^5.0</str>
+            <str name="qf">
+                fulltext_1_tr^1.0 fulltext_2_tr^2.0 fulltext_3_tr^3.0 fulltext_4_tr^4.0 fulltext_5_tr^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_tr^1.0 fulltext_2_tr^2.0 fulltext_3_tr^3.0 fulltext_4_tr^4.0 fulltext_5_tr^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -810,8 +870,12 @@
     </requestHandler>
     <requestHandler name="magento_cs" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_cs^1.0 fulltext_2_cs^2.0 fulltext_3_cs^3.0 fulltext_4_cs^4.0 fulltext_5_cs^5.0</str>
-            <str name="pf">fulltext_1_cs^1.0 fulltext_2_cs^2.0 fulltext_3_cs^3.0 fulltext_4_cs^4.0 fulltext_5_cs^5.0</str>
+            <str name="qf">
+                fulltext_1_cs^1.0 fulltext_2_cs^2.0 fulltext_3_cs^3.0 fulltext_4_cs^4.0 fulltext_5_cs^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_cs^1.0 fulltext_2_cs^2.0 fulltext_3_cs^3.0 fulltext_4_cs^4.0 fulltext_5_cs^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -826,8 +890,12 @@
     </requestHandler>
     <requestHandler name="magento_el" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_el^1.0 fulltext_2_el^2.0 fulltext_3_el^3.0 fulltext_4_el^4.0 fulltext_5_el^5.0</str>
-            <str name="pf">fulltext_1_el^1.0 fulltext_2_el^2.0 fulltext_3_el^3.0 fulltext_4_el^4.0 fulltext_5_el^5.0</str>
+            <str name="qf">
+                fulltext_1_el^1.0 fulltext_2_el^2.0 fulltext_3_el^3.0 fulltext_4_el^4.0 fulltext_5_el^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_el^1.0 fulltext_2_el^2.0 fulltext_3_el^3.0 fulltext_4_el^4.0 fulltext_5_el^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -842,8 +910,12 @@
     </requestHandler>
     <requestHandler name="magento_th" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_th^1.0 fulltext_2_th^2.0 fulltext_3_th^3.0 fulltext_4_th^4.0 fulltext_5_th^5.0</str>
-            <str name="pf">fulltext_1_th^1.0 fulltext_2_th^2.0 fulltext_3_th^3.0 fulltext_4_th^4.0 fulltext_5_th^5.0</str>
+            <str name="qf">
+                fulltext_1_th^1.0 fulltext_2_th^2.0 fulltext_3_th^3.0 fulltext_4_th^4.0 fulltext_5_th^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_th^1.0 fulltext_2_th^2.0 fulltext_3_th^3.0 fulltext_4_th^4.0 fulltext_5_th^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -858,8 +930,12 @@
     </requestHandler>
     <requestHandler name="magento_zh" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_zh^1.0 fulltext_2_zh^2.0 fulltext_3_zh^3.0 fulltext_4_zh^4.0 fulltext_5_zh^5.0</str>
-            <str name="pf">fulltext_1_zh^1.0 fulltext_2_zh^2.0 fulltext_3_zh^3.0 fulltext_4_zh^4.0 fulltext_5_zh^5.0</str>
+            <str name="qf">
+                fulltext_1_zh^1.0 fulltext_2_zh^2.0 fulltext_3_zh^3.0 fulltext_4_zh^4.0 fulltext_5_zh^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_zh^1.0 fulltext_2_zh^2.0 fulltext_3_zh^3.0 fulltext_4_zh^4.0 fulltext_5_zh^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -874,8 +950,12 @@
     </requestHandler>
     <requestHandler name="magento_ja" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_ja^1.0 fulltext_2_ja^2.0 fulltext_3_ja^3.0 fulltext_4_ja^4.0 fulltext_5_ja^5.0</str>
-            <str name="pf">fulltext_1_ja^1.0 fulltext_2_ja^2.0 fulltext_3_ja^3.0 fulltext_4_ja^4.0 fulltext_5_ja^5.0</str>
+            <str name="qf">
+                fulltext_1_ja^1.0 fulltext_2_ja^2.0 fulltext_3_ja^3.0 fulltext_4_ja^4.0 fulltext_5_ja^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_ja^1.0 fulltext_2_ja^2.0 fulltext_3_ja^3.0 fulltext_4_ja^4.0 fulltext_5_ja^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -890,8 +970,12 @@
     </requestHandler>
     <requestHandler name="magento_ko" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="qf">fulltext_1_ko^1.0 fulltext_2_ko^2.0 fulltext_3_ko^3.0 fulltext_4_ko^4.0 fulltext_5_ko^5.0</str>
-            <str name="pf">fulltext_1_ko^1.0 fulltext_2_ko^2.0 fulltext_3_ko^3.0 fulltext_4_ko^4.0 fulltext_5_ko^5.0</str>
+            <str name="qf">
+                fulltext_1_ko^1.0 fulltext_2_ko^2.0 fulltext_3_ko^3.0 fulltext_4_ko^4.0 fulltext_5_ko^5.0
+            </str>
+            <str name="pf">
+                fulltext_1_ko^1.0 fulltext_2_ko^2.0 fulltext_3_ko^3.0 fulltext_4_ko^4.0 fulltext_5_ko^5.0
+            </str>
             <int name="ps">1</int>
             <str name="mm">1</str>
             <str name="defType">dismax</str>
@@ -1357,10 +1441,10 @@
     </docs>
 
     Note: Each document must contain a field which serves as the unique key. This key is used in the returned
-    response to assoicate an analysis breakdown to the analyzed document.
+    response to associate an analysis breakdown to the analyzed document.
 
     Like the FieldAnalysisRequestHandler, this handler also supports query analysis by
-    sending either an "analysis.query" or "q" request paraemter that holds the query text to be analyized. It also
+    sending either an "analysis.query" or "q" request parameter that holds the query text to be analyzed. It also
     supports the "analysis.showmatch" parameter which when set to true, all field tokens that match the query
     tokens will be marked as a "match".
   -->

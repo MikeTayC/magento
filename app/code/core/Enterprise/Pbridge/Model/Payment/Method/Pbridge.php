@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -78,6 +78,12 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
     );
 
     /**
+     * Array of additional parameters, which need to be included in Pbridge request
+     * @var array
+     */
+    protected $_additionalRequestParameters = array();
+
+    /**
      * Initialize and return Pbridge Api object
      *
      * @return Enterprise_Pbridge_Model_Payment_Method_Pbridge_Api
@@ -100,6 +106,22 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
     public function isAvailable($quote = null)
     {
         return false;
+    }
+
+    /**
+     * Method sets additional request parameters due to the type of the payment method
+     * @param Varien_Object $request
+     * @param Varien_Object $payment
+     */
+    protected function _setAdditionalRequestParameters($request, $payment)
+    {
+        if (!$payment->getMethodInstance() instanceof Enterprise_Pbridge_Model_Payment_Method_Paypal_Interface) {
+            return;
+        }
+        $request->setData(
+            'additional_params',
+            array('BNCODE' => Mage::getModel('paypal/config')->getBuildNotationCode())
+        );
     }
 
     /**
@@ -268,7 +290,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
 //        parent::authorize($payment, $amount);
         $order = $payment->getOrder();
         $request = $this->_getApiRequest();
-
+        $this->_setAdditionalRequestParameters($request, $payment);
         $request
             ->setData('magento_payment_action' , $this->getOriginalMethodInstance()->getConfigPaymentAction())
             ->setData('client_ip', Mage::app()->getRequest()->getClientIp(false))
@@ -344,14 +366,21 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
         }
 
         $request = $this->_getApiRequest();
+        $this->_setAdditionalRequestParameters($request, $payment);
         $request
             ->setData('transaction_id', $authTransactionId)
             ->setData('is_capture_complete', (int)$payment->getShouldCloseParentTransaction())
             ->setData('amount', $amount)
             ->setData('currency_code', $payment->getOrder()->getBaseCurrencyCode())
             ->setData('order_id', $payment->getOrder()->getIncrementId())
-            ->setData('is_first_capture', $payment->hasFirstCaptureFlag() ? $payment->getFirstCaptureFlag() : true);
-
+            ->setData('is_first_capture', $payment->hasFirstCaptureFlag() ? $payment->getFirstCaptureFlag() : true)
+            ->setData(
+                'notify_url',
+                Mage::getUrl(
+                    'enterprise_pbridge/PbridgeIpn/',
+                    array('_store' =>  $payment->getOrder()->getStore()->getStoreId())
+                )
+            );
         $api = $this->_getApi()->doCapture($request);
         $this->_importResultToPayment($payment, $api->getResponse());
         $apiResponse = $api->getResponse();
@@ -383,13 +412,14 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
             $order = $payment->getOrder();
 
             $request = $this->_getApiRequest();
+            $this->_setAdditionalRequestParameters($request, $payment);
             $request
                 ->setData('transaction_id', $captureTxnId)
                 ->setData('amount', $amount)
                 ->setData('currency_code', $order->getBaseCurrencyCode())
                 ->setData('cc_number', $payment->getCcLast4())
-                ->setData('order_id', $payment->getOrder()->getIncrementId());
-
+                ->setData('order_id', $payment->getOrder()->getIncrementId())
+;
             $canRefundMore = $order->canCreditmemo();
             $allRefunds = (float)$amount
                 + (float)$order->getBaseTotalOnlineRefunded()
@@ -426,6 +456,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
 
         if ($authTransactionId = $payment->getParentTransactionId()) {
             $request = $this->_getApiRequest();
+            $this->_setAdditionalRequestParameters($request, $payment);
             $request->addData(array(
                 'transaction_id' => $authTransactionId,
                 'amount' => $payment->getOrder()->getBaseTotalDue()
@@ -453,6 +484,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
         }
 
         $request = $this->_getApiRequest();
+        $this->_setAdditionalRequestParameters($request, $payment);
         $request
             ->setData('transaction_id', $transactionId)
             ->setData('order_id', $payment->getOrder()->getIncrementId());
@@ -478,6 +510,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
         }
 
         $request = $this->_getApiRequest();
+        $this->_setAdditionalRequestParameters($request, $payment);
         $request
             ->setData('transaction_id', $transactionId)
             ->setData('order_id', $payment->getOrder()->getIncrementId());
@@ -502,6 +535,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
         }
 
         $request = $this->_getApiRequest();
+        $this->_setAdditionalRequestParameters($request, $payment);
         $request
             ->setData('transaction_id', $transactionId)
             ->setData('order_id', $payment->getOrder()->getIncrementId());
@@ -616,7 +650,6 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
         $request = new Varien_Object();
         $request->setCountryCode(Mage::getStoreConfig(self::XML_CONFIG_PATH_DEFAULT_COUNTRY));
         $request->setClientIdentifier($this->_getCustomerIdentifier());
-
         return $request;
     }
 

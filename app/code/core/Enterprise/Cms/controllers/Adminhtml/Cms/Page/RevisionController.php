@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -314,7 +314,7 @@ class Enterprise_Cms_Adminhtml_Cms_Page_RevisionController extends Enterprise_Cm
                 $selectedStoreId = $data['preview_selected_store'];
             } else {
                 if (!$selectedStoreId) {
-                    $selectedStoreId = Mage::app()->getDefaultStoreView()->getId();
+                    $selectedStoreId = Mage::app()->getAnyStoreView()->getId();
                 }
             }
             $selectedStoreId = (int) $selectedStoreId;

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -76,7 +76,7 @@ class Mage_Core_Model_Cache
      */
     protected $_defaultBackendOptions = array(
         'hashed_directory_level'    => 1,
-        'hashed_directory_umask'    => 0777,
+        'hashed_directory_perm'    => 0777,
         'file_name_prefix'          => 'mage',
     );
 

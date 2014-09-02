@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Index
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -136,6 +136,8 @@ class Enterprise_Index_Model_Observer
             }
 
             $lock->releaseLock(self::REINDEX_FULL_LOCK);
+        } else {
+            throw new Enterprise_Index_Exception("Can't lock indexer process.");
         }
 
         return $this;

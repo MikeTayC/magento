@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Banner
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -230,7 +230,8 @@ class Enterprise_Banner_Block_Widget_Banner
                     $aplliedRules = explode(',', $quote->getAppliedRuleIds());
                 }
                 $bannerIds = $this->_bannerResource->getSalesRuleRelatedBannerIds($segmentIds, $aplliedRules, false);
-                $bannerIds = array_intersect($bannerIds, $this->getEnabledBannerIds());
+                $this->setBannerIds($bannerIds);
+                $bannerIds = $this->_filterActive($bannerIds);
                 $bannersContent = $this->_getBannersContent(!empty($bannerIds)? $bannerIds : array(0), $segmentIds);
                 break;
 
@@ -241,7 +242,8 @@ class Enterprise_Banner_Block_Widget_Banner
                     $segmentIds,
                     false
                 );
-                $bannerIds = array_intersect($bannerIds, $this->getEnabledBannerIds());
+                $this->setBannerIds($bannerIds);
+                $bannerIds = $this->_filterActive($bannerIds);
                 $bannersContent = $this->_getBannersContent(!empty($bannerIds)? $bannerIds : array(0), $segmentIds);
                 break;
 
@@ -263,6 +265,17 @@ class Enterprise_Banner_Block_Widget_Banner
         }
 
         return $bannersContent;
+    }
+
+    /**
+     * Filter active banners
+     *
+     * @param array $bannerIds
+     * @return array
+     */
+    protected function _filterActive($bannerIds)
+    {
+        return $this->_bannerResource->getExistingBannerIdsBySpecifiedIds($bannerIds);
     }
 
     /**
@@ -367,7 +380,8 @@ class Enterprise_Banner_Block_Widget_Banner
                             if ($suggBannerId && (array_search($suggBannerId, $canShowIds) !== false)) {
                                 $bannerId = $suggBannerId;
                             } else {
-                                $showKey = $isShuffle ? array_rand($canShowIds, 1) : 0;
+                                $canShowKeys = array_keys($canShowIds);
+                                $showKey = $isShuffle ? array_rand($canShowIds, 1) : $canShowKeys[0];
                                 $bannerId = $canShowIds[$showKey];
                             }
                             $bannersSequence[] = $bannerId;
@@ -379,7 +393,8 @@ class Enterprise_Banner_Block_Widget_Banner
                         if ($suggBannerId && (array_search($suggBannerId, $bannerIds) !== false)) {
                             $bannerId = $suggBannerId;
                         } else {
-                            $bannerKey = $isShuffle ? array_rand($bannerIds, 1) : 0;
+                            $bannerKeys = array_keys($bannerIds);
+                            $bannerKey = $isShuffle ? array_rand($bannerIds, 1) : $bannerKeys[0];
                             $bannerId = $bannerIds[$bannerKey];
                         }
                         $bannersSequence = array($bannerId);

@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -94,22 +94,32 @@
                 </observers>
             </catalogsearch_index_process_complete>
 
-            <catelogsearch_searchable_attributes_load_after>
+            <catalogsearch_searchable_attributes_load_after>
                 <observers>
                     <enterprise_search>
                         <class>enterprise_search/observer</class>
                         <method>storeSearchableAttributes</method>
                     </enterprise_search>
                 </observers>
-            </catelogsearch_searchable_attributes_load_after>
-            <catalog_category_product_partial_reindex>
+            </catalogsearch_searchable_attributes_load_after>
+
+            <catalog_category_save_commit_after>
                 <observers>
                     <enterprise_search>
                         <class>enterprise_search/observer</class>
-                        <method>rebuiltIndex</method>
+                        <method>processCategorySaveEvent</method>
                     </enterprise_search>
                 </observers>
-            </catalog_category_product_partial_reindex>
+            </catalog_category_save_commit_after>
+
+            <catalog_product_price_full_reindex>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>invalidateCatalogSearchMview</method>
+                    </enterprise_search>
+                </observers>
+            </catalog_product_price_full_reindex>
         </events>
     </global>
 

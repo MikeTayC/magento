@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -41,6 +41,16 @@ class Enterprise_Pbridge_Model_Payment_Method_Eway_Direct extends Enterprise_Pbr
      */
     const PAYMENT_CODE = 'eway_direct';
 
+    /**
+     * List of default accepted currency codes supported by payment gateway
+     *
+     * @var array
+     */
+    protected $_allowCurrencyCode = array('USD', 'GBP', 'NZD', 'CAD', 'HKD', 'SGD', 'EUR', 'JPY');
+
+    /**
+     * @var string
+     */
     protected $_code = self::PAYMENT_CODE;
 
     protected $_isGateway               = true;

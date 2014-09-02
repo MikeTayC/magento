@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_ImportExport
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -1426,64 +1426,7 @@ class Mage_ImportExport_Model_Import_Entity_Product extends Mage_ImportExport_Mo
                 ->_saveMediaGallery($mediaGallery)
                 ->_saveProductAttributes($attributes);
         }
-        $this->_fixUrlKeys();
         return $this;
-    }
-
-    /**
-     * Add missed url keys
-     *
-     * @return void
-     */
-    protected function _fixUrlKeys()
-    {
-        $attribute = $this->_getAttribute('name');
-        $attrId = $attribute->getId();
-
-        $resource = Mage::getModel('importexport/import_proxy_product_resource');
-        $select = $this->_connection->select();
-        $select->from(
-            array('ev' => $resource->getTable(array('catalog_product_entity', 'varchar'))),
-            array('id' => 'ev.entity_id', 'name' => 'ev.value')
-        )
-        ->joinLeft(
-            array('uk' => $resource->getTable(array('catalog_product_entity', 'url_key'))),
-            'ev.entity_id = uk.entity_id AND ev.store_id = uk.store_id',
-            array('url_key' => 'uk.value')
-        )
-        ->where('ev.attribute_id = ?', $attrId)
-        ->where('uk.value IS NULL')
-        ->where('ev.store_id = ?', 0);
-        $rows = $this->_connection->fetchAll($select);
-        $productModel = Mage::getModel('catalog/product');
-        if (count($rows)) {
-
-            $attributeUrlKey = $this->_getAttribute('url_key');
-            $entityTypeId = $attributeUrlKey->getEntityTypeId();
-            $urlKeyAttrId = $attributeUrlKey->getId();
-
-            foreach ($rows as $row ) {
-                $urlKey = sprintf('%s-%s', $productModel->formatUrlKey($row['name']), $row['id']);
-                $tableData = array(
-                    'entity_id'      => $row['id'],
-                    'entity_type_id' => $entityTypeId,
-                    'attribute_id'   => $urlKeyAttrId,
-                    'store_id'       => 0,
-                    'value'          => $urlKey
-                );
-
-                $urlKeyTableName = $resource->getTable(array('catalog_product_entity', 'url_key'));
-                $affectedRows = $this->_connection->insertIgnore($urlKeyTableName, $tableData);
-                if (empty($affectedRows)) {
-                    $tableData['value'] = sprintf(
-                        '%s-%s',
-                        $productModel->formatUrlKey($row['name']),
-                        substr(Mage::helper('core')->uniqHash(), 0, 6)
-                    );
-                    $this->_connection->insertIgnore($urlKeyTableName, $tableData);
-                }
-            }
-        }
     }
 
     /**

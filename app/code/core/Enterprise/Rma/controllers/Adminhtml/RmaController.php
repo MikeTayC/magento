@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -118,7 +118,8 @@ class Enterprise_Rma_Adminhtml_RmaController extends Mage_Adminhtml_Controller_A
             try {
                 $this->_initCreateModel();
                 $this->_initModel();
-                if (!Mage::helper('enterprise_rma')->canCreateRma($orderId, true)) {
+
+                if (!Mage::helper('enterprise_rma')->canCreateRmaByAdmin($orderId)) {
                     Mage::getSingleton('adminhtml/session')->addError(
                         Mage::helper('enterprise_rma')->__('There are no applicable items for return in this order')
                     );

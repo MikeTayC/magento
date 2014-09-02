@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -39,43 +39,28 @@ class Enterprise_Search_Adminhtml_Search_System_Config_TestconnectionController
      */
     public function pingAction()
     {
-        if (!isset($_REQUEST['host']) || !($host = $_REQUEST['host'])
-            || !isset($_REQUEST['port']) || !($port = (int)$_REQUEST['port'])
-            || !isset($_REQUEST['path']) || !($path = $_REQUEST['path'])
-        ) {
+        if (empty($_REQUEST['host']) || empty($_REQUEST['port']) || empty($_REQUEST['path'])) {
             echo 0;
-            die;
+            return;
         }
 
-        $pingUrl = 'http://' . $host . ':' . $port . '/' . $path . '/admin/ping';
+        $timeout = (isset($_REQUEST['timeout']) && $_REQUEST['timeout'] > 0)
+            ? (float)$_REQUEST['timeout']
+            : Enterprise_Search_Model_Adapter_Solr_Abstract::DEFAULT_TIMEOUT;
 
-        if (isset($_REQUEST['timeout'])) {
-            $timeout = (int)$_REQUEST['timeout'];
-            if ($timeout < 0) {
-                $timeout = -1;
-            }
+        $result = Mage::getResourceModel('enterprise_search/engine', array(
+                'hostname' => $_REQUEST['host'],
+                'port'     => (int)$_REQUEST['port'],
+                'path'     => $_REQUEST['path'],
+                'login'    => (isset($_REQUEST['login'])) ? $_REQUEST['login'] : '',
+                'password' => (isset($_REQUEST['password'])) ? $_REQUEST['password'] : '',
+                'timeout'  => $timeout))
+            ->test();
+
+        if ($result === false) {
+            echo 0;
         } else {
-            $timeout = 0;
-        }
-
-        $context = stream_context_create(
-            array(
-                'http' => array(
-                    'method' => 'HEAD',
-                    'timeout' => $timeout
-                )
-            )
-        );
-
-        // attempt a HEAD request to the solr ping page
-        $ping = @file_get_contents($pingUrl, false, $context);
-
-        // result is false if there was a timeout
-        // or if the HTTP status was not 200
-        if ($ping !== false) {
             echo 1;
-        } else {
-            echo 0;
         }
     }
 }

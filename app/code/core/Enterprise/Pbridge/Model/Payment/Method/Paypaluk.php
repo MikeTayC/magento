@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -33,6 +33,7 @@
  * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_Pbridge_Model_Payment_Method_Paypaluk extends Mage_PaypalUk_Model_Direct
+    implements Enterprise_Pbridge_Model_Payment_Method_Paypal_Interface
 {
     /**
      * Form block type for the frontend

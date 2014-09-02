@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -322,9 +322,11 @@ class Enterprise_PageCache_Model_Processor
 
                 // restore response headers
                 $responseHeaders = $this->getMetadata('response_headers');
+                $response = Mage::app()->getResponse();
                 if (is_array($responseHeaders)) {
+                    $response->clearHeaders();
                     foreach ($responseHeaders as $header) {
-                        Mage::app()->getResponse()->setHeader($header['name'], $header['value'], $header['replace']);
+                        $response->setHeader($header['name'], $header['value'], $header['replace']);
                     }
                 }
 

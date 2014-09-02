@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -28,6 +28,6 @@
 <?php $_product = $this->getProduct() ?>
 <?php if ($_product->isSaleable() && $this->hasOptions()):?>
     <div>
-        <button class="button btn-cart" onclick="Enterprise.Bundle.start();" type="button"><span><span><?php echo $this->__('Customize and Add to Cart'); ?></span></span></button>
+        <button class="button btn-cart" onclick="Enterprise.Bundle.start();" type="button" id="customize_and_add_to_cart"><span><span><?php echo $this->__('Customize and Add to Cart'); ?></span></span></button>
     </div>
 <?php endif;?>

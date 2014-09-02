@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -59,7 +59,7 @@ $_product = $this->getProduct();
                     <?php echo $this->getChildHtml('customize_button') ?>
                     <?php if (!$this->hasOptions()):?>
                         <?php if($_product->isSaleable()): ?>
-                            <button type="button" onclick="window.location='<?php echo Mage::getBaseUrl().$_product->getRequestPath();?>?startcustomization=1'" class="button btn-cart"><span><span><?php echo $this->__("Customize and Add to Cart") ?></span></span></button>
+                            <button type="button" onclick="window.location='<?php echo Mage::getBaseUrl().$_product->getRequestPath();?>?startcustomization=1'" class="button btn-cart" id="customize_and_add_to_cart"><span><span><?php echo $this->__("Customize and Add to Cart") ?></span></span></button>
                         <?php endif; ?>
                     <?php endif; ?>
                     <?php echo $this->getChildHtml('addto') ?>

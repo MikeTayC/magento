@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_UrlRewrite
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -74,9 +74,28 @@ class Enterprise_UrlRewrite_Model_Url_Rewrite_Request extends Mage_Core_Model_Ur
      */
     protected function _setRequestPathAlias()
     {
+        $requestAlias = $this->_rewrite->getRequestPath();
+        switch ($this->_rewrite->getEntityType()) {
+            case Enterprise_Catalog_Model_Product::URL_REWRITE_ENTITY_TYPE:
+                $seoSuffix = (string) Mage::app()->getStore()->getConfig(
+                    Mage_Catalog_Helper_Product::XML_PATH_PRODUCT_URL_SUFFIX
+                );
+                if (!empty($seoSuffix)) {
+                    $requestAlias .= '.' . $seoSuffix;
+                }
+                break;
+            case Enterprise_Catalog_Model_Category::URL_REWRITE_ENTITY_TYPE:
+                $seoSuffix = (string) Mage::app()->getStore()->getConfig(
+                    Mage_Catalog_Helper_Category::XML_PATH_CATEGORY_URL_SUFFIX
+                );
+                if (!empty($seoSuffix)) {
+                    $requestAlias .= '.' . $seoSuffix;
+                }
+                break;
+        }
         $this->_request->setAlias(
             Mage_Core_Model_Url_Rewrite::REWRITE_REQUEST_PATH_ALIAS,
-            $this->_rewrite->getRequestPath()
+            $requestAlias
         );
         return $this;
     }

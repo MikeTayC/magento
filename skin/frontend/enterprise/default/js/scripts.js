@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -224,8 +224,11 @@ Enterprise.BundleSummary = {
     initialize: function () {
         this.summary = $('bundleSummary');
         this.summaryOffsetTop = $('customizeTitle').getDimensions().height;
+        this.summaryHeight = this.summary.getDimensions().height;
         this.summary.setStyle({top:this.summaryOffsetTop + "px"});
         this.summaryContainer = this.summary.up(0);
+        this.summaryContainerMinHeight = this.summaryOffsetTop + this.summaryHeight;
+        this.summaryContainer.setStyle({minHeight:this.summaryContainerMinHeight + "px"});
         this.doNotCheck = false;
         this.summaryStartY = this.summary.positionedOffset().top;
         this.summaryStartY = this.summaryOffsetTop;

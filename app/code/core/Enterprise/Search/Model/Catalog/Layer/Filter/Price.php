@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -194,7 +194,8 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Price extends Mage_Catalog_Mo
     public function getMaxPriceInt()
     {
         $searchParams = $this->getLayer()->getProductCollection()->getExtendedSearchParams();
-        $uniquePart = strtoupper(md5(serialize($searchParams . '_' . $this->getCurrencyRate())));
+        $spSerialized = serialize($searchParams);
+        $uniquePart = strtoupper(md5(serialize($spSerialized . '_' . $this->getCurrencyRate())));
         $cacheKey = 'MAXPRICE_' . $this->getLayer()->getStateKey() . '_' . $uniquePart;
 
         $cachedData = Mage::app()->loadCache($cacheKey);

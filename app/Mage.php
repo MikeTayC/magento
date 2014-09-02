@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -169,9 +169,9 @@ final class Mage
     {
         return array(
             'major'     => '1',
-            'minor'     => '13',
-            'revision'  => '1',
-            'patch'     => '0',
+            'minor'     => '14',
+            'revision'  => '0',
+            'patch'     => '1',
             'stability' => '',
             'number'    => '',
         );

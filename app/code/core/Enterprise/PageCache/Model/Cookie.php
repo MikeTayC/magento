@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -38,6 +38,7 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
      */
     const COOKIE_CUSTOMER           = 'CUSTOMER';
     const COOKIE_CUSTOMER_GROUP     = 'CUSTOMER_INFO';
+    const COOKIE_CUSTOMER_RATES     = 'CUSTOMER_RATES';
 
     const COOKIE_MESSAGE            = 'NEWMESSAGE';
     const COOKIE_CART               = 'CART';
@@ -144,13 +145,32 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
                 $this->setObscure(self::COOKIE_CUSTOMER_LOGGED_IN, 'customer_logged_in_' . $session->isLoggedIn());
             } else {
                 $this->delete(self::COOKIE_CUSTOMER_LOGGED_IN);
+                $this->delete(self::COOKIE_CUSTOMER_RATES);
             }
         } else {
             $this->delete(self::COOKIE_CUSTOMER);
             $this->delete(self::COOKIE_CUSTOMER_GROUP);
             $this->delete(self::COOKIE_CUSTOMER_LOGGED_IN);
+            $this->delete(self::COOKIE_CUSTOMER_RATES);
         }
         return $this;
+    }
+
+    /**
+     * Update customer rates cookie
+     */
+    public function updateCustomerRatesCookie()
+    {
+        /** @var $taxConfig Mage_Tax_Model_Config */
+        $taxConfig = Mage::getSingleton('tax/config');
+        if ($taxConfig->getPriceDisplayType() > 1) {
+            /** @var $taxCalculationModel Mage_Tax_Model_Calculation */
+            $taxCalculationModel = Mage::getSingleton('tax/calculation');
+            $request = $taxCalculationModel->getRateRequest();
+            $rates = $taxCalculationModel->getApplicableRateIds($request);
+            sort($rates);
+            $this->setObscure(self::COOKIE_CUSTOMER_RATES, 'customer_rates_' . implode(',', $rates));
+        }
     }
 
     /**

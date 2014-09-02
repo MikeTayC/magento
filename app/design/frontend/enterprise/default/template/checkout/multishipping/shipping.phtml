@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -40,7 +40,7 @@
 <fieldset class="multiple-checkout">
     <?php foreach ($this->getAddresses() as $_index => $_address): ?>
     <h2 class="section-title"><?php echo $this->__('Address %s of %s', ($_index+1), $this->getAddressCount()) ?></h2>
-    <div class="col2-set">
+    <div class="col2-set" data-set="shipping-set">
         <div class="col-1 narrow">
             <div class="info-box">
                 <h3 class="box-title"><?php echo $this->__('Shipping To') ?> <span class="separator">|</span> <a href="<?php echo $this->getAddressEditUrl($_address) ?>"><?php echo $this->__('Change') ?></a></h3>
@@ -64,7 +64,7 @@
                                         <?php if ($_sole) : ?>
                                         <span class="no-display"><input type="radio" name="shipping_method[<?php echo $_address->getId() ?>]" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_address->getId() ?>_<?php echo $_rate->getCode() ?>" checked="checked"/></span>
                                         <?php else: ?>
-                                        <input type="radio" name="shipping_method[<?php echo $_address->getId() ?>]" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_address->getId() ?>_<?php echo $_rate->getCode() ?>"<?php if($_rate->getCode()===$this->getAddressShippingMethod($_address)) echo ' checked="checked"' ?> class="radio" />
+                                        <input data-shipping-method="" type="radio" name="shipping_method[<?php echo $_address->getId() ?>]" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_address->getId() ?>_<?php echo $_rate->getCode() ?>"<?php if($_rate->getCode()===$this->getAddressShippingMethod($_address)) echo ' checked="checked"' ?> class="radio" />
                                         <?php endif; ?>
                                         <label for="s_method_<?php echo $_address->getId() ?>_<?php echo $_rate->getCode() ?>"><?php echo $this->escapeHtml($_rate->getMethodTitle()) ?>
                                         <?php $_excl = $this->getShippingPrice($_address, $_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax()); ?>
@@ -115,7 +115,7 @@
     <?php echo $this->getChildHtml('checkout_billing_items') ?>
     <div class="buttons-set">
         <p class="back-link"><a href="<?php echo $this->getBackUrl() ?>"><small>&laquo; </small><?php echo $this->__('Back to Select Addresses') ?></a></p>
-        <button  class="button" type="submit"><span><span><?php echo $this->__('Continue to Billing Information') ?></span></span></button>
+        <button data-action="checkout-continue-billing"  class="button" type="submit"><span><span><?php echo $this->__('Continue to Billing Information') ?></span></span></button>
     </div>
 </fieldset>
 </form>

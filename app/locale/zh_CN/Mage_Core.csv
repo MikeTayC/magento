@@ -16,6 +16,8 @@
                                 to transfer all media to that location. Media will not be available in the new
                                 location until the synchronization process is complete.","在选择新的媒体存储位置后，请按下 同步 按钮以便将所有媒体文件传输到该位置。除非同步工作完成，否则媒体文件将无法通过新位置使用。"
 "Allow Countries","允许的国家"
+"Allow Magento Backend to run in frame","允许 Magento Backend 运行在框架中"
+"Allow Magento Frontend to run in frame","允许 Magento Frontend 运行在框架中"
 "Allow Symlinks","允许的符号链接"
 "Allowed IPs (comma separated)","允许的IP（逗号分割）"
 "Allowed file types: ICO, PNG, GIF, JPG, JPEG, APNG, SVG. Not all browsers support all these formats!","允许的文件类型：ICO、PNG、GIF、JPG、JPEG、APNG，SVG。并非所有浏览器都支持所有这些格式！"
@@ -286,6 +288,7 @@
 "Set Return-Path","设置返回路径"
 "Set as Default","设置为默认值"
 "Skin (Images / CSS)","皮肤（图片/CSS）"
+"Small Logo Image Src","小标志图像源"
 "Sort Order","排序顺序"
 "Specified date/time ""%1$s"" do not match format ""%2$s"".","指定的日期/时间 ""%1$s"" 不符合格式 ""%2$s""。"
 "Start date cannot be greater than end date.","开始日期不能大于结束日期。"

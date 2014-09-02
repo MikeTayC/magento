@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -142,10 +142,14 @@ class Enterprise_TargetRule_Model_Resource_Rule extends Mage_Rule_Model_Resource
         $this->unbindRuleFromEntity($object->getId(), array(), 'product');
         /** @var $catalogFlatHelper Mage_Catalog_Helper_Product_Flat */
         $catalogFlatHelper = Mage::helper('catalog/product_flat');
-        $storeId = Mage::app()->getDefaultStoreView()->getId();
+        $storeView = Mage::app()->getDefaultStoreView();
+        if ($storeView)
+            $storeId = $storeView->getId();
+        else
+            $storeId = null;
 
         if ($catalogFlatHelper->isEnabled() && $catalogFlatHelper->isBuilt($storeId)) {
-            $this->_fillProductsByRule($object, $storeId);
+            $this->_fillProductsByRule($object);
         } else {
             $this->bindRuleToEntity($object->getId(), $object->getMatchingProductIds(), 'product');
         }

@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 /* Reset ================================================================================= */
@@ -230,14 +230,6 @@ ul.add-row .btn-remove,
 .form-alt select { width:496px; }
 .form-alt .input-box { width:496px; margin-top:5px; padding-bottom:11px; }
 .form-alt .input-text { width:480px; }
-
-.form-list-narrow label { width:105px; }
-.form-list-narrow select { width:290px; }
-.form-list-narrow input.input-text,
-.form-list-narrow textarea { width:285px; }
-.form-list-narrow .wide { width:auto; }
-.form-list-narrow .add-field .input-box { margin-left:120px; }
-.form-list-narrow .control .input-box { margin-left:120px; }
 
 .inner-form { margin:10px 0 5px; padding:10px 0 0; border:1px dashed #d1d1d1; border-width:1px; background:#f7f7f7; }
 .inner-form .form-alt label { padding-left:5px; }
@@ -571,6 +563,7 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 .header .quick-access .links li a:hover { color:#d33911; }
 .header .quick-access .checkout-link li { font-weight:bold; padding:0 0 0 12px; background-position:6px 4px; }
 .header .quick-access .cart-link li { font-weight:bold; padding:0 0 0 0px; background:none; }
+.top-container .paypal-logo {text-align: left; margin:0; display: inline-table;}
 
 
 #invitation-send-link { background:url(../images/bkg_sep.gif) no-repeat 100% 50%; padding:0 6px 0 0; margin:0 4px 0 0; font-weight:bold; }
@@ -956,10 +949,8 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 
 /* Paypal */
 .sidebar .paypal-logo { display:block; margin:10px 0; text-align:center; }
-.paypal-review-order .legend { font-size:14px; font-weight:normal; margin:0 0 6px; }
-.paypal-review-order .col2-set .legend { font-weight:bold; }
-.paypal-review-order .paypal-shipping-method { padding-left:120px; }
-.paypal-review-order .paypal-shipping-method .box-title { margin:0 0 6px; }
+.paypal-express-review .info-set.col2-set { padding-bottom: 15px; }
+.paypal-logo.bill-me-latter { margin: 10px 0; }
 /* ======================================================================================= */
 
 
@@ -1262,12 +1253,14 @@ a.minimal-price-link:hover { text-decoration:underline; }
 .add-to-cart {}
 .add-to-cart label { font-size:12px; vertical-align:middle; font-weight:bold; margin-right:5px; text-transform:capitalize; }
 .add-to-cart .qty { vertical-align:middle; margin-right:10px; width:60px; }
-.add-to-cart .paypal-logo { clear:left; text-align:right; }
-.add-to-cart .paypal-logo .paypal-or { clear:both; display:block; margin:5px 60px 5px 0; }
+.add-to-cart .paypal-logo { clear:left; text-align:left; }
+.add-to-cart .paypal-logo .paypal-or { clear:both; display:block; margin:5px 60px 5px 60px; }
 .add-to-cart-alt { white-space:nowrap; padding:5px 0; }
 .add-to-cart-alt .qty { margin-right:5px; }
 .add-to-cart-alt .qty,
 .add-to-cart-alt .button { vertical-align:middle; }
+.bml-checkout-type, #topCartContent .actions li { list-style: none; }
+.bml-checkout-type .bml_button  { width: 150px; display: inline-table; }
 
 button.btn-cart span {}
 
@@ -1279,6 +1272,7 @@ button.btn-cart span {}
 .product-view .product-essential button.btn-gr span span,
 .add-to-cart button.btn-gr span span { font-size:14px !important; padding:1px 18px 0 10px !important; }
 .product-view .add-to-cart .paypal-logo { margin:0; }
+.product-view .add-to-cart .paypal-logo.bill-me-latter { margin: 10px 0; }
 
 
 /* Add to Links + Add to Cart */
@@ -1669,10 +1663,11 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .cart .messages,
 .cart .messages li { margin:0; }
 .cart .checkout-types { float:right; text-align:center; }
-.cart .checkout-types .paypal-or { margin:0 8px; line-height:2.3; }
+.cart .checkout-types .paypal-or { margin:0 8px; line-height:2.3; vertical-align: top;}
 .cart .checkout-types fieldset { display:inline; }
 .cart .checkout-types .btn-proceed-checkout span { background-image:url(../images/bkg_btn-co.gif); height:27px !important; padding:0 0 0 13px !important; }
 .cart .checkout-types .btn-proceed-checkout span span { border:0; background-image:url(../images/bkg_btn-co.gif); padding:1px 32px 0 19px !important; color:#fff; font:bold 15px/26px Arial, Helvetica, sans-serif !important; height:26px; text-transform:none; margin:0 !important; }
+.cart .checkout-types .bml_button {display:inline-table; width: 150px; margin: 0 0 5px;}
 .cart .title-buttons .checkout-types li { float:left; margin:0 0 5px 5px; }
 
 /* Shopping Cart Table */
@@ -2409,8 +2404,11 @@ p.link-widget-sku a { color:#999; }
 .map-popup-close { background:url(../images/btn_window_close.gif) no-repeat; display:block; position:absolute; top:6px; right:8px; height:15px; width:15px; text-align:left; text-indent:-9999em; }
 .map-popup-content { border-top:1px solid #eee; padding:10px; overflow:hidden; width:280px; }
 .map-popup-checkout { display:inline; float:right; text-align:right; }
-.map-popup-checkout span { display:block; padding-right:30px; }
+.map-popup-checkout span { display:block; }
+.map-popup-checkout .paypal-or { clear:both; display:block; }
 .map-popup-checkout .paypal-logo { margin:0 0 5px; }
+.map-popup-checkout li { list-style: none; }
+.map-popup-checkout { text-align: center; }
 .map-popup-price .price-box,
 .map-popup-price .price-box .special-price { margin:0; padding:0; }
 .map-popup-price { margin:5px 0 0; }
