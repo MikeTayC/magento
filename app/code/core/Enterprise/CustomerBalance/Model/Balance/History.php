@@ -165,7 +165,8 @@ class Enterprise_CustomerBalance_Model_Balance_History extends Mage_Core_Model_A
                 Mage::getStoreConfig('customer/enterprise_customerbalance/email_identity', $storeId),
                 $customer->getEmail(), $customer->getName(),
                 array(
-                    'balance' => Mage::app()->getWebsite($this->getBalanceModel()->getWebsiteId())->getBaseCurrency()->format($this->getBalanceModel()->getAmount(), array(), false),
+                    'balance' => Mage::app()->getWebsite($this->getBalanceModel()->getWebsiteId())
+                        ->getBaseCurrency()->format($this->getBalanceModel()->getAmount(), array(), false),
                     'name'    => $customer->getName(),
             ));
             if ($email->getSentSuccess()) {
@@ -187,5 +188,23 @@ class Enterprise_CustomerBalance_Model_Balance_History extends Mage_Core_Model_A
         if ((!$model->getOrder()) || !$model->getOrder()->getIncrementId()) {
             Mage::throwException(Mage::helper('enterprise_customerbalance')->__('There is no order set to balance model.'));
         }
+    }
+
+    /**
+     * Retrieve history data items as array
+     *
+     * @param  string $customerId
+     * @param string|null $websiteId
+     * @return array
+     */
+    public function getHistoryData($customerId, $websiteId = null)
+    {
+        $result = array();
+        /** @var $collection Enterprise_CustomerBalance_Model_Resource_Balance_History_Collection */
+        $collection = $this->getCollection()->loadHistoryData($customerId, $websiteId);
+        foreach($collection as $historyItem) {
+            $result[] = $historyItem->getData();
+        }
+        return $result;
     }
 }

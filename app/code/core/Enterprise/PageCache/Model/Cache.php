@@ -33,6 +33,8 @@
  */
 class Enterprise_PageCache_Model_Cache
 {
+    const REQUEST_MESSAGE_GET_PARAM = 'frontend_message';
+
     /**
      * FPC cache instance
      *

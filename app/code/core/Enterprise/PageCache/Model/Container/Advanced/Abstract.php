@@ -46,7 +46,7 @@ abstract class Enterprise_PageCache_Model_Container_Advanced_Abstract
      */
     protected function _loadCache($id)
     {
-        $cacheRecord = Enterprise_PageCache_Model_Cache::getCacheInstance()->load($id);
+        $cacheRecord = parent::_loadCache($id);
         if (!$cacheRecord) {
             return false;
         }
@@ -87,9 +87,9 @@ abstract class Enterprise_PageCache_Model_Container_Advanced_Abstract
 
         $result = array();
 
-        $cacheRecord = $this->_loadCache($id);
+        $cacheRecord = parent::_loadCache($id);
         if ($cacheRecord) {
-            $cacheRecord = json_decode($cacheRecord);
+            $cacheRecord = json_decode($cacheRecord, true);
             if ($cacheRecord) {
                 $result = $cacheRecord;
             }

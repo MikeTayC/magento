@@ -1462,7 +1462,9 @@ class Mage_Adminhtml_Model_Sales_Order_Create extends Varien_Object
         }
 
         $order = $service->submit();
-        if (!$quote->getCustomer()->getId() || !$quote->getCustomer()->isInStore($this->getSession()->getStore())) {
+        if ((!$quote->getCustomer()->getId() || !$quote->getCustomer()->isInStore($this->getSession()->getStore()))
+            && !$quote->getCustomerIsGuest()
+        ) {
             $quote->getCustomer()->setCreatedAt($order->getCreatedAt());
             $quote->getCustomer()
                 ->save()

@@ -56,6 +56,30 @@ class Enterprise_GiftCardAccount_Model_Observer
     }
 
     /**
+     * Process order place before
+     *
+     * @param Varien_Event_Observer $observer
+     * @return
+     */
+    public function processOrderCreateBefore(Varien_Event_Observer $observer)
+    {
+        $quote = $observer->getEvent()->getQuote();
+        $cards = Mage::helper('enterprise_giftcardaccount')->getCards($quote);
+
+        if (is_array($cards)) {
+            foreach ($cards as $card) {
+                /** @var $giftCardAccount Enterprise_GiftCardAccount_Model_Giftcardaccount */
+                $giftCardAccount = Mage::getSingleton('enterprise_giftcardaccount/giftcardaccount')->load($card['i']);
+                try {
+                    $giftCardAccount->isValid(true, true, false, (float)$quote->getBaseGiftCardsAmountUsed());
+                } catch (Mage_Core_Exception $e) {
+                    $quote->setErrorMessage($e->getMessage());
+                }
+            }
+        }
+    }
+
+    /**
      * Charge specified Gift Card (using code)
      * used for event: enterprise_giftcardaccount_charge_by_code
      *
@@ -349,11 +373,15 @@ class Enterprise_GiftCardAccount_Model_Observer
                 $creditmemo->setCustomerBalTotalRefunded($creditmemo->getCustomerBalTotalRefunded() + $amount);
             }
 
-            $order->setBaseGiftCardsRefunded($order->getBaseGiftCardsRefunded() + $creditmemo->getBaseGiftCardsAmount());
+            $order->setBaseGiftCardsRefunded(
+                $order->getBaseGiftCardsRefunded() + $creditmemo->getBaseGiftCardsAmount()
+            );
             $order->setGiftCardsRefunded($order->getGiftCardsRefunded() + $creditmemo->getGiftCardsAmount());
 
             // we need to update flag after credit memo was refunded and order's properties changed
-            if ($order->getGiftCardsInvoiced() > 0 && $order->getGiftCardsInvoiced() == $order->getGiftCardsRefunded()) {
+            if ($order->getGiftCardsInvoiced() > 0 &&
+                $order->getGiftCardsInvoiced() == $order->getGiftCardsRefunded()
+            ) {
                 $order->setForcedCanCreditmemo(false);
             }
         }

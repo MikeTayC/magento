@@ -108,4 +108,15 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Sales_Salesamount
         Mage::getResourceHelper('enterprise_customersegment')->setOneRowLimit($select);
         return $select;
     }
+
+    /**
+     * Reset setValueOption() to prevent displaying incorrect actual values
+     *
+     * @return Enterprise_CustomerSegment_Model_Segment_Condition_Sales_Salesamount
+     */
+    public function loadValueOptions()
+    {
+        $this->setValueOption(array());
+        return $this;
+    }
 }

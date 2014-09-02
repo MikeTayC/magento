@@ -59,7 +59,7 @@ $_product = $this->getProduct();
                     <?php if (!$this->hasOptions()):?>
                         <?php if($_product->isSaleable()): ?>
                             <div>
-                                <button type="button" onclick="window.location='<?php echo Mage::getBaseUrl().$_product->getRequestPath();?>?startcustomization=1'" class="button btn-cart"><span><span>Customize and Add to Cart</span></span></button>
+                                <button type="button" onclick="window.location='<?php echo Mage::getBaseUrl().$_product->getRequestPath();?>?startcustomization=1'" class="button btn-cart"><span><span><?php echo $this->__("Customize and Add to Cart") ?></span></span></button>
                             </div>
                         <?php endif; ?>
                     <?php endif; ?>

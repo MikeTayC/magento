@@ -24,7 +24,8 @@
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
-class Enterprise_GiftCard_Block_Adminhtml_Sales_Items_Column_Name_Giftcard extends Mage_Adminhtml_Block_Sales_Items_Column_Name
+class Enterprise_GiftCard_Block_Adminhtml_Sales_Items_Column_Name_Giftcard
+    extends Mage_Adminhtml_Block_Sales_Items_Column_Name
 {
     /**
      * Prepare custom option for display, returns false if there's no value
@@ -35,9 +36,27 @@ class Enterprise_GiftCard_Block_Adminhtml_Sales_Items_Column_Name_Giftcard exten
     protected function _prepareCustomOption($code)
     {
         if ($option = $this->getItem()->getProductOptionByCode($code)) {
-            return nl2br($this->htmlEscape($option));
+            return $this->escapeHtml($option);
         }
         return false;
+    }
+
+    /**
+     * Add line breaks and truncate value
+     *
+     * @param string $value
+     * @return array
+     */
+    public function getFormattedOption($value)
+    {
+        $_remainder = '';
+        $value = Mage::helper('core/string')->truncate($value, 55, '', $_remainder);
+        $result = array(
+            'value' => nl2br($value),
+            'remainder' => nl2br($_remainder)
+        );
+
+        return $result;
     }
 
     /**

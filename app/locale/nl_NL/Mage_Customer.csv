@@ -1,4 +1,4 @@
-" or ","of"
+" or "," of "
 "'%value%' appears to be a DNS hostname but cannot extract TLD part","'%value%' lijkt een DNS hostnaam te zijn maar kan geen TLD deel eruit halen."
 "'%value%' appears to be a DNS hostname but cannot match TLD against known list","'%value%' lijkt een DNS hostnaam te zijn maar komt niet overeen met de TLD in de eigen bekende lijst."
 "'%value%' appears to be a DNS hostname but cannot match against hostname schema for TLD '%tld%'","'%value%' lijkt een DNS hostnaam te zijn maar kan niet overeenkomen met de hostnaam voor het TLD schema '%tld%'"
@@ -289,6 +289,7 @@
 "Group Name","Groep Naam"
 "HTML","HTML"
 "Hello, %s!","Hallo, %s!"
+"If you have an account with us, log in using your email address.","Als u een rekening bij ons heeft, log dan in met uw e-mail adres"
 "ID","ID"
 "If you have an account with us, please log in.","Als u een account bij ons heeft, logt u dan alstublieft in."
 "Invalid attribute option specified for attribute %s (%s), skipping the record.","Onjuist attribuut optie gekozen voor attribuut %s (%s), record wordt overgeslagen."

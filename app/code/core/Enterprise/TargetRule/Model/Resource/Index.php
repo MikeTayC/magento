@@ -119,6 +119,12 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Core_Model_Resourc
             ->where('entity_id = :entity_id')
             ->where('store_id = :store_id')
             ->where('customer_group_id = :customer_group_id');
+
+        $rotationMode = Mage::helper('enterprise_targetrule')->getRotationMode($object->getType());
+        if ($rotationMode == Enterprise_TargetRule_Model_Rule::ROTATION_SHUFFLE) {
+            $this->orderRand($select);
+        }
+
         $bind = array(
             ':type_id'           => $object->getType(),
             ':entity_id'         => $object->getProduct()->getEntityId(),
@@ -140,8 +146,6 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Core_Model_Resourc
                 ->loadProductIds($object);
             $productIds = array_diff($productIds, $object->getExcludeProductIds());
         }
-
-        shuffle($productIds);
 
         return array_slice($productIds, 0, $object->getLimit());
     }
@@ -318,13 +322,16 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Core_Model_Resourc
                 $selectOperator = sprintf('%s?', $operator);
                 break;
             case '{}':
-                $selectOperator = ' LIKE ?';
-                $value          = '%' . $value . '%';
-                break;
-
             case '!{}':
-                $selectOperator = ' NOT LIKE ?';
-                $value          = '%' . $value . '%';
+                if ($field == 'category_id' && is_array($value)) {
+                    $selectOperator = ' IN (?)';
+                } else {
+                    $selectOperator = ' LIKE ?';
+                    $value          = '%' . $value . '%';
+                }
+                if (substr($operator, 0, 1) == '!') {
+                    $selectOperator = ' NOT' . $selectOperator;
+                }
                 break;
 
             case '()':
@@ -551,6 +558,19 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Core_Model_Resourc
 
         $adapter->insert($this->getTable('enterprise_targetrule/product'), $bind);
 
+        return $this;
+    }
+
+    /**
+     * Adds order by random to select object
+     *
+     * @param Varien_Db_Select $select
+     * @param null $field
+     * @return Enterprise_TargetRule_Model_Resource_Index
+     */
+    public function orderRand(Varien_Db_Select $select, $field = null)
+    {
+        $this->_getReadAdapter()->orderRand($select, $field);
         return $this;
     }
 }

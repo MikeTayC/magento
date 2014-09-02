@@ -75,4 +75,19 @@ class Enterprise_PageCache_Helper_Url
         $content = str_replace(self::_getSidMarker(), $sidValue, $content, $replacementCount);
         return ($replacementCount > 0);
     }
+
+    /**
+     * Calculate UENC parameter value and replace it
+     *
+     * @param string $content
+     * @return string
+     */
+    public static function replaceUenc($content)
+    {
+        $urlHelper = new Mage_Core_Helper_Url;
+        $search = '/\/(' . Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED . ')\/[^\/]*\//';
+        $replace = '/$1/' . $urlHelper->getEncodedUrl() . '/';
+        $content = preg_replace($search, $replace, $content);
+        return $content;
+    }
 }

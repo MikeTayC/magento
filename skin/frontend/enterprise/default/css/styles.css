@@ -1687,7 +1687,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .item-options p { font-size:11px; font-weight:bold; text-transform:uppercase; padding:10px 12px 0 12px; }
 .item-options dt { font-weight:bold; padding:7px 0 7px ; }
 .item-options dd { padding-bottom:5px; }
-.truncated { cursor:help; margin:5px 0 0; position:relative; z-index:1; }
+.truncated { cursor:help; margin:5px 0 0; position:relative; z-index:1; width:110px; }
 .truncated a.dots { cursor:help; }
 .truncated a.details { cursor:help; text-decoration:none; background:url(../images/bkg_dots.gif) repeat-x 0 100%; color:#514f4f; }
 .truncated .truncated_full_value {}
@@ -2155,7 +2155,8 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 /* Footer ================================================================================ */
 .footer-before-container { margin:0 0 3px; text-align:center; }
 
-.form-subscribe { float:left; width:183px; padding:12px 17px 0 0; background:url(../images/bkg_newsletter.gif) no-repeat 0 3px; }
+.form-subscribe { float:left; width:183px; padding: 0 17px 0 0; }
+.form-subscribe-header { color:#d12c01; font-size:11px; font-weight:bold; text-decoration:none; text-transform:uppercase; }
 .form-subscribe label { display:block; margin:6px 0; }
 .form-subscribe input.input-text { width:177px; display:block; }
 .form-subscribe button.button { margin:6px 0 0; float:right; }

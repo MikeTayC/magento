@@ -85,9 +85,9 @@ class Enterprise_GiftWrapping_Model_Observer
     {
         $request = $observer->getEvent()->getRequest();
         $giftWrappingInfo = $request->getParam('giftwrapping');
-        $quote = $observer->getEvent()->getQuote();
 
         if (is_array($giftWrappingInfo)) {
+            $quote = $observer->getEvent()->getQuote();
             $giftOptionsInfo = $request->getParam('giftoptions');
             foreach ($giftWrappingInfo as $entityId => $data) {
                 $info = array();
@@ -116,10 +116,6 @@ class Enterprise_GiftWrapping_Model_Observer
                 }
             }
         }
-
-        $quote->setTotalsCollectedFlag(false);
-        $quote->collectTotals();
-
         return $this;
     }
 
@@ -279,9 +275,8 @@ class Enterprise_GiftWrapping_Model_Observer
         // Do not import giftwrapping data if order is reordered or GW is not available for items
         $order = $orderItem->getOrder();
         $giftWrappingHelper = Mage::helper('enterprise_giftwrapping');
-        if (
-            $order && ($order->getReordered() ||
-            !$giftWrappingHelper->isGiftWrappingAvailableForItems($order->getStore()->getId()))
+        if ($order && ($order->getReordered()
+            || !$giftWrappingHelper->isGiftWrappingAvailableForItems($order->getStore()->getId()))
         ) {
             return $this;
         }

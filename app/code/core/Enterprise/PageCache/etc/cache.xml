@@ -20,6 +20,13 @@
             <container>Enterprise_PageCache_Model_Container_Catalognavigation</container>
             <cache_lifetime>86400</cache_lifetime>
         </catalog_navigation>
+        <catalog_breadcrumbs>
+            <block>page/html_breadcrumbs</block>
+            <name>breadcrumbs</name>
+            <placeholder>PAGE_BREADCRUMBS</placeholder>
+            <container>Enterprise_PageCache_Model_Container_Breadcrumbs</container>
+            <cache_lifetime>86400</cache_lifetime>
+        </catalog_breadcrumbs>
         <cart_sidebar>
             <block>checkout/cart_sidebar</block>
             <placeholder>CART_SIDEBAR</placeholder>
@@ -95,5 +102,19 @@
             <container>Enterprise_PageCache_Model_Container_Banner</container>
             <cache_lifetime>86400</cache_lifetime>
         </widget_enterprise_banner>
+        <catalog_product_item_related>
+            <block>enterprise_targetrule/catalog_product_item</block>
+            <name>catalog.product.related.item</name>
+            <placeholder>CATALOG_PRODUCT_ITEM_RELATED</placeholder>
+            <container>Enterprise_PageCache_Model_Container_CatalogProductItem</container>
+            <cache_lifetime>86400</cache_lifetime>
+        </catalog_product_item_related>
+        <catalog_product_item_upsell>
+            <block>enterprise_targetrule/catalog_product_item</block>
+            <name>catalog.product.upsell.item</name>
+            <placeholder>CATALOG_PRODUCT_ITEM_UPSELL</placeholder>
+            <container>Enterprise_PageCache_Model_Container_CatalogProductItem</container>
+            <cache_lifetime>86400</cache_lifetime>
+        </catalog_product_item_upsell>
     </placeholders>
 </config>

@@ -260,9 +260,8 @@ class Enterprise_Reward_Model_Observer
         {
             return $this;
         }
-        if ($order->getCustomerId() && ((float)$order->getBaseTotalPaid() > 0) &&
-            (($order->getBaseGrandTotal() - $order->getBaseSubtotalCanceled()) - $order->getBaseTotalPaid()) < 0.0001
-        ) {
+
+        if ($order->getCustomerId() && $this->_isOrderPaidNow($order)) {
             /* @var $reward Enterprise_Reward_Model_Reward */
             $reward = Mage::getModel('enterprise_reward/reward')
                 ->setActionEntity($order)
@@ -276,7 +275,28 @@ class Enterprise_Reward_Model_Observer
                 )->save();
             }
         }
+
         return $this;
+    }
+
+    /**
+     * Check if order is paid exactly now
+     * If order was paid before Rewards were enabled, reward points should not be added
+     *
+     * @param Mage_Sales_Model_Order $order
+     * @return bool
+     */
+    protected function _isOrderPaidNow($order)
+    {
+        $isOrderPaid = (float)$order->getBaseTotalPaid() > 0
+            && ($order->getBaseGrandTotal() - $order->getBaseSubtotalCanceled() - $order->getBaseTotalPaid()) < 0.0001;
+
+        if (!$order->getOrigData('base_grand_total')) {//New order with "Sale" payment action
+            return $isOrderPaid;
+        }
+
+        return $isOrderPaid && ($order->getOrigData('base_grand_total') - $order->getOrigData('base_subtotal_canceled')
+            - $order->getOrigData('base_total_paid')) >= 0.0001;
     }
 
     /**

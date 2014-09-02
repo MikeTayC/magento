@@ -57,6 +57,11 @@ $connection = $installer->getConnection()->dropForeignKey(
 );
 
 $connection = $installer->getConnection()->dropForeignKey(
+    $installer->getTable('enterprise_invitation/invitation_history'),
+    'FK_ENTERPRISE_INVITATION_STATUS_HISTORY_INVITATION'
+);
+
+$connection = $installer->getConnection()->dropForeignKey(
     $installer->getTable('enterprise_invitation/invitation_track'),
     'FK_INVITATION_TRACK_INVITER'
 );
@@ -302,7 +307,9 @@ $installer->getConnection()->addIndex(
  * Add foreign keys
  */
 $installer->getConnection()->addForeignKey(
-    $installer->getFkName('enterprise_invitation/invitation', 'group_id', 'customer/customer_group', 'customer_group_id'),
+    $installer->getFkName(
+        'enterprise_invitation/invitation', 'group_id', 'customer/customer_group', 'customer_group_id'
+    ),
     $installer->getTable('enterprise_invitation/invitation'),
     'group_id',
     $installer->getTable('customer/customer_group'),
@@ -337,7 +344,9 @@ $installer->getConnection()->addForeignKey(
 );
 
 $installer->getConnection()->addForeignKey(
-    $installer->getFkName('enterprise_invitation/invitation_history', 'invitation_id', 'enterprise_invitation/invitation', 'invitation_id'),
+    $installer->getFkName(
+        'enterprise_invitation/invitation_history', 'invitation_id', 'enterprise_invitation/invitation', 'invitation_id'
+    ),
     $installer->getTable('enterprise_invitation/invitation_history'),
     'invitation_id',
     $installer->getTable('enterprise_invitation/invitation'),

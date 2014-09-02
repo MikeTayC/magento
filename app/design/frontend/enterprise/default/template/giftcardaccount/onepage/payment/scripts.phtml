@@ -24,19 +24,34 @@
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
+quoteBaseGrandTotal = <?php echo (float)$this->_getQuote()->getBaseGrandTotal(); ?>;
 var isGiftCardApplied = <?php if($this->isFullyPaidAfterApplication()): ?>true<?php else: ?>false<?php endif; ?>;
-if (quoteBaseGrandTotal < 0.0001 && isGiftCardApplied) {
+var epsilon = 0.0001;
+function enablePaymentMethods(free) {
     Payment.prototype.init = function () {
         var elements = Form.getElements(this.form);
-        var method = null;
         for (var i=0; i < elements.length; i++) {
-            if (elements[i].name == 'payment[method]' && elements[i].value == 'free') {
-                elements[i].checked = true;
-                method = 'free';
+            if (elements[i].name == 'payment[method]'
+                || elements[i].name == 'payment[use_customer_balance]'
+                || elements[i].name == 'payment[use_reward_points]'
+            ) {
+                if ((free && elements[i].value == 'free') || (!free && elements[i].value != 'free')) {
+                    $((elements[i]).parentNode).show();
+                    if (free) {
+                        elements[i].checked = true;
+                        this.switchMethod('free');
+                    }
+                } else {
+                    $((elements[i]).parentNode).hide();
+                }
             } else {
-                $((elements[i]).parentNode).hide();
+                elements[i].disabled = true;
             }
         }
-        if (method) this.switchMethod(method);
     };
+}
+if (quoteBaseGrandTotal < epsilon && isGiftCardApplied) {
+    enablePaymentMethods(true);
+} else if (quoteBaseGrandTotal >= epsilon) {
+    enablePaymentMethods(false);
 }

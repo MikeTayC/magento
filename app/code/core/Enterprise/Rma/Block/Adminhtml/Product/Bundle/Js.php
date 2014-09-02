@@ -48,6 +48,11 @@ class Enterprise_Rma_Block_Adminhtml_Product_Bundle_Js extends Mage_Adminhtml_Bl
         ));
     }
 
+    /**
+     * Get load order id
+     *
+     * @return int
+     */
     public function getLoadOrderId()
     {
         return $this->getRequest()->getParam('order_id');

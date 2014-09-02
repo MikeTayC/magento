@@ -49,7 +49,8 @@ class Enterprise_PageCache_Model_Container_Messages extends Enterprise_PageCache
      */
     protected function _isNewMessageRecived()
     {
-        return ($this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_MESSAGE) ? true : false);
+        return $this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_MESSAGE)
+            || array_key_exists(Enterprise_PageCache_Model_Cache::REQUEST_MESSAGE_GET_PARAM, $_GET);
     }
 
     /**

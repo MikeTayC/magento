@@ -41,24 +41,26 @@ class Enterprise_Search_Model_Observer
      */
     public function eavAttributeEditFormInit(Varien_Event_Observer $observer)
     {
-        if (Mage::helper('enterprise_search')->isThirdPartSearchEngine()) {
-            $form      = $observer->getEvent()->getForm();
-            $attribute = $observer->getEvent()->getAttribute();
-            $fieldset  = $form->getElement('front_fieldset');
+        if (!Mage::helper('enterprise_search')->isThirdPartyEngineAvailable()) {
+            return;
+        }
 
-            $fieldset->addField('search_weight', 'select', array(
-                'name'        => 'search_weight',
-                'label'       => Mage::helper('catalog')->__('Search Weight'),
-                'values'      => Mage::getModel('enterprise_search/source_weight')->getOptions(),
-            ), 'is_searchable');
-            /**
-             * Disable default search fields
-             */
-            $attributeCode = $attribute->getAttributeCode();
+        $form      = $observer->getEvent()->getForm();
+        $attribute = $observer->getEvent()->getAttribute();
+        $fieldset  = $form->getElement('front_fieldset');
 
-            if ($attributeCode == 'name') {
-                $form->getElement('is_searchable')->setDisabled(1);
-            }
+        $fieldset->addField('search_weight', 'select', array(
+            'name'        => 'search_weight',
+            'label'       => Mage::helper('catalog')->__('Search Weight'),
+            'values'      => Mage::getModel('enterprise_search/source_weight')->getOptions(),
+        ), 'is_searchable');
+        /**
+         * Disable default search fields
+         */
+        $attributeCode = $attribute->getAttributeCode();
+
+        if ($attributeCode == 'name') {
+            $form->getElement('is_searchable')->setDisabled(1);
         }
     }
 
@@ -92,14 +94,61 @@ class Enterprise_Search_Model_Observer
      */
     public function customerGroupSaveAfter(Varien_Event_Observer $observer)
     {
-        $helper = Mage::helper('enterprise_search');
-        if ($helper->isThirdPartSearchEngine() && $helper->isActiveEngine()) {
-            $object = $observer->getEvent()->getDataObject();
+        if (!Mage::helper('enterprise_search')->isThirdPartyEngineAvailable()) {
+            return;
+        }
 
-            if ($object->isObjectNew() || $object->getTaxClassId() != $object->getOrigData('tax_class_id')) {
-                Mage::getSingleton('index/indexer')->getProcessByCode('catalogsearch_fulltext')
-                    ->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
-            }
+        $object = $observer->getEvent()->getDataObject();
+        if ($object->isObjectNew() || $object->getTaxClassId() != $object->getOrigData('tax_class_id')) {
+            Mage::getSingleton('index/indexer')->getProcessByCode('catalogsearch_fulltext')
+                ->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
+        }
+    }
+
+    /**
+     * Hold commit at indexation start if needed
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function holdCommit(Varien_Event_Observer $observer)
+    {
+        if (!Mage::helper('enterprise_search')->isThirdPartyEngineAvailable()) {
+            return;
+        }
+
+        $engine = Mage::helper('catalogsearch')->getEngine();
+        if (!$engine->holdCommit()) {
+            return;
+        }
+
+        $productIds = $observer->getEvent()->getProductIds();
+        if (is_null($productIds)) {
+            $engine->setIndexNeedsOptimization();
+        }
+    }
+
+    /**
+     * Apply changes in search engine index.
+     * Make index optimization if documents were added to index.
+     * Allow commit if it was held.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function applyIndexChanges(Varien_Event_Observer $observer)
+    {
+        if (!Mage::helper('enterprise_search')->isThirdPartyEngineAvailable()) {
+            return;
+        }
+
+        $engine = Mage::helper('catalogsearch')->getEngine();
+        if (!$engine->allowCommit()) {
+            return;
+        }
+
+        if ($engine->getIndexNeedsOptimization()) {
+            $engine->optimizeIndex();
+        } else {
+            $engine->commitChanges();
         }
     }
 
@@ -122,24 +171,24 @@ class Enterprise_Search_Model_Observer
      */
     public function clearIndexForStores(Varien_Event_Observer $observer)
     {
-        $helper = Mage::helper('enterprise_search');
-        if ($helper->isThirdPartSearchEngine() && $helper->isActiveEngine()) {
-            $object = $observer->getEvent()->getDataObject();
+        if (!Mage::helper('enterprise_search')->isThirdPartyEngineAvailable()) {
+            return;
+        }
 
-            if ($object instanceof Mage_Core_Model_Website
-                || $object instanceof Mage_Core_Model_Store_Group
-            ) {
-                $storeIds = $object->getStoreIds();
-            } elseif ($object instanceof Mage_Core_Model_Store) {
-                $storeIds = $object->getId();
-            } else {
-                $storeIds = array();
-            }
+        $object = $observer->getEvent()->getDataObject();
+        if ($object instanceof Mage_Core_Model_Website
+            || $object instanceof Mage_Core_Model_Store_Group
+        ) {
+            $storeIds = $object->getStoreIds();
+        } elseif ($object instanceof Mage_Core_Model_Store) {
+            $storeIds = $object->getId();
+        } else {
+            $storeIds = array();
+        }
 
-            if (!empty($storeIds)) {
-                $engine = Mage::helper('catalogsearch')->getEngine();
-                $engine->cleanIndex($storeIds);
-            }
+        if (!empty($storeIds)) {
+            $engine = Mage::helper('catalogsearch')->getEngine();
+            $engine->cleanIndex($storeIds);
         }
     }
 

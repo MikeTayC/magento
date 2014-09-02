@@ -45,6 +45,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Segment extends Mage_Ru
             $this->_defaultOperatorInputByType = array(
                 'multiselect' => array('==', '!=', '()', '!()'),
             );
+            $this->_arrayInputTypes = array('multiselect');
         }
         return $this->_defaultOperatorInputByType;
     }

@@ -158,6 +158,7 @@ class Enterprise_AdminGws_Model_Role extends Varien_Object
      * Set allowed store ids for the core admin role object in session.
      * If role model is not defined yeat do nothing.
      *
+     * @param mixed $value
      * @return array
      */
     public function setStoreIds($value)
@@ -188,6 +189,7 @@ class Enterprise_AdminGws_Model_Role extends Varien_Object
      * Set allowed store group ids for the core admin role object in session.
      * If role model is not defined yeat do nothing.
      *
+     * @param mixed $value
      * @return array
      */
     public function setStoreGroupIds($value)

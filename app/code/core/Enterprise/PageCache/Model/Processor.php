@@ -186,7 +186,23 @@ class Enterprise_PageCache_Model_Processor
      */
     public function prepareCacheId($id)
     {
-        return self::REQUEST_ID_PREFIX . md5($id);
+        $cacheId = self::REQUEST_ID_PREFIX . md5($id . $this->_getScopeCode());
+        return $cacheId;
+    }
+
+     /**
+     * Get current scope code
+     *
+     * @return string
+     */
+    protected function _getScopeCode()
+    {
+        $params = Mage::registry('application_params');
+        $scopeCode = '';
+        if(isset($params['scope_code'])) {
+            $scopeCode = $params['scope_code'];
+        }
+        return $scopeCode;
     }
 
     /**
@@ -226,6 +242,9 @@ class Enterprise_PageCache_Model_Processor
             return false;
         }
         if (isset($_GET['no_cache'])) {
+            return false;
+        }
+        if (!Mage::app()->useCache('full_page')) {
             return false;
         }
 
@@ -345,6 +364,7 @@ class Enterprise_PageCache_Model_Processor
                 continue;
             }
             $container  = new $container($placeholder);
+            $container->setProcessor($this);
             if (!$container->applyWithoutApp($content)) {
                 $containers[] = $container;
             }
@@ -523,6 +543,7 @@ class Enterprise_PageCache_Model_Processor
         if ($res) {
             $maxDepth = Mage::getStoreConfig(self::XML_PATH_ALLOWED_DEPTH);
             $queryParams = $request->getQuery();
+            unset($queryParams[Enterprise_PageCache_Model_Cache::REQUEST_MESSAGE_GET_PARAM]);
             $res = count($queryParams)<=$maxDepth;
         }
         if ($res) {

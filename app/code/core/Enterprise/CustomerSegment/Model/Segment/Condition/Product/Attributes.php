@@ -49,7 +49,6 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Attributes
             parent::getDefaultOperatorInputByType();
             $this->_defaultOperatorInputByType['numeric'] = array('==', '!=', '>=', '>', '<=', '<');
             $this->_defaultOperatorInputByType['string'] = array('==', '!=', '{}', '!{}');
-            $this->_defaultOperatorInputByType['category'] = array('{}', '!{}');
         }
         return $this->_defaultOperatorInputByType;
     }
@@ -156,7 +155,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Attributes
 
         if ($attribute->getAttributeCode() == 'category_ids') {
             $condition = $resource->createConditionSql(
-                'cat.category_id', $this->getOperator(), $this->getValue()
+                'cat.category_id', $this->getOperatorForValidate(), $this->getValueParsed()
             );
             $categorySelect = $resource->createSelect();
             $categorySelect->from(array('cat'=>$resource->getTable('catalog/category_product')), 'product_id')
@@ -180,8 +179,8 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Attributes
         $select->where($condition);
         $select->where('main.entity_id = '.$fieldName);
         $inOperator = ($requireValid ? 'EXISTS' : 'NOT EXISTS');
-        if ($this->getCombineHistory()) {
-            // when used as a child of History condition - "EXISTS" always set to "EXISTS"
+        if ($this->getCombineProductCondition()) {
+            // when used as a child of History or List condition - "EXISTS" always set to "EXISTS"
             $inOperator = 'EXISTS';
         }
         return sprintf("%s (%s)", $inOperator, $select);

@@ -65,6 +65,8 @@ class Enterprise_PageCache_Model_Container_Sidebar_Cart extends Enterprise_PageC
         $block = new $block;
         $block->setTemplate($template);
         $block->setLayout(Mage::app()->getLayout());
+        $renders = $this->_placeholder->getAttribute('item_renders');
+        $block->deserializeRenders($renders);
 
         return $block->toHtml();
     }

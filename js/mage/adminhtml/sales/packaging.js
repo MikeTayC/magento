@@ -790,11 +790,11 @@ Packaging.prototype = {
             var itemWeight = parseFloat(this._getElementText(item.select('.weight')[0]));
             containerWeight.value = parseFloat(containerWeight.value) + (itemWeight * qtyValue);
             var itemCustomsValue = parseFloat(item.select('[name="customs_value"]')[0].value) || 0;
-            var itemCustomsValueQty = Math.round((itemCustomsValue * qtyValue) * 1000) / 1000;
-            containerCustomsValue.value = parseFloat(containerCustomsValue.value) + itemCustomsValueQty;
+            containerCustomsValue.value = parseFloat(containerCustomsValue.value) + itemCustomsValue * qtyValue;
             this.packages[packageId]['items'][itemId]['customs_value'] = itemCustomsValue;
         }.bind(this));
-        containerWeight.value = Math.round(containerWeight.value * 1000) / 1000;
+        containerWeight.value = parseFloat(parseFloat(containerWeight.value).toFixed(4));
+        containerCustomsValue.value = parseFloat(containerCustomsValue.value).toFixed(2);
         if (containerCustomsValue.value == 0) {
             containerCustomsValue.value = '';
         }

@@ -30,6 +30,11 @@
 class Enterprise_PageCache_Model_Processor_Product extends Enterprise_PageCache_Model_Processor_Default
 {
     /**
+     * Key for saving product id in metadata
+     */
+    const METADATA_PRODUCT_ID = 'current_product_id';
+
+    /**
      * Prepare response body before caching
      *
      * @param Zend_Controller_Response_Http $response
@@ -52,6 +57,7 @@ class Enterprise_PageCache_Model_Processor_Product extends Enterprise_PageCache_
         if ($product) {
             $cacheId = $processor->getRequestCacheId() . '_current_product_id';
             $cacheInstance->save($product->getId(), $cacheId);
+            $processor->setMetadata(self::METADATA_PRODUCT_ID, $product->getId());
             Enterprise_PageCache_Model_Cookie::registerViewedProducts($product->getId(), $countLimit);
         }
         return parent::prepareContent($response);

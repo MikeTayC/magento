@@ -79,4 +79,20 @@ class Enterprise_Rma_Model_Resource_Rma_Grid_Collection extends Enterprise_Rma_M
 
         return $countSelect;
     }
+
+    /**
+     * Emulate simple add attribute filter to collection
+     *
+     * @param string $attribute
+     * @param mixed $condition
+     * @return Enterprise_Rma_Model_Resource_Rma_Grid_Collection
+     */
+    public function addAttributeToFilter($attribute, $condition = null)
+    {
+        if (!is_string($attribute) || $condition === null) {
+            return $this;
+        }
+
+        return $this->addFieldToFilter($attribute, $condition);
+    }
 }

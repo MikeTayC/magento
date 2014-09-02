@@ -73,4 +73,34 @@ class Enterprise_TargetRule_Block_Catalog_Product_List_Upsell
 
         return $this->_linkCollection;
     }
+
+    /**
+     * Get ids of all related products
+     *
+     * @return array
+     */
+    public function getAllIds()
+    {
+        if (is_null($this->_allProductIds)) {
+            if (!$this->isShuffled()) {
+                return parent::getAllIds();
+            }
+
+            $ids = parent::getAllIds();
+            $ids = new Varien_Object(array('items' => array_flip($ids)));
+            /**
+             * Updating collection with desired items
+             */
+            Mage::dispatchEvent('catalog_product_upsell', array(
+                'product'       => $this->getProduct(),
+                'collection'    => $ids,
+                'limit'         => null,
+            ));
+
+            $this->_allProductIds = array_keys($ids->getItems());
+            shuffle($this->_allProductIds);
+        }
+
+        return $this->_allProductIds;
+    }
 }

@@ -93,8 +93,7 @@ class Enterprise_Search_Model_Resource_Advanced extends Mage_Core_Model_Resource
         }
 
         $localeCode = Mage::app()->getStore()->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE);
-        $languageCode = Mage::helper('enterprise_search')->getLanguageCodeByLocaleCode($localeCode);
-        $languageSuffix = ($languageCode) ? '_' . $languageCode : '';
+        $languageSuffix = Mage::helper('enterprise_search')->getLanguageSuffix($localeCode);
 
         $field = $attribute->getAttributeCode();
         $backendType = $attribute->getBackendType();

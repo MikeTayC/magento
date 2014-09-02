@@ -28,8 +28,9 @@
 /**
  * TargetRule Action Product Attributes Condition Model
  *
- * @category   Enterprise
- * @package    Enterprise_TargetRule
+ * @category Enterprise
+ * @package  Enterprise_TargetRule
+ * @author   Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_TargetRule_Model_Actions_Condition_Product_Attributes
     extends Enterprise_TargetRule_Model_Rule_Condition_Product_Attributes
@@ -107,8 +108,6 @@ class Enterprise_TargetRule_Model_Actions_Condition_Product_Attributes
         $attributeCode = $this->getAttribute();
         if ($attributeCode == 'type_id') {
             return 'select';
-        } else if ($attributeCode == 'category_ids') {
-            return 'grid';
         }
         return parent::getInputType();
     }
@@ -136,9 +135,21 @@ class Enterprise_TargetRule_Model_Actions_Condition_Product_Attributes
      */
     public function asHtml()
     {
-        return Mage::helper('enterprise_targetrule')->__('Product %s%s%s%s%s%s%s', $this->getTypeElementHtml(), $this->getAttributeElementHtml(), $this->getOperatorElementHtml(), $this->getValueTypeElementHtml(), $this->getValueElementHtml(), $this->getRemoveLinkHtml(), $this->getChooserContainerHtml());
+        return Mage::helper('enterprise_targetrule')->__('Product %s%s%s%s%s%s%s',
+            $this->getTypeElementHtml(),
+            $this->getAttributeElementHtml(),
+            $this->getOperatorElementHtml(),
+            $this->getValueTypeElementHtml(),
+            $this->getValueElementHtml(),
+            $this->getRemoveLinkHtml(),
+            $this->getChooserContainerHtml());
     }
 
+    /**
+     * Returns options for value type select box
+     *
+     * @return array
+     */
     public function getValueTypeOptions()
     {
         $options = array(
@@ -264,8 +275,8 @@ class Enterprise_TargetRule_Model_Actions_Condition_Product_Attributes
      * Retrieve SELECT WHERE condition for product collection
      *
      * @param Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection $collection
-     * @param Enterprise_TargetRule_Model_Index $object
-     * @param array $bind
+     * @param Enterprise_TargetRule_Model_Index                         $object
+     * @param array                                                     $bind
      * @return Zend_Db_Expr
      */
     public function getConditionForCollection($collection, $object, &$bind)
@@ -297,9 +308,9 @@ class Enterprise_TargetRule_Model_Actions_Condition_Product_Attributes
                         array('bindArrayOfIds')));
                 $select->where('category_id IN(?)', $subSelect);
             } else { //self::VALUE_TYPE_CONSTANT
+                $operator = ($operator == '==') ? '' : 'NOT';
                 $value = $resource->bindArrayOfIds($this->getValue());
-                $operator = ('!{}' == $operator) ? 'NOT' : '';
-                $where = "category_id {$operator} IN(".implode(',', $value).")";
+                $where = "category_id {$operator} IN(" . implode(',', $value) . ")";
                 $select->where($where);
             }
 
@@ -346,7 +357,11 @@ class Enterprise_TargetRule_Model_Actions_Condition_Product_Attributes
             $select = $resource->getReadConnection()->getIfNullSql($select);
             $where = sprintf('(%s) > 0', $select);
         } else { //scope store and website
-            $valueExpr = $resource->getReadConnection()->getCheckSql('attr_s.value_id > 0', 'attr_s.value', 'attr_d.value');
+            $valueExpr = $resource->getReadConnection()->getCheckSql(
+                'attr_s.value_id > 0',
+                'attr_s.value',
+                'attr_d.value'
+            );
             $table  = $attribute->getBackendTable();
             $select = $object->select()
                 ->from(array('attr_d' => $table), 'COUNT(*)')

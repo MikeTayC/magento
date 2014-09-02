@@ -77,11 +77,31 @@ class Enterprise_PricePermissions_Model_Observer
     {
         $this->_request = Mage::app()->getRequest();
         // Set all necessary flags
-        $this->_canEditProductPrice = Mage::helper('enterprise_pricepermissions')->getCanAdminEditProductPrice();
-        $this->_canReadProductPrice = Mage::helper('enterprise_pricepermissions')->getCanAdminReadProductPrice();
-        $this->_canEditProductStatus = Mage::helper('enterprise_pricepermissions')->getCanAdminEditProductStatus();
-        // Retrieve value of the default product price
-        $this->_defaultProductPriceString = Mage::helper('enterprise_pricepermissions')->getDefaultProductPriceString();
+        $this->_canEditProductPrice = true;
+        $this->_canReadProductPrice = true;
+        $this->_canEditProductStatus = true;
+    }
+
+    /**
+     * Reinit stores only with allowed scopes
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function adminControllerPredispatch($observer)
+    {
+        /* @var $session Mage_Admin_Model_Session */
+        $session = Mage::getSingleton('admin/session');
+
+        // load role with true websites and store groups
+        if ($session->isLoggedIn() && $session->getUser()->getRole()) {
+            // Set all necessary flags
+            $this->_canEditProductPrice = Mage::helper('enterprise_pricepermissions')->getCanAdminEditProductPrice();
+            $this->_canReadProductPrice = Mage::helper('enterprise_pricepermissions')->getCanAdminReadProductPrice();
+            $this->_canEditProductStatus = Mage::helper('enterprise_pricepermissions')->getCanAdminEditProductStatus();
+            // Retrieve value of the default product price
+            $this->_defaultProductPriceString = Mage::helper('enterprise_pricepermissions')
+                    ->getDefaultProductPriceString();
+        }
     }
 
     /**
@@ -583,6 +603,11 @@ class Enterprise_PricePermissions_Model_Observer
                 // New products are created without recurring profiles
                 $product->setIsRecurring(false);
                 $product->unsRecurringProfile();
+                // Add MAP default values
+                $product->setMsrpEnabled(
+                    Mage_Catalog_Model_Product_Attribute_Source_Msrp_Type_Enabled::MSRP_ENABLE_USE_CONFIG);
+                $product->setMsrpDisplayActualPriceType(
+                    Mage_Catalog_Model_Product_Attribute_Source_Msrp_Type_Price::TYPE_USE_CONFIG);
             }
         }
     }

@@ -114,9 +114,11 @@
                 $('gws_container').select('input.gws_website').each(function(website) {
                     this.websites.push(website);
                     Event.observe(website, 'click', this.isWebsiteChecked.bind(this));
-                    $(website.id + '_groups').select('input').each(function(storeInput) {
-                        storeInput.__website = this;
-                    }.bind(website));
+                    if ($(website.id + '_groups')) {
+                        $(website.id + '_groups').select('input').each(function(storeInput) {
+                            storeInput.__website = this;
+                        }.bind(website));
+                    }
                 }.bind(this));
 
                 this.stores = [];

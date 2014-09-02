@@ -64,6 +64,10 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
      */
     protected $_advancedIndexFieldsPrefix = '';
 
+
+
+
+
     /**
      * Set advanced index fields prefix
      *
@@ -78,12 +82,23 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
      * Retrieve language code by specified locale code if this locale is supported by Solr
      *
      * @param string $localeCode
-     *
      * @return false|string
      */
     protected function _getLanguageCodeByLocaleCode($localeCode)
     {
         return Mage::helper('enterprise_search')->getLanguageCodeByLocaleCode($localeCode);
+    }
+
+    /**
+     * Prepare language suffix for text fields.
+     * For not supported languages prefix _def will be returned.
+     *
+     * @param  string $localeCode
+     * @return string
+     */
+    protected function _getLanguageSuffix($localeCode)
+    {
+        return Mage::helper('enterprise_search')->getLanguageSuffix($localeCode);
     }
 
     /**
@@ -137,11 +152,10 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
         }
 
         $fieldPrefix = $this->_advancedIndexFieldsPrefix;
-        $languageCode = $this->_getLanguageCodeByLocaleCode($localeCode);
-        $languageSuffix = ($languageCode) ? '_' . $languageCode : '';
+        $languageSuffix = $this->_getLanguageSuffix($localeCode);
 
         foreach ($data as $key => $value) {
-            if (in_array($key, $this->_usedFields) && !in_array($key, $this->_searchTextFields)) {
+            if (in_array($key, $this->_usedFields)) {
                 continue;
             } elseif ($key == 'options') {
                 unset($data[$key]);
@@ -177,7 +191,7 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
                 }
                 $data['attr_select_'. $key] = $value;
                 unset($data[$key]);
-            } elseif (in_array($backendType, $this->_textFieldTypes) || in_array($key, $this->_searchTextFields)) {
+            } elseif (in_array($backendType, $this->_textFieldTypes)) {
                 /*
                  * for grouped products imploding all possible unique values
                  */
@@ -354,10 +368,9 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
     {
         $result = array();
 
-        $languageCode = $this->_getLanguageCodeByLocaleCode(
-            Mage::app()->getStore()
-            ->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE));
-        $languageSuffix = ($languageCode) ? '_' . $languageCode : '';
+        $languageSuffix = $this->_getLanguageSuffix(
+            Mage::app()->getStore()->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE)
+        );
 
         /**
          * Support specifying sort by field as only string name of field

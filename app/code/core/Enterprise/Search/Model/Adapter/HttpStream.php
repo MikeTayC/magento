@@ -100,7 +100,6 @@ class Enterprise_Search_Model_Adapter_HttpStream extends Enterprise_Search_Model
      *        'locale_code' - Locale code, it used to define what suffix is needed for text fields,
      *                        by which will be performed search request and sorting
      *
-     * @see Enterprise_Search_Model_Adapter_HttpStream::_getLanguageCodeByLocaleCode()
      * @return array
      */
     protected function _search($query, $params = array())
@@ -120,8 +119,7 @@ class Enterprise_Search_Model_Adapter_HttpStream extends Enterprise_Search_Model
             ? (int) $_params['limit']
             : Enterprise_Search_Model_Adapter_Solr_Abstract::DEFAULT_ROWS_LIMIT;
 
-        $languageCode   = $this->_getLanguageCodeByLocaleCode($params['locale_code']);
-        $languageSuffix = ($languageCode) ? '_' . $languageCode : '';
+        $languageSuffix = $this->_getLanguageSuffix($params['locale_code']);
         $searchParams   = array();
 
         if (!is_array($_params['fields'])) {
@@ -148,7 +146,7 @@ class Enterprise_Search_Model_Adapter_HttpStream extends Enterprise_Search_Model
         }
 
         /**
-         * Now supported search only in fulltext and name fields based on dismax requestHandler.
+         * Now supported search only in fulltext and name fields based on dismax requestHandler (named as magento_lng).
          * Using dismax requestHandler for each language make matches in name field
          * are much more significant than matches in fulltext field.
          */
@@ -167,10 +165,8 @@ class Enterprise_Search_Model_Adapter_HttpStream extends Enterprise_Search_Model
         /**
          * Suggestions search
          */
-        $useSpellcheckSearch = (
-            isset($params['solr_params']['spellcheck'])
-            && $params['solr_params']['spellcheck'] == 'true'
-        );
+        $useSpellcheckSearch = isset($params['solr_params']['spellcheck'])
+            && $params['solr_params']['spellcheck'] == 'true';
 
         if ($useSpellcheckSearch) {
             if (isset($params['solr_params']['spellcheck.count'])
@@ -218,13 +214,15 @@ class Enterprise_Search_Model_Adapter_HttpStream extends Enterprise_Search_Model
             $data = json_decode($response->getRawResponse());
 
             if (!isset($params['solr_params']['stats']) || $params['solr_params']['stats'] != 'true') {
-                $result = array('ids' => $this->_prepareQueryResponse($data));
+                if ($limit > 0) {
+                    $result = array('ids' => $this->_prepareQueryResponse($data));
+                }
 
                 /**
                  * Extract facet search results
                  */
                 if ($useFacetSearch) {
-                    $result['facets'] = $this->_prepareFacetsQueryResponse($data);
+                    $result['faceted_data'] = $this->_prepareFacetsQueryResponse($data);
                 }
 
                 /**
@@ -257,12 +255,13 @@ class Enterprise_Search_Model_Adapter_HttpStream extends Enterprise_Search_Model
                                 break;
                             }
                         }
+
                         /* Return store value for main search query */
                         $this->_lastNumFound = $tmpLastNumFound;
                     } else {
                         $suggestions = array_slice($resultSuggestions, 0, $spellcheckCount);
                     }
-                    $result['suggestions'] = $suggestions;
+                    $result['suggestions_data'] = $suggestions;
                 }
             } else {
                 $result = $this->_prepateStatsQueryResponce($data);
@@ -294,8 +293,7 @@ class Enterprise_Search_Model_Adapter_HttpStream extends Enterprise_Search_Model
 
         $_params = array();
 
-        $languageCode = $this->_getLanguageCodeByLocaleCode($params['locale_code']);
-        $languageSuffix = ($languageCode) ? '_' . $languageCode : '';
+        $languageSuffix = $this->_getLanguageSuffix($params['locale_code']);
 
         $_params['solr_params'] = array (
             'spellcheck'                 => 'true',
@@ -308,7 +306,7 @@ class Enterprise_Search_Model_Adapter_HttpStream extends Enterprise_Search_Model
         try {
             $this->ping();
             $response = $this->_client->searchSuggestions($query, $_params['solr_params']);
-            $result = $this->_prepareSuggestionsQueryResponse( json_decode($response->getRawResponse()) );
+            $result = $this->_prepareSuggestionsQueryResponse(json_decode($response->getRawResponse()));
             $resultLimit = array();
             // Calc results count for each suggestion
             if ($withResultsCounts && $limit) {

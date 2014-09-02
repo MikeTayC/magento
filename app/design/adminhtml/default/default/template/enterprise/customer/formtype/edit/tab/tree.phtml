@@ -166,7 +166,7 @@ var formType = {
             var code = node.attributes.code;
             for(var i=0, l = parent.childNodes.length; i < l; i++) {
                 if (parent.childNodes[i].attributes.type == 'fieldset' && code == parent.childNodes[i].attributes.code) {
-                    alert('<?php echo $this->__("A fieldset with the same code alredy exists.")?>');
+                    alert('<?php echo $this->jsQuoteEscape($this->__("A fieldset with the same code alredy exists."))?>');
                     return false;
                 }
             }
@@ -245,7 +245,7 @@ var formType = {
         var node = this.tree.getNodeById($('node_id').value);
         if (node) {
             if (node.childNodes.length) {
-                alert('<?php echo $this->__('This fieldset is not empty!')?>');
+                alert('<?php echo $this->jsQuoteEscape($this->__('This fieldset is not empty!'))?>');
             } else {
                 node.parentNode.select();
                 node.parentNode.removeChild(node);

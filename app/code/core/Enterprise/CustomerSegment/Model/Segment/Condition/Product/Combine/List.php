@@ -30,6 +30,13 @@
 class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Combine_List
     extends Enterprise_CustomerSegment_Model_Condition_Combine_Abstract
 {
+    /**
+     * Flag of using condition combine (for conditions of Product_Attribute)
+     *
+     * @var bool
+     */
+    protected $_combineProductCondition = true;
+
     const WISHLIST  = 'wishlist';
     const CART      = 'shopping_cart';
 
@@ -161,6 +168,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Combine_List
                     array()
                 );
                 $this->_limitByStoreWebsite($select, $website, 'list.store_id');
+                $select->where('list.is_active = ?', new Zend_Db_Expr(1));
                 break;
         }
 
@@ -178,20 +186,6 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Product_Combine_List
     protected function _getRequiredValidation()
     {
         return ($this->getOperator() == '==');
-    }
-
-    /**
-     * Get SQL select for matching customer to segment condition
-     *
-     * @param $customer
-     * @param $website
-     * @return Varien_Db_Select
-     */
-    public function getConditionsSql($customer, $website)
-    {
-        $select = parent::getConditionsSql($customer, $website);
-
-        return $this->_getRequiredValidation() ? $select : "IF(({$select}),NULL,1)";
     }
 
     /**

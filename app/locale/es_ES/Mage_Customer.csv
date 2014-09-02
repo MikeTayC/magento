@@ -1,4 +1,4 @@
-" or ","o bien"
+" or "," o bien "
 "'%value%' appears to be a DNS hostname but cannot extract TLD part","'%value%' parece ser un servidor DNS pero no puede extraer la parte TLD"
 "'%value%' appears to be a DNS hostname but cannot match TLD against known list","'%value%' parece ser un servidor DNS pero no puede hacer coincidir en TLD con la lista"
 "'%value%' appears to be a DNS hostname but cannot match against hostname schema for TLD '%tld%'","'%value%' parece ser un servidor DNS pero no puede hacer coincidir el esquema del servidor con el TLD '%tld%'"
@@ -289,6 +289,7 @@
 "Group Name","Nombre de grupo"
 "HTML","HTML"
 "Hello, %s!","Hola, %s:"
+"If you have an account with us, log in using your email address.","Si tiene una cuenta con nosotros, entre usando su dirección de correo electrónico."
 "ID","Identificación"
 "If you have an account with us, please log in.","Si usted tiene una cuenta con nosotros, por favor ingrese."
 "Invalid attribute option specified for attribute %s (%s), skipping the record.","Se especificó una opción de atributo no válida para el atributo %s (%s). Se omitirá el registro."

@@ -35,7 +35,7 @@ class Enterprise_GiftCard_Block_Sales_Order_Item_Renderer extends Mage_Sales_Blo
     protected function _prepareCustomOption($code)
     {
         if ($option = $this->getOrderItem()->getProductOptionByCode($code)) {
-            return nl2br($this->htmlEscape($option));
+            return $this->escapeHtml($option);
         }
         return false;
     }

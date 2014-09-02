@@ -104,7 +104,6 @@ class Enterprise_Search_Model_Adapter_PhpExtension extends Enterprise_Search_Mod
      *                              by which will be performed search request and sorting
      *        'ignore_handler'    - Flag that allows to ignore handler (qt) and make multifield search
      *
-     * @see Enterprise_Search_Model_Adapter_HttpStream::_getLanguageCodeByLocaleCode()
      * @return array
      */
     protected function _search($query, $params = array())
@@ -139,8 +138,7 @@ class Enterprise_Search_Model_Adapter_PhpExtension extends Enterprise_Search_Mod
          * By default in Solr  set <defaultSearchField> is "fulltext"
          * When language fields need to be used, then perform search in appropriate field
          */
-        $languageCode   = $this->_getLanguageCodeByLocaleCode($params['locale_code']);
-        $languageSuffix = ($languageCode) ? '_' . $languageCode : '';
+        $languageSuffix = $this->_getLanguageSuffix($params['locale_code']);
 
         $solrQuery = new SolrQuery();
         $solrQuery->setStart($offset)->setRows($limit);
@@ -193,11 +191,19 @@ class Enterprise_Search_Model_Adapter_PhpExtension extends Enterprise_Search_Mod
         /**
          * Suggestions search
          */
-        $useSpellcheckSearch = (isset($params['solr_params']['spellcheck']) && $params['solr_params']['spellcheck'] == 'true');
+        $useSpellcheckSearch = isset($params['solr_params']['spellcheck'])
+            && $params['solr_params']['spellcheck'] == 'true';
+
+
         if ($useSpellcheckSearch) {
-            $spellcheckCount = (isset($params['solr_params']['spellcheck.count']) && $params['solr_params']['spellcheck.count'])
-                ? $params['solr_params']['spellcheck.count']
-                : self::DEFAULT_SPELLCHECK_COUNT;
+            if (isset($params['solr_params']['spellcheck.count'])
+                && (int) $params['solr_params']['spellcheck.count'] > 0
+            ) {
+                $spellcheckCount = (int) $params['solr_params']['spellcheck.count'];
+            } else {
+                $spellcheckCount = self::DEFAULT_SPELLCHECK_COUNT;
+            }
+
             $_params['solr_params'] += array(
                 'spellcheck.collate'         => 'true',
                 'spellcheck.dictionary'      => 'magento_spell' . $languageSuffix,
@@ -243,13 +249,15 @@ class Enterprise_Search_Model_Adapter_PhpExtension extends Enterprise_Search_Mod
             $data = $response->getResponse();
 
             if (!isset($params['solr_params']['stats']) || $params['solr_params']['stats'] != 'true') {
-                $result = array('ids' => $this->_prepareQueryResponse($data));
+                if ($limit > 0) {
+                    $result = array('ids' => $this->_prepareQueryResponse($data));
+                }
 
                 /**
                  * Extract facet search results
                  */
                 if ($useFacetSearch) {
-                    $result['facets'] = $this->_prepareFacetsQueryResponse($data);
+                    $result['faceted_data'] = $this->_prepareFacetsQueryResponse($data);
                 }
 
                 /**
@@ -282,12 +290,13 @@ class Enterprise_Search_Model_Adapter_PhpExtension extends Enterprise_Search_Mod
                                 break;
                             }
                         }
+
                         /* Return store value for main search query */
                         $this->_lastNumFound = $tmpLastNumFound;
                     } else {
                         $suggestions = array_slice($resultSuggestions, 0, $spellcheckCount);
                     }
-                    $result['suggestions'] = $suggestions;
+                    $result['suggestions_data'] = $suggestions;
                 }
             } else {
                 $result = $this->_prepateStatsQueryResponce($data);
@@ -328,16 +337,9 @@ class Enterprise_Search_Model_Adapter_PhpExtension extends Enterprise_Search_Mod
         $_params = array();
 
 
-        $languageCode = $this->_getLanguageCodeByLocaleCode($params['locale_code']);
-        $languageSuffix = ($languageCode) ? '_' . $languageCode : '';
+        $languageSuffix = $this->_getLanguageSuffix($params['locale_code']);
 
         $solrQuery = new SolrQuery($query);
-
-        /**
-         * Now supported search only in fulltext and name fields based on dismax requestHandler (named as magento_lng).
-         * Using dismax requestHandler for each language make matches in name field
-         * are much more significant than matches in fulltext field.
-         */
 
         $_params['solr_params'] = array (
             'spellcheck'                 => 'true',

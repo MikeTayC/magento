@@ -130,7 +130,7 @@ class Enterprise_PageCache_Model_Container_Sidebar_Poll extends Enterprise_PageC
                 return null;
             }
             $active_ids = array_diff($renderedParams['active_ids'],$renderedParams['voted_ids']);
-            if (!$active_ids && $renderedParams['active_ids']) {
+            if (!$active_ids || !$renderedParams['active_ids']) {
                 $this->_activePollId = false;
             } else {
                 $this->_activePollId = $renderedParams['active_ids'][array_rand($active_ids)];
@@ -177,10 +177,15 @@ class Enterprise_PageCache_Model_Container_Sidebar_Poll extends Enterprise_PageC
                 'voted_ids' => $block->getVotedPollsIds(),
             );
             $this->_saveInfoCache($renderedParams);
+        }
+
+        $content = $block->toHtml();
+
+        if (is_null($this->_activePollId)) {
             $this->_activePollId = $block->getPollToShow();
         }
 
-        return $block->toHtml();
+        return $content;
     }
 
     /**

@@ -306,7 +306,7 @@ class Enterprise_GiftRegistry_IndexController extends Mage_Core_Controller_Front
         }
 
         $error  = false;
-        $senderMessage = nl2br(htmlspecialchars($this->getRequest()->getPost('sender_message')));
+        $senderMessage = htmlspecialchars($this->getRequest()->getPost('sender_message'));
         $senderName = htmlspecialchars($this->getRequest()->getPost('sender_name'));
         $senderEmail = htmlspecialchars($this->getRequest()->getPost('sender_email'));
 

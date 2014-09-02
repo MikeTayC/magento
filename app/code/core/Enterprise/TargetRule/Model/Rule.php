@@ -66,6 +66,10 @@ class Enterprise_TargetRule_Model_Rule extends Mage_Rule_Model_Rule
     const UP_SELLS                      = 2;
     const CROSS_SELLS                   = 3;
 
+    // Shuffle mode by default
+    const ROTATION_SHUFFLE              = 0;
+    const ROTATION_NONE                 = 1;
+
     const XML_PATH_DEFAULT_VALUES       = 'catalog/enterprise_targetrule/';
 
     /**

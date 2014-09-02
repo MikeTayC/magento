@@ -74,4 +74,22 @@ class Enterprise_CustomerBalance_Model_Resource_Balance_History_Collection
         );
         return $this;
     }
+
+    /**
+     * Retrieve history data
+     *
+     * @param  string $customerId
+     * @param string|null $websiteId
+     * @return Enterprise_CustomerBalance_Model_Resource_Balance_History_Collection
+     */
+    public function loadHistoryData($customerId, $websiteId = null)
+    {
+        $this->addFieldToFilter('customer_id', $customerId)
+                ->addOrder('updated_at', 'DESC')
+                ->addOrder('history_id', 'DESC');
+        if (!empty($websiteId)) {
+            $this->getSelect()->where('b.website_id IN (?)', $websiteId);
+        }
+        return $this;
+    }
 }

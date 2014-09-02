@@ -44,10 +44,11 @@ class Enterprise_PageCache_Model_Container_Catalognavigation extends Enterprise_
     {
         $shortCacheId = $this->_placeholder->getAttribute('short_cache_id');
         $categoryPath = $this->_placeholder->getAttribute('category_path');
+        $categoryId = $this->_getCategoryId();
         if (!$shortCacheId || !$categoryPath) {
             return false;
         }
-        return $shortCacheId . '_' . $categoryPath;
+        return $shortCacheId . '_' . $categoryPath . ($categoryId ? ('_' . $categoryId) : '');
     }
 
     /**
@@ -128,12 +129,12 @@ class Enterprise_PageCache_Model_Container_Catalognavigation extends Enterprise_
         $block->setTemplate($template);
         $block->setLayout(Mage::app()->getLayout());
 
-        if ($categoryPath) {
-            $categoryPath = explode('/', $categoryPath);
-            $categoryId = end($categoryPath);
+        $categoryId = $this->_getCategoryId();
+        if (!Mage::registry('current_category') && $categoryId) {
             $category = Mage::getModel('catalog/category')->load($categoryId);
             Mage::register('current_category', $category);
         }
+
         Mage::dispatchEvent('render_block', array('block' => $block, 'placeholder' => $this->_placeholder));
 
         return $block->toHtml();

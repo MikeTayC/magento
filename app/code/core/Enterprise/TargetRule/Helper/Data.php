@@ -105,4 +105,29 @@ class Enterprise_TargetRule_Helper_Data extends Mage_Core_Helper_Abstract
 
         return $number;
     }
+
+    /**
+     * Retrieve Rotation Mode in Product List
+     *
+     * @param int $type product list type
+     * @throws Mage_Core_Exception
+     * @return int
+     */
+    public function getRotationMode($type)
+    {
+        switch ($type) {
+            case Enterprise_TargetRule_Model_Rule::RELATED_PRODUCTS:
+                $mode = Mage::getStoreConfig(self::XML_PATH_TARGETRULE_CONFIG . 'related_rotation_mode');
+                break;
+            case Enterprise_TargetRule_Model_Rule::UP_SELLS:
+                $mode = Mage::getStoreConfig(self::XML_PATH_TARGETRULE_CONFIG . 'upsell_rotation_mode');
+                break;
+            case Enterprise_TargetRule_Model_Rule::CROSS_SELLS:
+                $mode = Mage::getStoreConfig(self::XML_PATH_TARGETRULE_CONFIG . 'crosssell_rotation_mode');
+                break;
+            default:
+                Mage::throwException(Mage::helper('enterprise_targetrule')->__('Invalid rotation mode type'));
+        }
+        return $mode;
+    }
 }

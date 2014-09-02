@@ -102,8 +102,8 @@ class Enterprise_CatalogPermissions_Model_Adminhtml_Observer
                 $permission->setCategoryId($category->getId());
                 $permission->save();
             }
+            $this->_indexQueue[] = $category->getPath();
         }
-        $this->_indexQueue[] = $category->getPath();
         return $this;
     }
 

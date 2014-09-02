@@ -112,12 +112,35 @@ class Mage_Core_Helper_Url extends Mage_Core_Helper_Abstract
             if (is_array($value)) {
                 // $key[]=$value1&$key[]=$value2 ...
                 $arrQueryParams[] = $key . '[]=' . implode('&' . $key . '[]=', $value);
+            } elseif (is_null($value)) {
+                $arrQueryParams[] = $key;
             } else {
                 $arrQueryParams[] = $key . '=' . $value;
             }
         }
         $url .= $startDelimiter . implode('&', $arrQueryParams);
 
+        return $url;
+    }
+
+    /**
+     * Remove request parameter from url
+     *
+     * @param string $url
+     * @param string $paramKey
+     * @return string
+     */
+    public function removeRequestParam($url, $paramKey, $caseSensitive = false)
+    {
+        $regExpression = '/\\?[^#]*?(' . preg_quote($paramKey, '/') . '\\=[^#&]*&?)/' . ($caseSensitive ? '' : 'i');
+        while (preg_match($regExpression, $url, $mathes) != 0) {
+            $paramString = $mathes[1];
+            if (preg_match('/&$/', $paramString) == 0) {
+                $url = preg_replace('/(&|\\?)?' . preg_quote($paramString, '/') . '/', '', $url);
+            } else {
+                $url = str_replace($paramString, '', $url);
+            }
+        }
         return $url;
     }
 }

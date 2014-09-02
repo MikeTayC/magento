@@ -125,6 +125,10 @@
                         <class>persistent/observer_session</class>
                         <method>setRememberMeCheckedStatus</method>
                     </persistent>
+                    <persistent_authenticate>
+                        <class>persistent/observer</class>
+                        <method>customerAuthenticatedEvent</method>
+                    </persistent_authenticate>
                 </observers>
             </controller_action_predispatch_customer_account_createpost>
             <controller_action_layout_generate_blocks_after>
@@ -171,14 +175,6 @@
                     </persistent>
                 </observers>
             </customer_customer_authenticated>
-            <controller_action_predispatch_customer_account_createpost>
-                <observers>
-                    <persistent>
-                        <class>persistent/observer</class>
-                        <method>customerAuthenticatedEvent</method>
-                    </persistent>
-                </observers>
-            </controller_action_predispatch_customer_account_createpost>
             <controller_action_predispatch_persistent_index_unsetCookie>
                 <observers>
                     <persistent>

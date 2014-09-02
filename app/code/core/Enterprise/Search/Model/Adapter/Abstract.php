@@ -76,7 +76,6 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
     protected $_usedFields = array(
         self::UNIQUE_KEY,
         'id',
-        'name',
         'sku',
         'price',
         'store_id',
@@ -86,13 +85,6 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
         'in_stock',
         'score'
     );
-
-    /**
-     * Text fields which can store data differ in different languages
-     *
-     * @var array
-     */
-    protected $_searchTextFields = array('name', 'alphaNameSort');
 
     /**
      * Fields which must be are not included in fulltext field
@@ -147,11 +139,52 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      */
     protected $_indexableAttributeParams;
 
+    /**
+     * Define if automatic commit on changes for adapter is allowed
+     *
+     * @var bool
+     */
+    protected $_holdCommit = false;
+
+    /**
+     * Define if search engine index needs optimization
+     *
+     * @var bool
+     */
+    protected $_indexNeedsOptimization = false;
+
+
+
+
+
+    /**
+     * Text fields which can store data differ in different languages
+     *
+     * @deprecated after 1.11.0.0
+     *
+     * @var array
+     */
+    protected $_searchTextFields = array('name', 'alphaNameSort');
+
+
+
+
+
+    /**
+     * Before commit action
+     *
+     * @return Enterprise_Search_Model_Adapter_Abstract
+     */
     protected function _beforeCommit()
     {
-
+        return $this;
     }
 
+    /**
+     * After commit action
+     *
+     * @return Enterprise_Search_Model_Adapter_Abstract
+     */
     protected function _afterCommit()
     {
         /**
@@ -159,6 +192,38 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
          */
         $cacheTag = Mage::getSingleton('enterprise_search/catalog_layer_filter_price')->getCacheTag();
         Mage::app()->cleanCache(array($cacheTag));
+
+        $this->_indexNeedsOptimization = true;
+
+        return $this;
+    }
+
+    /**
+     * Before optimize action.
+     * _beforeCommit method is called because optimize includes commit in itself
+     *
+     * @return Enterprise_Search_Model_Adapter_Abstract
+     */
+    protected function _beforeOptimize()
+    {
+        $this->_beforeCommit();
+
+        return $this;
+    }
+
+    /**
+     * After commit action
+     * _afterCommit method is called because optimize includes commit in itself
+     *
+     * @return Enterprise_Search_Model_Adapter_Abstract
+     */
+    protected function _afterOptimize()
+    {
+        $this->_afterCommit();
+
+        $this->_indexNeedsOptimization = false;
+
+        return $this;
     }
 
     /**
@@ -215,13 +280,6 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
 
             $index[self::UNIQUE_KEY] = $entityId . '|' . $index['store_id'];
             $index['id'] = $entityId;
-
-            /**
-             * Merge name field if it has multiple values
-             */
-            if (isset($index['name'])) {
-                $index['name'] = $this->_implodeIndexData($index['name']);
-            }
 
             $fulltext = $index;
             foreach ($this->_notInFulltextField as $field) {
@@ -343,14 +401,13 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
         }
 
         try {
-            $this->_client->ping();
             $this->_client->addDocuments($_docs);
         } catch (Exception $e) {
             $this->rollback();
             Mage::logException($e);
         }
 
-        $this->optimize();
+        $this->commit();
 
         return $this;
     }
@@ -386,14 +443,13 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
             $deleteMethod = sprintf('deleteBy%s', $_deleteBySuffix);
 
             try {
-                $this->_client->ping();
                 $this->_client->$deleteMethod($params);
             } catch (Exception $e) {
                 $this->rollback();
                 Mage::logException($e);
             }
 
-            $this->optimize();
+            $this->commit();
         }
 
         return $this;
@@ -408,22 +464,19 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      */
     public function getIdsByQuery($query, $params = array())
     {
-        $ids = array();
         $params['fields'] = array('id');
 
-        $_result = $this->_search($query, $params);
+        $result = $this->_search($query, $params);
 
-        if(!empty($_result['ids'])) {
-            foreach ($_result['ids'] as $_id) {
-                $ids[] = $_id['id'];
-            }
+        if (!isset($result['ids'])) {
+            $result['ids'] = array();
         }
 
-        $result = array(
-            'ids' => $ids,
-            'facetedData' => (isset($_result['facets'])) ? $_result['facets'] : array(),
-            'suggestionsData' => (isset($_result['suggestions'])) ? $_result['suggestions'] : array()
-        );
+        if (!empty($result['ids'])) {
+            foreach ($result['ids'] as &$id) {
+                $id = $id['id'];
+            }
+        }
 
         return $result;
     }
@@ -471,10 +524,14 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
     /**
      * Finalizes all add/deletes made to the index
      *
-     * @return object
+     * @return object|bool
      */
     public function commit()
     {
+        if ($this->_holdCommit) {
+            return false;
+        }
+
         $this->_beforeCommit();
         $result = $this->_client->commit();
         $this->_afterCommit();
@@ -486,13 +543,17 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      * Perform optimize operation
      * Same as commit operation, but also defragment the index for faster search performance
      *
-     * @return object
+     * @return object|bool
      */
     public function optimize()
     {
-        $this->_beforeCommit();
+        if ($this->_holdCommit) {
+            return false;
+        }
+
+        $this->_beforeOptimize();
         $result = $this->_client->optimize();
-        $this->_afterCommit();
+        $this->_afterOptimize();
 
         return $result;
     }
@@ -684,52 +745,6 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
     }
 
     /**
-     * Filter index data by common Solr metadata fields
-     * Add language code suffix to text fields
-     *
-     * @deprecated after 1.8.0.0 - use $this->_prepareIndexData()
-     *
-     * @param array $data
-     * @param string|null $localeCode
-     * @return array
-     * @see $this->_usedFields, $this->_searchTextFields
-     */
-    protected function _filterIndexData($data, $localeCode = null)
-    {
-        if (empty($data) || !is_array($data)) {
-            return array();
-        }
-
-        foreach ($data as $code => $value) {
-            if(!in_array($code, $this->_usedFields) && strpos($code, 'fulltext') !== 0 ) {
-                unset($data[$code]);
-            }
-        }
-
-        $languageCode = $this->_getLanguageCodeByLocaleCode($localeCode);
-        if ($languageCode) {
-            foreach ($data as $key => $value) {
-                if (in_array($key, $this->_searchTextFields) || strpos($key, 'fulltext') === 0) {
-                    $data[$key . '_' . $languageCode] = $value;
-                    unset($data[$key]);
-                }
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * Retrieve default searchable fields
-     *
-     * @return array
-     */
-    public function getSearchTextFields()
-    {
-        return $this->_searchTextFields;
-    }
-
-    /**
      * Implode index array to string by separator
      * Support 2 level array gluing
      *
@@ -873,5 +888,101 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
         }
 
         return $res;
+    }
+
+    /**
+     * Hold commit of changes for adapter
+     *
+     * @return Enterprise_Search_Model_Adapter_Abstract
+     */
+    public function holdCommit()
+    {
+        $this->_holdCommit = true;
+        return $this;
+    }
+
+    /**
+     * Allow changes commit for adapter
+     *
+     * @return Enterprise_Search_Model_Adapter_Abstract
+     */
+    public function allowCommit()
+    {
+        $this->_holdCommit = false;
+        return $this;
+    }
+
+    /**
+     * Define if third party search engine index needs optimization
+     *
+     * @param  bool $state
+     * @return Enterprise_Search_Model_Adapter_Abstract
+     */
+    public function setIndexNeedsOptimization($state = true)
+    {
+        $this->_indexNeedsOptimization = (bool) $state;
+        return $this;
+    }
+
+    /**
+     * Check if third party search engine index needs optimization
+     *
+     * @return bool
+     */
+    public function getIndexNeedsOptimization()
+    {
+        return $this->_indexNeedsOptimization;
+    }
+
+
+
+
+
+    /**
+     * Filter index data by common Solr metadata fields
+     * Add language code suffix to text fields
+     *
+     * @deprecated after 1.8.0.0 - use $this->_prepareIndexData()
+     * @see $this->_usedFields, $this->_searchTextFields
+     *
+     * @param  array $data
+     * @param  string|null $localeCode
+     * @return array
+     */
+    protected function _filterIndexData($data, $localeCode = null)
+    {
+        if (empty($data) || !is_array($data)) {
+            return array();
+        }
+
+        foreach ($data as $code => $value) {
+            if(!in_array($code, $this->_usedFields) && strpos($code, 'fulltext') !== 0 ) {
+                unset($data[$code]);
+            }
+        }
+
+        $languageCode = $this->_getLanguageCodeByLocaleCode($localeCode);
+        if ($languageCode) {
+            foreach ($data as $key => $value) {
+                if (in_array($key, $this->_searchTextFields) || strpos($key, 'fulltext') === 0) {
+                    $data[$key . '_' . $languageCode] = $value;
+                    unset($data[$key]);
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Retrieve default searchable fields
+     *
+     * @deprecated after 1.11.0.0
+     *
+     * @return array
+     */
+    public function getSearchTextFields()
+    {
+        return $this->_searchTextFields;
     }
 }

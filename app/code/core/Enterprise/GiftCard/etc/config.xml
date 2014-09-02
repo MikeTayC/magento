@@ -117,14 +117,14 @@
                     </enterprise_giftcard_append_additional_data>
                 </observers>
             </sales_convert_quote_item_to_order_item>
-            <sales_order_save_after>
+            <sales_order_save_commit_after>
                 <observers>
                     <enterprise_giftcard_generate_giftcardaccounts>
                         <class>enterprise_giftcard/observer</class>
                         <method>generateGiftCardAccounts</method>
                     </enterprise_giftcard_generate_giftcardaccounts>
                 </observers>
-            </sales_order_save_after>
+            </sales_order_save_commit_after>
             <catalog_product_collection_load_after>
                 <observers>
                     <enterprise_giftcard>

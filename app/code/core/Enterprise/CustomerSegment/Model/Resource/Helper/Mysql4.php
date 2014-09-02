@@ -59,6 +59,10 @@ class Enterprise_CustomerSegment_Model_Resource_Helper_Mysql4 extends Mage_Core_
                 return 'LIKE';
             case '!{}':
                 return 'NOT LIKE';
+            case '()':
+                return 'IN';
+            case '!()':
+                return 'NOT IN';
             case '[]':
                 return 'FIND_IN_SET(%s, %s)';
             case '![]':

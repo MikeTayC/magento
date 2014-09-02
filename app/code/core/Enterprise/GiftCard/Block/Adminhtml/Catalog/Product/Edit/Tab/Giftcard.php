@@ -134,10 +134,10 @@ class Enterprise_GiftCard_Block_Adminhtml_Catalog_Product_Edit_Tab_Giftcard
     public function getEmailTemplates()
     {
         $result = array();
-        $template = Mage::getModel('adminhtml/system_config_source_email_template'); 
+        $template = Mage::getModel('adminhtml/system_config_source_email_template');
         $template->setPath(Enterprise_GiftCard_Model_Giftcard::XML_PATH_EMAIL_TEMPLATE);
         foreach ($template->toOptionArray() as $one) {
-            $result[$one['value']] = $one['label'];
+            $result[$one['value']] = $this->escapeHtml($one['label']);
         }
         return $result;
     }

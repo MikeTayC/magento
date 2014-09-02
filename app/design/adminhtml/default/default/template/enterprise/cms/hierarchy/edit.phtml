@@ -236,7 +236,7 @@
             var identifier = node.attributes.identifier;
             for(var i=0, l = parent.childNodes.length; i < l; i++) {
                 if (identifier == parent.childNodes[i].attributes.identifier) {
-                    alert('<?php echo $this->__('This page cannot be added, because a node or page with the same URL Key already exists in this tree part.')?>');
+                    alert('<?php echo $this->jsQuoteEscape($this->__('This page cannot be added, because a node or page with the same URL Key already exists in this tree part.'))?>');
                     return false;
                 }
             }
@@ -435,7 +435,7 @@
                 for(var i=0, l = node.parentNode.childNodes.length; i < l; i++) {
                     checkNode = node.parentNode.childNodes[i];
                     if (checkNode.id != node_id && identifier == checkNode.attributes.identifier) {
-                        alert('<?php echo $this->__('Node with same URL Key already exists.')?>');
+                        alert('<?php echo $this->jsQuoteEscape($this->__('Node with same URL Key already exists.'))?>');
                         return false;
                     }
                 }
@@ -773,7 +773,7 @@
 
     <?php if ($this->isLockedByMe()):?>
         var timeOut = <?php echo $this->getLockLifetime(); ?> - 60;
-        setTimeout("alert('<?php echo $this->getLockAlertMessage();?>')", timeOut * 1000);
+        setTimeout("alert('<?php echo $this->jsQuoteEscape($this->getLockAlertMessage());?>')", timeOut * 1000);
     <?php endif;?>
     </script>
     <br />

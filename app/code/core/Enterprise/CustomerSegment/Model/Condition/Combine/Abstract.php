@@ -29,9 +29,18 @@ abstract class Enterprise_CustomerSegment_Model_Condition_Combine_Abstract exten
     /**
      * Flag of using History condition (for conditions of Product_Attribute)
      *
+     * @deprecated after 1.11.1.0
+     *
      * @var bool
      */
     protected $_combineHistory = false;
+
+    /**
+     * Flag of using condition combine (for conditions of Product_Attribute)
+     *
+     * @var bool
+     */
+    protected $_combineProductCondition = false;
 
     /**
      * Get array of event names where segment with such conditions combine can be matched
@@ -126,11 +135,31 @@ abstract class Enterprise_CustomerSegment_Model_Condition_Combine_Abstract exten
         return ($this->getValue() == 1);
     }
 
+    /*
+     * Get information if condition is required
+     *
+     * @return bool
+     */
+    public function getIsRequired()
+    {
+        return $this->_getRequiredValidation();
+    }
+
+    /**
+     * Get information if it's used as a child of History or List condition
+     *
+     * @return bool
+     */
+    public function getCombineProductCondition()
+    {
+        return $this->_combineProductCondition;
+    }
+
     /**
      * Get SQL select for matching customer to segment condition
      *
-     * @param $customer
-     * @param $website
+     * @param Mage_Customer_Model_Customer | Zend_Db_Select | Zend_Db_Expr $customer
+     * @param int | Zend_Db_Expr $website
      * @return Varien_Db_Select
      */
     public function getConditionsSql($customer, $website)
@@ -150,12 +179,13 @@ abstract class Enterprise_CustomerSegment_Model_Condition_Combine_Abstract exten
         $adapter = $this->getResource()->getReadConnection();
         foreach ($this->getConditions() as $condition) {
             if ($sql = $condition->getConditionsSql($customer, $website)) {
-                if($sql instanceof Varien_Db_Select) {
-                    $isnull = $adapter->getIfNullSql($sql);
+                $isnull = $adapter->getCheckSql($sql, 1, 0);
+                if ($condition->getCombineProductCondition()) {
+                    $sqlOperator = $condition->getIsRequired() ? '=' : '<>';
                 } else {
-                    $isnull = $adapter->getCheckSql($sql, 1, 0);
+                    $sqlOperator = $operator;
                 }
-                $conditions[] = "($isnull {$operator} 1)";
+                $conditions[] = "($isnull {$sqlOperator} 1)";
             }
         }
 
@@ -168,7 +198,7 @@ abstract class Enterprise_CustomerSegment_Model_Condition_Combine_Abstract exten
             foreach ($this->getConditions() as $condition) {
                 $subfilterType = $condition->getSubfilterType();
                 if (isset($subfilterMap[$subfilterType])) {
-                    $condition->setCombineHistory($this->_combineHistory);
+                    $condition->setCombineProductCondition($this->_combineProductCondition);
                     $subfilter = $condition->getSubfilterSql($subfilterMap[$subfilterType], $required, $website);
                     if ($subfilter) {
                         $conditions[] = $subfilter;

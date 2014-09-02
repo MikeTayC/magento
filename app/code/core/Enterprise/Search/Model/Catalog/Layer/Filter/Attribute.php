@@ -126,7 +126,7 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Attribute extends Mage_Catalo
         $attribute  = $filter->getAttributeModel();
 
         $param = Mage::helper('enterprise_search')->getSearchParam($productCollection, $attribute, $value);
-        $productCollection->addSearchQfFilter($param);
+        $productCollection->addFqFilter($param);
         return $this;
     }
 }

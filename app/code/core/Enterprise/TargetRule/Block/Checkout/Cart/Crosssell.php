@@ -31,7 +31,7 @@
  * @category   Enterprise
  * @package    Enterprise_TargetRule
  */
-class Enterprise_TargetRule_Block_Checkout_Cart_Crosssell extends Mage_Catalog_Block_Product_Abstract
+class Enterprise_TargetRule_Block_Checkout_Cart_Crosssell extends Enterprise_TargetRule_Block_Product_Abstract
 {
     /**
      * Default MAP renderer type
@@ -39,13 +39,6 @@ class Enterprise_TargetRule_Block_Checkout_Cart_Crosssell extends Mage_Catalog_B
      * @var string
      */
     protected $_mapRenderer = 'msrp_item';
-
-    /**
-     * Array of cross-sell products
-     *
-     * @var array
-     */
-    protected $_items;
 
     /**
      * Array of product objects in cart
@@ -60,6 +53,23 @@ class Enterprise_TargetRule_Block_Checkout_Cart_Crosssell extends Mage_Catalog_B
      * @var Mage_Catalog_Model_Product
      */
     protected $_lastAddedProduct;
+
+    /**
+     * Whether get products by last added
+     *
+     * @var bool
+     */
+    protected $_byLastAddedProduct = false;
+
+    /**
+     * Retrieve Catalog Product List Type identifier
+     *
+     * @return int
+     */
+    public function getType()
+    {
+        return Enterprise_TargetRule_Model_Rule::CROSS_SELLS;
+    }
 
     /**
      * Retrieve just added to cart product id
@@ -196,11 +206,12 @@ class Enterprise_TargetRule_Block_Checkout_Cart_Crosssell extends Mage_Catalog_B
     }
 
     /**
-     * Retrieve linked as cross-sell product collection
+     * Get link collection for cross-sell
      *
-     * @return Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Link_Product_Collection
+     * @throws Mage_Core_Exception
+     * @return Mage_Catalog_Model_Resource_Product_Collection|null
      */
-    protected function _getLinkCollection()
+    protected function _getTargetLinkCollection()
     {
         /* @var $collection Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Link_Product_Collection */
         $collection = Mage::getModel('catalog/product_link')
@@ -220,32 +231,6 @@ class Enterprise_TargetRule_Block_Checkout_Cart_Crosssell extends Mage_Catalog_B
     }
 
     /**
-     * Return the behavior positions applicable to products based on the rule(s)
-     *
-     * @return array
-     */
-    public function getRuleBasedBehaviorPositions()
-    {
-        return array(
-            Enterprise_TargetRule_Model_Rule::BOTH_SELECTED_AND_RULE_BASED,
-            Enterprise_TargetRule_Model_Rule::RULE_BASED_ONLY,
-        );
-    }
-
-    /**
-     * Retrieve the behavior positions applicable to selected products
-     *
-     * @return array
-     */
-    public function getSelectedBehaviorPositions()
-    {
-        return array(
-            Enterprise_TargetRule_Model_Rule::BOTH_SELECTED_AND_RULE_BASED,
-            Enterprise_TargetRule_Model_Rule::SELECTED_ONLY,
-        );
-    }
-
-    /**
      * Retrieve array of cross-sell products for just added product to cart
      *
      * @return array
@@ -256,36 +241,10 @@ class Enterprise_TargetRule_Block_Checkout_Cart_Crosssell extends Mage_Catalog_B
         if (!$product) {
             return array();
         }
-
-        $excludeProductIds = $this->_getCartProductIds();
-
-        $items = array();
-        $limit = $this->getPositionLimit();
-
-        if (in_array($this->getPositionBehavior(), $this->getSelectedBehaviorPositions())) {
-            $collection = $this->_getLinkCollection()
-                ->addProductFilter($product->getEntityId())
-                ->addExcludeProductFilter($excludeProductIds)
-                ->setPageSize($limit);
-
-            foreach ($collection as $item) {
-                $items[$item->getEntityId()] = $item;
-            }
-        }
-
-        $count = $limit - count($items);
-        if (in_array($this->getPositionBehavior(), $this->getRuleBasedBehaviorPositions()) && $count > 0) {
-            $excludeProductIds = array_merge(array_keys($items), $excludeProductIds);
-
-            $productIds = $this->_getProductIdsFromIndexByProduct($product, $count, $excludeProductIds);
-            if ($productIds) {
-                $collection = $this->_getProductCollectionByIds($productIds);
-                foreach ($collection as $item) {
-                    $items[$item->getEntityId()] = $item;
-                }
-            }
-        }
-
+        $this->_byLastAddedProduct = true;
+        $items = parent::getItemCollection();
+        $this->_byLastAddedProduct = false;
+        $this->_items = null;
         return $items;
     }
 
@@ -358,6 +317,69 @@ class Enterprise_TargetRule_Block_Checkout_Cart_Crosssell extends Mage_Catalog_B
     }
 
     /**
+     * Get exclude product ids
+     *
+     * @return array
+     */
+    protected function _getExcludeProductIds()
+    {
+        $excludeProductIds = $this->_getCartProductIds();
+        if (!is_null($this->_items)) {
+            $excludeProductIds = array_merge(array_keys($this->_items), $excludeProductIds);
+        }
+        return $excludeProductIds;
+    }
+
+    /**
+     * Get target rule based products for cross-sell
+     *
+     * @return array
+     */
+    protected function _getTargetRuleProducts()
+    {
+        $excludeProductIds = $this->_getExcludeProductIds();
+        $limit = $this->getPositionLimit();
+        $productIds = $this->_byLastAddedProduct
+            ? $this->_getProductIdsFromIndexByProduct($this->getLastAddedProduct(), $limit, $excludeProductIds)
+            : $this->_getProductIdsFromIndexForCartProducts($limit, $excludeProductIds);
+
+        $items = array();
+        if ($productIds) {
+            $collection = $this->_getProductCollectionByIds($productIds);
+            foreach ($collection as $product) {
+                $items[$product->getEntityId()] = $product;
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * Get linked products
+     *
+     * @return array
+     */
+    protected function _getLinkProducts()
+    {
+        $items = array();
+        $collection = $this->getLinkCollection();
+        if ($collection) {
+            if ($this->_byLastAddedProduct) {
+                $collection->addProductFilter($this->getLastAddedProduct()->getEntityId());
+            } else {
+                $filterProductIds = array_merge($this->_getCartProductIds(), $this->_getCartProductIdsRel());
+                $collection->addProductFilter($filterProductIds);
+            }
+            $collection->addExcludeProductFilter($this->_getExcludeProductIds());
+
+            foreach ($collection as $product) {
+                $items[$product->getEntityId()] = $product;
+            }
+        }
+        return $items;
+    }
+
+    /**
      * Retrieve array of cross-sell products
      *
      * @return array
@@ -366,37 +388,19 @@ class Enterprise_TargetRule_Block_Checkout_Cart_Crosssell extends Mage_Catalog_B
     {
         if (is_null($this->_items)) {
             // if has just added product to cart - load cross-sell products for it
-            $this->_items = $this->_getProductsByLastAddedProduct();
-
+            $productsByLastAdded = $this->_getProductsByLastAddedProduct();
             $limit = $this->getPositionLimit();
-            $count = $limit - count($this->_items);
-            if ($count > 0) {
-                $excludeProductIds = array_merge(array_keys($this->_items), $this->_getCartProductIds());
-                $filterProductIds = array_merge($this->_getCartProductIds(), $this->_getCartProductIdsRel());
-                if (in_array($this->getPositionBehavior(), $this->getSelectedBehaviorPositions())) {
-                    $collection = $this->_getLinkCollection()
-                        ->addProductFilter($filterProductIds)
-                        ->addExcludeProductFilter($excludeProductIds)
-                        ->setPositionOrder()
-                        ->setPageSize($count);
-
-                    foreach ($collection as $product) {
-                        $this->_items[$product->getEntityId()] = $product;
-                        $excludeProductIds[] = $product->getEntityId();
-                    }
-                }
-
-                $count = $limit - count($this->_items);
-                if (in_array($this->getPositionBehavior(), $this->getRuleBasedBehaviorPositions()) && $count > 0) {
-                    $productIds = $this->_getProductIdsFromIndexForCartProducts($count, $excludeProductIds);
-                    if ($productIds) {
-                        $collection = $this->_getProductCollectionByIds($productIds);
-                        foreach ($collection as $product) {
-                            $this->_items[$product->getEntityId()] = $product;
-                        }
-                    }
-                }
+            if (count($productsByLastAdded) < $limit) {
+                // reset collection
+                $this->_linkCollection = null;
+                parent::getItemCollection();
+                // products by last added are preferable
+                $this->_items = $productsByLastAdded + $this->_items;
+                $this->_sliceItems();
+            } else {
+                $this->_items = $productsByLastAdded;
             }
+            $this->_orderProductItems();
         }
         return $this->_items;
     }
@@ -419,5 +423,16 @@ class Enterprise_TargetRule_Block_Checkout_Cart_Crosssell extends Mage_Catalog_B
     public function getItemsCount()
     {
         return count($this->getItemCollection());
+    }
+
+    /**
+     * Retrieve linked as cross-sell product collection
+     *
+     * @deprecated after 1.11.0.2 use getLinkCollection() instead
+     * @return Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Link_Product_Collection
+     */
+    protected function _getLinkCollection()
+    {
+        return $this->getLinkCollection();
     }
 }

@@ -174,19 +174,42 @@ class Enterprise_CustomerSegment_Model_Resource_Segment extends Mage_Core_Model_
     {
         $sqlOperator = $this->getSqlOperator($operator);
         $condition = '';
+
+        if (!is_array($value)) {
+            $prepareValues = explode(',', $value);
+            if (count($prepareValues) <= 1) {
+                $value = $prepareValues[0];
+            } else {
+                $value = array();
+                foreach ($prepareValues as $val) {
+                    $value[] = trim($val);
+                }
+            }
+        }
         switch ($operator) {
             case '{}':
             case '!{}':
                 if (is_array($value)) {
                     if (!empty($value)) {
-                        $sqlOperator = ($operator == '{}') ? 'IN' : 'NOT IN';
-                        $condition = $this->_getReadAdapter()->quoteInto(
-                            $field.' '.$sqlOperator.' (?)', $value
-                        );
+                        $condition = array();
+                        foreach ($value as $val) {
+                            $condition[] = $this->_getReadAdapter()->quoteInto(
+                                $field.' '.$sqlOperator.' ?', '%'.$val.'%'
+                            );
+                        }
+                        $condition = implode(' AND ', $condition);
                     }
                 } else {
                     $condition = $this->_getReadAdapter()->quoteInto(
                         $field.' '.$sqlOperator.' ?', '%'.$value.'%'
+                    );
+                }
+                break;
+            case '()':
+            case '!()':
+                if (is_array($value) && !empty($value)) {
+                    $condition = $this->_getReadAdapter()->quoteInto(
+                        $field.' '.$sqlOperator.' (?)', $value
                     );
                 }
                 break;

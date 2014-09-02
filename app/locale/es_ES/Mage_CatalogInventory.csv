@@ -28,7 +28,7 @@
 "Out of Stock","Sin Existencias"
 "Product Stock Options","Opciones de Existencias de Producto"
 "Qty Increments","Incrementos de Cantidad"
-"Qty for Items' Status to Become Out of Stock","Cantidad para que el Estado de los Artículos Llegue a Ser Sin Existencias"
+"Qty for Item\'s Status to Become Out of Stock","Cantidad para que el Estado de los Artículos Llegue a Ser Sin Existencias"
 "Retrieve stock data","Recuperar datos de existencias"
 "Retrieve stock data by product ids","Recuperar datos de existencias por identificadores de producto"
 "Rule price","Regla de precio"

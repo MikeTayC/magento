@@ -552,7 +552,7 @@ class Enterprise_Cms_Model_Hierarchy_Node extends Mage_Core_Model_Abstract
     public function getMenuLayout()
     {
         $rootParams = $this->_getResource()->getTreeMetaData($this);
-        if (!isset($rootParams['menu_layout'])) {
+        if (!array_key_exists('menu_layout', $rootParams)) {
             return null;
         }
         $layoutCode = $rootParams['menu_layout'];

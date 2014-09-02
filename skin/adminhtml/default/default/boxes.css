@@ -345,6 +345,7 @@ input.input-text,textarea       { padding:2px; }
 input.qty                       { width:40px !important; }
 input.item-qty                  { width:22px !important; }
 input.price                     { width:50px !important; text-align:right; }
+input[type=text].disabled       { background:#eee; }
 select optgroup                 { font-style:normal; }
 select optgroup option          { padding-left:10px; }
 select optgroup option.even     { background:#f6f6f6; } /* Zebra even-row */

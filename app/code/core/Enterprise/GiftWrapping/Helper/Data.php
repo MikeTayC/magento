@@ -154,7 +154,8 @@ class Enterprise_GiftWrapping_Helper_Data extends Mage_Core_Helper_Abstract
     public function displayCartWrappingIncludeTaxPrice($store = null)
     {
         $configValue = Mage::getStoreConfig(self::XML_PATH_PRICE_DISPLAY_CART_WRAPPING, $store);
-        return $configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH || $configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_INCLUDING_TAX;
+        return ($configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH
+            || $configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_INCLUDING_TAX);
     }
 
     /**
@@ -190,7 +191,8 @@ class Enterprise_GiftWrapping_Helper_Data extends Mage_Core_Helper_Abstract
     public function displayCartCardIncludeTaxPrice($store = null)
     {
         $configValue = Mage::getStoreConfig(self::XML_PATH_PRICE_DISPLAY_CART_PRINTED_CARD, $store);
-        return $configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH || $configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_INCLUDING_TAX;
+        return ($configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH
+            || $configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_INCLUDING_TAX);
     }
 
     /**
@@ -214,7 +216,8 @@ class Enterprise_GiftWrapping_Helper_Data extends Mage_Core_Helper_Abstract
     public function displaySalesWrappingIncludeTaxPrice($store = null)
     {
         $configValue = Mage::getStoreConfig(self::XML_PATH_PRICE_DISPLAY_SALES_WRAPPING, $store);
-        return $configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH || $configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_INCLUDING_TAX;
+        return ($configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH
+            || $configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_INCLUDING_TAX);
     }
 
     /**
@@ -250,7 +253,8 @@ class Enterprise_GiftWrapping_Helper_Data extends Mage_Core_Helper_Abstract
     public function displaySalesCardIncludeTaxPrice($store = null)
     {
         $configValue = Mage::getStoreConfig(self::XML_PATH_PRICE_DISPLAY_SALES_PRINTED_CARD, $store);
-        return $configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH || $configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_INCLUDING_TAX;
+        return ($configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH
+            || $configValue == Mage_Tax_Model_Config::DISPLAY_TYPE_INCLUDING_TAX);
     }
 
     /**
@@ -298,13 +302,6 @@ class Enterprise_GiftWrapping_Helper_Data extends Mage_Core_Helper_Abstract
          * Gift wrapping for order totals
          */
         if ($displayWrappingBothPrices || $displayWrappingIncludeTaxPrice) {
-            $this->_addTotalToTotals(
-                $totals,
-                'gw_order_incl',
-                $dataObject->getGwPrice() + $dataObject->getGwTaxAmount(),
-                $dataObject->getGwBasePrice() + $dataObject->getGwBaseTaxAmount(),
-                $this->__('Gift Wrapping for Order (Incl. Tax)')
-            );
             if ($displayWrappingBothPrices) {
                 $this->_addTotalToTotals(
                     $totals,
@@ -314,6 +311,13 @@ class Enterprise_GiftWrapping_Helper_Data extends Mage_Core_Helper_Abstract
                     $this->__('Gift Wrapping for Order (Excl. Tax)')
                 );
             }
+            $this->_addTotalToTotals(
+                $totals,
+                'gw_order_incl',
+                $dataObject->getGwPrice() + $dataObject->getGwTaxAmount(),
+                $dataObject->getGwBasePrice() + $dataObject->getGwBaseTaxAmount(),
+                $this->__('Gift Wrapping for Order (Incl. Tax)')
+            );
         } else {
             $this->_addTotalToTotals(
                 $totals,
@@ -422,15 +426,21 @@ class Enterprise_GiftWrapping_Helper_Data extends Mage_Core_Helper_Abstract
      * @param  mixed $store
      * @return float
      */
-    public function getPrice($item, $price, $includeTax = false, $shippingAddress = null, $billingAddress = null, $ctc = null, $store = null)
-    {
-       if (!$price) {
+    public function getPrice($item, $price, $includeTax = false, $shippingAddress = null, $billingAddress = null,
+        $ctc = null, $store = null
+    ) {
+        if (!$price) {
             return $price;
         }
         $store = Mage::app()->getStore($store);
         $taxClassId = $item->getTaxClassId();
         if ($taxClassId && $includeTax) {
-            $request = Mage::getSingleton('tax/calculation')->getRateRequest($shippingAddress, $billingAddress, $ctc, $store);
+            $request = Mage::getSingleton('tax/calculation')->getRateRequest(
+                $shippingAddress,
+                $billingAddress,
+                $ctc,
+                $store
+            );
             $percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxClassId));
             if ($percent) {
                 $price = $price * (1 + ($percent / 100));

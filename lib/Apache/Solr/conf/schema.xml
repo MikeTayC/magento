@@ -231,7 +231,7 @@
         <tokenizer class="solr.KeywordTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.TrimFilterFactory"/>
-        <filter class="solr.PatternReplaceFilterFactory" pattern="([^a-z0-9])" replacement="" replace="all"/>
+        <!--<filter class="solr.PatternReplaceFilterFactory" pattern="([^a-z0-9])" replacement="" replace="all"/>-->
       </analyzer>
     </fieldType>
 
@@ -1463,10 +1463,7 @@
         <!--
         Text fields
         -->
-
         <field name="sku" type="textTight_en" indexed="true" omitNorms="true"/>
-        <field name="name" type="textgen" indexed="true"/>
-        <field name="fulltext" type="textgen" indexed="true"/>
 
         <!--A field designed for sorting by name, its value will be pasted from name field-->
         <field name="alphaNameSort"    type="alphaOnlySort"    indexed="true" stored="false"/>
@@ -1516,6 +1513,7 @@
         <dynamicField name="price_*" type="tfloat" indexed="true"/>
         <dynamicField name="position_category_*" type="int" indexed="true"/>
 
+        <dynamicField name="*_def" type="textgen" indexed="true"/>
         <dynamicField name="*_en" type="text_en" indexed="true"/>
         <dynamicField name="*_fr" type="text_fr" indexed="true"/>
         <dynamicField name="*_de" type="text_de" indexed="true"/>
@@ -1537,6 +1535,7 @@
         <dynamicField name="*_ja" type="text_ja" indexed="true"/>
         <dynamicField name="*_ko" type="text_ko" indexed="true"/>
 
+        <field name="fulltext_spell_def" type="textgen"/>
         <field name="fulltext_spell_en" type="textSpell_en"/>
         <field name="fulltext_spell_fr" type="textSpell_fr"/>
         <field name="fulltext_spell_de" type="textSpell_de"/>
@@ -1565,13 +1564,13 @@
     <uniqueKey>unique</uniqueKey>
 
     <!-- field for the QueryParser to use when an explicit fieldname is absent. -->
-    <defaultSearchField>fulltext</defaultSearchField>
+    <defaultSearchField>sku</defaultSearchField>
 
     <!-- SolrQueryParser configuration: defaultOperator="AND|OR". -->
     <solrQueryParser defaultOperator="OR"/>
 
     <!-- copy name to alphaNameSort, a field designed for sorting by name -->
-    <copyField source="name"    dest="alphaNameSort"/>
+    <copyField source="name_def" dest="alphaNameSort"/>
     <copyField source="name_en" dest="alphaNameSort_en"/>
     <copyField source="name_fr" dest="alphaNameSort_fr"/>
     <copyField source="name_de" dest="alphaNameSort_de"/>

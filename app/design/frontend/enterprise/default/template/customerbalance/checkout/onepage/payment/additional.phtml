@@ -87,6 +87,7 @@
             }
             if ($('use_customer_balance').checked) {
                 $('checkout-payment-method-load').hide();
+                payment.switchMethod();
             }
         } else {
             var elements = Form.getElements(this.form);
@@ -96,6 +97,7 @@
                 }
             }
             $('checkout-payment-method-load').show();
+            payment.switchMethod(payment.lastUsedMethod);
         }
     }
 

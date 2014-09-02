@@ -66,13 +66,24 @@
                     }
                 }
                 if (elements[i].name == 'payment[method]' && elements[i].value == 'free') {
-                    elements[i].checked = false;
-                    elements[i].disabled = true;
-                    $(elements[i].parentNode).hide();
+                    if ($('use_reward_points').checked) {
+                        elements[i].checked = false;
+                        elements[i].disabled = true;
+                        $(elements[i].parentNode).hide();
+                    } else {
+                        elements[i].checked = true;
+                        elements[i].disabled = false;
+                        $(elements[i].parentNode).show();
+                        payment.switchMethod('free');
+                    }
                 }
             }
             if ($('use_reward_points').checked) {
                 $('checkout-payment-method-load').hide();
+                payment.switchMethod();
+            } else {
+                $('checkout-payment-method-load').show();
+                payment.switchMethod(payment.lastUsedMethod);
             }
         } else {
             var elements = Form.getElements(this.form);
@@ -82,6 +93,7 @@
                 }
             }
             $('checkout-payment-method-load').show();
+            payment.switchMethod(payment.lastUsedMethod);
         }
     }
     if (payment) {

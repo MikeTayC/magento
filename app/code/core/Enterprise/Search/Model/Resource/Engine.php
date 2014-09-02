@@ -70,14 +70,61 @@ class Enterprise_Search_Model_Resource_Engine
 
 
 
+
+
+    /**
+     * Check if hold commit action is possible depending on current commit mode
+     *
+     * @return bool
+     */
+    protected function _canHoldCommit()
+    {
+        $commitMode = Mage::getStoreConfig(
+            Enterprise_Search_Model_Indexer_Indexer::SEARCH_ENGINE_INDEXATION_COMMIT_MODE_XML_PATH
+        );
+
+        return $commitMode == Enterprise_Search_Model_Indexer_Indexer::SEARCH_ENGINE_INDEXATION_COMMIT_MODE_FINAL
+            || $commitMode == Enterprise_Search_Model_Indexer_Indexer::SEARCH_ENGINE_INDEXATION_COMMIT_MODE_ENGINE;
+    }
+
+    /**
+     * Check if allow commit action is possible depending on current commit mode
+     *
+     * @return bool
+     */
+    protected function _canAllowCommit()
+    {
+        $commitMode = Mage::getStoreConfig(
+            Enterprise_Search_Model_Indexer_Indexer::SEARCH_ENGINE_INDEXATION_COMMIT_MODE_XML_PATH
+        );
+
+        return $commitMode == Enterprise_Search_Model_Indexer_Indexer::SEARCH_ENGINE_INDEXATION_COMMIT_MODE_FINAL
+            || $commitMode == Enterprise_Search_Model_Indexer_Indexer::SEARCH_ENGINE_INDEXATION_COMMIT_MODE_PARTIAL;
+    }
+
+    /**
+     * Initialize search engine adapter
+     *
+     * @return Enterprise_Search_Model_Resource_Engine
+     */
+    protected function _initAdapter()
+    {
+        $this->_adapter = $this->_getAdapterModel('solr');
+
+        $this->_adapter->setAdvancedIndexFieldPrefix($this->getFieldsPrefix());
+        if (!$this->_canAllowCommit()) {
+            $this->_adapter->holdCommit();
+        }
+
+        return $this;
+    }
+
     /**
      * Set search engine adapter
-     *
      */
     public function __construct()
     {
-        $this->_adapter = $this->_getAdapterModel('solr');
-        $this->_adapter->setAdvancedIndexFieldPrefix($this->getFieldsPrefix());
+        $this->_initAdapter();
     }
 
     /**
@@ -104,7 +151,7 @@ class Enterprise_Search_Model_Resource_Engine
      * Retrieve found document ids search index sorted by relevance
      *
      * @param string $query
-     * @param array $params see description in appropriate search adapter
+     * @param array  $params see description in appropriate search adapter
      * @param string $entityType 'product'|'cms'
      * @return array
      */
@@ -114,32 +161,29 @@ class Enterprise_Search_Model_Resource_Engine
     }
 
     /**
-     * Retrieve found document statuses
+     * Retrieve results for search request
      *
-     * @param string $query
-     * @param array $params
-     * @param string $entityType
+     * @param  string $query
+     * @param  array  $params
+     * @param  string $entityType 'product'|'cms'
+     * @return array
+     */
+    public function getResultForRequest($query, $params = array(), $entityType = 'product')
+    {
+        return $this->_adapter->search($query, $params);
+    }
+
+    /**
+     * Get stat info using engine search stats component
+     *
+     * @param  string $query
+     * @param  array  $params
+     * @param  string $entityType 'product'|'cms'
      * @return array
      */
     public function getStats($query, $params = array(), $entityType = 'product')
     {
         return $this->_adapter->getStats($query, $params);
-    }
-
-    /**
-     * Retrieve search suggestions
-     *
-     * @deprecated after 1.9.0.0
-     *
-     * @param string $query
-     * @param array $params see description in appropriate search adapter
-     * @param int|bool $limit
-     * @param bool $withResultsCounts
-     * @return array
-     */
-    public function getSuggestionsByQuery($query, $params = array(), $limit = false, $withResultsCounts = false)
-    {
-        return $this->_adapter->getSuggestionsByQuery($query, $params, $limit, $withResultsCounts);
     }
 
     /**
@@ -157,7 +201,9 @@ class Enterprise_Search_Model_Resource_Engine
         $localeCode        = $store->getConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_LOCALE);
         $index['store_id'] = $storeId;
         $docs = $this->_adapter->prepareDocs(array($entityId => $index), $localeCode);
+
         $this->_adapter->addDocs($docs);
+
         return $this;
     }
 
@@ -180,26 +226,6 @@ class Enterprise_Search_Model_Resource_Engine
         $docs = $this->_adapter->prepareDocs($entityIndexes, $localeCode);
 
         $this->_adapter->addDocs($docs);
-        return $this;
-    }
-
-    /**
-     * Refresh products indexes affected on category update
-     *
-     * @param array $productIds
-     * @param array $categoryIds
-     * @return Enterprise_Search_Model_Resource_Engine
-     */
-    public function updateCategoryIndex($productIds, $categoryIds)
-    {
-        if (!is_array($productIds) || empty($productIds)) {
-            $productIds = Mage::getResourceSingleton('enterprise_search/index')
-                ->getMovedCategoryProductIds($categoryIds[0]);
-        }
-
-        if (!empty($productIds)) {
-            Mage::getResourceSingleton('catalogsearch/fulltext')->rebuildIndex(null, $productIds);
-        }
 
         return $this;
     }
@@ -361,18 +387,6 @@ class Enterprise_Search_Model_Resource_Engine
     /**
      * Define if Layered Navigation is allowed
      *
-     * @deprecated after 1.9.1 - use $this->isLayeredNavigationAllowed()
-     *
-     * @return bool
-     */
-    public function isLeyeredNavigationAllowed()
-    {
-        $this->isLayeredNavigationAllowed();
-    }
-
-    /**
-     * Define if Layered Navigation is allowed
-     *
      * @return bool
      */
     public function isLayeredNavigationAllowed()
@@ -382,7 +396,7 @@ class Enterprise_Search_Model_Resource_Engine
 
     /**
      * Retrieve search engine adapter model by adapter name
-     * Now suppoting only Solr search engine adapter
+     * Now supporting only Solr search engine adapter
      *
      * @param string $adapterName
      * @return object
@@ -412,5 +426,136 @@ class Enterprise_Search_Model_Resource_Engine
     public function test()
     {
         return $this->_adapter->ping();
+    }
+
+    /**
+     * Optimize search engine index
+     *
+     * @return Enterprise_Search_Model_Resource_Engine
+     */
+    public function optimizeIndex()
+    {
+        $this->_adapter->optimize();
+        return $this;
+    }
+
+    /**
+     * Commit search engine index changes
+     *
+     * @return Enterprise_Search_Model_Resource_Engine
+     */
+    public function commitChanges()
+    {
+        $this->_adapter->commit();
+        return $this;
+    }
+
+    /**
+     * Hold commit of changes for adapter.
+     * Can be used for one time commit after full indexation finish.
+     *
+     * @return bool
+     */
+    public function holdCommit()
+    {
+        if ($this->_canHoldCommit()) {
+            $this->_adapter->holdCommit();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Allow commit of changes for adapter
+     *
+     * @return bool
+     */
+    public function allowCommit()
+    {
+        if ($this->_canAllowCommit()) {
+            $this->_adapter->allowCommit();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Define if third party search engine index needs optimization
+     *
+     * @param  bool $state
+     * @return Enterprise_Search_Model_Resource_Engine
+     */
+    public function setIndexNeedsOptimization($state = true)
+    {
+        $this->_adapter->setIndexNeedsOptimization($state);
+        return $this;
+    }
+
+    /**
+     * Check if third party search engine index needs optimization
+     *
+     * @return bool
+     */
+    public function getIndexNeedsOptimization()
+    {
+        return $this->_adapter->getIndexNeedsOptimization();
+    }
+
+
+
+
+
+    /**
+     * Retrieve search suggestions
+     *
+     * @deprecated after 1.9.0.0
+     *
+     * @param  string $query
+     * @param  array $params see description in appropriate search adapter
+     * @param  int|bool $limit
+     * @param  bool $withResultsCounts
+     * @return array
+     */
+    public function getSuggestionsByQuery($query, $params = array(), $limit = false, $withResultsCounts = false)
+    {
+        return $this->_adapter->getSuggestionsByQuery($query, $params, $limit, $withResultsCounts);
+    }
+
+    /**
+     * Define if Layered Navigation is allowed
+     *
+     * @deprecated after 1.9.1
+     * @see $this->isLayeredNavigationAllowed()
+     *
+     * @return bool
+     */
+    public function isLeyeredNavigationAllowed()
+    {
+        $this->isLayeredNavigationAllowed();
+    }
+
+    /**
+     * Refresh products indexes affected on category update
+     *
+     * @deprecated after 1.11.0.0
+     *
+     * @param  array $productIds
+     * @param  array $categoryIds
+     * @return Enterprise_Search_Model_Resource_Engine
+     */
+    public function updateCategoryIndex($productIds, $categoryIds)
+    {
+        if (!is_array($productIds) || empty($productIds)) {
+            $productIds = Mage::getResourceSingleton('enterprise_search/index')
+                ->getMovedCategoryProductIds($categoryIds[0]);
+        }
+
+        if (!empty($productIds)) {
+            Mage::getResourceSingleton('catalogsearch/fulltext')->rebuildIndex(null, $productIds);
+        }
+
+        return $this;
     }
 }

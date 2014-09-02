@@ -107,6 +107,24 @@
                 </observers>
             </adminhtml_catalog_product_attribute_edit_prepare_form>
 
+            <catalogsearch_index_process_start>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>holdCommit</method>
+                    </enterprise_search>
+                </observers>
+            </catalogsearch_index_process_start>
+
+            <catalogsearch_index_process_complete>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>applyIndexChanges</method>
+                    </enterprise_search>
+                </observers>
+            </catalogsearch_index_process_complete>
+
             <catalogsearch_query_save_after>
                 <observers>
                     <enterprise_search>
@@ -238,6 +256,7 @@
                 <solr_server_username>admin</solr_server_username>
                 <solr_server_timeout>15</solr_server_timeout>
                 <solr_server_path>solr</solr_server_path>
+                <engine_commit_mode>0</engine_commit_mode>
                 <solr_server_suggestion_enabled>1</solr_server_suggestion_enabled>
                 <solr_server_suggestion_count>2</solr_server_suggestion_count>
                 <solr_server_suggestion_count_results_enabled>0</solr_server_suggestion_count_results_enabled>

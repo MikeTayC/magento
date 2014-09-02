@@ -82,25 +82,6 @@ class Enterprise_GiftRegistry_Block_Wishlist_View extends Mage_Wishlist_Block_Cu
     }
 
     /**
-     * Retrieve Wishlist Product Items collection
-     *
-     * @return Mage_Wishlist_Model_Mysql4_Item_Collection
-     */
-    public function getWishlistItems()
-    {
-        if (is_null($this->_collection)) {
-            $this->_collection = $this->_getWishlist()
-                ->getItemCollection()
-                ->addStoreFilter()
-                ->setVisibilityFilter();
-
-            $this->_prepareCollection($this->_collection);
-        }
-
-        return $this->_collection;
-    }
-
-    /**
      * Check if wishlist item can be added to gift registry
      *
      * @param Mage_Catalog_Model_Product $item

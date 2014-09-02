@@ -452,6 +452,9 @@ class Mage_Catalog_Model_Product_Type_Configurable extends Mage_Catalog_Model_Pr
 
         if ($salable !== false) {
             $salable = false;
+            if (!is_null($product)) {
+                $this->setStoreFilter($product->getStoreId(), $product);
+            }
             foreach ($this->getUsedProducts(null, $product) as $child) {
                 if ($child->isSalable()) {
                     $salable = true;
@@ -487,6 +490,15 @@ class Mage_Catalog_Model_Product_Type_Configurable extends Mage_Catalog_Model_Pr
     public function getProductByAttributes($attributesInfo, $product = null)
     {
         if (is_array($attributesInfo) && !empty($attributesInfo)) {
+            $productCollection = $this->getUsedProductCollection($product);
+            foreach ($attributesInfo as $attributeId => $attributeValue) {
+                $productCollection->addAttributeToFilter($attributeId, $attributeValue);
+            }
+            $productObject = $productCollection->getFirstItem();
+            if ($productObject->getId()) {
+                return $productObject;
+            }
+
             foreach ($this->getUsedProducts(null, $product) as $productObject) {
                 $checkRes = true;
                 foreach ($attributesInfo as $attributeId => $attributeValue) {
@@ -841,5 +853,17 @@ class Mage_Catalog_Model_Product_Type_Configurable extends Mage_Catalog_Model_Pr
     public function isMapEnabledInOptions($product, $visibility = null)
     {
         return null;
+    }
+
+    /**
+     * Prepare and retrieve options values with product data
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @return array
+     */
+    public function getConfigurableOptions($product)
+    {
+        return Mage::getResourceSingleton('catalog/product_type_configurable')
+            ->getConfigurableOptions($product, $this->getUsedProductAttributes($product));
     }
 }

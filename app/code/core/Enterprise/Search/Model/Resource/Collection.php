@@ -93,6 +93,13 @@ class Enterprise_Search_Model_Resource_Collection
     protected $_generalDefaultQuery = array('*' => '*');
 
     /**
+     * Flag that defines if faceted data needs to be loaded
+     *
+     * @var bool
+     */
+    protected $_facetedDataIsLoaded = false;
+
+    /**
      * Faceted search result data
      *
      * @var array
@@ -114,6 +121,41 @@ class Enterprise_Search_Model_Resource_Collection
     protected $_facetedConditions = array();
 
     /**
+     * Stores original page size, because _pageSize will be unset at _beforeLoad()
+     * to disable limitation for collection at load with parent method
+     *
+     * @var int|bool
+     */
+    protected $_storedPageSize = false;
+
+
+
+
+
+    /**
+     * Load faceted data if not loaded
+     *
+     * @return Enterprise_Search_Model_Resource_Collection
+     */
+    public function loadFacetedData()
+    {
+        if (empty($this->_facetedConditions)) {
+            $this->_facetedData = array();
+            return $this;
+        }
+
+        list($query, $params) = $this->_prepareBaseParams();
+        $params['solr_params']['facet'] = 'on';
+        $params['facet'] = $this->_facetedConditions;
+
+        $result = $this->_engine->getResultForRequest($query, $params);
+        $this->_facetedData = $result['faceted_data'];
+        $this->_facetedDataIsLoaded = true;
+
+        return $this;
+    }
+
+    /**
      * Return field faceted data from faceted search result
      *
      * @param string $field
@@ -122,9 +164,14 @@ class Enterprise_Search_Model_Resource_Collection
      */
     public function getFacetedData($field)
     {
+        if (!$this->_facetedDataIsLoaded) {
+            $this->loadFacetedData();
+        }
+
         if (isset($this->_facetedData[$field])) {
             return $this->_facetedData[$field];
         }
+
         return array();
     }
 
@@ -156,6 +203,8 @@ class Enterprise_Search_Model_Resource_Collection
         } else {
             $this->_facetedConditions[$field] = $condition;
         }
+
+        $this->_facetedDataIsLoaded = false;
 
         return $this;
     }
@@ -215,33 +264,6 @@ class Enterprise_Search_Model_Resource_Collection
         $result = $this->_searchQueryFilters;
         $result['query_text'] = $this->_searchQueryText;
         return $result;
-    }
-
-    /**
-     * Add search query filter (qf)
-     *
-     * @deprecated after 1.9.0.0
-     *
-     * @param   string|array $param
-     * @param   string|array $value
-     * @return  Enterprise_Search_Model_Resource_Collection
-     */
-    public function addSearchQfFilter($param, $value = null)
-    {
-        if (is_array($param)) {
-            foreach ($param as $field => $value) {
-                $this->addSearchQfFilter($field, $value);
-            }
-        } elseif (isset($value)) {
-            if (isset($this->_searchQueryFilters[$param]) && !is_array($this->_searchQueryFilters[$param])) {
-                $this->_searchQueryFilters[$param] = array($this->_searchQueryFilters[$param]);
-                $this->_searchQueryFilters[$param][] = $value;
-            } else {
-                $this->_searchQueryFilters[$param] = $value;
-            }
-        }
-
-        return $this;
     }
 
     /**
@@ -346,20 +368,29 @@ class Enterprise_Search_Model_Resource_Collection
                 $params['limit']   = $rowCount;
             }
 
-            $params['solr_params']['facet'] = 'on';
-            $params['facet'] = $this->_facetedConditions;
+            $needToLoadFacetedData = (!$this->_facetedDataIsLoaded && !empty($this->_facetedConditions));
+            if ($needToLoadFacetedData) {
+                $params['solr_params']['facet'] = 'on';
+                $params['facet'] = $this->_facetedConditions;
+            }
 
             $result = $this->_engine->getIdsByQuery($query, $params);
             $ids    = (array) $result['ids'];
-            $this->_facetedData = $result['facetedData'];
+
+            if ($needToLoadFacetedData) {
+                $this->_facetedData = $result['faceted_data'];
+            }
         }
 
         $this->_searchedEntityIds = &$ids;
         $this->getSelect()->where('e.entity_id IN (?)', $this->_searchedEntityIds);
 
         /**
-         * To prevent limitations to the collection, because of new data logic
+         * To prevent limitations to the collection, because of new data logic.
+         * On load collection will be limited by _pageSize and appropriate offset,
+         * but third party search engine retrieves already limited ids set
          */
+        $this->_storedPageSize = $this->_pageSize;
         $this->_pageSize = false;
 
         return parent::_beforeLoad();
@@ -373,6 +404,7 @@ class Enterprise_Search_Model_Resource_Collection
     protected function _afterLoad()
     {
         parent::_afterLoad();
+
         $sortedItems = array();
         foreach ($this->_searchedEntityIds as $id) {
             if (isset($this->_items[$id])) {
@@ -380,6 +412,11 @@ class Enterprise_Search_Model_Resource_Collection
             }
         }
         $this->_items = &$sortedItems;
+
+        /**
+         * Revert page size for proper paginator ranges
+         */
+        $this->_pageSize = $this->_storedPageSize;
 
         return $this;
     }
@@ -395,24 +432,26 @@ class Enterprise_Search_Model_Resource_Collection
             list($query, $params) = $this->_prepareBaseParams();
             $params['limit'] = 1;
 
-            if ($this->_searchQueryParams != $this->_generalDefaultQuery) {
-                $helper = Mage::helper('enterprise_search');
-                $searchSuggestionsEnabled = $helper->getSolrConfigData('server_suggestion_enabled');
-                if ($searchSuggestionsEnabled) {
-                    $params['solr_params']['spellcheck'] = 'true';
-                    $searchSuggestionsCount = (int) $helper->getSolrConfigData('server_suggestion_count');
-                    if ($searchSuggestionsCount < 1) {
-                        $searchSuggestionsCount = 1;
-                    }
-                    $params['solr_params']['spellcheck.count'] = $searchSuggestionsCount;
-                    $params['spellcheck_result_counts'] = (bool) $helper->getSolrConfigData(
-                        'server_suggestion_count_results_enabled');
+            $helper = Mage::helper('enterprise_search');
+            $searchSuggestionsEnabled = ($this->_searchQueryParams != $this->_generalDefaultQuery
+                    && $helper->getSolrConfigData('server_suggestion_enabled'));
+            if ($searchSuggestionsEnabled) {
+                $params['solr_params']['spellcheck'] = 'true';
+                $searchSuggestionsCount = (int) $helper->getSolrConfigData('server_suggestion_count');
+                if ($searchSuggestionsCount < 1) {
+                    $searchSuggestionsCount = 1;
                 }
+                $params['solr_params']['spellcheck.count']  = $searchSuggestionsCount;
+                $params['spellcheck_result_counts']         = (bool) $helper->getSolrConfigData(
+                    'server_suggestion_count_results_enabled');
             }
 
             $result = $this->_engine->getIdsByQuery($query, $params);
-            $this->_suggestionsData = $result['suggestionsData'];
-            $this->_totalRecords    = $this->_engine->getLastNumFound();
+            if ($searchSuggestionsEnabled) {
+                $this->_suggestionsData = $result['suggestions_data'];
+            }
+
+            $this->_totalRecords = $this->_engine->getLastNumFound();
         }
 
         return $this->_totalRecords;
@@ -437,28 +476,7 @@ class Enterprise_Search_Model_Resource_Collection
             $params['solr_params']['stats.field'][] = $field;
         }
 
-        /**
-         * To prevent limitations to the collection, because of new data logic
-         */
-        $this->_pageSize = false;
-
         return $this->_engine->getStats($query, $params);
-    }
-
-    /**
-     * Retrieve faceted search results
-     *
-     * @deprecated after 1.9.0.0 - integrated into $this->getSize()
-     *
-     * @param  array $params
-     * @return array
-     */
-    public function getFacets($params)
-    {
-        list($query, $params) = $this->_prepareBaseParams();
-        $params['limit'] = 1;
-
-        return (array) $this->_engine->getFacetsByQuery($query, $params);
     }
 
     /**
@@ -518,6 +536,54 @@ class Enterprise_Search_Model_Resource_Collection
         if (is_array($visibility)) {
             foreach ($visibility as $visibilityId) {
                 $this->addFqFilter(array('visibility' => $visibilityId));
+            }
+        }
+
+        return $this;
+    }
+
+
+
+
+
+    /**
+     * Retrieve faceted search results
+     *
+     * @deprecated after 1.9.0.0 - integrated into $this->getSize()
+     *
+     * @param  array $params
+     * @return array
+     */
+    public function getFacets($params)
+    {
+        list($query, $params) = $this->_prepareBaseParams();
+        $params['limit'] = 1;
+
+        return (array) $this->_engine->getFacetsByQuery($query, $params);
+    }
+
+    /**
+     * Add search query filter (qf)
+     *
+     * @deprecated after 1.9.0.0
+     * @see $this->addFqFilter()
+     *
+     * @param   string|array $param
+     * @param   string|array $value
+     * @return  Enterprise_Search_Model_Resource_Collection
+     */
+    public function addSearchQfFilter($param, $value = null)
+    {
+        if (is_array($param)) {
+            foreach ($param as $field => $value) {
+                $this->addSearchQfFilter($field, $value);
+            }
+        } elseif (isset($value)) {
+            if (isset($this->_searchQueryFilters[$param]) && !is_array($this->_searchQueryFilters[$param])) {
+                $this->_searchQueryFilters[$param] = array($this->_searchQueryFilters[$param]);
+                $this->_searchQueryFilters[$param][] = $value;
+            } else {
+                $this->_searchQueryFilters[$param] = $value;
             }
         }
 

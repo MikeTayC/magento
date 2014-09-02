@@ -52,7 +52,6 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Category extends Mage_Catalog
             $productCollection = $this->getLayer()->getProductCollection();
             $facets = $productCollection->getFacetedData('categories');
 
-
             $data = array();
             foreach ($categories as $category) {
                 $categoryId = $category->getId();
@@ -79,37 +78,6 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Category extends Mage_Catalog
     }
 
     /**
-     * Apply category filter to layer
-     *
-     * @param   Zend_Controller_Request_Abstract $request
-     * @param   Mage_Core_Block_Abstract $filterBlock
-     * @return  Mage_Catalog_Model_Layer_Filter_Category
-     */
-    public function apply(Zend_Controller_Request_Abstract $request, $filterBlock)
-    {
-        $filter = (int) $request->getParam($this->getRequestVar());
-        if ($filter) {
-            $this->_categoryId = $filter;
-
-            if (!Mage::registry('current_category_filter')) {
-                Mage::register('current_category_filter', $this->getCategory());
-            }
-
-            $this->_appliedCategory = Mage::getModel('catalog/category')
-                ->setStoreId(Mage::app()->getStore()->getId())
-                ->load($filter);
-
-            if ($this->_isValidCategory($this->_appliedCategory)) {
-                $this->getLayer()->getState()->addFilter(
-                    $this->_createItem($this->_appliedCategory->getName(), $filter)
-                );
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * Add params to faceted search
      *
      * @return Enterprise_Search_Model_Catalog_Layer_Filter_Category
@@ -128,6 +96,10 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Category extends Mage_Catalog
 
         return $this;
     }
+
+
+
+
 
     /**
      * Apply category filter to product collection

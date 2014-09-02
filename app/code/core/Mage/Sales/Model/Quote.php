@@ -892,6 +892,9 @@ class Mage_Sales_Model_Quote extends Mage_Core_Model_Abstract
             $stickWithinParent = $candidate->getParentProductId() ? $parentItem : null;
             $candidate->setStickWithinParent($stickWithinParent);
             $item = $this->_addCatalogProduct($candidate, $candidate->getCartQty());
+            if($request->getResetCount() && !$stickWithinParent && $item->getId() === $request->getId()) {
+                $item->setData('qty', 0);
+            }
             $items[] = $item;
 
             /**
@@ -1025,6 +1028,7 @@ class Mage_Sales_Model_Quote extends Mage_Core_Model_Abstract
         $params->setCurrentConfig($item->getBuyRequest());
         $buyRequest = Mage::helper('catalog/product')->addParamsToBuyRequest($buyRequest, $params);
 
+        $buyRequest->setResetCount(true);
         $resultItem = $this->addProduct($product, $buyRequest);
 
         if (is_string($resultItem)) {
@@ -1527,25 +1531,36 @@ class Mage_Sales_Model_Quote extends Mage_Core_Model_Abstract
         $storeId = $this->getStoreId();
         $minOrderActive = Mage::getStoreConfigFlag('sales/minimum_order/active', $storeId);
         $minOrderMulti  = Mage::getStoreConfigFlag('sales/minimum_order/multi_address', $storeId);
+        $minAmount      = Mage::getStoreConfig('sales/minimum_order/amount', $storeId);
 
         if (!$minOrderActive) {
             return true;
         }
 
+        $addresses = $this->getAllAddresses();
+
         if ($multishipping) {
             if ($minOrderMulti) {
+                foreach ($addresses as $address) {
+                    foreach ($address->getQuote()->getItemsCollection() as $item) {
+                        $amount = $item->getBaseRowTotal() - $item->getBaseDiscountAmount();
+                        if ($amount < $minAmount) {
+                            return false;
+                        }
+                    }
+                }
+            } else {
                 $baseTotal = 0;
-                foreach ($this->getAllAddresses() as $address) {
+                foreach ($addresses as $address) {
                     /* @var $address Mage_Sales_Model_Quote_Address */
                     $baseTotal += $address->getBaseSubtotalWithDiscount();
                 }
-
-                if ($baseTotal < Mage::getStoreConfig('sales/minimum_order/amount', $storeId)) {
+                if ($baseTotal < $minAmount) {
                     return false;
                 }
             }
         } else {
-            foreach ($this->getAllAddresses() as $address) {
+            foreach ($addresses as $address) {
                 /* @var $address Mage_Sales_Model_Quote_Address */
                 if (!$address->validateMinimumAmount()) {
                     return false;

@@ -23,6 +23,14 @@
  * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+
+/**
+ * Tab design Accordion Images xml renderer
+ *
+ * @category     Mage
+ * @package      Mage_Xmlconnect
+ * @author       Magento Core Team <core@magentocommerce.com>
+ */
 class Mage_XmlConnect_Block_Adminhtml_Mobile_Edit_Tab_Design_Accordion_Images
     extends Mage_XmlConnect_Block_Adminhtml_Mobile_Widget_Form
 {

@@ -317,8 +317,6 @@
             <admingws>
                 <acl_deny>
                     <website_level>
-                        
-                        
                     </website_level>
                     <store_level>
                         <sales_order_create>admin/sales/order/actions/create</sales_order_create>
@@ -378,6 +376,7 @@
                     <enterprise_reward__reward_collection>limitRewardBalanceWebsites</enterprise_reward__reward_collection>
                     <enterprise_giftregistry__entity_collection>limitGiftRegistryEntityWebsites</enterprise_giftregistry__entity_collection>
                     <review__review_product_collection>limitProductReviews</review__review_product_collection>
+                    <enterprise_rma__rma_grid_collection>addStoreAttributeToFilter</enterprise_rma__rma_grid_collection>
                 </collection_load_before>
                 <model_save_before>
                     <cms__page>cmsPageSaveBefore</cms__page>
@@ -553,6 +552,7 @@
                     <adminhtml__giftregistry_customer__share>validateGiftregistryEntityAction</adminhtml__giftregistry_customer__share>
                     <adminhtml__customer_attribute__>validateCustomerAttributeActions</adminhtml__customer_attribute__>
                     <adminhtml__customer_address_attribute__>validateCustomerAttributeActions</adminhtml__customer_address_attribute__>
+                    <adminhtml__rma__new>validateSalesOrderViewAction</adminhtml__rma__new>
                 </controller_predispatch>
                 <block_html_before>
                     <adminhtml__customer>widgetCustomerGridContainer</adminhtml__customer>

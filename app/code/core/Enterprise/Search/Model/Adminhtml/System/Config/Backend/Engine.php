@@ -36,15 +36,16 @@ class Enterprise_Search_Model_Adminhtml_System_Config_Backend_Engine extends Mag
 {
     /**
      * After save call
+     * Invalidate catalog search index if engine was changed
      *
      * @return Enterprise_Search_Model_Adminhtml_System_Config_Backend_Engine
      */
     protected function _afterSave()
     {
         parent::_afterSave();
+
         if ($this->isValueChanged()) {
-            $indexer = Mage::getSingleton('index/indexer');
-            $indexer->getProcessByCode('catalogsearch_fulltext')
+            Mage::getSingleton('index/indexer')->getProcessByCode('catalogsearch_fulltext')
                 ->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
         }
 

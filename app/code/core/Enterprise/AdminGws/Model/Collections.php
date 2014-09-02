@@ -61,7 +61,9 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
      */
     public function limitStoreGroups($collection)
     {
-        $collection->addFieldToFilter('group_id', array('in'=>array_merge($this->_role->getStoreGroupIds(), array(0))));
+        $collection->addFieldToFilter('group_id',
+            array('in'=>array_merge($this->_role->getStoreGroupIds(), array(0)))
+        );
     }
 
     /**
@@ -135,7 +137,7 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
     /**
      * Limit product reviews collection
      *
-     * @param Mage_Review_Model_Mysql4_Review_Product_Collection
+     * @param Mage_Review_Model_Mysql4_Review_Product_Collection $collection
      */
     public function limitProductReviews($collection)
     {
@@ -310,7 +312,7 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
     /**
      * Filter sales collection by allowed stores
      *
-     * @param Varien_Event_Observer $collection
+     * @param Varien_Event_Observer $observer
      */
     public function addSalesSaleCollectionStoreFilter($observer)
     {
@@ -333,6 +335,23 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
     }
 
     /**
+     * Sets admin role. This is vital for limitProducts(), otherwise getRelevantWebsiteIds() returns an empty array.
+     *
+     * @return Enterprise_AdminGws_Model_Collections
+     */
+    protected function _initRssAdminRole()
+    {
+        /* @var $rssSession Mage_Rss_Model_Session */
+        $rssSession = Mage::getSingleton('rss/session');
+        /* @var $adminUser Mage_Admin_Model_User */
+        $adminUser = $rssSession->getAdmin();
+        if ($adminUser) {
+            $this->_role->setAdminRole($adminUser->getRole());
+        }
+        return $this;
+    }
+
+    /**
      * Apply websites filter on collection used in notify stock rss
      *
      * @param Varien_Event_Observer $observer
@@ -341,7 +360,7 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
     public function rssCatalogNotifyStockCollectionSelect($observer)
     {
         $collection = $observer->getEvent()->getCollection();
-        $this->limitProducts($collection);
+        $this->_initRssAdminRole()->limitProducts($collection);
         return $this;
     }
 
@@ -354,7 +373,7 @@ class Enterprise_AdminGws_Model_Collections extends Enterprise_AdminGws_Model_Ob
     public function rssCatalogReviewCollectionSelect($observer)
     {
         $collection = $observer->getEvent()->getCollection();
-        $this->limitProducts($collection);
+        $this->_initRssAdminRole()->limitProducts($collection);
         return $this;
     }
 

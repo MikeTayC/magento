@@ -145,10 +145,13 @@
             <enterprise_targetrule>
                 <related_position_limit>6</related_position_limit>
                 <related_position_behavior>0</related_position_behavior>
+                <related_rotation_mode>0</related_rotation_mode>
                 <crosssell_position_limit>5</crosssell_position_limit>
                 <crosssell_position_behavior>0</crosssell_position_behavior>
+                <crosssell_rotation_mode>0</crosssell_rotation_mode>
                 <upsell_position_limit>8</upsell_position_limit>
                 <upsell_position_behavior>0</upsell_position_behavior>
+                <upsell_rotation_mode>0</upsell_rotation_mode>
             </enterprise_targetrule>
         </catalog>
     </default>

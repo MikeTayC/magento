@@ -288,7 +288,7 @@ class Enterprise_SalesArchive_Model_Resource_Archive extends Mage_Core_Model_Res
         $updatedAtIndex = array_search('updated_at', $insertFields);
         if ($updatedAtIndex !== false) {
             unset($insertFields[$updatedAtIndex]);
-            $insertFields['updated_at'] = new Zend_Db_Expr("'".$this->formatDate(true)."'");
+            $insertFields['updated_at'] = new Zend_Db_Expr("'" . $this->formatDate(true) . "'");
         }
 
         $select = $adapter->select()
@@ -296,6 +296,11 @@ class Enterprise_SalesArchive_Model_Resource_Archive extends Mage_Core_Model_Res
 
         if (!empty($conditionField)) {
             $select->where($adapter->quoteIdentifier($conditionField) . ' IN(?)', $conditionValue);
+        }
+
+        if ($updatedAtIndex !== false) {
+            unset($insertFields['updated_at']);
+            $insertFields[$updatedAtIndex] = 'updated_at';
         }
 
         $adapter->query($select->insertFromSelect($targetTable, $insertFields, true));

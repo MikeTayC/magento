@@ -227,6 +227,7 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
      * Remove gift card from quote gift card storage
      *
      * @param bool $saveQuote
+     * @param Mage_Sales_Model_Quote|null $quote
      * @return Enterprise_GiftCardAccount_Model_Giftcardaccount
      */
     public function removeFromCart($saveQuote = true, $quote = null)
@@ -240,13 +241,13 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
 
         $cards = Mage::helper('enterprise_giftcardaccount')->getCards($quote);
         if ($cards) {
-            foreach ($cards as $k=>$one) {
+            foreach ($cards as $k => $one) {
                 if ($one['i'] == $this->getId()) {
                     unset($cards[$k]);
                     Mage::helper('enterprise_giftcardaccount')->setCards($quote, $cards);
 
                     if ($saveQuote) {
-                        $quote->save();
+                        $quote->collectTotals()->save();
                     }
                     return $this;
                 }

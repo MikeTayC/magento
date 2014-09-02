@@ -154,7 +154,7 @@ class Enterprise_Reminder_Model_Rule_Condition_Wishlist_Attributes
 
         if ($attribute->getAttributeCode() == 'category_ids') {
             $condition = $resource->createConditionSql(
-                'cat.category_id', $this->getOperator(), explode(',', $this->getValue())
+                'cat.category_id', $this->getOperatorForValidate(), $this->getValueParsed()
             );
             $categorySelect = $resource->createSelect();
             $categorySelect->from(array('cat' => $resource->getTable('catalog/category_product')), 'product_id')

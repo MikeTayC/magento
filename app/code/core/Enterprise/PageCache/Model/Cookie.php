@@ -55,6 +55,11 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
     const COOKIE_CATEGORY_PROCESSOR = 'CATEGORY_INFO';
 
     /**
+     * Cookie to store last visited category id
+     */
+    const COOKIE_CATEGORY_ID = 'LAST_CATEGORY';
+
+    /**
      * Encryption salt value
      *
      * @var sting
@@ -91,8 +96,9 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
      * @param int|bool $secure
      * @return Mage_Core_Model_Cookie
      */
-    public function setObscure($name, $value, $period = null, $path = null, $domain = null, $secure = null, $httponly = null)
-    {
+    public function setObscure(
+        $name, $value, $period = null, $path = null, $domain = null, $secure = null, $httponly = null
+    ) {
         $value = md5($this->_getSalt() . $value);
         return $this->set($name, $value, $period, $path, $domain, $secure, $httponly);
     }
@@ -180,5 +186,15 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
     public static function getCategoryCookieValue()
     {
         return (isset($_COOKIE[self::COOKIE_CATEGORY_PROCESSOR])) ? $_COOKIE[self::COOKIE_CATEGORY_PROCESSOR] : false;
+    }
+
+    /**
+     * Set cookie with visited category id
+     *
+     * @param int $id
+     */
+    public static function setCategoryViewedCookieValue($id)
+    {
+        setcookie(self::COOKIE_CATEGORY_ID, $id, 0, '/');
     }
 }
