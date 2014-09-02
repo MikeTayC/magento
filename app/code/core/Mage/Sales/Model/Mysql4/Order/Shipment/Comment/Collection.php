@@ -47,7 +47,7 @@ class Mage_Sales_Model_Mysql4_Order_Shipment_Comment_Collection extends Mage_Sal
      */
     protected function _construct()
     {
-    	parent::_construct();
+        parent::_construct();
         $this->_init('sales/order_shipment_comment');
     }
 

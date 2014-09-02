@@ -82,4 +82,21 @@ class Enterprise_Search_Model_Observer
         Mage::getResourceModel('enterprise_search/recommendations')
             ->saveRelatedQueries($queryId, $relatedQueries);
     }
+
+    /**
+     * Invalidate catalog search index after creating of new customer group or changing tax class of existing,
+     * because there are all combinations of customer groups and websites per price stored at search engine index
+     * and there will be no document's price field for customers that belong to new group or data will be not actual.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function customerGroupSaveAfter(Varien_Event_Observer $observer)
+    {
+        $object = $observer->getEvent()->getDataObject();
+
+        if ($object->isObjectNew() || $object->getTaxClassId() != $object->getOrigData('tax_class_id')) {
+            Mage::getSingleton('index/indexer')->getProcessByCode('catalogsearch_fulltext')
+                ->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
+        }
+    }
 }

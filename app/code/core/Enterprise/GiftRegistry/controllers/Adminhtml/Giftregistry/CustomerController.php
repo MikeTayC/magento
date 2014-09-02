@@ -53,15 +53,30 @@ class Enterprise_GiftRegistry_Adminhtml_Giftregistry_CustomerController extends 
      */
     public function editAction()
     {
-        $model = $this->_initEntity();
-        $customer = Mage::getModel('customer/customer')->load($model->getCustomerId());
+        try {
+            $model = $this->_initEntity();
+            $customer = Mage::getModel('customer/customer')->load($model->getCustomerId());
 
-        $this->_title($this->__('Customers'));
-        $this->_title($this->__('Manage Customers'));
-        $this->_title($this->__($customer->getName()));
-        $this->_title($this->__("Edit '%s' Gift Registry", $model->getTitle()));
+            $this->_title($this->__('Customers'));
+            $this->_title($this->__('Manage Customers'));
+            $this->_title($this->__($customer->getName()));
+            $this->_title($this->__("Edit '%s' Gift Registry", $model->getTitle()));
 
-        $this->loadLayout()->renderLayout();
+            $this->loadLayout()->renderLayout();
+        } catch (Mage_Core_Exception $e) {
+            Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+            $this->_redirect('*/customer/edit', array(
+                'id'         => $this->getRequest()->getParam('customer'),
+                'active_tab' => 'giftregistry'
+            ));
+        } catch (Exception $e) {
+            Mage::getSingleton('adminhtml/session')->addError($this->__('An error occurred while editing gift registry.'));
+            Mage::logException($e);
+            $this->_redirect('*/customer/edit', array(
+                'id'         => $this->getRequest()->getParam('customer'),
+                'active_tab' => 'giftregistry'
+            ));
+        }
     }
 
     /**

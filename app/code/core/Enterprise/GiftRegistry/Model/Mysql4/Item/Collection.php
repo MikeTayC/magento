@@ -31,6 +31,14 @@ class Enterprise_GiftRegistry_Model_Mysql4_Item_Collection
     extends Mage_Core_Model_Mysql4_Collection_Abstract
 {
     /**
+     * List of product IDs
+     * Contains IDs of products related to items and their options
+     * 
+     * @var array
+     */
+    protected $_productIds = array();
+
+    /**
      * Internal constructor
      */
     protected function _construct()
@@ -62,51 +70,67 @@ class Enterprise_GiftRegistry_Model_Mysql4_Item_Collection
     protected function _afterLoad()
     {
         parent::_afterLoad();
+        // Assign options and products
+        $this->_assignOptions();
         $this->_assignProducts();
+        $this->resetItemsDataChanged();
 
         return $this;
     }
 
     /**
-     * Add products to items
+     * Assign options to items
+     *
+     * @return Enterprise_GiftRegistry_Model_Mysql4_Item_Collection
+     */
+    protected function _assignOptions()
+    {
+        $itemIds = array_keys($this->_items);
+        $optionCollection = Mage::getModel('enterprise_giftregistry/item_option')->getCollection()
+            ->addItemFilter($itemIds);
+        foreach ($this as $item) {
+            $item->setOptions($optionCollection->getOptionsByItem($item));
+        }
+        $productIds = $optionCollection->getProductIds();
+        $this->_productIds = array_merge($this->_productIds, $productIds);
+
+        return $this;
+    }
+
+    /**
+     * Assign products to items and their options
      *
      * @return Enterprise_GiftRegistry_Model_Mysql4_Item_Collection
      */
     protected function _assignProducts()
     {
-        $itemIds = array();
-        $tempItems = $this->_items;
         $productIds = array();
-
-        foreach ($tempItems as $offset => $item) {
-            $productIds[] = $item->getproductId();
+        foreach ($this as $item) {
+            $productIds[] = $item->getProductId();
         }
+        $this->_productIds = array_merge($this->_productIds, $productIds);
 
         $productCollection = Mage::getModel('catalog/product')->getCollection()
             ->setStoreId(Mage::app()->getStore()->getId())
-            ->addIdFilter($productIds)
+            ->addIdFilter($this->_productIds)
             ->addAttributeToSelect(Mage::getSingleton('sales/quote_config')->getProductAttributes())
             ->addStoreFilter()
             ->addUrlRewrite()
-            ->addOptionsToResult()
-            ;
+            ->addOptionsToResult();
 
-        foreach ($tempItems as $offset => $item) {
-            $currentProduct = false;
-            foreach ($productCollection as $product) {
-                if ($product->getId() == $item->getProductId()) {
-                    $currentProduct = $product;
-                    break;
+        foreach ($this as $item) {
+            $product = $productCollection->getItemById($item->getProductId());
+            if ($product) {
+                $product->setCustomOptions(array());
+                foreach ($item->getOptions() as $option) {
+                    $option->setProduct($productCollection->getItemById($option->getProductId()));
                 }
-            }
-
-            if (!$currentProduct) {
-                unset($this->_items[$offset]);
+                $item->setProduct($product);
+                $item->setProductName($product->getName());
+                $item->setProductSku($product->getSku());
+                $item->setProductPrice($product->getPrice());
             } else {
-                $item->setProduct(clone $currentProduct);//clone - prevent bundle collection single attribute attaching
-                $item->setProductName($currentProduct->getName());
-                $item->setProductSku($currentProduct->getSku());
-                $item->setProductPrice($currentProduct->getPrice());
+                $item->isDeleted(true);
             }
         }
         return $this;
@@ -114,27 +138,24 @@ class Enterprise_GiftRegistry_Model_Mysql4_Item_Collection
 
     /**
      * Update items custom price (Depends on custom options)
+     *
+     * @return Enterprise_GiftRegistry_Model_Mysql4_Item_Collection
      */
     public function updateItemAttributes()
     {
         foreach ($this->getItems() as $item) {
             $product = $item->getProduct();
-            $request = new Varien_Object(unserialize($item->getCustomOptions()));
             $product->setSkipCheckRequiredOption(true);
             $product->getStore()->setWebsiteId($item->getWebsiteId());
-
-            $candidate = $product->getTypeInstance(true)->prepareForCart($request, $product);
-            if (is_array($candidate)) {
-                $candidate = array_shift($candidate);
-                $product->setCustomOptions($candidate->getCustomOptions());
-                $item->setPrice($product->getFinalPrice());
-
-                if ($simpleOption = $product->getCustomOption('simple_product')) {
-                    $item->setSku($simpleOption->getProduct()->getSku());
-                } else {
-                    $item->setSku($product->getSku());
-                }
+            $product->setCustomOptions($item->getOptionsByCode());
+            $item->setPrice($product->getFinalPrice());
+            $simpleOption = $product->getCustomOption('simple_product');
+            if ($simpleOption) {
+                $item->setSku($simpleOption->getProduct()->getSku());
+            } else {
+                $item->setSku($product->getSku());
             }
         }
+        return $this;
     }
 }

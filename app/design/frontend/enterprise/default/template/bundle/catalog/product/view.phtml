@@ -32,8 +32,9 @@
  */
 ?>
 <?php
-    $_helper = $this->helper('catalog/output');
-    $_product = $this->getProduct();
+/* @var $this Mage_Bundle_Block_Catalog_Product_View */
+$_helper = $this->helper('catalog/output');
+$_product = $this->getProduct();
 ?>
 <script type="text/javascript">
     var optionsPrice = new Product.OptionsPrice(<?php echo $this->getJsonConfig() ?>);
@@ -56,16 +57,13 @@
                     <?php echo $this->getChildHtml('tierprices') ?>
                     <?php echo $this->getChildHtml('customize_button') ?>
                     <?php if (!$this->hasOptions()):?>
-                        <div class="add-to-box">
-                            <?php if($_product->isSaleable()): ?>
-                                <?php echo $this->getChildHtml('addtocart') ?>
-                            <?php endif; ?>
-                            <?php echo $this->getChildHtml('addto') ?>
-                        </div>
-                    <?php else:?>
-                        <?php echo $this->getChildHtml('addto') ?>
+                        <?php if($_product->isSaleable()): ?>
+                            <div>
+                                <button type="button" onclick="window.location='<?php echo Mage::getBaseUrl().$_product->getRequestPath();?>?startcustomization=1'" class="button btn-cart"><span><span>Customize and Add to Cart</span></span></button>
+                            </div>
+                        <?php endif; ?>
                     <?php endif; ?>
-
+                    <?php echo $this->getChildHtml('addto') ?>
 
                     <?php if ($_product->getShortDescription()):?>
                         <div class="short-description std">
@@ -111,7 +109,7 @@
             <?php echo $this->getChildHtml('productTagList') ?>
             <?php echo $this->getChildHtml('product_additional_data') ?>
         </div>
-        <form action="<?php echo $this->getAddToCartUrl($_product) ?>" method="post" id="product_addtocart_form"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+        <form action="<?php echo $this->getSubmitUrl($_product) ?>" method="post" id="product_addtocart_form"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
         <div class="no-display">
             <input type="hidden" name="product" value="<?php echo $_product->getId() ?>" />
             <input type="hidden" name="related_product" id="related-products-field" value="" />
@@ -120,7 +118,7 @@
         <div id="options-container" style="display:none">
             <div id="customizeTitle" class="page-title title-buttons">
                 <h1><?php echo $this->__('Customize %s', $_helper->productAttribute($_product, $_product->getName(), 'name')) ?></h1>
-                <button class="button" type="button" onclick="Enterprise.Bundle.end();"><span><span><?php echo $this->__('&laquo; Go back to product detail'); ?></span></span></button>
+                <a href="#" onclick="Enterprise.Bundle.end(); return false;"><small>&lsaquo;</small> Go back to product detail</a>
             </div>
             <?php echo $this->getChildHtml('bundleSummary') ?>
             <?php if ($this->getChildChildHtml('container1')):?>
@@ -134,14 +132,49 @@
     </div>
 </div>
 <script type="text/javascript">
+        <?php if ($this->isStartCustomization()): ?>
+            Enterprise.Bundle.start();
+        <?php endif;?>
         var productAddToCartForm = new VarienForm('product_addtocart_form');
-        productAddToCartForm.submit = function(button) {
+        productAddToCartForm.submit = function(button, url) {
             if (this.validator.validate()) {
-                this.form.submit();
+                var form = this.form;
+                var oldUrl = form.action;
+
+                if (url) {
+                   form.action = url;
+                }
+                var e = null;
+                try {
+                    this.form.submit();
+                } catch (e) {
+                }
+                this.form.action = oldUrl;
+                if (e) {
+                    throw e;
+                }
+
                 if (button && button != 'undefined') {
                     button.disabled = true;
                 }
             }
         }.bind(productAddToCartForm);
+
+        productAddToCartForm.submitLight = function(button, url){
+            if(this.validator) {
+                var nv = Validation.methods;
+                delete Validation.methods['required-entry'];
+                delete Validation.methods['validate-one-required'];
+                delete Validation.methods['validate-one-required-by-name'];
+                if (this.validator.validate()) {
+                    if (url) {
+                        this.form.action = url;
+                    }
+                    this.form.submit();
+                }
+                Object.extend(Validation.methods, nv);
+            }
+        }.bind(productAddToCartForm);
+
         Enterprise.Bundle.initialize();
 </script>

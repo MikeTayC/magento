@@ -77,9 +77,9 @@ abstract class Enterprise_Reminder_Model_Condition_Combine_Abstract extends Mage
     /**
      * Get filter by customer condition for rule matching sql
      *
-     * @param $customer
-     * @param string $fieldName
-     * @return string
+     * @param   int|Zend_Db_Expr $customer
+     * @param   string $fieldName
+     * @return  string
      */
     protected function _createCustomerFilter($customer, $fieldName)
     {
@@ -184,10 +184,10 @@ abstract class Enterprise_Reminder_Model_Condition_Combine_Abstract extends Mage
     /**
      * Limit select by website with joining to store table
      *
-     * @param Zend_Db_Select $select
-     * @param int | Zend_Db_Expr $website
-     * @param string $storeIdField
-     * @return Enterprise_Reminder_Model_Condition_Abstract
+     * @param   Zend_Db_Select $select
+     * @param   int|Zend_Db_Expr $website
+     * @param   string $storeIdField
+     * @return  Enterprise_Reminder_Model_Condition_Abstract
      */
     protected function _limitByStoreWebsite(Zend_Db_Select $select, $website, $storeIdField)
     {

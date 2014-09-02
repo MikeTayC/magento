@@ -118,6 +118,7 @@
                     </enterprise_customerbalance>
                 </observers>
             </adminhtml_customer_save_after>
+
             <sales_quote_payment_import_data_before>
                 <observers>
                     <enterprise_customerbalance>
@@ -126,14 +127,43 @@
                     </enterprise_customerbalance>
                 </observers>
             </sales_quote_payment_import_data_before>
-            <sales_order_place_after>
+
+            <sales_model_service_quote_submit_before>
                 <observers>
-                    <enterprise_customerbalance_sales_order_place_after>
+                    <enterprise_customerbalance>
                         <class>enterprise_customerbalance/observer</class>
                         <method>processOrderPlace</method>
-                    </enterprise_customerbalance_sales_order_place_after>
+                    </enterprise_customerbalance>
                 </observers>
-            </sales_order_place_after>
+            </sales_model_service_quote_submit_before>
+
+            <sales_model_service_quote_submit_failure>
+                <observers>
+                    <enterprise_customerbalance>
+                        <class>enterprise_customerbalance/observer</class>
+                        <method>revertStoreCredit</method>
+                    </enterprise_customerbalance>
+                </observers>
+            </sales_model_service_quote_submit_failure>
+
+            <checkout_type_multishipping_create_orders_single>
+                <observers>
+                    <enterprise_customerbalance>
+                        <class>enterprise_customerbalance/observer</class>
+                        <method>processOrderPlace</method>
+                    </enterprise_customerbalance>
+                </observers>
+            </checkout_type_multishipping_create_orders_single>
+
+            <checkout_multishipping_refund_all>
+                <observers>
+                    <enterprise_customerbalance>
+                        <class>enterprise_customerbalance/observer</class>
+                        <method>revertStoreCreditForAllOrders</method>
+                    </enterprise_customerbalance>
+                </observers>
+            </checkout_multishipping_refund_all>
+
             <core_layout_update_updates_get_after>
                 <observers>
                     <enterprise_customerbalance>
@@ -142,6 +172,7 @@
                     </enterprise_customerbalance>
                 </observers>
             </core_layout_update_updates_get_after>
+
             <adminhtml_sales_order_create_process_data>
                 <observers>
                     <enterprise_customerbalance>
@@ -168,15 +199,6 @@
                     </enterprise_customerbalance>
                 </observers>
             </sales_quote_collect_totals_before>
-
-            <sales_order_place_before>
-                <observers>
-                    <enterprise_customerbalance_sales_order_place_before>
-                        <class>enterprise_customerbalance/observer</class>
-                        <method>processBeforeOrderPlace</method>
-                    </enterprise_customerbalance_sales_order_place_before>
-                </observers>
-            </sales_order_place_before>
 
             <sales_quote_merge_after>
                 <observers>

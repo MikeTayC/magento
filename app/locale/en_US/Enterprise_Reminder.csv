@@ -60,7 +60,7 @@
 "Reminder emails may promote a shopping cart price rule with or without coupon. If a shopping cart price rule defines an auto-generated coupon, this reminder rule will generate a random coupon code for each customer.","Reminder emails may promote a shopping cart price rule with or without coupon. If a shopping cart price rule defines an auto-generated coupon, this reminder rule will generate a random coupon code for each customer."
 "Reminder rule matching error.","Reminder rule matching error."
 "Repeat Schedule","Repeat Schedule"
-"Root shopping cart condition should have days value at least 1.","Root shopping cart condition should have days value at least 1."
+"Root shopping cart condition should have days value at least 0.","Root shopping cart condition should have days value at least 0."
 "Root wishlist condition should have days value at least 1.","Root wishlist condition should have days value at least 1."
 "Rule Description for All Store Views","Rule Description for All Store Views"
 "Rule Information","Rule Information"

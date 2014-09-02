@@ -37,6 +37,7 @@ class Enterprise_Reward_Model_Reward extends Mage_Core_Model_Abstract
     const XML_PATH_BALANCE_UPDATE_TEMPLATE = 'enterprise_reward/notification/balance_update_template';
     const XML_PATH_BALANCE_WARNING_TEMPLATE = 'enterprise_reward/notification/expiry_warning_template';
     const XML_PATH_EMAIL_IDENTITY = 'enterprise_reward/notification/email_sender';
+    const XML_PATH_MIN_POINTS_BALANCE = 'enterprise_reward/general/min_points_balance';
 
     const REWARD_ACTION_ADMIN               = 0;
     const REWARD_ACTION_ORDER               = 1;
@@ -49,6 +50,7 @@ class Enterprise_Reward_Model_Reward extends Mage_Core_Model_Abstract
     const REWARD_ACTION_ORDER_EXTRA         = 8;
     const REWARD_ACTION_CREDITMEMO          = 9;
     const REWARD_ACTION_SALESRULE           = 10;
+    const REWARD_ACTION_REVERT              = 11;
 
     protected $_modelLoadedByCustomer = false;
 
@@ -81,7 +83,8 @@ class Enterprise_Reward_Model_Reward extends Mage_Core_Model_Abstract
             self::REWARD_ACTION_TAG                 => 'enterprise_reward/action_tag',
             self::REWARD_ACTION_ORDER_EXTRA         => 'enterprise_reward/action_orderExtra',
             self::REWARD_ACTION_CREDITMEMO          => 'enterprise_reward/action_creditmemo',
-            self::REWARD_ACTION_SALESRULE           => 'enterprise_reward/action_salesrule'
+            self::REWARD_ACTION_SALESRULE           => 'enterprise_reward/action_salesrule',
+            self::REWARD_ACTION_REVERT              => 'enterprise_reward/action_orderRevert'
         );
     }
 

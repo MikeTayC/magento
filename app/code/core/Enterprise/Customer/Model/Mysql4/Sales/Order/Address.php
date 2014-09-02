@@ -31,6 +31,13 @@
 class Enterprise_Customer_Model_Mysql4_Sales_Order_Address extends Enterprise_Customer_Model_Mysql4_Sales_Address_Abstract
 {
     /**
+     * Main entity resource model name
+     *
+     * @var string
+     */
+    protected $_parentResourceModelName = 'sales/order_address';
+
+    /**
      * Initializes Mysql4 resource
      */
     protected function _construct()

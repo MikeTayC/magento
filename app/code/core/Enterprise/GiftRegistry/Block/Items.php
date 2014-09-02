@@ -33,45 +33,36 @@ class Enterprise_GiftRegistry_Block_Items extends Mage_Checkout_Block_Cart
     /**
      * Return list of gift registry items
      *
-     * @return Enterprise_GiftRegistry_Model_Mysql4_Item_Collection
+     * @return array
      */
     public function getItems()
     {
-         if (!$this->hasItemCollection()) {
-             $collection = Mage::getModel('enterprise_giftregistry/item')->getCollection()
+        if (!$this->hasItemCollection()) {
+            $collection = Mage::getModel('enterprise_giftregistry/item')->getCollection()
                 ->addRegistryFilter($this->getEntity()->getId());
 
             $quoteItemsCollection = array();
             $quote = Mage::getModel('sales/quote')->setItemCount(true);
+            $emptyQuoteItem = Mage::getModel('sales/quote_item');
             foreach ($collection as $item) {
                 $product = $item->getProduct();
-                $request = new Varien_Object(unserialize($item->getCustomOptions()));
-
-                $candidate = $product->getTypeInstance(true)->prepareForCart($request, $product);
-
-                if ($candidate && is_array($candidate)) {
-                    $candidate = array_shift($candidate);
-                    $options = $candidate->getCustomOptions();
-
-                    $remainingQty = $item->getQty() - $item->getQtyFulfilled();
-                    if ($remainingQty < 0) {
-                        $remainingQty = 0;
-                    }
-
-                    $quoteItem = Mage::getModel('sales/quote_item')
-                        ->addData($item->getData())
-                        ->setQuote($quote)
-                        ->setProduct($product)
-                        ->setRemainingQty($remainingQty);
-
-                    foreach ($options as $code => $option) {
-                        $quoteItem->addOption($option);
-                    }
-                    $product->setCustomOptions($options);
-                    $quoteItem->setGiftRegistryPrice($product->getFinalPrice());
-
-                    $quoteItemsCollection[] = $quoteItem;
+                $remainingQty = $item->getQty() - $item->getQtyFulfilled();
+                if ($remainingQty < 0) {
+                    $remainingQty = 0;
                 }
+                // Create a new qoute item and import data from gift registry item to it
+                $quoteItem = clone $emptyQuoteItem;
+                $quoteItem->addData($item->getData())
+                    ->setQuote($quote)
+                    ->setProduct($product)
+                    ->setRemainingQty($remainingQty)
+                    ->setOptions($item->getOptions());
+
+                $product->setCustomOptions($item->getOptionsByCode());
+
+                $quoteItem->setGiftRegistryPrice($product->getFinalPrice());
+
+                $quoteItemsCollection[] = $quoteItem;
             }
 
             $this->setData('item_collection', $quoteItemsCollection);

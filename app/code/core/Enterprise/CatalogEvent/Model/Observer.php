@@ -219,7 +219,9 @@ class Enterprise_CatalogEvent_Model_Observer
 
         $item = $observer->getEvent()->getItem();
         /* @var $item Mage_Sales_Model_Quote_Item */
-        $this->_initializeEventsForQuoteItems($item->getQuote());
+        if ($item->getQuote()) {
+            $this->_initializeEventsForQuoteItems($item->getQuote());
+        }
 
         if ($item->getEventId()) {
             if ($event = $item->getEvent()) {

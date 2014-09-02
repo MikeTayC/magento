@@ -112,7 +112,9 @@ class Enterprise_Banner_Block_Adminhtml_Widget_Chooser extends Enterprise_Banner
             var indexOf = Object.keys(grid.selBannersIds).indexOf(bannerId);
             if(indexOf >= 0){
                 checkbox.checked = true;
-                position.value = indexOf+1;
+                if (!position.value) {
+                    position.value = indexOf + 1;
+                }
             }
 
             Event.observe(position,\'change\', function(){
@@ -121,7 +123,7 @@ class Enterprise_Banner_Block_Adminhtml_Widget_Chooser extends Enterprise_Banner
                     grid.selBannersIds[checkb.value] = this.value;
                     var idsclone = Object.clone(grid.selBannersIds);
                     var bans = Object.keys(grid.selBannersIds);
-                    var pos = Object.values(grid.selBannersIds).sort();
+                    var pos = Object.values(grid.selBannersIds).sort(sortNumeric);
                     var banners = [];
                     var k = 0;
 
@@ -175,7 +177,7 @@ class Enterprise_Banner_Block_Adminhtml_Widget_Chooser extends Enterprise_Banner
 
                 var idsclone = Object.clone(grid.selBannersIds);
                 var bans = Object.keys(grid.selBannersIds);
-                var pos = Object.values(grid.selBannersIds).sort();
+                var pos = Object.values(grid.selBannersIds).sort(sortNumeric);
                 var banners = [];
                 var k = 0;
                 for(var j = 0; j < pos.length; j++){
@@ -228,7 +230,7 @@ class Enterprise_Banner_Block_Adminhtml_Widget_Chooser extends Enterprise_Banner
 
                     var idsclone = Object.clone(grid.selBannersIds);
                     var bans = Object.keys(grid.selBannersIds);
-                    var pos = Object.values(grid.selBannersIds).sort();
+                    var pos = Object.values(grid.selBannersIds).sort(sortNumeric);
                     var banners = [];
                     var k = 0;
                     for(var j = 0; j < pos.length; j++){
@@ -326,7 +328,8 @@ class Enterprise_Banner_Block_Adminhtml_Widget_Chooser extends Enterprise_Banner
         return $this->getUrl('*/banner_widget/chooser', array(
             'banners_grid' => true,
             '_current' => true,
-            'uniq_id' => $this->getId()
+            'uniq_id' => $this->getId(),
+            'selected_banners' => join(',', $this->getSelectedBanners())
         ));
     }
 
@@ -338,7 +341,29 @@ class Enterprise_Banner_Block_Adminhtml_Widget_Chooser extends Enterprise_Banner
      */
     public function setSelectedBanners($selectedBanners)
     {
+        if (is_string($selectedBanners)) {
+            $selectedBanners = explode(',', $selectedBanners);
+        }        
         $this->_selectedBanners = $selectedBanners;
+        return $this;
+    }
+
+    /**
+     * Set banners' positions of saved banners
+     *
+     * @return Enterprise_Banner_Block_Adminhtml_Widget_Chooser
+     */
+    protected function _prepareCollection()
+    {
+        parent::_prepareCollection();
+        
+        foreach ($this->getCollection() as $item) {
+            foreach ($this->getSelectedBanners() as $pos => $banner) {
+                if ($banner == $item->getBannerId()) {
+                    $item->setPosition($pos + 1);
+                }
+            }
+        }
         return $this;
     }
 

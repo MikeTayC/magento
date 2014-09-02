@@ -70,6 +70,7 @@ class Enterprise_Reminder_Model_Rule_Condition_Cart
         $this->setValueOption(array());
         return $this;
     }
+
     /**
      * Prepare operator select options
      *
@@ -113,15 +114,15 @@ class Enterprise_Reminder_Model_Rule_Condition_Cart
     /**
      * Get condition SQL select
      *
-     * @param $customer
-     * @param $website
-     * @return Varien_Db_Select
+     * @param   int|Zend_Db_Expr $customer
+     * @param   int|Zend_Db_Expr $website
+     * @return  Varien_Db_Select
      */
     protected function _prepareConditionsSql($customer, $website)
     {
-        $conditionValue = (int)$this->getValue();
-        if ($conditionValue < 1) {
-            Mage::throwException(Mage::helper('enterprise_reminder')->__('Root shopping cart condition should have days value at least 1.'));
+        $conditionValue = (int) $this->getValue();
+        if ($conditionValue < 0) {
+            Mage::throwException(Mage::helper('enterprise_reminder')->__('Root shopping cart condition should have days value at least 0.'));
         }
 
         $table = $this->getResource()->getTable('sales/quote');
@@ -131,20 +132,42 @@ class Enterprise_Reminder_Model_Rule_Condition_Cart
         $select->from(array('quote' => $table), array(new Zend_Db_Expr(1)));
 
         $this->_limitByStoreWebsite($select, $website, 'quote.store_id');
-        $select->where("UNIX_TIMESTAMP('" . now() . "' - INTERVAL ? DAY) {$operator} UNIX_TIMESTAMP(quote.updated_at)", $conditionValue);
-        $select->where('quote.is_active = 1');
-        $select->where('quote.items_count > 0');
-        $select->where($this->_createCustomerFilter($customer, 'quote.customer_id'));
-        $select->limit(1);
+
+        $currentDateStart = now(true);
+        if ($operator == '=') {
+            $select
+                ->where("UNIX_TIMESTAMP('". $currentDateStart ."' - INTERVAL ? DAY) < UNIX_TIMESTAMP(quote.updated_at)",
+                    $conditionValue)
+                ->where("UNIX_TIMESTAMP('". $currentDateStart ."' - INTERVAL ? DAY) > UNIX_TIMESTAMP(quote.updated_at)",
+                    $conditionValue - 1);
+        } else {
+            if ($operator == '>=') {
+                if ($conditionValue > 0) {
+                    $conditionValue--;
+                } else {
+                    $currentDateStart = now();
+                }
+            }
+
+            $select
+                ->where("UNIX_TIMESTAMP('". $currentDateStart ."' - INTERVAL ? DAY) {$operator} UNIX_TIMESTAMP(quote.updated_at)",
+                    $conditionValue);
+        }
+
+        $select->where('quote.is_active = 1')
+            ->where('quote.items_count > 0')
+            ->where($this->_createCustomerFilter($customer, 'quote.customer_id'))
+            ->limit(1);
+
         return $select;
     }
 
     /**
      * Get base SQL select
      *
-     * @param $customer
-     * @param $website
-     * @return Varien_Db_Select
+     * @param   int|Zend_Db_Expr $customer
+     * @param   int|Zend_Db_Expr $website
+     * @return  Varien_Db_Select
      */
     public function getConditionsSql($customer, $website)
     {

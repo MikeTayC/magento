@@ -87,7 +87,9 @@ class Enterprise_Pbridge_Model_Payment_Method_Paypal extends Mage_Paypal_Model_D
     {
         if ($this->_pbridgeMethodInstance === null) {
             $this->_pbridgeMethodInstance = Mage::helper('payment')->getMethodInstance('pbridge');
-            $this->_pbridgeMethodInstance->setOriginalMethodInstance($this);
+            if ($this->_pbridgeMethodInstance) {
+                $this->_pbridgeMethodInstance->setOriginalMethodInstance($this);
+            }
         }
         return $this->_pbridgeMethodInstance;
     }
@@ -152,7 +154,8 @@ class Enterprise_Pbridge_Model_Payment_Method_Paypal extends Mage_Paypal_Model_D
      */
     public function isAvailable($quote = null)
     {
-        return $this->getPbridgeMethodInstance()->isDummyMethodAvailable($quote);
+        return $this->getPbridgeMethodInstance() ?
+            $this->getPbridgeMethodInstance()->isDummyMethodAvailable($quote) : false;
     }
 
     /**

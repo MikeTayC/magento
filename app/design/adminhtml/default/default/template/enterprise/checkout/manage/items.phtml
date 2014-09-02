@@ -67,6 +67,7 @@
         <table cellspacing="0" class="data order-tables">
             <col />
             <col width="100" />
+            <col width="100" />
             <col width="40" />
             <col width="100" />
             <col width="80" />
@@ -74,7 +75,7 @@
             <col width="80" />
             <thead>
                 <tr class="headings">
-                    <th class="no-link"><?php echo $this->helper('enterprise_checkout')->__('Product') ?></th>
+                    <th class="no-link" colspan="2"><?php echo $this->helper('enterprise_checkout')->__('Product') ?></th>
                     <th class="no-link"><?php echo $this->helper('enterprise_checkout')->__('Price') ?></th>
                     <th class="no-link"><?php echo $this->helper('enterprise_checkout')->__('Qty') ?></th>
                     <th class="no-link"><?php echo $this->helper('enterprise_checkout')->__('Subtotal') ?></th>
@@ -87,7 +88,7 @@
             </thead>
             <tfoot>
                 <tr>
-                    <td class="a-left"><?php echo $this->helper('enterprise_checkout')->__('Total %d product(s)', count($_items)) ?></td>
+                    <td class="a-left" colspan="2"><?php echo $this->helper('enterprise_checkout')->__('Total %d product(s)', count($_items)) ?></td>
                     <td colspan="2" class="a-right"><?php echo $this->helper('enterprise_checkout')->__('Subtotal:') ?></td>
                     <td class="price"><strong><?php echo $this->formatPrice($this->getSubtotal()) ?></strong></td>
                     <td class="price"><strong><?php echo $this->formatPrice($this->getDiscountAmount()) ?></strong></td>
@@ -101,7 +102,7 @@
                 <?php $i=0 ?>
                 <?php foreach ($_items as $_item):$i++ ?>
                     <tr class="<?php echo ($i%2)?'even':'odd' ?>">
-                        <td><h5 class="title"><?php echo $this->htmlEscape($_item->getName()) ?></h5>
+                        <td class="first"><h5 class="title"><?php echo $this->htmlEscape($_item->getName()) ?></h5>
                             <div>
                                 <strong><?php echo $this->helper('enterprise_checkout')->__('SKU') ?>:</strong>
                                 <?php echo implode('<br />', Mage::helper('catalog')->splitSku($this->htmlEscape($_item->getSku()))); ?>
@@ -113,6 +114,9 @@
                             </div>
                             <?php endforeach; ?>
                             <?php endif; ?>
+                        </td>
+                        <td class="a-center v-middle">
+                            <?php echo $this->getConfigureButtonHtml($_item) ?>
                         </td>
                         <td class="price">
 
@@ -366,7 +370,9 @@
                             <select name="item[<?php echo $_item->getId() ?>][action]" style="width:100px;">
                                 <option value=""></option>
                                 <option value="remove"><?php echo $this->helper('enterprise_checkout')->__('Remove') ?></option>
-                                <option value="wishlist"><?php echo $this->helper('enterprise_checkout')->__('Move to Wishlist') ?></option>
+                                <?php if ($this->isMoveToWishlistAllowed($_item)): ?>
+                                    <option value="wishlist"><?php echo $this->helper('enterprise_checkout')->__('Move to Wishlist') ?></option>
+                                <?php endif; ?>
                             </select>
                         </td>
                         <?php endif; ?>
@@ -377,3 +383,63 @@
     </div>
 </div>
 <?php endif; ?>
+
+<?php $listType = $this->getJsObjectName() ?>
+<script type="text/javascript">
+    <?php echo $listType ?>cartControl = {
+        reload: function (params) {
+            if (!params) {
+                params = {};
+            }
+            <?php echo $listType ?>.reloadParams = params;
+            <?php echo $listType ?>.reload();
+            <?php echo $listType ?>.reloadParams = {};
+        },
+
+        configureItem: function (itemId) {
+            productConfigure.setOnLoadIFrameCallback('<?php echo $listType ?>', this.cbOnLoadIframe.bind(this));
+            productConfigure.showItemConfiguration('<?php echo $listType ?>', itemId);
+            return false;
+        },
+
+        cbOnLoadIframe: function (response) {
+            if (!response.ok) {
+                return;
+            }
+            this.reload();
+        },
+
+        removeItem: function (itemId) {
+            if (!itemId) {
+                alert('<?php echo Mage::helper('customer')->__('No item specified.') ?>');
+                return false;
+            }
+            if(!confirm('<?php echo Mage::helper('customer')->__('Are you sure that you want to remove this item?') ?>')) {
+                return false;
+            }
+
+            this.reload({'delete':itemId});
+            return false;
+        }
+    };
+
+<?php
+$params = array(
+    'customer'  => $this->getCustomer()->getId(),
+    'store'     => $this->getStore()->getId()
+);
+?>
+    function funcAddItemsListType() {
+        productConfigure.addListType('<?php echo $listType ?>', {
+            urlFetch:  '<?php echo $this->getUrl('*/checkout/configureQuoteItems', $params) ?>',
+            urlSubmit: ''
+        });
+    }
+    if (typeof(productConfigure) != 'undefined') {
+        funcAddItemsListType()
+    } else {
+        Event.observe(window, 'load', function(){
+            setTimeout(funcAddItemsListType, 10);
+        })
+    }
+</script>

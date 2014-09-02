@@ -28,12 +28,6 @@
 <config>
     <sections>
         <giftcard>
-            <label>Gift Cards</label>
-            <tab>sales</tab>
-            <show_in_default>1</show_in_default>
-            <show_in_website>1</show_in_website>
-            <show_in_store>1</show_in_store>
-            <sort_order>500</sort_order>
             <groups>
                 <email translate="label" module="enterprise_giftcard">
                     <label>Gift Card Email Settings</label>

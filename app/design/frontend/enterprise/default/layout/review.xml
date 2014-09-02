@@ -74,6 +74,7 @@ Product reviews page
             <action method="addItem"><type>skin_js</type><name>js/jqzoom/jquery-1.3.1.min.js</name></action>
             <action method="addItem"><type>skin_js</type><name>js/jqzoom/jquery.jqzoom1.0.1.js</name></action>
             <action method="addJs"><script>varien/product.js</script></action>
+            <action method="addJs"><script>varien/configurable.js</script></action>
         </reference>
         <reference name="content">
             <block type="review/product_view" name="product.info" template="catalog/product/view.phtml">
@@ -84,8 +85,8 @@ Product reviews page
                 <block type="catalog/product_view" name="product.info.addtocart" as="addtocart" template="catalog/product/view/addtocart.phtml"/>
                 <block type="catalog/product_view" name="product.tierprices" as="tierprices" template="catalog/product/view/tierprices.phtml"/>
                 <block type="core/template" name="product.info.other" as="other" template="review/product/view/other.phtml"/>
-                <block type="page/html_pager" name="product_review_list.toolbar" />
-                <block type="core/template" name="product_review_list.count" template="review/product/view/count.phtml" />
+                <block type="page/html_pager" name="product_review_list.toolbar"/>
+                <block type="core/template" name="product_review_list.count" template="review/product/view/count.phtml"/>
                 <block type="review/product_view_list" name="product.info.product_additional_data" as="product_additional_data" template="review/product/view/list.phtml">
                     <block type="review/form" name="product.review.form" as="review_form">
                         <block type="page/html_wrapper" name="product.review.form.fields.before" as="form_fields_before" translate="label">

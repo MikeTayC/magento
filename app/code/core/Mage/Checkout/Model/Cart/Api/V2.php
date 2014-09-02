@@ -1,13 +1,13 @@
 <?php
 /**
- * Magento
+ * Magento Enterprise Edition
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * http://www.magentocommerce.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
  * to license@magentocommerce.com so we can send you a copy immediately.
@@ -21,16 +21,17 @@
  * @category    Mage
  * @package     Mage_Checkout
  * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
- * Shoping cart model
+ * Shopping cart model
  *
  * @category    Mage
  * @package     Mage_Checkout
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Mage_Checkout_Model_Cart_Api_V2 extends Mage_Checkout_Model_Cart_Api{
+class Mage_Checkout_Model_Cart_Api_V2 extends Mage_Checkout_Model_Cart_Api
+{
     
 }

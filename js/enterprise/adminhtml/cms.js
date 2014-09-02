@@ -45,14 +45,16 @@ function saveAndPublishAction(formObj, saveUrl){
 }
 
 function dataChanged() {
-    var buttonSaveAndPublish = $('save_publish_button');
-    if (buttonSaveAndPublish && buttonSaveAndPublish.hasClassName('no-display')) {
-        var buttonPublish = $('publish_button');
-        if (buttonPublish) {
-            buttonPublish.hide();
-        }
-        buttonSaveAndPublish.removeClassName('no-display');
-    }
+   $$('p.form-buttons button.publish').each(function(e){
+      var isVisible = e.style.display != 'none' && !$(e).hasClassName('no-display');
+      
+      if(e.id == 'publish_button' && isVisible) {
+          e.style.display = 'none';
+      } else if(!isVisible && e.id == 'save_publish_button') {
+          e.style.display = '';
+          $(e).removeClassName('no-display');
+      }
+   })
 }
 
 varienGlobalEvents.attachEventHandler('tinymceChange', dataChanged);

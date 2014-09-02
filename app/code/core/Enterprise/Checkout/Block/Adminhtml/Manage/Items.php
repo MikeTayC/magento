@@ -41,28 +41,11 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Items extends Mage_Adminhtml_Bl
     /**
      * Prepare items collection
      *
-     * @return Mage_Adminhtml_Block_Template
-     */
-    protected function _prepareCollection()
-    {
-        $this->setCollection($this->getQuote()->getItemsCollection());
-        return parent::_prepareCollection();
-    }
-
-    /**
-     * Prepare items collection
-     *
-     * @return Mage_Adminhtml_Block_Template
+     * @return array
      */
     protected function getItems()
     {
-        $result = array();
-        foreach ($this->getQuote()->getItemsCollection() as $item) {
-            if(!$item->getParentItemId()) {
-                $result[] = $item;
-            }
-        }
-        return $result;
+        return $this->getQuote()->getAllVisibleItems();
     }
 
     /**
@@ -84,6 +67,7 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Items extends Mage_Adminhtml_Bl
     {
         $res = Mage::getSingleton('tax/config')->displayCartSubtotalInclTax($this->getStore())
             || Mage::getSingleton('tax/config')->displayCartSubtotalBoth($this->getStore());
+
         return $res;
     }
 
@@ -101,10 +85,11 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Items extends Mage_Adminhtml_Bl
             $address = $this->getQuote()->getShippingAddress();
         }
         if ($this->displayTotalsIncludeTax()) {
-            return $address->getSubtotal()+$address->getTaxAmount();
+            return $address->getSubtotal() + $address->getTaxAmount();
         } else {
             return $address->getSubtotal();
         }
+
         return false;
     }
 
@@ -117,9 +102,9 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Items extends Mage_Adminhtml_Bl
     {
         $address = $this->getQuote()->getShippingAddress();
         if ($this->displayTotalsIncludeTax()) {
-            return $address->getSubtotal()+$address->getTaxAmount()+$this->getDiscountAmount();
+            return $address->getSubtotal() + $address->getTaxAmount() + $this->getDiscountAmount();
         } else {
-            return $address->getSubtotal()+$this->getDiscountAmount();
+            return $address->getSubtotal() + $this->getDiscountAmount();
         }
     }
 
@@ -187,5 +172,36 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Items extends Mage_Adminhtml_Bl
     protected function getCustomer()
     {
         return Mage::registry('checkout_current_customer');
+    }
+
+    /**
+     * Generate configure button html
+     *
+     * @param  Mage_Sales_Model_Quote_Item $item
+     * @return string
+     */
+    public function getConfigureButtonHtml($item)
+    {
+        $product = $item->getProduct();
+        if ($product->canConfigure()) {
+            $class = '';
+            $addAttributes = sprintf('onclick="checkoutObj.showQuoteItemConfiguration(%s)"', $item->getId());
+        } else {
+            $class = 'disabled';
+            $addAttributes = 'disabled="disabled"';
+        }
+        return sprintf('<button type="button" class="scalable %s" %s><span>%s</span></button>',
+            $class, $addAttributes, Mage::helper('sales')->__('Configure'));
+    }
+
+    /**
+     * Returns whether moving to wishlist is allowed for this item
+     *
+     * @param Mage_Sales_Model_Quote_Item $item
+     * @return bool
+     */
+    public function isMoveToWishlistAllowed($item)
+    {
+        return $item->getProduct()->isVisibleInSiteVisibility();
     }
 }

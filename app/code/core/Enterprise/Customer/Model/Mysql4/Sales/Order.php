@@ -31,6 +31,13 @@
 class Enterprise_Customer_Model_Mysql4_Sales_Order extends Enterprise_Customer_Model_Mysql4_Sales_Abstract
 {
     /**
+     * Main entity resource model name
+     *
+     * @var string
+     */
+    protected $_parentResourceModelName = 'sales/order';
+
+    /**
      * Initialize Mysql4 resource
      *
      */

@@ -26,7 +26,7 @@
 ?>
 <div class="product-options-bottom">
     <?php echo $this->getChildHtml('', true, true);?>
-    <?php if ($this->hasRequiredOptions()):?>
+    <?php if ($this->hasRequiredOptions() && !$this->getHideRequiredNotice()):?>
         <p class="required"><?php echo $this->__('* Required Fields') ?></p>
-    <?php endif;?>   
+    <?php endif;?>
 </div>

@@ -27,5 +27,7 @@
 
 <?php $_product = $this->getProduct() ?>
 <?php if ($_product->isSaleable() && $this->hasOptions()):?>
-    <button class="button btn-cart" onclick="Enterprise.Bundle.start();" type="button"><span><span><?php echo $this->__('Customize and Add to Cart'); ?></span></span></button>
+    <div>
+        <button class="button btn-cart" onclick="Enterprise.Bundle.start();" type="button"><span><span><?php echo $this->__('Customize and Add to Cart'); ?></span></span></button>
+    </div>
 <?php endif;?>

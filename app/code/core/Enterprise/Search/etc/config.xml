@@ -117,6 +117,15 @@
                     </enterprise_search>
                 </observers>
             </catalogsearch_query_save_after>
+
+            <customer_group_save_after>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>customerGroupSaveAfter</method>
+                    </enterprise_search>
+                </observers>
+            </customer_group_save_after>
         </events>
         <translate>
             <modules>

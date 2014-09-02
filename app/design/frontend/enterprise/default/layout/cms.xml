@@ -31,12 +31,13 @@ Default layout, loads most of the pages
 -->
 
     <default>
+        <reference name="header">
+            <block type="cms/block" name="header.callout" as="headerCallout">
+                <action method="setBlockId"><block_id>header_callout</block_id></action>
+            </block>
+        </reference>
         <reference name="footer">
             <block type="cms/block" name="cms_footer_links" as="cms_footer_links" after="footer_links">
-                <!--
-                    The content of this block is taken from the database by its block_id.
-                    You can manage it in admin CMS -> Static Blocks
-                -->
                 <action method="setBlockId"><block_id>footer_links</block_id></action>
             </block>
         </reference>

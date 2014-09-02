@@ -196,6 +196,15 @@
                 </Enterprise_GiftCard>
             </modules>
         </translate>
+        <sales>
+            <order>
+                <create>
+                    <available_product_types>
+                        <giftcard/>
+                    </available_product_types>
+                </create>
+            </order>
+        </sales>
         <events>
             <adminhtml_catalog_product_edit_prepare_form>
                 <observers>

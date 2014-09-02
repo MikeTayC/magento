@@ -399,7 +399,7 @@ class Enterprise_Banner_Model_Mysql4_Banner extends Mage_Core_Model_Mysql4_Abstr
         if ($isActive) {
             $select->where('is_enabled = ?', (int)$isActive);
         }
-        return $adapter->fetchCol($select);
+        return array_intersect($bannerIds, $adapter->fetchCol($select));
     }
 
     /**

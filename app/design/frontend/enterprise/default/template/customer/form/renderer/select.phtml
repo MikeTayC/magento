@@ -39,4 +39,7 @@
     <option value="<?php echo $option['value']?>"<?php if ($option['value'] == $this->getValue()):?> selected="selected"<?php endif;?>><?php echo $this->htmlEscape($option['label'])?></option>
     <?php endforeach;?>
     </select>
+    <?php if ($_message = $this->getAdditionalDescription()) : ?>
+    <div class="validation-advice"><?php echo $_message; ?></div>
+    <?php endif; ?>    
 </div>

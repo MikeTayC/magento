@@ -56,7 +56,7 @@
     <menu>
         <customer>
             <children>
-                <giftregistry translate="title" module="enterprise_giftregistry">
+                <enterprise_giftregistry translate="title" module="enterprise_giftregistry">
                     <title>Gift Registry</title>
                     <action>adminhtml/giftregistry</action>
                     <depends>
@@ -64,7 +64,7 @@
                         <config>enterprise_giftregistry/general/enabled</config>
                     </depends>
                     <sort_order>30</sort_order>
-                </giftregistry>
+                </enterprise_giftregistry>
             </children>
          </customer>
     </menu>

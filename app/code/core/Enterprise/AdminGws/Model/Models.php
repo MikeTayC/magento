@@ -1157,7 +1157,7 @@ class Enterprise_AdminGws_Model_Models extends Enterprise_AdminGws_Model_Observe
      */
     public function giftCardAccountSaveBefore($model)
     {
-        if (!$this->_role->hasWebsiteAccess($model->getWebsite(), true)) {
+        if (!$this->_role->hasWebsiteAccess($model->getWebsiteId(), true)) {
             $this->_throwSave();
         }
     }
@@ -1169,7 +1169,7 @@ class Enterprise_AdminGws_Model_Models extends Enterprise_AdminGws_Model_Observe
      */
     public function giftCardAccountDeleteBefore($model)
     {
-        if (!$this->_role->hasWebsiteAccess($model->getWebsite(), true)) {
+        if (!$this->_role->hasWebsiteAccess($model->getWebsiteId(), true)) {
             $this->_throwDelete();
         }
     }
@@ -1181,7 +1181,7 @@ class Enterprise_AdminGws_Model_Models extends Enterprise_AdminGws_Model_Observe
      */
     public function giftCardAccountLoadAfter($model)
     {
-        if (!$this->_role->hasWebsiteAccess($model->getWebsite())) {
+        if (!$this->_role->hasWebsiteAccess($model->getWebsiteId())) {
             $this->_throwLoad();
         }
     }

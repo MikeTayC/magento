@@ -85,6 +85,9 @@ a.button { _height:22px; }
 .product-options dd select { _margin-bottom:1px; }
 .product-options dd .time-picker select { margin:0; padding:0; position:relative; top:-1px; }
 
+.bundle-summary .product,
+.bundle-summary .summary { border: 1px solid #e6e6e6; }
+
 .col2-right-layout #options-container { margin-left:-3px; }
 
 .options-container-small dd { float:none; }
@@ -214,7 +217,8 @@ a.button { _height:22px; }
 .footer-before-container .widget-cms-link a,
 .footer-before-container .widget-hierarchy-link a,
 .reward-message,
-.centinel .authentication { zoom:1; }
+.centinel .authentication,
+.bundle-summary .product .block-title { zoom:1; }
 
 /* Hover Fix */
 iframe.hover-fix { position:absolute; left:-1px; top:-1px; z-index:-1; background:transparent; filter:progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=0); }

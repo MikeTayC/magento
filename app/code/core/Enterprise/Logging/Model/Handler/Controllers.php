@@ -628,4 +628,22 @@ class Enterprise_Logging_Model_Handler_Controllers
         }
         return $eventModel->setInfo($ids);
     }
+
+    /**
+     * Custom handler for Recurring Profiles status update
+     *
+     * @param Varien_Simplexml_Element $config
+     * @param Enterprise_Logging_Model_Event $eventModel
+     * @return Enterprise_Logging_Model_Event
+     */
+    public function postDispatchRecurringProfilesUpdate($config, $eventModel)
+    {
+        $message = '';
+        $request = Mage::app()->getRequest();
+        if ($request->getParam('action')) {
+            $message .= ucfirst($request->getParam('action')) . ' action: ';
+        }
+        $message .= Mage::getSingleton('adminhtml/session')->getMessages()->getLastAddedMessage()->getCode();
+        return $eventModel->setInfo($message);
+    }
 }

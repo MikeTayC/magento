@@ -171,7 +171,7 @@ class Enterprise_GiftRegistry_Model_Entity extends Mage_Core_Model_Abstract
 
                 $item->setEntityId($this->getId())
                     ->setProductId($productId)
-                    ->setCustomOptions($customOptions['info_buyRequest']->getValue())
+                    ->setOptions($customOptions)
                     ->setQty($qty)
                     ->save();
             }
@@ -384,6 +384,7 @@ class Enterprise_GiftRegistry_Model_Entity extends Mage_Core_Model_Abstract
     /**
      * Get active entity
      *
+     * @deprecated after 1.9.1.1
      * @param int $customerId
      * @return false|Enterprise_GiftRegistry_Model_Entity
      */

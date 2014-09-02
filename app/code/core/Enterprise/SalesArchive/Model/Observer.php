@@ -144,7 +144,7 @@ class Enterprise_SalesArchive_Model_Observer
     {
         $collection = $observer->getEvent()->getOrderGridCollection();
         if ($collection instanceof Enterprise_SalesArchive_Model_Mysql4_Order_Collection
-            || !$collection->getFlag('is_customer_mode')) {
+            || !$collection->getIsCustomerMode()) {
             return $this;
         }
 

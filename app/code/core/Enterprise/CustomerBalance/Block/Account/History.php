@@ -63,7 +63,8 @@ class Enterprise_CustomerBalance_Block_Account_History extends Mage_Core_Block_T
                 ->getCollection()
                 ->addFieldToFilter('customer_id', $customerId)
                 ->addFieldToFilter('website_id', Mage::app()->getStore()->getWebsiteId())
-                ->setOrder('updated_at');
+                ->addOrder('updated_at', 'DESC')
+                ->addOrder('history_id', 'DESC');
 
         return $collection;
     }

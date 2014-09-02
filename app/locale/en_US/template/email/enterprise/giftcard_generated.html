@@ -31,8 +31,9 @@ body,td { color:#2f2f2f; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif;
                         <h1 style="font-size:22px; font-weight:normal; line-height:22px; margin:0 0 11px 0;"">{{var name|escape}}</h1>
                         <p style="font-size:12px; line-height:16px; margin:0 0 16px 0;">{{var sender_name_with_email|escape}} has sent you a gift card for use at {{var store.getFrontendName()|escape}} and it is now ready to be used for purchases.</p>
 
-                        <div style="font-size:12px; line-height:16px; margin:0 0 16px 0;"><strong>The Gift Card code(s):</strong>
-                        {{var giftcards}}
+                        <div style="font-size:12px; line-height:16px; margin:0 0 16px 0;">
+                            <p style="font-size:12px; line-height:16px; margin:0 0 16px 0;"><strong>The Gift Card code(s):</strong></p>
+                            {{var giftcards}}
                         </div>
 
                         <p style="font-size:12px; line-height:16px; margin:0 0 16px 0;">{{if is_multiple_codes}}Each{{else}}The{{/if}} card has a balance of {{var balance}} that can be used at <a href="{{store url=""}}">{{store url=""}}</a>.</p>

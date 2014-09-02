@@ -86,8 +86,9 @@ class Enterprise_GiftCardAccount_Model_Total_Quote_GiftCardAccount extends Mage_
                 } else {
                     $baseThisCardUsedAmount = $thisCardUsedAmount = 0;
                 }
-                $card['ba'] = $baseThisCardUsedAmount;
-                $card['a'] = $thisCardUsedAmount;
+                // avoid possible errors in future comparisons
+                $card['ba'] = round($baseThisCardUsedAmount, 4);
+                $card['a'] = round($thisCardUsedAmount, 4);
                 $addressCards[] = $card;
                 if ($baseThisCardUsedAmount) {
                     $usedAddressCards[] = $card;

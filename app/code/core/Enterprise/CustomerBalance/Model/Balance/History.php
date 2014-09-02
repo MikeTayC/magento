@@ -34,6 +34,7 @@ class Enterprise_CustomerBalance_Model_Balance_History extends Mage_Core_Model_A
     const ACTION_CREATED  = 2;
     const ACTION_USED     = 3;
     const ACTION_REFUNDED = 4;
+    const ACTION_REVERTED = 5;
 
     /**
      * Initialize resource
@@ -56,6 +57,7 @@ class Enterprise_CustomerBalance_Model_Balance_History extends Mage_Core_Model_A
             self::ACTION_UPDATED  => Mage::helper('enterprise_customerbalance')->__('Updated'),
             self::ACTION_USED     => Mage::helper('enterprise_customerbalance')->__('Used'),
             self::ACTION_REFUNDED => Mage::helper('enterprise_customerbalance')->__('Refunded'),
+            self::ACTION_REVERTED => Mage::helper('enterprise_customerbalance')->__('Reverted'),
         );
     }
 
@@ -109,6 +111,10 @@ class Enterprise_CustomerBalance_Model_Balance_History extends Mage_Core_Model_A
                 $this->setAdditionalInfo(Mage::helper('enterprise_customerbalance')->__('Order #%s, creditmemo #%s',
                     $balance->getOrder()->getIncrementId(), $balance->getCreditMemo()->getIncrementId()
                 ));
+                break;
+            case self::ACTION_REVERTED:
+                $this->_checkBalanceModelOrder($balance);
+                $this->setAdditionalInfo(Mage::helper('enterprise_customerbalance')->__('Order #%s', $balance->getOrder()->getIncrementId()));
                 break;
             default:
                 Mage::throwException(Mage::helper('enterprise_customerbalance')->__('Unknown balance history action code'));

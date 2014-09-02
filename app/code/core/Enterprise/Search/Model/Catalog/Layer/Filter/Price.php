@@ -102,7 +102,13 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Price extends Mage_Catalog_Mo
         $cachedData = Mage::app()->loadCache($cacheKey);
         if (!$cachedData) {
             $stats = $this->getLayer()->getProductCollection()->getStats($this->_getFilterField());
-            $cachedData = (float)$stats[$this->_getFilterField()]['max'];
+
+            $max = $stats[$this->_getFilterField()]['max'];
+            if (!is_numeric($max)) {
+                $max = parent::getMaxPriceInt();
+            }
+
+            $cachedData = (float) $max;
             $tags = $this->getLayer()->getStateTags();
             $tags[] = self::CACHE_TAG;
             Mage::app()->saveCache($cachedData, $cacheKey, $tags);
@@ -124,9 +130,9 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Price extends Mage_Catalog_Mo
             $priceFacets = array();
             $facetCount  = ceil($maxPrice / $range);
 
-            for ($i = 0; $i < $facetCount; $i++) {
+            for ($i = 0; $i < $facetCount + 1; $i++) {
                 $to = ($i + 1) * $range;
-                if ($i + 1 < $facetCount) {
+                if ($i < $facetCount) {
                     $to -= 0.001;
                 }
                 $priceFacets[] = array(
@@ -150,10 +156,15 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Price extends Mage_Catalog_Mo
      */
     protected function _applyToCollection($range, $index)
     {
+        $to = $range * $index;
+        if ($to < $this->getMaxPriceInt()) {
+            $to -= 0.001;
+        }
+
         $value = array(
             $this->_getFilterField() => array(
                 'from' => ($range * ($index - 1)),
-                'to'   => $range * $index - 0.001
+                'to'   => $to
             )
         );
 

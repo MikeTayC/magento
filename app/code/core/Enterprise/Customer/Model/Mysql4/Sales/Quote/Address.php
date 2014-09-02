@@ -31,6 +31,13 @@
 class Enterprise_Customer_Model_Mysql4_Sales_Quote_Address extends Enterprise_Customer_Model_Mysql4_Sales_Address_Abstract
 {
     /**
+     * Main entity resource model name
+     *
+     * @var string
+     */
+    protected $_parentResourceModelName = 'sales/quote_address';
+
+    /**
      * Initialize Mysql4 resource
      */
     protected function _construct()

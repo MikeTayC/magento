@@ -431,7 +431,9 @@ class Enterprise_Reward_Model_Observer
                 ->setCustomer($quote->getCustomer())
                 ->setWebsiteId($quote->getStore()->getWebsiteId())
                 ->loadByCustomer();
-            if ($reward->getId()) {
+            $minPointsBalance = (int)Mage::getStoreConfig(Enterprise_Reward_Model_Reward::XML_PATH_MIN_POINTS_BALANCE, $quote->getStoreId());
+
+            if ($reward->getId() && $reward->getPointsBalance() >= $minPointsBalance) {
                 $quote->setRewardInstance($reward);
                 if (!$payment->getMethod()) {
                     $payment->setMethod('free');
@@ -445,17 +447,13 @@ class Enterprise_Reward_Model_Observer
     }
 
     /**
-     * Validate order, check if enough reward points to place order
+     * Check reward points balance
      *
-     * @param Varien_Event_Observer $observer
-     * @return Enterprise_Reward_Model_Observer
+     * @param   Mage_Sales_Model_Order $order
+     * @return  Enterprise_Reward_Model_Observer
      */
-    public function processBeforeOrderPlace(Varien_Event_Observer $observer)
+    protected function _checkRewardPointsBalance(Mage_Sales_Model_Order $order)
     {
-        if (!Mage::helper('enterprise_reward')->isEnabledOnFront()) {
-            return $this;
-        }
-        $order = $observer->getEvent()->getOrder();
         if ($order->getRewardPointsBalance() > 0) {
             $websiteId = Mage::app()->getStore($order->getStoreId())->getWebsiteId();
             /* @var $reward Enterprise_Reward_Model_Reward */
@@ -463,14 +461,32 @@ class Enterprise_Reward_Model_Observer
                 ->setCustomerId($order->getCustomerId())
                 ->setWebsiteId($websiteId)
                 ->loadByCustomer();
-            if (($order->getRewardPointsBalance() - $reward->getPointsBalance()) > 0) {
+            if (($order->getRewardPointsBalance() - $reward->getPointsBalance()) >= 0.0001) {
                 Mage::getSingleton('checkout/type_onepage')
                     ->getCheckout()
                     ->setUpdateSection('payment-method')
                     ->setGotoSection('payment');
+
                 Mage::throwException(Mage::helper('enterprise_reward')->__('Not enough Reward Points to complete this Order.'));
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Validate order, check if enough reward points to place order
+     *
+     * @param   Varien_Event_Observer $observer
+     * @return  Enterprise_Reward_Model_Observer
+     */
+    public function processBeforeOrderPlace(Varien_Event_Observer $observer)
+    {
+        if (Mage::helper('enterprise_reward')->isEnabledOnFront()) {
+            $order = $observer->getEvent()->getOrder();
+            $this->_checkRewardPointsBalance($order);
+        }
+
         return $this;
     }
 
@@ -485,13 +501,15 @@ class Enterprise_Reward_Model_Observer
         if (!Mage::helper('enterprise_reward')->isEnabledOnFront()
             || (Mage::app()->getStore()->isAdmin()
                 && !Mage::getSingleton('admin/session')->isAllowed('enterprise_reward/affect'))
-            ) {
+        ) {
             return $this;
         }
         /* @var $order Mage_Sales_Model_Order */
         $order = $observer->getEvent()->getOrder();
         if ($order->getBaseRewardCurrencyAmount() > 0) {
-            $reward = Mage::getModel('enterprise_reward/reward')
+            $this->_checkRewardPointsBalance($order);
+
+            Mage::getModel('enterprise_reward/reward')
                 ->setCustomerId($order->getCustomerId())
                 ->setWebsiteId(Mage::app()->getStore($order->getStoreId())->getWebsiteId())
                 ->setPointsDelta(-$order->getRewardPointsBalance())
@@ -510,6 +528,59 @@ class Enterprise_Reward_Model_Observer
         if ($pointsDelta) {
             $order->setRewardSalesrulePoints($pointsDelta);
         }
+        return $this;
+    }
+
+    /**
+     * Revert authorized reward points amount for order
+     *
+     * @param   Mage_Sales_Model_Order $order
+     * @return  Enterprise_Reward_Model_Observer
+     */
+    protected function _revertRewardPointsForOrder(Mage_Sales_Model_Order $order)
+    {
+        Mage::getModel('enterprise_reward/reward')
+            ->setCustomerId($order->getCustomerId())
+            ->setWebsiteId(Mage::app()->getStore($order->getStoreId())->getWebsiteId())
+            ->setPointsDelta($order->getRewardPointsBalance())
+            ->setAction(Enterprise_Reward_Model_Reward::REWARD_ACTION_REVERT)
+            ->setActionEntity($order)
+            ->updateRewardPoints();
+
+        return $this;
+    }
+
+    /**
+     * Revert reward points if order was not placed
+     *
+     * @param   Varien_Event_Observer $observer
+     * @return  Enterprise_Reward_Model_Observer
+     */
+    public function revertRewardPoints(Varien_Event_Observer $observer)
+    {
+        /* @var $order Mage_Sales_Model_Order */
+        $order = $observer->getEvent()->getOrder();
+        if ($order) {
+            $this->_revertRewardPointsForOrder($order);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Revert authorized reward points amounts for all orders
+     *
+     * @param   Varien_Event_Observer $observer
+     * @return  Enterprise_Reward_Model_Observer
+     */
+    public function revertRewardPointsForAllOrders(Varien_Event_Observer $observer)
+    {
+        $orders = $observer->getEvent()->getOrders();
+
+        foreach ($orders as $order) {
+            $this->_revertRewardPointsForOrder($order);
+        }
+
         return $this;
     }
 

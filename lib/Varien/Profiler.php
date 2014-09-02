@@ -86,7 +86,7 @@ class Varien_Profiler
         if (!self::$_enabled) {
             return;
         }
-		
+
         $time = microtime(true); // Get current time as quick as possible to make more accurate calculations
 
         if (empty(self::$_timers[$timerName])) {

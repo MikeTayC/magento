@@ -1,13 +1,13 @@
 <?php
 /**
- * Magento
+ * Magento Enterprise Edition
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * http://www.magentocommerce.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
  * to license@magentocommerce.com so we can send you a copy immediately.
@@ -21,7 +21,7 @@
  * @category    Mage
  * @package     Mage_Connect
  * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 include_once "Maged/Connect.php";
@@ -80,7 +80,7 @@ class Maged_Model_Connect extends Maged_Model
 
         $uri = $this->controller()->channelConfig()->getRootChannelUri();
 
-        $this->controller()->channelConfig()->setCommandOptions($connectConfig, $options);
+        $this->controller()->channelConfig()->setCommandOptions($this->controller()->session(), $options);
 
         $connectConfig->root_channel = $chanName;
         foreach ($packages as $package) {
@@ -109,12 +109,11 @@ class Maged_Model_Connect extends Maged_Model
 
         $connect = $this->connect();
         $sconfig = $connect->getSingleConfig();
-        
+
         $options = array();
         $params = array($channel, $package, $version);
+        $this->controller()->channelConfig()->setCommandOptions($this->controller()->session(), $options);
 
-        $this->controller()->channelConfig()->setCommandOptions($this->connect()->getConfig(), $options);
-        
         $connect->run('package-prepare', $options, $params);
         $output = $connect->getOutput();
         $errors = $connect->getFrontend()->getErrors();
@@ -124,7 +123,7 @@ class Maged_Model_Connect extends Maged_Model
                 $package_error[] = $error[1];
             }
         }
-        
+
         $packages = array();
         if (is_array($output) && isset($output['package-prepare'])){
             $packages = array_merge($output['package-prepare'], array('errors'=>array('error'=>$package_error)));
@@ -162,7 +161,7 @@ class Maged_Model_Connect extends Maged_Model
 
         if (!empty($_GET['updates'])) {
             $options = array();
-            $this->controller()->channelConfig()->setCommandOptions($this->connect()->getConfig(), $options);
+            $this->controller()->channelConfig()->setCommandOptions($this->controller()->session(), $options);
             $result = $connect->run('list-upgrades', $options);
             $output = $connect->getOutput();
             if (is_array($output)) {
@@ -267,7 +266,7 @@ class Maged_Model_Connect extends Maged_Model
             $options['ftp'] = $this->connect()->getConfig()->__get('remote_config');
         }
 
-        $this->controller()->channelConfig()->setCommandOptions($this->connect()->getConfig(), $options);
+        $this->controller()->channelConfig()->setCommandOptions($this->controller()->session(), $options);
 
         foreach ($actions as $action=>$packages) {
             foreach ($packages as $package) {
@@ -346,7 +345,8 @@ class Maged_Model_Connect extends Maged_Model
             $options['ftp'] = $this->connect()->getConfig()->__get('remote_config');
         }
 
-        $this->controller()->channelConfig()->setCommandOptions($this->connect()->getConfig(), $options);
+        $this->controller()->channelConfig()->setCommandOptions($this->controller()->session(), $options);
+
         $this->connect()->runHtmlConsole(array(
             'command'=>'install',
             'options'=>$options,
@@ -407,7 +407,7 @@ class Maged_Model_Connect extends Maged_Model
                 @fwrite($f, $serial);
                 @fclose($f);
                 $ret=$ftpObj->upload($confFile, $tempFile);
-                
+
                 //read file
                 if (!$errors && is_file($configTestFile)) {
                     $size = filesize($configTestFile);

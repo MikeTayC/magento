@@ -37,7 +37,9 @@
     </checkout_cart_index>
 
     <wishlist_index_index>
-        <block type="enterprise_giftregistry/wishlist_view" name="giftregistry.customer.wishlist" template="giftregistry/wishlist/view.phtml"/>
+        <block type="enterprise_giftregistry/wishlist_view" name="giftregistry.customer.wishlist" template="giftregistry/wishlist/view.phtml">
+            <block type="wishlist/customer_wishlist_item_options" name="customer.wishlist.item.options" as="item_options"/>
+        </block>
     </wishlist_index_index>
 
     <enterprise_giftregistry_index_index>

@@ -89,6 +89,9 @@ class Enterprise_GiftRegistry_ViewController extends Mage_Core_Controller_Front_
             $count = 0;
             foreach ($items as $itemId => $itemInfo) {
                 $item = Mage::getModel('enterprise_giftregistry/item')->load($itemId);
+                $optionCollection = Mage::getModel('enterprise_giftregistry/item_option')->getCollection()
+                    ->addItemFilter($itemId);
+                $item->setOptions($optionCollection->getOptionsByItem($item));
                 if (!$item->getId() || $itemInfo['qty'] < 1 || ($item->getQty() <= $item->getQtyFulfilled())) {
                     continue;
                 }

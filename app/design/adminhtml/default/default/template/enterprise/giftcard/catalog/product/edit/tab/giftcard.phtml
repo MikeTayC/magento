@@ -143,6 +143,15 @@
                 }
             }
         }
+        var isVirtual = parseInt($('giftcard_type').value) == 0;
+
+        $$('.hidden-for-virtual').each(function(el){
+            if (isVirtual) {
+                el.up('tr').hide();
+            } else {
+                el.up('tr').show();
+            }
+        })
     }
 
     togglecardType();

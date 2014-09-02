@@ -124,6 +124,28 @@ class Enterprise_TargetRule_Block_Checkout_Cart_Crosssell extends Mage_Catalog_B
     }
 
     /**
+     * Retrieve Array of product ids which have special relation with products in Cart
+     * For example simple product as part of Grouped product
+     *
+     * @return array
+     */
+    protected function _getCartProductIdsRel()
+    {
+        $productIds = array();
+        foreach ($this->getQuote()->getAllItems() as $quoteItem) {
+            $productTypeOpt = $quoteItem->getOptionByCode('product_type');
+            if ($productTypeOpt instanceof Mage_Sales_Model_Quote_Item_Option
+                && $productTypeOpt->getValue() == Mage_Catalog_Model_Product_Type_Grouped::TYPE_CODE
+                && $productTypeOpt->getProductId()
+            ) {
+                $productIds[] = $productTypeOpt->getProductId();
+            }
+        }
+
+        return $productIds;
+    }
+
+    /**
      * Retrieve TargetRule data helper
      *
      * @return Enterprise_TargetRule_Helper_Data
@@ -343,10 +365,10 @@ class Enterprise_TargetRule_Block_Checkout_Cart_Crosssell extends Mage_Catalog_B
             $count = $limit - count($this->_items);
             if ($count > 0) {
                 $excludeProductIds = array_merge(array_keys($this->_items), $this->_getCartProductIds());
-
+                $filterProductIds = array_merge($this->_getCartProductIds(), $this->_getCartProductIdsRel());
                 if (in_array($this->getPositionBehavior(), $this->getSelectedBehaviorPositions())) {
                     $collection = $this->_getLinkCollection()
-                        ->addProductFilter($this->_getCartProductIds())
+                        ->addProductFilter($filterProductIds)
                         ->addExcludeProductFilter($excludeProductIds)
                         ->setPositionOrder()
                         ->setPageSize($count);

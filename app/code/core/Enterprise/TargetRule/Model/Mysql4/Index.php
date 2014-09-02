@@ -131,9 +131,9 @@ class Enterprise_TargetRule_Model_Mysql4_Index extends Mage_Core_Model_Mysql4_Ab
         } else {
             $productIds = $this->getTypeIndex($object->getType())
                 ->loadProductIds($object);
+            $productIds = array_diff($productIds, $object->getExcludeProductIds());
         }
 
-        $productIds = array_diff($productIds, $object->getExcludeProductIds());
         shuffle($productIds);
 
         return array_slice($productIds, 0, $object->getLimit());
@@ -148,22 +148,22 @@ class Enterprise_TargetRule_Model_Mysql4_Index extends Mage_Core_Model_Mysql4_Ab
     protected function _matchProductIds($object)
     {
         $limit      = $object->getLimit() + $this->getOverfillLimit();
-        $productIds = array();
+        $productIds = $object->getExcludeProductIds();
         $ruleCollection = $object->getRuleCollection();
         foreach ($ruleCollection as $rule) {
             /* @var $rule Enterprise_TargetRule_Model_Rule */
             if (count($productIds) >= $limit) {
-                continue;
+                break;
             }
             if (!$rule->checkDateForStore($object->getStoreId())) {
                 continue;
             }
 
-            $resultIds = $this->_getProductIdsByRule($rule, $object, $limit, $productIds);
+            $resultIds = $this->_getProductIdsByRule($rule, $object, $rule->getPositionsLimit(), $productIds);
             $productIds = array_merge($productIds, $resultIds);
         }
 
-        return $productIds;
+        return array_diff($productIds, $object->getExcludeProductIds());
     }
 
     /**

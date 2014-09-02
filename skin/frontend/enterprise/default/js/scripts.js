@@ -158,7 +158,7 @@ Enterprise.Bundle = {
                 }
              }
 
-             $('bundle-summary').update(summaryHTML)
+             $('bundle-summary').update(summaryHTML).childElements().last().addClassName('last');
          }
          return result;
      },

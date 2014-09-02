@@ -205,6 +205,7 @@ class Enterprise_Search_Helper_Data extends Mage_Core_Helper_Abstract
         if ($engine == 'enterprise_search/engine') {
             return true;
         }
+
         return false;
     }
 

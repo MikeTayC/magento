@@ -33,7 +33,15 @@
  */
 abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_Search_Model_Adapter_Abstract
 {
-    CONST DEFAULT_SPELLCHECK_COUNT = 1;
+    /**
+     * Default number of rows to select
+     */
+    const DEFAULT_ROWS_LIMIT        = 9999;
+
+    /**
+     * Default suggestions count
+     */
+    const DEFAULT_SPELLCHECK_COUNT  = 1;
 
     /**
      * Define ping status
@@ -217,10 +225,10 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
             foreach ($query as $field => $value) {
                 if (is_array($value)) {
                     if ($field == 'price' || isset($value['from']) || isset($value['to'])) {
-                        $from = (isset($value['from']) && !empty($value['from']))
+                        $from = (isset($value['from']) && strlen(trim($value['from'])))
                             ? $this->_prepareQueryText($value['from'])
                             : '*';
-                        $to = (isset($value['to']) && !empty($value['to']))
+                        $to = (isset($value['to']) && strlen(trim($value['to'])))
                             ? $this->_prepareQueryText($value['to'])
                             : '*';
                         $fieldCondition = "$field:[$from TO $to]";
@@ -272,10 +280,10 @@ abstract class Enterprise_Search_Model_Adapter_Solr_Abstract extends Enterprise_
                 else {
                     foreach ($facetFieldConditions as $facetCondition) {
                         if (is_array($facetCondition) && isset($facetCondition['from']) && isset($facetCondition['to'])) {
-                            $from = (isset($facetCondition['from']) && !empty($facetCondition['from']))
+                            $from = (isset($facetCondition['from']) && strlen(trim($facetCondition['from'])))
                                 ? $this->_prepareQueryText($facetCondition['from'])
                                 : '*';
-                            $to = (isset($facetCondition['to']) && !empty($facetCondition['to']))
+                            $to = (isset($facetCondition['to']) && strlen(trim($facetCondition['to'])))
                                 ? $this->_prepareQueryText($facetCondition['to'])
                                 : '*';
                             $fieldCondition = "$facetField:[$from TO $to]";

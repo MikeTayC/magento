@@ -40,7 +40,7 @@
             <?php else:?>
             <a href="<?php echo $this->getUrl('') ?>" title="<?php echo $this->getLogoAlt() ?>" class="logo"><strong><?php echo $this->getLogoAlt() ?></strong><img src="<?php echo $this->getLogoSrc() ?>" alt="<?php echo $this->getLogoAlt() ?>" /></a>
             <?php endif?>
-            <img src="<?php echo $this->getSkinUrl('images/callouts/header_free_shipping.gif')?>" alt="" class="free-shipping" />
+            <?php echo $this->getChildHtml('headerCallout') ?>
         </div>
         <div class="quick-access">
             <div class="checkout-link"><?php echo $this->getChildHtml('checkoutLinks') ?></div>

@@ -40,6 +40,16 @@ abstract class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Abstract ext
     protected $_controlFieldName = 'entity_id';
 
     /**
+     * Javascript list type name for this grid
+     */
+    protected $_listType = 'product_to_add';
+
+    /**
+     * Url to configure this grid's items
+     */
+    protected $_configureRoute = '*/checkout/configureProductToAdd';
+
+    /**
      * Initialize Grid
      */
     public function __construct()
@@ -48,9 +58,9 @@ abstract class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Abstract ext
         $this->setUseAjax(true);
         $this->setPagerVisibility(false);
         $this->setFilterVisibility(false);
-        $this->setRowClickCallback('checkoutObj.gridRowClick.bind(checkoutObj)');
-        $this->setCheckboxCheckCallback('checkoutObj.gridCheckboxCheck.bind(checkoutObj)');
-        $this->setRowInitCallback('checkoutObj.gridRowInit.bind(checkoutObj)');
+        $this->setRowClickCallback('checkoutObj.productGridRowClick.bind(checkoutObj)');
+        $this->setCheckboxCheckCallback('checkoutObj.productGridCheckboxCheck.bind(checkoutObj)');
+        $this->setRowInitCallback('checkoutObj.productGridRowInit.bind(checkoutObj)');
     }
 
     /**
@@ -70,7 +80,8 @@ abstract class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Abstract ext
      */
     public function getItemsCount()
     {
-        if ($collection = $this->getItemsCollection()) {
+        $collection = $this->getItemsCollection();
+        if ($collection) {
             return count($collection->getItems());
         }
         return 0;
@@ -96,6 +107,16 @@ abstract class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Abstract ext
     }
 
     /**
+     * Returns special renderer for price column content
+     *
+     * @return null|string
+     */
+    protected function _getPriceRenderer()
+    {
+        return null;
+    }
+
+    /**
      * Prepare Grid columns
      *
      * @return Mage_Adminhtml_Block_Widget_Grid
@@ -104,14 +125,17 @@ abstract class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Abstract ext
     {
         $this->addColumn('product_name', array(
             'header'    => Mage::helper('enterprise_checkout')->__('Product name'),
+            'renderer'  => 'enterprise_checkout/adminhtml_manage_grid_renderer_product',
             'index'     => 'name',
             'sortable'  => false
         ));
 
         $this->addColumn('price', array(
             'header'    => Mage::helper('enterprise_checkout')->__('Price'),
+            'renderer'  => $this->_getPriceRenderer(),
             'align'     => 'right',
             'type'      => 'currency',
+            'column_css_class' => 'price',
             'currency_code' => $this->_getStore()->getCurrentCurrencyCode(),
             'rate'      => $this->_getStore()->getBaseCurrency()->getRate($this->_getStore()->getCurrentCurrencyCode()),
             'index'     => 'price',
@@ -126,7 +150,7 @@ abstract class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Abstract ext
     /**
      * Add columns with controls to manage added products and their quantity
      *
-     * @return Mage_Adminhtml_Block_Widget_Grid
+     * @return Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Abstract
      */
     protected function _addControlColumns()
     {
@@ -136,11 +160,14 @@ abstract class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Abstract ext
             'field_name'=> $this->getId() ? $this->getId() : 'source_product',
             'align'     => 'center',
             'index'     => $this->_controlFieldName,
+            'use_index' => true,
+            'sortable'  => false
         ));
 
         $this->addColumn('qty', array(
             'sortable'  => false,
             'header'    => Mage::helper('enterprise_checkout')->__('Qty To Add'),
+            'renderer'  => 'adminhtml/sales_order_create_search_grid_renderer_qty',
             'name'      => 'qty',
             'inline_css'=> 'qty',
             'align'     => 'right',
@@ -171,5 +198,42 @@ abstract class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Abstract ext
     protected function _getStore()
     {
         return Mage::registry('checkout_current_store');
+    }
+
+    /**
+     * Returns javascript list type of this grid
+     *
+     * @return string
+     */
+    public function getListType()
+    {
+        return $this->_listType;
+    }
+
+    /**
+     * Returns url to configure item
+     *
+     * @return string
+     */
+    public function getConfigureUrl()
+    {
+        $params = array(
+            'customer'   => $this->_getCustomer()->getId(),
+            'store'    => $this->_getStore()->getId()
+        );
+        return $this->getUrl($this->_configureRoute, $params);
+    }
+
+    /**
+     * Returns additional javascript to init this grid
+     *
+     * @return Mage_Core_Model_Store
+     */
+    public function getAdditionalJavaScript ()
+    {
+        return "Event.observe(window, 'load',  function() {\n"
+            . "setTimeout(function(){productConfigure.addListType('" . $this->getListType() . "', {urlFetch: '" . $this->getConfigureUrl() . "'})\n"
+            . "});\n"
+            . "checkoutObj.addSourceGrid({htmlId: '" . $this->getId() . "', listType: '" . $this->getListType() . "'});\n}, 10)";
     }
 }

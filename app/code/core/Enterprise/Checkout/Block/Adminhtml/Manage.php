@@ -172,4 +172,58 @@ class Enterprise_Checkout_Block_Adminhtml_Manage extends Mage_Adminhtml_Block_Wi
     {
         return $this->getUrl('*/*/createOrder', array('_current' => true));
     }
+
+    /**
+     * Retrieve url for loading blocks
+     *
+     * @return string
+     */
+    public function getLoadBlockUrl()
+    {
+        return $this->getUrl('*/*/loadBlock');
+    }
+
+    public function getOrderDataJson()
+    {
+        $actionUrls = array(
+            'cart' => $this->getActionUrl('cart'),
+            'applyCoupon' => $this->getActionUrl('applyCoupon'),
+            'coupon' => $this->getActionUrl('coupon')
+        );
+
+        $messages = array(
+            'chooseProducts' => $this->__('Choose some products to add to shopping cart.')
+        );
+
+        $data = array(
+            'action_urls' => $actionUrls,
+            'messages' => $messages,
+            'customer_id' => $this->_getCustomer()->getId(),
+            'store_id' => $this->_getStore()->getId()
+        );
+
+        return Mage::helper('core')->jsonEncode($data);
+    }
+
+    /**
+     * Retrieve curency name by code
+     *
+     * @param   string $code
+     * @return  string
+     */
+    public function getCurrencySymbol($code)
+    {
+        $currency = Mage::app()->getLocale()->currency($code);
+        return $currency->getSymbol() ? $currency->getSymbol() : $currency->getShortName();
+    }
+
+    /**
+     * Retrieve current order currency code
+     *
+     * @return string
+     */
+    public function getCurrentCurrencyCode()
+    {
+        return $this->_getStore()->getCurrentCurrencyCode();
+    }
 }

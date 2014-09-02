@@ -149,7 +149,7 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Detail_
         ));
 
         $this->addExportType('*/*/exportCsv', Mage::helper('enterprise_customersegment')->__('CSV'));
-        $this->addExportType('*/*/exportExcel', Mage::helper('enterprise_customersegment')->__('Excel'));
+        $this->addExportType('*/*/exportExcel', Mage::helper('enterprise_customersegment')->__('Excel XML'));
 
         return parent::_prepareColumns();
     }

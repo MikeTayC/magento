@@ -331,11 +331,22 @@ class Enterprise_Search_Model_Resource_Engine
     /**
      * Define if Layered Navigation is allowed
      *
+     * @deprecated after 1.9.1 - use $this->isLayeredNavigationAllowed()
+     *
      * @return bool
      */
     public function isLeyeredNavigationAllowed()
     {
-        //return false;
+        $this->isLayeredNavigationAllowed();
+    }
+
+    /**
+     * Define if Layered Navigation is allowed
+     *
+     * @return bool
+     */
+    public function isLayeredNavigationAllowed()
+    {
         return true;
     }
 
@@ -354,17 +365,17 @@ class Enterprise_Search_Model_Resource_Engine
             default:
                 if (extension_loaded('solr')) {
                     $model = 'enterprise_search/adapter_phpExtension';
-                }
-                else {
+                } else {
                     $model = 'enterprise_search/adapter_httpStream';
                 }
                 break;
         }
+
         return Mage::getSingleton($model);
     }
 
     /**
-     * Define if selected adapter is avaliable
+     * Define if selected adapter is available
      *
      * @return bool
      */

@@ -115,12 +115,14 @@ class Enterprise_Search_Model_Adapter_HttpStream extends Enterprise_Search_Model
             $_params = array_intersect_key($params, $_params) + array_diff_key($_params, $params);
         }
 
-        $offset = (isset($_params['offset'])) ? (int)$_params['offset'] : 0;
-        $limit  = (isset($_params['limit'])) ? (int)$_params['limit'] : 100;
+        $offset = (isset($_params['offset'])) ? (int) $_params['offset'] : 0;
+        $limit  = (isset($_params['limit']))
+            ? (int) $_params['limit']
+            : Enterprise_Search_Model_Adapter_Solr_Abstract::DEFAULT_ROWS_LIMIT;
 
-        $languageCode = $this->_getLanguageCodeByLocaleCode($params['locale_code']);
+        $languageCode   = $this->_getLanguageCodeByLocaleCode($params['locale_code']);
         $languageSuffix = ($languageCode) ? '_' . $languageCode : '';
-        $searchParams = array();
+        $searchParams   = array();
 
         if (!is_array($_params['fields'])) {
             $_params['fields'] = array($_params['fields']);

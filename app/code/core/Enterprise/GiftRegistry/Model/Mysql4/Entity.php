@@ -108,6 +108,7 @@ class Enterprise_GiftRegistry_Model_Mysql4_Entity extends Mage_Core_Model_Mysql4
      */
     protected function _afterSave(Mage_Core_Model_Abstract $object)
     {
+        $data = array();
         foreach ($object->getStaticTypeIds() as $code) {
             $objectData = $object->getData($code);
             if ($objectData) {

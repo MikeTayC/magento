@@ -83,7 +83,7 @@ class Enterprise_Invitation_Block_Adminhtml_Report_Invitation_Order_Grid
         ));
 
         $this->addExportType('*/*/exportOrderCsv', Mage::helper('enterprise_invitation')->__('CSV'));
-        $this->addExportType('*/*/exportOrderExcel', Mage::helper('enterprise_invitation')->__('Excel'));
+        $this->addExportType('*/*/exportOrderExcel', Mage::helper('enterprise_invitation')->__('Excel XML'));
 
         return parent::_prepareColumns();
     }

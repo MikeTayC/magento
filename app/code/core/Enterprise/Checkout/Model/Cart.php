@@ -42,6 +42,10 @@ class Enterprise_Checkout_Model_Cart extends Varien_Object
      */
     protected $_customer;
 
+    /**
+     * @var Mage_Customer_Model_Customer
+     */
+    protected $_resultErrors = array();
 
     /**
      * Setter for $_customer
@@ -187,16 +191,31 @@ class Enterprise_Checkout_Model_Cart extends Varien_Object
     }
 
     /**
-     * Add product to current quote
+     * Add product to current order quote
      *
-     * @param mixed $product
-     * @param mixed $qty
-     * @return Mage_Sales_Model_Quote_Item
-     * @throws Mage_Core_Exception
+     * $config can be integer qty (older behaviour, when no product configuration was possible)
+     * or it can be array of options (newer behaviour).
+     *
+     * In case of older behaviour same product ids are not added, but quote item qty is increased.
+     * In case of newer behaviour same product ids with different configs are added as separate quote items.
+     *
+     * @param   mixed $product
+     * @param   Varien_Object|array|float $config
+     * @return  Mage_Adminhtml_Model_Sales_Order_Create
      */
-    public function addProduct($product, $qty=1)
+    public function addProduct($product, $config = 1)
     {
-        $qty = (float)$qty;
+        if (is_array($config) || ($config instanceof Varien_Object)) {
+            $config = is_array($config) ? new Varien_Object($config) : $config;
+            $qty = (float) $config->getQty();
+            $separateSameProducts = true;
+        } else {
+            $qty = (float) $config;
+            $config = new Varien_Object();
+            $config->setQty($qty);
+            $separateSameProducts = false;
+        }
+
         if (!($product instanceof Mage_Catalog_Model_Product)) {
             $productId = $product;
             $product = Mage::getModel('catalog/product')
@@ -204,33 +223,42 @@ class Enterprise_Checkout_Model_Cart extends Varien_Object
                 ->setStoreId($this->getStore()->getId())
                 ->load($product);
             if (!$product->getId()) {
-                Mage::throwException(Mage::helper('enterprise_checkout')->__('Failed to add a product to cart by id "%s"', $productId));
+                Mage::throwException(
+                    Mage::helper('adminhtml')->__('Failed to add a product to cart by id "%s".', $productId)
+                );
             }
         }
 
-        if($product->getStockItem()) {
-            $product->getStockItem()->setCustomerGroupId($this->getCustomer()->getGroupId());
+        if ($product->getStockItem()) {
             if (!$product->getStockItem()->getIsQtyDecimal()) {
                 $qty = (int)$qty;
-            }
-            else {
+            } else {
                 $product->setIsQtyDecimal(1);
             }
         }
         $qty = $qty > 0 ? $qty : 1;
-        if ($item = $this->createQuote()->getItemByProduct($product)) {
-            $item->setQty($item->getQty()+$qty);
+
+        $item = null;
+        if (!$separateSameProducts) {
+            $item = $this->getQuote()->getItemByProduct($product);
         }
-        else {
-            $product->setSkipCheckRequiredOption(true);
-            $item = $this->createQuote()->addProduct($product, $qty);
+        if ($item) {
+            $item->setQty($item->getQty() + $qty);
+        } else {
+            $isGrouped = $product->getTypeId() == Mage_Catalog_Model_Product_Type_Grouped::TYPE_CODE;
+            $processMode = $isGrouped ?
+                Mage_Catalog_Model_Product_Type_Abstract::PROCESS_MODE_FULL :
+                Mage_Catalog_Model_Product_Type_Abstract::PROCESS_MODE_LITE;
+            $product->setCartQty($config->getQty());
+            $item = $this->getQuote()->addProductAdvanced($product, $config, $processMode);
             if (is_string($item)) {
                 Mage::throwException($item);
             }
-            $product->unsSkipCheckRequiredOption();
             $item->checkData();
         }
-        return $item;
+
+        $this->setRecollect(true);
+        return $this;
     }
 
     /**
@@ -264,9 +292,9 @@ class Enterprise_Checkout_Model_Cart extends Varien_Object
             if ($additionalOptions = $orderItem->getProductOptionByCode('additional_options')) {
                 $item->addOption(new Varien_Object(
                     array(
-                        'product' => $item->getProduct(),
-                        'code' => 'additional_options',
-                        'value' => serialize($additionalOptions)
+                        'product'   => $item->getProduct(),
+                        'code'      => 'additional_options',
+                        'value'     => serialize($additionalOptions)
                     )
                 ));
             }
@@ -284,6 +312,67 @@ class Enterprise_Checkout_Model_Cart extends Varien_Object
     }
 
     /**
+     * Adds error of operation either to internal array or directly to session (if set)
+     *
+     * @param string $message
+     * @return Enterprise_Checkout_Model_Cart
+     */
+    protected function _addResultError($message)
+    {
+        $session = $this->getSession();
+        if ($session) {
+            $session->addError($message);
+        } else {
+            $this->_resultErrors[] = $message;
+        }
+        return $this;
+    }
+
+    /**
+     * Returns array of errors encountered during previous operations
+     *
+     * @return array
+     */
+    protected function getResultErrors()
+    {
+        return $this->_resultErrors;
+    }
+
+    /**
+     * Clears array of operation errors, so caller will get only errors related to last operation
+     *
+     * @return Enterprise_Checkout_Model_Cart
+     */
+    protected function clearResultErrors()
+    {
+        $this->_resultErrors = array();
+        return $this;
+    }
+
+    /**
+     * Add multiple products to current order quote.
+     * Errors can be received via getResultErrors() or directly into session if it was set via setSession().
+     *
+     * @param   array $products
+     * @return  Enterprise_Checkout_Model_Cart|Exception
+     */
+    public function addProducts(array $products)
+    {
+        foreach ($products as $productId => $config) {
+            $config['qty'] = isset($config['qty']) ? (float)$config['qty'] : 1;
+            try {
+                $this->addProduct($productId, $config);
+            } catch (Mage_Core_Exception $e) {
+                $this->_addResultError($e->getMessage());
+            } catch (Exception $e) {
+                return $e;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Remove items from quote or move them to wishlist etc.
      *
      * @param array $data Array of items
@@ -291,46 +380,61 @@ class Enterprise_Checkout_Model_Cart extends Varien_Object
      */
     public function updateQuoteItems($data)
     {
-        if (!$this->getQuote()->getId()) {
+        if (!$this->getQuote()->getId() || !is_array($data)) {
             return $this;
         }
-        if (is_array($data)) {
-            foreach ($data as $itemId => $info) {
+
+        foreach ($data as $itemId => $info) {
+            if (!empty($info['configured'])) {
+                $item = $this->getQuote()->updateItem($itemId, new Varien_Object($info));
+                $itemQty = (float) $item->getQty();
+            } else {
                 $item = $this->getQuote()->getItemById($itemId);
-                $itemQty = (float)$info['qty'];
-                if ($item && $item->getProduct()->getStockItem()) {
-                    $item->getProduct()->getStockItem()->setCustomerGroupId($this->getCustomer()->getGroupId());
-                    if (!$item->getProduct()->getStockItem()->getIsQtyDecimal()) {
-                        $itemQty = (int)$info['qty'];
-                    }
-                    else {
-                        $item->setIsQtyDecimal(1);
-                    }
-                }
+                $itemQty = (float) $info['qty'];
+            }
 
-                // remove items with zero and negative quantity
-                if ($itemQty < 0.00001) {
-                    $this->moveQuoteItem($itemId, false);
-                    continue;
-                }
-
-                if (empty($info['action'])) {
-                    if ($item) {
-                        $item->setQty($itemQty);
-                        $item->getProduct()->setIsSuperMode(true);
-                        $item->checkData();
-                    }
-                }
-                else {
-                    $this->moveQuoteItem($itemId, $info['action']);
+            if ($item && $item->getProduct()->getStockItem()) {
+                if (!$item->getProduct()->getStockItem()->getIsQtyDecimal()) {
+                    $itemQty = (int) $itemQty;
+                } else {
+                    $item->setIsQtyDecimal(1);
                 }
             }
+
+            $itemQty = ($itemQty > 0) ? $itemQty : 1;
+            if (isset($info['custom_price'])) {
+                $itemPrice = $this->_parseCustomPrice($info['custom_price']);
+            } else {
+                $itemPrice = null;
+            }
+            $noDiscount = !isset($info['use_discount']);
+
+            if (empty($info['action']) || !empty($info['configured'])) {
+                if ($item) {
+                    $item->setQty($itemQty);
+                    $item->setCustomPrice($itemPrice);
+                    $item->setOriginalCustomPrice($itemPrice);
+                    $item->setNoDiscount($noDiscount);
+                    $item->getProduct()->setIsSuperMode(true);
+                    $item->checkData();
+                }
+            } else {
+                $this->moveQuoteItem($item->getId(), $info['action'], $itemQty);
+            }
         }
+        if ($this->_needCollectCart === true) {
+            $this->getCustomerCart()
+                ->collectTotals()
+                ->save();
+        }
+        $this->setRecollect(true);
+
         return $this;
     }
 
     /**
-     * Move quote item to wishlist
+     * Move quote item to wishlist.
+     * Errors can be received via getResultErrors() or directly into session if it was set via setSession().
      *
      * @param Mage_Sales_Model_Quote_Item|int $item
      * @param string $moveTo Destination storage
@@ -338,15 +442,18 @@ class Enterprise_Checkout_Model_Cart extends Varien_Object
      */
     public function moveQuoteItem($item, $moveTo)
     {
-        if ($item = $this->_getQuoteItem($item)) {
+        $item = $this->_getQuoteItem($item);
+        if ($item) {
             switch ($moveTo) {
                 case 'wishlist':
                     $wishlist = Mage::getModel('wishlist/wishlist')->loadByCustomer($this->getCustomer(), true)
                         ->setStore($this->getStore())
                         ->setSharedStoreIds($this->getStore()->getWebsite()->getStoreIds());
-                    if ($wishlist->getId()) {
-                        $wishlistItem = $wishlist->addNewItem($item->getProduct()->getId());
-                        if ($wishlistItem->getId()) {
+                    if ($wishlist->getId() && $item->getProduct()->isVisibleInSiteVisibility()) {
+                        $wishlistItem = $wishlist->addNewItem($item->getProduct(), $item->getBuyRequest());
+                        if (is_string($wishlistItem)) {
+                            $this->_addResultError($wishlistItem);
+                        } else if ($wishlistItem->getId()) {
                             $this->getQuote()->removeItem($item->getId());
                         }
                     }

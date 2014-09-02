@@ -42,13 +42,18 @@
     }
 
     Payment.prototype.switchRewardPointsCheckbox = function() {
-
         if (!rewardPointsSubstracted && $('use_reward_points').checked) {
             quoteBaseGrandTotal -= <?php echo (float)$this->getCurrencyAmount(); ?>;
             rewardPointsSubstracted = true;
-        } else if (rewardPointsSubstracted && !$('use_reward_points').checked) {
+            checkQuoteBaseGrandTotal = quoteBaseGrandTotal;
+        }
+        if (rewardPointsSubstracted && !$('use_reward_points').checked) {
             quoteBaseGrandTotal += <?php echo (float)$this->getCurrencyAmount(); ?>;
             rewardPointsSubstracted = false;
+            checkQuoteBaseGrandTotal = quoteBaseGrandTotal;
+        }
+        if ((checkQuoteBaseGrandTotal < 0.0001 || checkQuoteBaseGrandTotal > 0.0001) && quoteBaseGrandTotal == 0) {
+            quoteBaseGrandTotal = checkQuoteBaseGrandTotal;
         }
         if (quoteBaseGrandTotal < 0.0001) {
             var elements = Form.getElements(this.form);

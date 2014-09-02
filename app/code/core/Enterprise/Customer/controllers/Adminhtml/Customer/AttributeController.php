@@ -220,7 +220,7 @@ class Enterprise_Customer_Adminhtml_Customer_AttributeController
                     ->getDefaultGroupId($data['attribute_set_id']);
             }
 
-            if (isset($data['used_in_forms'])) {
+            if (isset($data['used_in_forms']) && is_array($data['used_in_forms'])) {
                 $data['used_in_forms'][] = 'adminhtml_customer';
             }
 

@@ -36,6 +36,13 @@ class Enterprise_GiftCard_Model_Catalog_Product_Type_Giftcard extends Mage_Catal
     protected $_canUseQtyDecimals  = false;
 
     /**
+     * Product is configurable
+     *
+     * @var bool
+     */
+    protected $_canConfigure = true;
+
+    /**
      * Check is gift card product
      *
      * @param Mage_Catalog_Model_Product $product
@@ -121,21 +128,65 @@ class Enterprise_GiftCard_Model_Catalog_Product_Type_Giftcard extends Mage_Catal
     }
 
     /**
-     * Initialize product(s) for add to cart process
+     * Prepare product and its configuration to be added to some products list.
+     * Use standard preparation process and also add specific giftcard options.
      *
-     * @param   Varien_Object $buyRequest
+     * @param Varien_Object $buyRequest
      * @param Mage_Catalog_Model_Product $product
-     * @return  unknown
+     * @param string $processMode
+     * @return array|string
      */
-    public function prepareForCart(Varien_Object $buyRequest, $product = null)
+    protected function _prepareProduct(Varien_Object $buyRequest, $product, $processMode)
     {
-        $result = parent::prepareForCart($buyRequest, $product);
+        $result = parent::_prepareProduct($buyRequest, $product, $processMode);
 
         if (is_string($result)) {
             return $result;
         }
 
+        try {
+            $amount = $this->_validate($buyRequest, $product, $processMode);
+        } catch (Mage_Core_Exception $e) {
+            return $e->getMessage();
+        } catch (Exception $e) {
+            Mage::logException($e);
+            return Mage::helper('enterprise_giftcard')->__('An error has occurred while preparing Gift Card.');
+        }
+
+        $product->addCustomOption('giftcard_amount', $amount, $product);
+        $product->addCustomOption('giftcard_sender_name', $buyRequest->getGiftcardSenderName(), $product);
+        $product->addCustomOption('giftcard_recipient_name', $buyRequest->getGiftcardRecipientName(), $product);
+        if (!$this->isTypePhysical($product)) {
+            $product->addCustomOption('giftcard_sender_email', $buyRequest->getGiftcardSenderEmail(), $product);
+            $product->addCustomOption('giftcard_recipient_email', $buyRequest->getGiftcardRecipientEmail(), $product);
+        }
+
+        $messageAllowed = false;
+        if ($product->getUseConfigAllowMessage()) {
+            $messageAllowed = Mage::getStoreConfigFlag(Enterprise_GiftCard_Model_Giftcard::XML_PATH_ALLOW_MESSAGE);
+        } else {
+            $messageAllowed = (int) $product->getAllowMessage();
+        }
+
+        if ($messageAllowed) {
+            $product->addCustomOption('giftcard_message', $buyRequest->getGiftcardMessage(), $product);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Validate Gift Card product, determine and return its amount
+     *
+     * @param Varien_Object $buyRequest
+     * @param  $product
+     * @param  $processMode
+     * @return double|float|mixed
+     */
+    private function _validate(Varien_Object $buyRequest, $product, $processMode)
+    {
         $product = $this->getProduct($product);
+        $isStrictProcessMode = $this->_isStrictProcessMode($processMode);
 
         $allowedAmounts = array();
         foreach ($product->getGiftcardAmounts() as $value) {
@@ -187,26 +238,33 @@ class Enterprise_GiftCard_Model_Catalog_Product_Type_Giftcard extends Mage_Catal
             $emptyFields++;
         }
 
-        if ($emptyFields > 1) {
-            return Mage::helper('enterprise_giftcard')->__('Please specify all the required information.');
+        if ($emptyFields > 1 && $isStrictProcessMode) {
+            Mage::throwException(
+                Mage::helper('enterprise_giftcard')->__('Please specify all the required information.')
+            );
         }
-
 
         $amount = null;
         if (($selectedAmount == 'custom' || !$selectedAmount) && $allowOpen) {
-            if ($customAmount <= 0) {
-                return Mage::helper('enterprise_giftcard')->__('Please specify Gift Card amount.');
+            if ($customAmount <= 0 && $isStrictProcessMode) {
+                Mage::throwException(
+                    Mage::helper('enterprise_giftcard')->__('Please specify Gift Card amount.')
+                );
             }
             if (!$minAmount || ($minAmount && $customAmount >= $minAmount)) {
                 if (!$maxAmount || ($maxAmount && $customAmount <= $maxAmount)) {
                     $amount = $customAmount;
-                } else if ($customAmount > $maxAmount) {
+                } else if ($customAmount > $maxAmount && $isStrictProcessMode) {
                     $messageAmount = Mage::helper('core')->currency($maxAmount, true, false);
-                    return Mage::helper('enterprise_giftcard')->__('Gift Card max amount is %s', $messageAmount);
+                    Mage::throwException(
+                        Mage::helper('enterprise_giftcard')->__('Gift Card max amount is %s', $messageAmount)
+                    );
                 }
-            } else if ($customAmount < $minAmount) {
+            } else if ($customAmount < $minAmount && $isStrictProcessMode) {
                 $messageAmount = Mage::helper('core')->currency($minAmount, true, false);
-                return Mage::helper('enterprise_giftcard')->__('Gift Card min amount is %s', $messageAmount);
+                Mage::throwException(
+                    Mage::helper('enterprise_giftcard')->__('Gift Card min amount is %s', $messageAmount)
+                );
             }
         } else if (is_numeric($selectedAmount)) {
             if (in_array($selectedAmount, $allowedAmounts)) {
@@ -219,46 +277,58 @@ class Enterprise_GiftCard_Model_Catalog_Product_Type_Giftcard extends Mage_Catal
             }
         }
 
-        if (is_null($amount)) {
-            return Mage::helper('enterprise_giftcard')->__('Please specify Gift Card amount.');
+        if (is_null($amount) && $isStrictProcessMode) {
+            Mage::throwException(
+                Mage::helper('enterprise_giftcard')->__('Please specify Gift Card amount.')
+            );
         }
 
-        $product->addCustomOption('giftcard_amount', $amount, $product);
-
-        if (!$buyRequest->getGiftcardRecipientName()) {
-            return Mage::helper('enterprise_giftcard')->__('Please specify recipient name.');
+        if (!$buyRequest->getGiftcardRecipientName() && $isStrictProcessMode) {
+            Mage::throwException(
+                Mage::helper('enterprise_giftcard')->__('Please specify recipient name.')
+            );
         }
-        if (!$buyRequest->getGiftcardSenderName()) {
-            return Mage::helper('enterprise_giftcard')->__('Please specify sender name.');
+        if (!$buyRequest->getGiftcardSenderName() && $isStrictProcessMode) {
+            Mage::throwException(
+                Mage::helper('enterprise_giftcard')->__('Please specify sender name.')
+            );
         }
-
-        $product->addCustomOption('giftcard_sender_name', $buyRequest->getGiftcardSenderName(), $product);
-        $product->addCustomOption('giftcard_recipient_name', $buyRequest->getGiftcardRecipientName(), $product);
 
         if (!$this->isTypePhysical($product)) {
-            if (!$buyRequest->getGiftcardRecipientEmail()) {
-                return Mage::helper('enterprise_giftcard')->__('Please specify recipient email.');
+            if (!$buyRequest->getGiftcardRecipientEmail() && $isStrictProcessMode) {
+                Mage::throwException(
+                    Mage::helper('enterprise_giftcard')->__('Please specify recipient email.')
+                );
             }
-            if (!$buyRequest->getGiftcardSenderEmail()) {
-                return Mage::helper('enterprise_giftcard')->__('Please specify sender email.');
+            if (!$buyRequest->getGiftcardSenderEmail() && $isStrictProcessMode) {
+                Mage::throwException(
+                    Mage::helper('enterprise_giftcard')->__('Please specify sender email.')
+                );
             }
-            $product->addCustomOption('giftcard_sender_email', $buyRequest->getGiftcardSenderEmail(), $product);
-            $product->addCustomOption('giftcard_recipient_email', $buyRequest->getGiftcardRecipientEmail(), $product);
         }
 
-        $messageAllowed = false;
-        if ($product->getUseConfigAllowMessage()) {
-            $messageAllowed = Mage::getStoreConfigFlag(Enterprise_GiftCard_Model_Giftcard::XML_PATH_ALLOW_MESSAGE);
-        } else {
-            $messageAllowed = (int) $product->getAllowMessage();
-        }
-
-        if ($messageAllowed) {
-            $product->addCustomOption('giftcard_message', $buyRequest->getGiftcardMessage(), $product);
-        }
-
-        return $result;
+        return $amount;
     }
+
+    /**
+     * Check if product can be bought
+     *
+     * @param  Mage_Catalog_Model_Product $product
+     * @return Mage_Catalog_Model_Product_Type_Abstract
+     * @throws Mage_Core_Exception
+     */
+    public function checkProductBuyState($product = null)
+    {
+        parent::checkProductBuyState($product);
+        $product = $this->getProduct($product);
+        $option = $product->getCustomOption('info_buyRequest');
+        if ($option instanceof Mage_Sales_Model_Quote_Item_Option) {
+            $buyRequest = new Varien_Object(unserialize($option->getValue()));
+            $this->_validate($buyRequest, $product, self::PROCESS_MODE_FULL);
+        }
+        return $this;
+    }
+
 
     /**
      * Sets flag that product has required options, because gift card always
@@ -273,5 +343,27 @@ class Enterprise_GiftCard_Model_Catalog_Product_Type_Giftcard extends Mage_Catal
         $this->getProduct($product)->setTypeHasOptions(true);
         $this->getProduct($product)->setTypeHasRequiredOptions(true);
         return $this;
+    }
+
+    /**
+     * Prepare selected options for giftcard
+     *
+     * @param  Mage_Catalog_Model_Product $product
+     * @param  Varien_Object $buyRequest
+     * @return array
+     */
+    public function processBuyRequest($product, $buyRequest)
+    {
+        $options = array(
+            'giftcard_amount'         => $buyRequest->getGiftcardAmount(),
+            'custom_giftcard_amount'  => $buyRequest->getCustomGiftcardAmount(),
+            'giftcard_sender_name'    => $buyRequest->getGiftcardSenderName(),
+            'giftcard_sender_email'    => $buyRequest->getGiftcardSenderEmail(),
+            'giftcard_recipient_name' => $buyRequest->getGiftcardRecipientName(),
+            'giftcard_recipient_email' => $buyRequest->getGiftcardRecipientEmail(),
+            'giftcard_message'        => $buyRequest->getGiftcardMessage()
+        );
+
+        return $options;
     }
 }

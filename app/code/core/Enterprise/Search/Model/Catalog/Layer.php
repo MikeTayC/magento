@@ -33,7 +33,7 @@ class Enterprise_Search_Model_Catalog_Layer extends Mage_Catalog_Model_Layer
     /**
      * Retrieve current layer product collection
      *
-     * @return Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection
+     * @return Enterprise_Search_Model_Resource_Collection
      */
     public function getProductCollection()
     {

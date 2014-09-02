@@ -34,6 +34,7 @@ class Enterprise_PageCache_Model_Processor
     const XML_PATH_CACHE_DEBUG          = 'system/page_cache/debug';
     const REQUEST_ID_PREFIX             = 'REQEST_';
     const CACHE_TAG                     = 'FPC';  // Full Page Cache, minimize
+    const DESIGN_EXCEPTION_KEY          = 'FPC_DESIGN_EXCEPTION_CACHE';
 
     /**
      * @deprecated after 1.8.0.0 - moved to Enterprise_PageCache_Model_Container_Viewedproducts
@@ -92,10 +93,37 @@ class Enterprise_PageCache_Model_Processor
             if (isset($_COOKIE[Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER_GROUP])) {
                 $uri .= '_' . $_COOKIE[Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER_GROUP];
             }
+            $designPackage = $this->_getDesignPackage();
+
+            if ($designPackage) {
+                $uri .= '_' . $designPackage;
+            }
         }
+
         $this->_requestId       = $uri;
         $this->_requestCacheId  = $this->prepareCacheId($this->_requestId);
         $this->_requestTags     = array(self::CACHE_TAG);
+    }
+
+    /**
+     * Get currenly configured design package.
+     * Depends on design exception rules configuration and browser user agent
+     *
+     * return string|bool
+     */
+    protected function _getDesignPackage()
+    {
+        $exceptions = Mage::app()->loadCache(self::DESIGN_EXCEPTION_KEY);
+
+        if (!$exceptions) {
+            return false;
+        }
+
+        $rules = @unserialize($exceptions);
+        if (empty($rules)) {
+            return false;
+        }
+        return Mage_Core_Model_Design_Package::getPackageByUserAgent($rules);
     }
 
     /**
@@ -160,8 +188,6 @@ class Enterprise_PageCache_Model_Processor
      */
     public function extractContent($content)
     {
-        Mage::app()->getRequest();
-
         if (!$content && $this->isAllowed()) {
 
             $subprocessorClass = $this->getMetadata('cache_subprocessor');
@@ -182,6 +208,14 @@ class Enterprise_PageCache_Model_Processor
                     $content = gzuncompress($content);
                 }
                 $content = $this->_processContent($content);
+
+                // restore response headers
+                $responseHeaders = $this->getMetadata('response_headers');
+                if (is_array($responseHeaders)) {
+                    foreach ($responseHeaders as $header) {
+                        Mage::app()->getResponse()->setHeader($header['name'], $header['value'], $header['replace']);
+                    }
+                }
 
                 // renew recently viewed products
                 $productId = Mage::app()->loadCache($this->getRequestCacheId() . '_current_product_id');
@@ -349,8 +383,11 @@ class Enterprise_PageCache_Model_Processor
                 if (function_exists('gzcompress')) {
                     $content = gzcompress($content);
                 }
-
                 Mage::app()->saveCache($content, $cacheId, $this->getRequestTags());
+
+                // save response headers
+                $this->setMetadata('response_headers', $response->getHeaders());
+
                 // save original routing info
                 $this->setMetadata('routing_aliases', Mage::app()->getRequest()->getAliases());
                 $this->setMetadata('routing_requested_route', Mage::app()->getRequest()->getRequestedRouteName());

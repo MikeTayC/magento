@@ -92,17 +92,13 @@ class Enterprise_CustomerBalance_Model_Observer
     }
 
     /**
-     * Validate balance just before placing an order
+     * Check store credit balance
      *
-     * @param Varien_Event_Observer $observer
+     * @param   Mage_Sales_Model_Order $order
+     * @return  Enterprise_CustomerBalance_Model_Observer
      */
-    public function processBeforeOrderPlace(Varien_Event_Observer $observer)
+    protected function _checkStoreCreditBalance(Mage_Sales_Model_Order $order)
     {
-        if (!Mage::helper('enterprise_customerbalance')->isEnabled()) {
-            return;
-        }
-
-        $order = $observer->getEvent()->getOrder();
         if ($order->getBaseCustomerBalanceAmount() > 0) {
             $websiteId = Mage::app()->getStore($order->getStoreId())->getWebsiteId();
 
@@ -121,23 +117,44 @@ class Enterprise_CustomerBalance_Model_Observer
                 Mage::throwException(Mage::helper('enterprise_customerbalance')->__('Not enough Store Credit Amount to complete this Order.'));
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Validate balance just before placing an order
+     *
+     * @param   Varien_Event_Observer $observer
+     * @return  Enterprise_CustomerBalance_Model_Observer
+     */
+    public function processBeforeOrderPlace(Varien_Event_Observer $observer)
+    {
+        if (Mage::helper('enterprise_customerbalance')->isEnabled()) {
+            $order = $observer->getEvent()->getOrder();
+            $this->_checkStoreCreditBalance($order);
+        }
+
+        return $this;
     }
 
     /**
      * Check if customer balance was used in quote and reduce balance if so
      *
-     * @param Varien_Event_Observer $observer
+     * @param   Varien_Event_Observer $observer
+     * @return  Enterprise_CustomerBalance_Model_Observer
      */
     public function processOrderPlace(Varien_Event_Observer $observer)
     {
         if (!Mage::helper('enterprise_customerbalance')->isEnabled()) {
-            return;
+            return $this;
         }
 
         $order = $observer->getEvent()->getOrder();
         if ($order->getBaseCustomerBalanceAmount() > 0) {
+            $this->_checkStoreCreditBalance($order);
+
             $websiteId = Mage::app()->getStore($order->getStoreId())->getWebsiteId();
-            $balance = Mage::getModel('enterprise_customerbalance/balance')
+            Mage::getModel('enterprise_customerbalance/balance')
                 ->setCustomerId($order->getCustomerId())
                 ->setWebsiteId($websiteId)
                 ->setAmountDelta(-$order->getBaseCustomerBalanceAmount())
@@ -145,6 +162,65 @@ class Enterprise_CustomerBalance_Model_Observer
                 ->setOrder($order)
                 ->save();
         }
+
+        return $this;
+    }
+
+    /**
+     * Revert authorized store credit amount for order
+     *
+     * @param   Mage_Sales_Model_Order $order
+     * @return  Enterprise_CustomerBalance_Model_Observer
+     */
+    protected function _revertStoreCreditForOrder(Mage_Sales_Model_Order $order)
+    {
+        if (!$order->getCustomerId() || !$order->getBaseCustomerBalanceAmount()) {
+            return $this;
+        }
+
+        Mage::getModel('enterprise_customerbalance/balance')
+            ->setCustomerId($order->getCustomerId())
+            ->setWebsiteId(Mage::app()->getStore($order->getStoreId())->getWebsiteId())
+            ->setAmountDelta($order->getBaseCustomerBalanceAmount())
+            ->setHistoryAction(Enterprise_CustomerBalance_Model_Balance_History::ACTION_REVERTED)
+            ->setOrder($order)
+            ->save();
+
+        return $this;
+    }
+
+    /**
+     * Revert store credit if order was not placed
+     *
+     * @param   Varien_Event_Observer $observer
+     * @return  Enterprise_CustomerBalance_Model_Observer
+     */
+    public function revertStoreCredit(Varien_Event_Observer $observer)
+    {
+        /* @var $order Mage_Sales_Model_Order */
+        $order = $observer->getEvent()->getOrder();
+        if ($order) {
+            $this->_revertStoreCreditForOrder($order);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Revert authorized store credit amounts for all orders
+     *
+     * @param   Varien_Event_Observer $observer
+     * @return  Enterprise_CustomerBalance_Model_Observer
+     */
+    public function revertStoreCreditForAllOrders(Varien_Event_Observer $observer)
+    {
+        $orders = $observer->getEvent()->getOrders();
+
+        foreach ($orders as $order) {
+            $this->_revertStoreCreditForOrder($order);
+        }
+
+        return $this;
     }
 
     /**
@@ -315,7 +391,7 @@ class Enterprise_CustomerBalance_Model_Observer
         }
 
         if ($creditmemo->getCustomerBalanceTotalRefunded() > $creditmemo->getCustomerBalanceReturnMax()) {
-            Mage::throwException(Mage::helper('enterprise_customerbalance')->__('Store credit amount can not exceed order amount.'));
+            Mage::throwException(Mage::helper('enterprise_customerbalance')->__('Store credit amount cannot exceed order amount.'));
         }
         //doing actual refund to customer balance if user have submitted refund form
         if ($creditmemo->getCustomerBalanceRefundFlag() && $creditmemo->getBaseCustomerBalanceTotalRefunded()) {

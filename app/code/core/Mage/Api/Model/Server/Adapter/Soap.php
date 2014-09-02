@@ -236,7 +236,7 @@ class Mage_Api_Model_Server_Adapter_Soap
                     throw $e;
                 }
                 $tries++;
-	    }
+        }
         } while ($retry && $tries < 5);
         use_soap_error_handler(false);
         $this->_soap

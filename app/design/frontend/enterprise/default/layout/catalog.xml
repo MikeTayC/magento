@@ -192,6 +192,7 @@ Product view
         </reference>
         <reference name="head">
             <action method="addJs"><script>varien/product.js</script></action>
+            <action method="addJs"><script>varien/configurable.js</script></action>
             <action method="addItem"><type>skin_js</type><name>js/jqzoom/jquery-1.3.1.min.js</name></action>
             <action method="addItem"><type>skin_js</type><name>js/jqzoom/jquery.jqzoom1.0.1.js</name></action>
             <action method="addItem"><type>js_css</type><name>calendar/calendar-win2k-1.css</name><params/><!--<if/><condition>can_load_calendar_js</condition>--></action>
@@ -246,6 +247,7 @@ Product view
                 <block type="catalog/product_view" name="product.info.options.wrapper.bottom" as="product_options_wrapper_bottom" template="catalog/product/view/options/wrapper/bottom.phtml" translate="label">
                     <label>Bottom Block Options Wrapper</label>
                     <action method="append"><block>product.info.addtocart</block></action>
+                    <action method="append"><block>product.info.addto</block></action>
                     <block type="catalog/product_view" name="product.clone_prices" as="prices" template="catalog/product/view/price_clone.phtml"/>
                     <action method="append"><block>product.tierprices</block></action>
                 </block>

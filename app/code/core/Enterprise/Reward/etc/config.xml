@@ -201,14 +201,38 @@
                     </enterprise_reward>
                 </observers>
             </sales_order_creditmemo_save_after>
-            <sales_order_place_after>
+            <sales_model_service_quote_submit_before>
                 <observers>
                     <enterprise_reward>
                         <class>enterprise_reward/observer</class>
                         <method>processOrderPlace</method>
                     </enterprise_reward>
                 </observers>
-            </sales_order_place_after>
+            </sales_model_service_quote_submit_before>
+            <sales_model_service_quote_submit_failure>
+                <observers>
+                    <enterprise_reward>
+                        <class>enterprise_reward/observer</class>
+                        <method>revertRewardPoints</method>
+                    </enterprise_reward>
+                </observers>
+            </sales_model_service_quote_submit_failure>
+            <checkout_type_multishipping_create_orders_single>
+                <observers>
+                    <enterprise_reward>
+                        <class>enterprise_reward/observer</class>
+                        <method>processOrderPlace</method>
+                    </enterprise_reward>
+                </observers>
+            </checkout_type_multishipping_create_orders_single>
+            <checkout_multishipping_refund_all>
+                <observers>
+                    <enterprise_reward>
+                        <class>enterprise_reward/observer</class>
+                        <method>revertRewardPointsForAllOrders</method>
+                    </enterprise_reward>
+                </observers>
+            </checkout_multishipping_refund_all>
         </events>
         <pdf>
             <totals>
@@ -401,14 +425,6 @@
                     </enterprise_reward>
                 </observers>
             </sales_quote_payment_import_data_before>
-            <sales_order_place_before>
-                <observers>
-                    <enterprise_reward>
-                        <class>enterprise_reward/observer</class>
-                        <method>processBeforeOrderPlace</method>
-                    </enterprise_reward>
-                </observers>
-            </sales_order_place_before>
             <enterprise_invitation_save_commit_after>
                 <observers>
                     <enterprise_reward>

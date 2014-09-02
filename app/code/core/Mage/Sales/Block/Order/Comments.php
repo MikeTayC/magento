@@ -1,13 +1,13 @@
 <?php
 /**
- * Magento
+ * Magento Enterprise Edition
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * http://www.magentocommerce.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
  * to license@magentocommerce.com so we can send you a copy immediately.
@@ -21,7 +21,7 @@
  * @category    Mage
  * @package     Mage_Sales
  * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 class Mage_Sales_Block_Order_Comments extends Mage_Core_Block_Template
 {
@@ -70,21 +70,21 @@ class Mage_Sales_Block_Order_Comments extends Mage_Core_Block_Template
     public function getComments()
     {
         if (is_null($this->_commentCollection)) {
-        	$entity = $this->getEntity();
-        	if ($entity instanceof Mage_Sales_Model_Order_Invoice) {
-        		$collectionClass = 'sales/order_invoice_comment_collection';
-        	} else if ($entity instanceof Mage_Sales_Model_Order_Creditmemo) {
-        		$collectionClass = 'sales/order_creditmemo_comment_collection';
-        	} else if ($entity instanceof Mage_Sales_Model_Order_Shipment) {
-        		$collectionClass = 'sales/order_shipment_comment_collection';
-        	} else {
-        		Mage::throwException(Mage::helper('sales')->__('Invalid entity model'));
-        	}
+            $entity = $this->getEntity();
+            if ($entity instanceof Mage_Sales_Model_Order_Invoice) {
+                $collectionClass = 'sales/order_invoice_comment_collection';
+            } else if ($entity instanceof Mage_Sales_Model_Order_Creditmemo) {
+                $collectionClass = 'sales/order_creditmemo_comment_collection';
+            } else if ($entity instanceof Mage_Sales_Model_Order_Shipment) {
+                $collectionClass = 'sales/order_shipment_comment_collection';
+            } else {
+                Mage::throwException(Mage::helper('sales')->__('Invalid entity model'));
+            }
 
-        	$this->_commentCollection = Mage::getResourceModel($collectionClass);
-        	$this->_commentCollection->setParentFilter($entity)
-        	   ->setCreatedAtOrder()
-        	   ->addVisibleOnFrontFilter();
+            $this->_commentCollection = Mage::getResourceModel($collectionClass);
+            $this->_commentCollection->setParentFilter($entity)
+               ->setCreatedAtOrder()
+               ->addVisibleOnFrontFilter();
         }
 
         return $this->_commentCollection;

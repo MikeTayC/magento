@@ -80,11 +80,9 @@ class Enterprise_Invitation_Model_Mysql4_Report_Invitation_Collection
      */
     public function setStoreIds($storeIds)
     {
-        $vals = array_values($storeIds);
-        if (count($storeIds) >= 1 && $vals[0] != '') {
+        if ($storeIds) {
             $this->addFieldToFilter('main_table.store_id', array('in' => (array)$storeIds));
         }
-
         return $this;
     }
 }

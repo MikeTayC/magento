@@ -112,8 +112,8 @@ class Enterprise_Search_Model_Adapter_PhpExtension extends Enterprise_Search_Mod
         /**
          * Hard code to prevent Solr bug:
          * Bug #17009 Creating two SolrQuery objects leads to wrong query value
-         * @see http://pecl.php.net/bugs/bug.php?id=17009&edit=1
-         * @see http://svn.php.net/viewvc?view=revision&revision=293379
+         * @link http://pecl.php.net/bugs/bug.php?id=17009&edit=1
+         * @link http://svn.php.net/viewvc?view=revision&revision=293379
          */
         if ((int)('1' . str_replace('.', '', solr_get_version())) < 1099) {
             $this->_connect();
@@ -130,20 +130,20 @@ class Enterprise_Search_Model_Adapter_PhpExtension extends Enterprise_Search_Mod
         }
 
         $offset = (isset($_params['offset'])) ? (int)$_params['offset'] : 0;
-        $limit  = (isset($_params['limit'])) ? (int)$_params['limit'] : 100;
+        $limit  = (isset($_params['limit']))
+            ? (int)$_params['limit']
+            : Enterprise_Search_Model_Adapter_Solr_Abstract::DEFAULT_ROWS_LIMIT;
 
         /**
          * Now supported search only in fulltext field
          * By default in Solr  set <defaultSearchField> is "fulltext"
          * When language fields need to be used, then perform search in appropriate field
          */
-        $languageCode = $this->_getLanguageCodeByLocaleCode($params['locale_code']);
+        $languageCode   = $this->_getLanguageCodeByLocaleCode($params['locale_code']);
         $languageSuffix = ($languageCode) ? '_' . $languageCode : '';
 
         $solrQuery = new SolrQuery();
         $solrQuery->setStart($offset)->setRows($limit);
-
-
 
         $solrQuery->setQuery($searchConditions);
 

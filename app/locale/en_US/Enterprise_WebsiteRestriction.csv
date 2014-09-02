@@ -3,6 +3,7 @@
 "Access Restriction","Access Restriction"
 "Applicable only if restriction mode is ""Website Closed"". Landing page is rendered as raw HTML.","Applicable only if restriction mode is ""Website Closed"". Landing page is rendered as raw HTML."
 "Applicable only in ""Private Sales"" mode.","Applicable only in ""Private Sales"" mode."
+"CMS Content Wrapper","CMS Content Wrapper"
 "HTTP Response","HTTP Response"
 "Landing Page","Landing Page"
 "Main Content Area","Main Content Area"

@@ -461,7 +461,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
     protected function _getApiRequest()
     {
         $request = new Varien_Object();
-        $request->setCountryCode(Mage::getStoreConfig('general/country/default'));
+        $request->setCountryCode(Mage::helper('core')->getDefaultCountry());
         $request->setClientIdentifier($this->_getCustomerIdentifier());
 
         return $request;

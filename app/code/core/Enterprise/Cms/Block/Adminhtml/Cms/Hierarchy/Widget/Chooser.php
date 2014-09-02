@@ -85,8 +85,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Widget_Chooser extends Mage_A
             var nodes = '.$this->getNodesJson().';
 
             if (nodes.length > 0) {
-
-                tree'.$this->getId().' = new Ext.tree.TreePanel("tree'.$this->getId().'", {
+                var tree'.$this->getId().' = new Ext.tree.TreePanel("tree'.$this->getId().'", {
                     animate: false,
                     enableDD: false,
                     containerScroll: true,
@@ -94,14 +93,15 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Widget_Chooser extends Mage_A
                     lines: true
                 });
 
-                treeRoot'.$this->getId().' = new Ext.tree.AsyncTreeNode({
+                var treeRoot'.$this->getId().' = new Ext.tree.AsyncTreeNode({
                     text: "'. $this->__("Root") .'",
                     id: "root",
                     allowDrop: true,
                     allowDrag: false,
                     expanded: true,
-                    cls: "cms_node_root",
+                    cls: "cms_node_root"
                 });
+
                 tree'.$this->getId().'.setRootNode(treeRoot'.$this->getId().');
 
                 for (var i = 0; i < nodes.length; i++) {
@@ -113,7 +113,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Widget_Chooser extends Mage_A
                         expanded: nodes[i].page_exists,
                         allowDrop: false,
                         allowDrag: false,
-                        page_id: nodes[i].page_id,
+                        page_id: nodes[i].page_id
                     });
                     if (parentNode = tree'.$this->getId().'.getNodeById(nodes[i].parent_node_id)) {
                         parentNode.appendChild(node);

@@ -45,6 +45,14 @@ abstract class Enterprise_Customer_Model_Mysql4_Sales_Abstract extends Mage_Core
     protected $_isPkAutoIncrement   = false;
 
     /**
+     * Main entity resource model name
+     * Should be overwritten in subclasses.
+     *
+     * @var string
+     */
+    protected $_parentResourceModelName = '';
+
+    /**
      * Return column name for attribute
      *
      * @param Mage_Customer_Model_Attribute $attribute
@@ -106,5 +114,51 @@ abstract class Enterprise_Customer_Model_Mysql4_Sales_Abstract extends Mage_Core
     {
         $this->_getWriteAdapter()->dropColumn($this->getMainTable(), $this->_getColumnName($attribute));
         return $this;
+    }
+
+    /**
+     * Return resource model of the main entity
+     *
+     * @return Mage_Core_Model_Mysql4_Abstract | null
+     */
+    protected function _getParentResourceModel()
+    {
+        if (!$this->_parentResourceModelName) {
+            return null;
+        }
+        return Mage::getResourceSingleton($this->_parentResourceModelName);
+    }
+
+    /**
+     * Check if main entity exists in main table.
+     * Need to prevent errors in case of multiple customer log in into one account.
+     *
+     * @param Enterprise_Customer_Model_Sales_Abstract $sales
+     * @return bool
+     */
+    public function isEntityExists(Enterprise_Customer_Model_Sales_Abstract $sales)
+    {
+        if (!$sales->getId()) {
+            return false;
+        }
+
+        $resource = $this->_getParentResourceModel();
+        if (!$resource) {
+            /**
+             * If resource model is absent, we shouldn't check the database for if main entity exists.
+             */
+            return true;
+        }
+
+        $parentTable = $resource->getMainTable();
+        $parentIdField = $resource->getIdFieldName();
+        $select = $this->_getWriteAdapter()->select()
+            ->from($parentTable, $parentIdField)
+            ->forUpdate(true)
+            ->where("{$parentIdField} = ?", $sales->getId());
+        if ($this->_getWriteAdapter()->fetchOne($select)) {
+            return true;
+        }
+        return false;
     }
 }

@@ -140,6 +140,15 @@
                     </enterprise_pagecache>
                 </observers>
             </catalogrule_after_apply>
+            <core_config_backend_design_exception_save_after>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>registerDesignExceptionsChange</method>
+                    </enterprise_pagecache>
+                </observers>
+            </core_config_backend_design_exception_save_after>
+
         </events>
     </adminhtml>
     <frontend>
@@ -325,6 +334,14 @@
                 <multicurrency>1</multicurrency>
             </page_crawl>
         </system>
+        
+        <dev>
+            <translate_inline>
+                <invalid_caches>
+                    <full_page/>
+                </invalid_caches>
+            </translate_inline>
+        </dev>
     </default>
     <crontab>
         <jobs>

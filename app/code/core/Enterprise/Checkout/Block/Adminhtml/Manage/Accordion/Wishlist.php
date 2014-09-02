@@ -35,6 +35,22 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Wishlist
     extends Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Abstract
 {
     /**
+     * Collection field name for using in controls
+     * @var string
+     */
+    protected $_controlFieldName = 'wishlist_item_id';
+
+    /**
+     * Javascript list type name for this grid
+     */
+    protected $_listType = 'wishlist';
+
+    /**
+     * Url to configure this grid's items
+     */
+    protected $_configureRoute = '*/checkout/configureWishlistItem';
+
+    /**
      * Initialize Grid
      *
      */
@@ -50,7 +66,7 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Wishlist
     }
 
     /**
-     * Return custom object name for js grid 
+     * Return custom object name for js grid
      *
      * @return string
      */
@@ -71,11 +87,9 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Wishlist
                 ->setStore($this->_getStore())
                 ->setSharedStoreIds($this->_getStore()->getWebsite()->getStoreIds());
             if ($wishlist->getId()) {
-                $collection = $wishlist->getProductCollection()
-                    ->resetSortOrder()
-                    ->addAttributeToSelect('name')
-                    ->addAttributeToSelect('price');
-                $collection = Mage::helper('adminhtml/sales')->applySalableProductTypesFilter($collection);
+                $collection = $wishlist->getItemCollection()
+                    ->setSalableFilter()
+                    ->resetSortOrder();
             } else {
                 $collection = parent::getItemsCollection();
             }
@@ -92,5 +106,31 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Wishlist
     public function getGridUrl()
     {
         return $this->getUrl('*/*/viewWishlist', array('_current'=>true));
+    }
+
+    /**
+     * Add columns with controls to manage added products and their quantity
+     * Uses inherited methods, but modifies Qty column to change renderer
+     *
+     * @return Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Wishlist
+     */
+    protected function _addControlColumns()
+    {
+        parent::_addControlColumns();
+
+        $this->addColumn('qty', array(
+            'sortable'  => false,
+            'header'    => Mage::helper('enterprise_checkout')->__('Qty To Add'),
+            'renderer'  => 'enterprise_checkout/adminhtml_manage_grid_renderer_wishlist_qty',
+            'name'      => 'qty',
+            'inline_css'=> 'qty',
+            'align'     => 'right',
+            'type'      => 'input',
+            'validate_class' => 'validate-number',
+            'index'     => 'qty',
+            'width'     => '1',
+        ));
+
+        return $this;
     }
 }

@@ -1,13 +1,13 @@
 <?php
 /**
- * Magento
+ * Magento Enterprise Edition
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * http://www.magentocommerce.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
  * to license@magentocommerce.com so we can send you a copy immediately.
@@ -21,7 +21,7 @@
  * @category    Mage
  * @package     Mage_Connect
  * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
@@ -143,33 +143,55 @@ final class Maged_Controller
 
     /**
      * Get ftp string from post data
-     * 
+     *
      * @param array $post post data
      * @return string FTP Url
      */
     private function getFtpPost($post){
-        if(!empty($post['ftp_path'])&&strpos($post['ftp_path'], '/')!==0){
-            $post['ftp_path']='/'.$post['ftp_path'];
+        if (empty($post['ftp_host'])) {
+            $_POST['ftp'] = '';
+            return '';
         }
-        if(!empty($post['ftp_path'])&&substr($post['ftp_path'], -1)!='/'){
-            $post['ftp_path'].='/';
+        $ftp = 'ftp://';
+        $post['ftp_proto'] = 'ftp://';
+
+        if (!empty($post['ftp_path']) && strlen(trim($post['ftp_path'], '\\/'))>0) {
+            $post['ftp_path'] = '/' . trim($post['ftp_path'], '\\/') . '/';
+        } else {
+            $post['ftp_path'] = '/';
         }
-        $post['ftp_proto']='ftp://';
-        if($start=stripos($post['ftp_host'],'ftp://')!==false){
-            $post['ftp_proto']='ftp://';
-            $post['ftp_host']=substr($post['ftp_host'], $start+6-1);
+
+        $start = stripos($post['ftp_host'],'ftp://');
+        if ($start !== false){
+            $post['ftp_proto'] = 'ftp://';
+            $post['ftp_host'] = substr($post['ftp_host'], $start+6-1);
         }
-        if($start=stripos($post['ftp_host'],'ftps://')!==false){
-            $post['ftp_proto']='ftps://';
-            $post['ftp_host']=substr($post['ftp_host'], $start+7-1);
+        $start = stripos($post['ftp_host'],'ftps://');
+        if ($start !== false){
+            $post['ftp_proto'] = 'ftps://';
+            $post['ftp_host'] = substr($post['ftp_host'], $start+7-1);
         }
-        if(!empty($post['ftp_login'])&&!empty($post['ftp_password'])){
-            $ftp=sprintf("%s%s:%s@%s%s", $post['ftp_proto'], $post['ftp_login'],$post['ftp_password'],$post['ftp_host'],$post['ftp_path']);
-        }elseif(!empty($post['ftp_login'])){
-            $ftp=sprintf("%s%s@%s%s", $post['ftp_proto'], $post['ftp_login'],$post['ftp_host'],$post['ftp_path']);
-        }else{
-            $ftp=$post['ftp_proto'].$post['ftp_host'].$post['ftp_path'];
+
+        $post['ftp_host'] = trim($post['ftp_host'], '\\/');
+        
+        if (!empty($post['ftp_login']) && !empty($post['ftp_password'])){
+
+            $ftp = sprintf("%s%s:%s@%s%s", 
+                    $post['ftp_proto'],
+                    $post['ftp_login'],
+                    $post['ftp_password'],
+                    $post['ftp_host'],
+                    $post['ftp_path']
+            );
+
+        } elseif (!empty($post['ftp_login'])) {
+
+            $ftp = sprintf("%s%s@%s%s", $post['ftp_proto'], $post['ftp_login'],$post['ftp_host'],$post['ftp_path']);
+
+        } else {
+            $ftp = $post['ftp_proto'] . $post['ftp_host'] . $post['ftp_path'];
         }
+
         $_POST['ftp'] = $ftp;
         return $ftp;
     }
@@ -210,26 +232,21 @@ final class Maged_Controller
      */
     public function indexAction()
     {
+        $config = $this->config();
         if (!$this->isInstalled()) {
-            if (false&&!$this->isWritable()) {
-                echo $this->view()->template('install/writable.phtml');
-            } else {
-                $config=$this->config();
-                $this->view()->set('mage_url', dirname(dirname($_SERVER['SCRIPT_NAME'])));
-                $this->view()->set('use_custom_permissions_mode', $config->__get('use_custom_permissions_mode')?$config->__get('use_custom_permissions_mode'):'0');
-                $this->view()->set('mkdir_mode', decoct($config->__get('global_dir_mode')));
-                $this->view()->set('chmod_file_mode', decoct($config->__get('global_file_mode')));
-                $this->view()->set('protocol', $config->__get('protocol'));
-                $this->channelConfig()->setInstallView($config,$this->view());
-                
-                echo $this->view()->template('install/download.phtml');
-            }
+            $this->view()->set('mage_url', dirname(dirname($_SERVER['SCRIPT_NAME'])));
+            $this->view()->set('use_custom_permissions_mode', $config->__get('use_custom_permissions_mode')?$config->__get('use_custom_permissions_mode'):'0');
+            $this->view()->set('mkdir_mode', decoct($config->__get('global_dir_mode')));
+            $this->view()->set('chmod_file_mode', decoct($config->__get('global_file_mode')));
+            $this->view()->set('protocol', $config->__get('protocol'));
+            $this->channelConfig()->setInstallView($config,$this->view());
+
+            echo $this->view()->template('install/download.phtml');
+        } elseif (!$config->sync_pear) {
+            $this->model('connect', true)->connect()->run('sync');
+            $this->forward('connectPackages');
         } else {
-            if (false&&!$this->isWritable()) {
-                echo $this->view()->template('writable.phtml');
-            } else {
-                $this->forward('connectPackages');
-            }
+            $this->forward('connectPackages');
         }
     }
 
@@ -270,7 +287,7 @@ final class Maged_Controller
 
         $chan = $this->config()->__get('root_channel');
         $this->model('connect', true)->saveConfigPost($_POST);
-        $this->channelConfig()->setSettingsSession($this->config(), $this->session());
+        $this->channelConfig()->setSettingsSession($_POST, $this->session());
         $this->model('connect', true)->installAll(!empty($_GET['force']), $chan);
         $p = null;
     }
@@ -288,6 +305,12 @@ final class Maged_Controller
         }
 
         $this->view()->set('connect', $connect);
+        $this->view()->set('channel_config', $this->channelConfig());
+        $remoteConfig = $this->config()->remote_config;
+        if (!$this->isWritable() && empty($remoteConfig)) {
+            $this->view()->set('writable_warning', true);
+        }
+        
         echo $this->view()->template('connect/packages.phtml');
     }
 
@@ -304,7 +327,7 @@ final class Maged_Controller
 
     /**
      * Prepare package to install, get dependency info.
-     * 
+     *
      */
     public function connectPreparePackagePostAction()
     {
@@ -312,18 +335,15 @@ final class Maged_Controller
             echo "INVALID POST DATA";
             return;
         }
-        
-        $this->channelConfig()->setSettingsSession($this->config(),$this->session());
-        
         $prepareResult = $this->model('connect', true)->prepareToInstall($_POST['install_package_id']);
 
         $packages = isset($prepareResult['data'])? $prepareResult['data']:array();
         $errors = isset($prepareResult['errors'])? $prepareResult['errors']:array();
-        
+
         $this->view()->set('packages', $packages);
         $this->view()->set('errors', $errors);
         $this->view()->set('package_id', $_POST['install_package_id']);
-        
+
         echo $this->view()->template('connect/packages_prepare.phtml');
     }
 
@@ -337,8 +357,6 @@ final class Maged_Controller
             echo "INVALID POST DATA";
             return;
         }
-        $this->channelConfig()->setSettingsSession($this->config(),$this->session());
-
         $this->model('connect', true)->installPackage($_POST['install_package_id']);
     }
 
@@ -390,7 +408,7 @@ final class Maged_Controller
         $this->view()->set('mkdir_mode', decoct($config->__get('global_dir_mode')));
         $this->view()->set('chmod_file_mode', decoct($config->__get('global_file_mode')));
 
-        $this->channelConfig()->setSettingsView($config,$this->view());
+        $this->channelConfig()->setSettingsView($this->session(), $this->view());
 
         $fs_disabled=!$this->isWritable();
         $ftpParams=$config->__get('remote_config')?@parse_url($config->__get('remote_config')):'';
@@ -404,7 +422,6 @@ final class Maged_Controller
             $this->view()->set('ftp_password', $ftpParams['pass']);
             $this->view()->set('ftp_path', $ftpParams['path']);
         }
-
         echo $this->view()->template('settings.phtml');
     }
 
@@ -433,7 +450,9 @@ final class Maged_Controller
                 }
                 $this->channelConfig()->setPostData($this->config(), $_POST);
                 $this->model('connect', true)->saveConfigPost($_POST);
-                $this->channelConfig()->setSettingsSession($this->config(), $this->session());
+                $this->channelConfig()->setSettingsSession($_POST, $this->session());
+                $this->model('connect', true)->connect()->run('sync');
+
             } catch (Exception $e) {
                 $this->session()->addMessage('error', "Unable to save settings: ".$e->getMessage());
             }
@@ -638,7 +657,8 @@ final class Maged_Controller
             $action = !empty($_GET[self::ACTION_KEY]) ? $_GET[self::ACTION_KEY] : 'index';
         }
         if (empty($action) || !is_string($action) || !method_exists($this, $this->getActionMethod($action))) {
-            $action = 'noroute';
+            //$action = 'noroute';
+            $action = 'index';
         }
         $this->_action = $action;
         return $this;
@@ -890,4 +910,35 @@ final class Maged_Controller
             }
         }
     }
+
+    /**
+     * Gets the current Magento Connect Manager (Downloader) version string
+     * @link http://www.magentocommerce.com/blog/new-community-edition-release-process/
+     *
+     * @return string
+     */
+    public static function getVersion()
+    {
+        $i = self::getVersionInfo();
+        return trim("{$i['major']}.{$i['minor']}.{$i['revision']}" . ($i['patch'] != '' ? ".{$i['patch']}" : "") . "-{$i['stability']}{$i['number']}", '.-');
+    }
+
+    /**
+     * Gets the detailed Magento Connect Manager (Downloader) version information
+     * @link http://www.magentocommerce.com/blog/new-community-edition-release-process/
+     *
+     * @return array
+     */
+    public static function getVersionInfo()
+    {
+        return array(
+            'major'     => '1',
+            'minor'     => '5',
+            'revision'  => '0',
+            'patch'     => '0',
+            'stability' => '',
+            'number'    => '',
+        );
+    }
+
 }

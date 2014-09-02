@@ -117,4 +117,43 @@ class Enterprise_GiftCard_Block_Catalog_Product_View_Type_Giftcard extends Mage_
     {
         return (int) Mage::getStoreConfig(Enterprise_GiftCard_Model_Giftcard::XML_PATH_MESSAGE_MAX_LENGTH);
     }
+
+    /**
+     * Returns default value to show in input
+     *
+     * @param string $key
+     * @return string
+     */
+    public function getDefaultValue($key)
+    {
+        return (string) $this->getProduct()->getPreconfiguredValues()->getData($key);
+    }
+
+    /**
+     * Returns default sender name to show in input
+     *
+     * @return string
+     */
+    public function getDefaultSenderName()
+    {
+        $senderName = $this->getProduct()->getPreconfiguredValues()->getData('giftcard_sender_name');
+        if (!strlen($senderName)) {
+            $senderName = $this->getCustomerName();
+        }
+        return $senderName;
+    }
+
+    /**
+     * Returns default sender email to show in input
+     *
+     * @return string
+     */
+    public function getDefaultSenderEmail()
+    {
+        $senderEmail = $this->getProduct()->getPreconfiguredValues()->getData('giftcard_sender_email');
+        if (!strlen($senderEmail)) {
+            $senderEmail = $this->getCustomerEmail();
+        }
+        return $senderEmail;
+    }
 }

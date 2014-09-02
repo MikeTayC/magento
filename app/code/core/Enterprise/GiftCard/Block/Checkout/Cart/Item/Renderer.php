@@ -34,12 +34,7 @@ class Enterprise_GiftCard_Block_Checkout_Cart_Item_Renderer extends Mage_Checkou
      */
     protected function _prepareCustomOption($code)
     {
-        if ($option = $this->getItem()->getOptionByCode($code)) {
-            if ($value = $option->getValue()) {
-                return nl2br($this->htmlEscape($value));
-            }
-        }
-        return false;
+        return Mage::helper('enterprise_giftcard/catalog_product_configuration')->prepareCustomOption($this->getItem(), $code);
     }
 
     /**
@@ -49,32 +44,7 @@ class Enterprise_GiftCard_Block_Checkout_Cart_Item_Renderer extends Mage_Checkou
      */
     protected function _getGiftcardOptions()
     {
-        $result = array();
-        if ($value = $this->_prepareCustomOption('giftcard_sender_name')) {
-            if ($email = $this->_prepareCustomOption('giftcard_sender_email')) {
-                $value = "{$value} &lt;{$email}&gt;";
-            }
-            $result[] = array(
-                'label'=>Mage::helper('enterprise_giftcard')->__('Gift Card Sender'),
-                'value'=>$value,
-            );
-        }
-        if ($value = $this->_prepareCustomOption('giftcard_recipient_name')) {
-            if ($email = $this->_prepareCustomOption('giftcard_recipient_email')) {
-                $value = "{$value} &lt;{$email}&gt;";
-            }
-            $result[] = array(
-                'label'=>Mage::helper('enterprise_giftcard')->__('Gift Card Recipient'),
-                'value'=>$value,
-            );
-        }
-        if ($value = $this->_prepareCustomOption('giftcard_message')) {
-            $result[] = array(
-                'label'=>Mage::helper('enterprise_giftcard')->__('Gift Card Message'),
-                'value'=>$value,
-            );
-        }
-        return $result;
+        return Mage::helper('enterprise_giftcard/catalog_product_configuration')->getGiftcardOptions($this->getItem());
     }
 
     /**
@@ -84,6 +54,6 @@ class Enterprise_GiftCard_Block_Checkout_Cart_Item_Renderer extends Mage_Checkou
      */
     public function getOptionList()
     {
-        return array_merge($this->_getGiftcardOptions(), parent::getOptionList());
+        return Mage::helper('enterprise_giftcard/catalog_product_configuration')->getOptions($this->getItem());
     }
 }

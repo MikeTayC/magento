@@ -25,8 +25,8 @@
  */
 ?>
 <?php $_product = $this->getProduct() ?>
-<?php $_finalPrice = Mage::helper('tax')->getPrice($_product, $_product->getFinalPrice()); ?>
-<?php $_finalPriceInclTax = Mage::helper('tax')->getPrice($_product, $_product->getFinalPrice(), true); ?>
+<?php $_finalPrice = $_product->getFinalPrice() ?>
+<?php $_finalPriceInclTax = $_product->getFinalPrice() ?>
 <?php $_weeeTaxAmount = 0; ?>
 <?php
 if ($_product->getPriceType() == 1) {

@@ -190,8 +190,8 @@ class Enterprise_GiftCardAccount_Block_Adminhtml_Giftcardaccount_Grid extends Ma
      */
     protected function _prepareGrid()
     {
-        $this->addExportType('*/*/exportCsv', 'CSV');
-        $this->addExportType('*/*/exportMsxml', 'MSXML');
+        $this->addExportType('*/*/exportCsv', Mage::helper('customer')->__('CSV'));
+        $this->addExportType('*/*/exportMsxml', Mage::helper('customer')->__('Excel XML'));
         return parent::_prepareGrid();
     }
 }

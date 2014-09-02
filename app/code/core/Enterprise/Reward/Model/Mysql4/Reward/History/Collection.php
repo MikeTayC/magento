@@ -323,7 +323,10 @@ class Enterprise_Reward_Model_Mysql4_Reward_History_Collection extends Mage_Core
     public function setDefaultOrder()
     {
         $this->getSelect()->reset(Zend_Db_Select::ORDER);
-        return $this->setOrder('history_id', 'DESC');
+
+        return $this
+            ->addOrder('created_at', 'DESC')
+            ->addOrder('history_id', 'DESC');
     }
 }
 

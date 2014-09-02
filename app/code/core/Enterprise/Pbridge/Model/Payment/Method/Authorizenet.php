@@ -74,7 +74,9 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_
     {
         if ($this->_pbridgeMethodInstance === null) {
             $this->_pbridgeMethodInstance = Mage::helper('payment')->getMethodInstance('pbridge');
-            $this->_pbridgeMethodInstance->setOriginalMethodInstance($this);
+            if ($this->_pbridgeMethodInstance) {
+                $this->_pbridgeMethodInstance->setOriginalMethodInstance($this);
+            }
         }
         return $this->_pbridgeMethodInstance;
     }
@@ -139,7 +141,8 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_
      */
     public function isAvailable($quote = null)
     {
-        return $this->getPbridgeMethodInstance()->isDummyMethodAvailable($quote);
+        return $this->getPbridgeMethodInstance() ?
+            $this->getPbridgeMethodInstance()->isDummyMethodAvailable($quote) : false;
     }
 
     /**
@@ -222,6 +225,11 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_
         $payment->addData((array)$response);
         return $this;
     }
+    /**
+     * Return payment method Centinel validation status
+     *
+     * @return bool
+     */
     public function getIsCentinelValidationEnabled()
     {
         return false;
@@ -236,6 +244,28 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Paygate_
     {
         $this->setData('store', $store);
         Mage::helper('enterprise_pbridge')->setStoreId(is_object($store) ? $store->getId() : $store);
+        return $this;
+    }
+
+    /**
+     * Check refund availability
+     *
+     * @return bool
+     */
+    public function canRefund()
+    {
+         return $this->_canRefund;
+    }
+
+    /**
+     * Set capture transaction ID to invoice for informational purposes
+     * @param Mage_Sales_Model_Order_Invoice $invoice
+     * @param Mage_Sales_Model_Order_Payment $payment
+     * @return Mage_Payment_Model_Method_Abstract
+     */
+    public function processInvoice($invoice, $payment)
+    {
+        $invoice->setTransactionId($payment->getLastTransId());
         return $this;
     }
 }

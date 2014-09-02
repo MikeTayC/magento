@@ -395,7 +395,7 @@ class Enterprise_PageCache_Model_Observer
         }
 
         $cookieValue = '';
-        foreach (Mage::helper('wishlist')->getProductCollection() as $item) {
+        foreach (Mage::helper('wishlist')->getWishlistItemCollection() as $item) {
             $cookieValue .= ($cookieValue ? '_' : '') . $item->getId();
         }
 
@@ -443,6 +443,19 @@ class Enterprise_PageCache_Model_Observer
     }
 
     /**
+     * Resave exception rules to cache storage
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function registerDesignExceptionsChange(Varien_Event_Observer $observer)
+    {
+        $object = $observer->getDataObject();
+        Mage::app()->saveCache($object->getValue(), Enterprise_PageCache_Model_Processor::DESIGN_EXCEPTION_KEY,
+            array(Enterprise_PageCache_Model_Processor::CACHE_TAG));
+        return $this;
+    }
+
+    /**
      * Retrieve cookie instance
      *
      * @return Enterprise_PageCache_Model_Cookie
@@ -451,8 +464,6 @@ class Enterprise_PageCache_Model_Observer
     {
         return Mage::getSingleton('enterprise_pagecache/cookie');
     }
-
-
 
     /**
      * Check if last viewed product id should be processed after cached product view

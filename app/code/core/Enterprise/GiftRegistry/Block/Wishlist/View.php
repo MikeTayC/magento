@@ -38,10 +38,14 @@ class Enterprise_GiftRegistry_Block_Wishlist_View extends Mage_Wishlist_Block_Cu
     {
         $outputEnabled = Mage::helper('core')->isModuleOutputEnabled($this->getModuleName());
         if ($outputEnabled) {
-            $block = $this->getLayout()->getBlock('my.account.wrapper');
-            if ($block) {
-                $block->unsetChild('customer.wishlist');
-                $block->append($this, 'customer.wishlist');
+            $wrapper = $this->getLayout()->getBlock('my.account.wrapper');
+            if ($wrapper) {
+                $oldBlock = $this->getLayout()->getBlock('customer.wishlist');
+                if ($oldBlock) {
+                    $wrapper->unsetChild('customer.wishlist');
+                    $this->setOptionsRenderCfgs($oldBlock->getOptionsRenderCfgs());
+                }
+                $wrapper->append($this, 'customer.wishlist');
             }
         }
         return parent::_prepareLayout();
@@ -80,19 +84,15 @@ class Enterprise_GiftRegistry_Block_Wishlist_View extends Mage_Wishlist_Block_Cu
     /**
      * Retrieve Wishlist Product Items collection
      *
-     * @return Mage_Wishlist_Model_Mysql4_Product_Collection
+     * @return Mage_Wishlist_Model_Mysql4_Item_Collection
      */
     public function getWishlistItems()
     {
         if (is_null($this->_collection)) {
             $this->_collection = $this->_getWishlist()
-                ->getProductCollection()
-                ->addAttributeToSelect(Mage::getSingleton('sales/quote_config')->getProductAttributes())
+                ->getItemCollection()
                 ->addStoreFilter()
-                ->addUrlRewrite();
-
-            Mage::getSingleton('catalog/product_visibility')
-                ->addVisibleInSiteFilterToCollection($this->_collection);
+                ->setVisibilityFilter();
 
             $this->_prepareCollection($this->_collection);
         }

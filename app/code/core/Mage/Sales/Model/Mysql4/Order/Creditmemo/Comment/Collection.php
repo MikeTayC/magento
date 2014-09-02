@@ -47,7 +47,7 @@ class Mage_Sales_Model_Mysql4_Order_Creditmemo_Comment_Collection extends Mage_S
      */
     protected function _construct()
     {
-    	parent::_construct();
+        parent::_construct();
         $this->_init('sales/order_creditmemo_comment');
     }
 

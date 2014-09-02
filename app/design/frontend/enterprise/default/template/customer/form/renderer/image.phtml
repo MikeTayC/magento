@@ -36,6 +36,9 @@
 <div class="input-box">
     <input type="file" id="<?php echo $this->getHtmlId()?>" name="<?php echo $this->getFieldName()?>" value="" class="input-file" />
     <input type="hidden" id="<?php echo $this->getHtmlId()?>_value" value="<?php echo $this->getEscapedValue()?>" <?php if ($this->isRequired()): ?>class="required-entry" <?php endif;?>/>
+    <?php if ($_message = $this->getAdditionalDescription()) : ?>
+    <div class="validation-advice"><?php echo $_message; ?></div>
+    <?php endif; ?>    
     <script type="text/javascript">
 //<![CDATA[
     new Varien.FileElement('<?php echo $this->getHtmlId()?>');

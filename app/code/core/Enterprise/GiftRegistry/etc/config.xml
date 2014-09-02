@@ -28,7 +28,7 @@
 <config>
     <modules>
         <Enterprise_GiftRegistry>
-             <version>1.9.0.0.4</version>
+             <version>1.9.0.0.5</version>
         </Enterprise_GiftRegistry>
     </modules>
     <global>
@@ -45,6 +45,7 @@
                     <label><table>enterprise_giftregistry_label</table></label>
                     <entity><table>enterprise_giftregistry_entity</table></entity>
                     <item><table>enterprise_giftregistry_item</table></item>
+                    <item_option><table>enterprise_giftregistry_item_option</table></item_option>
                     <person><table>enterprise_giftregistry_person</table></person>
                     <data><table>enterprise_giftregistry_data</table></data>
                 </entities>

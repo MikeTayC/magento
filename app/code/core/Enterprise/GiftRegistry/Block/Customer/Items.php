@@ -27,8 +27,7 @@
 /**
  * Customer gift registry view items block
  */
-class Enterprise_GiftRegistry_Block_Customer_Items
-    extends Mage_Catalog_Block_Product_Abstract
+class Enterprise_GiftRegistry_Block_Customer_Items extends Mage_Catalog_Block_Product_Abstract
 {
 
     /**
@@ -124,18 +123,13 @@ class Enterprise_GiftRegistry_Block_Customer_Items
     /**
      * Returns product price
      *
-     * @param Enterprise_GiftRegistry_Model_Item $product
-     * @param boolean $displayMinimalPrice
+     * @param Enterprise_GiftRegistry_Model_Item $item
+     * @return mixed
      */
     public function getPrice($item)
     {
         $product = $item->getProduct();
-        $request = new Varien_Object(unserialize($item->getCustomOptions()));
-        $candidate = $product->getTypeInstance(true)->prepareForCart($request, $product);
-        if ($candidate && is_array($candidate)) {
-            $candidate = array_shift($candidate);
-            $product->setCustomOptions($candidate->getCustomOptions());
-        }
+        $product->setCustomOptions($item->getOptionsByCode());
         return Mage::helper('core')->currency($product->getFinalPrice(),true,true);
     }
 }

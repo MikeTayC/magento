@@ -30,9 +30,9 @@
  */
 class Mage_Sales_Model_Mysql4_Order_Invoice_Comment_Collection extends Mage_Sales_Model_Mysql4_Order_Comment_Collection_Abstract
 {
-	/*
-	 * @var string
-	 */
+    /*
+     * @var string
+     */
     protected $_eventPrefix = 'sales_order_invoice_comment_collection';
 
     /*
@@ -47,7 +47,7 @@ class Mage_Sales_Model_Mysql4_Order_Invoice_Comment_Collection extends Mage_Sale
      */
     protected function _construct()
     {
-    	parent::_construct();
+        parent::_construct();
         $this->_init('sales/order_invoice_comment');
     }
 
@@ -59,6 +59,6 @@ class Mage_Sales_Model_Mysql4_Order_Invoice_Comment_Collection extends Mage_Sale
      */
     public function setInvoiceFilter($invoiceId)
     {
-    	return $this->setParentFilter($invoiceId);
+        return $this->setParentFilter($invoiceId);
     }
 }

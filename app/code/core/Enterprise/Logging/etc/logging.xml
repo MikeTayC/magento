@@ -1727,4 +1727,22 @@
             </adminhtml_paypal_reports_fetch>
         </actions>
     </paypal_settlement_reports>
+
+    <adminhtml_sales_recurring_profile translate="label">
+        <label>Recurring Profiles</label>
+        <expected_models>
+            <sales_recurring_profile/>
+        </expected_models>
+        <actions>
+            <adminhtml_sales_recurring_profile_updateProfile>
+                <action>updateProfile</action>
+                <post_dispatch>postDispatchRecurringProfilesUpdate</post_dispatch>
+            </adminhtml_sales_recurring_profile_updateProfile>
+
+            <adminhtml_sales_recurring_profile_updateState>
+                <action>updateState</action>
+                <post_dispatch>postDispatchRecurringProfilesUpdate</post_dispatch>
+            </adminhtml_sales_recurring_profile_updateState>
+        </actions>
+    </adminhtml_sales_recurring_profile>
 </logging>

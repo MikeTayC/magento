@@ -38,7 +38,7 @@ class Enterprise_GiftCardAccount_Model_Observer
         $order = $observer->getEvent()->getOrder();
         $cards = Mage::helper('enterprise_giftcardaccount')->getCards($order);
         if (is_array($cards)) {
-            foreach ($cards as $card) {
+            foreach ($cards as &$card) {
                 $args = array(
                     'amount'=>$card['ba'],
                     'giftcardaccount_id'=>$card['i'],
@@ -46,8 +46,12 @@ class Enterprise_GiftCardAccount_Model_Observer
                 );
 
                 Mage::dispatchEvent('enterprise_giftcardaccount_charge', $args);
+                $card['authorized'] = $card['ba'];
             }
+
+            $cards = Mage::helper('enterprise_giftcardaccount')->setCards($order, $cards);
         }
+
         return $this;
     }
 
@@ -252,6 +256,15 @@ class Enterprise_GiftCardAccount_Model_Observer
         if (!$quote || !$quote->getCustomerId()) {
             return $this;
         }
+        /* Gift cards validation */
+        $cards = Mage::helper('enterprise_giftcardaccount')->getCards($quote);
+        $website = Mage::app()->getStore($quote->getStoreId())->getWebsite();
+        foreach ($cards as $one) {
+            Mage::getModel('enterprise_giftcardaccount/giftcardaccount')
+                ->loadByCode($one['c'])
+                ->isValid(true, true, $website);
+        }
+
         if ((float)$quote->getBaseGiftCardsAmountUsed()) {
             $quote->setGiftCardAccountApplied(true);
             $input = $observer->getEvent()->getInput();
@@ -389,7 +402,7 @@ class Enterprise_GiftCardAccount_Model_Observer
             return $this;
         }
 
-        if ($order->getGiftCardsInvoiced() - $order->getGiftCardsRefunded() > 0) {
+        if ($order->getGiftCardsInvoiced() - $order->getGiftCardsRefunded() >= 0.0001) {
             $order->setForcedCanCreditmemo(true);
         }
 
@@ -429,5 +442,78 @@ class Enterprise_GiftCardAccount_Model_Observer
                 );
             }
         }
+    }
+
+    /**
+     * Revert amount to gift card
+     *
+     * @param   int $id
+     * @param   float $amount
+     * @return  Enterprise_GiftCardAccount_Model_Observer
+     */
+    protected function _revertById($id, $amount = 0)
+    {
+        $giftCard = Mage::getModel('enterprise_giftcardaccount/giftcardaccount')->load($id);
+
+        if ($giftCard) {
+            $giftCard->revert($amount)
+                ->unsOrder()
+                ->save();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Revert authorized amounts for all order's gift cards
+     *
+     * @param   Mage_Sales_Model_Order $order
+     * @return  Enterprise_GiftCardAccount_Model_Observer
+     */
+    protected function _revertGiftCardsForOrder(Mage_Sales_Model_Order $order)
+    {
+        $cards = Mage::helper('enterprise_giftcardaccount')->getCards($order);
+        if (is_array($cards)) {
+            foreach ($cards as $card) {
+                if (isset($card['authorized'])) {
+                    $this->_revertById($card['i'], $card['authorized']);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Revert authorized amounts for all order's gift cards
+     *
+     * @param   Varien_Event_Observer $observer
+     * @return  Enterprise_GiftCardAccount_Model_Observer
+     */
+    public function revertGiftCardAccountBalance(Varien_Event_Observer $observer)
+    {
+        $order = $observer->getEvent()->getOrder();
+        if ($order) {
+            $this->_revertGiftCardsForOrder($order);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Revert gift cards for all orders
+     *
+     * @param   Varien_Event_Observer $observer
+     * @return  Enterprise_GiftCardAccount_Model_Observer
+     */
+    public function revertGiftCardsForAllOrders(Varien_Event_Observer $observer)
+    {
+        $orders = $observer->getEvent()->getOrders();
+
+        foreach ($orders as $order) {
+            $this->_revertGiftCardsForOrder($order);
+        }
+
+        return $this;
     }
 }

@@ -167,8 +167,8 @@ class Enterprise_Logging_Block_Adminhtml_Index_Grid extends Mage_Adminhtml_Block
             'sortable'  => false,
         ));
 
-        $this->addExportType('*/*/exportCsv', 'CSV');
-        $this->addExportType('*/*/exportXml', 'MSXML');
+        $this->addExportType('*/*/exportCsv', Mage::helper('customer')->__('CSV'));
+        $this->addExportType('*/*/exportXml', Mage::helper('customer')->__('Excel XML'));
         return $this;
     }
 

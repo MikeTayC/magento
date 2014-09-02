@@ -82,6 +82,12 @@ Adding custom product price block
             <action method="addPriceBlockType"><type>bundle</type><block>bundle/catalog_product_price</block><template>bundle/catalog/product/price.phtml</template></action>
         </reference>
     </default>
+    
+    <wishlist_index_index>
+        <reference name="customer.wishlist">
+            <action method="addOptionsRenderCfg"><type>bundle</type><helper>bundle/catalog_product_configuration</helper></action>
+        </reference>
+    </wishlist_index_index>
 
     <catalog_product_view>
         <reference name="catalog.product.related">
@@ -201,10 +207,12 @@ Additional block for bundle product type
                 <label>Bundle Product View Summary</label>
                 <block type="bundle/catalog_product_price" name="bundle.prices" as="bundle_prices" template="bundle/catalog/product/view/price.phtml" />
                 <action method="append"><block>product.info.addtocart</block></action>
+                <action method="append"><block>product.info.addto</block></action>
             </block>
             <block type="bundle/catalog_product_view" name="customize.button" as="customize_button" template="bundle/catalog/product/view/customize.phtml"></block>
         </reference>
         <reference name="product.info.options.wrapper">
+            <block type="catalog/product_view" name="bundle.product.view.options.notice" template="bundle/catalog/product/view/options/notice.phtml" />
             <block type="bundle/catalog_product_view_type_bundle" name="product.info.bundle.options" as="type_bundle_options" template="bundle/catalog/product/view/type/bundle/options.phtml">
                 <action method="addRenderer"><type>select</type><block>bundle/catalog_product_view_type_bundle_option_select</block></action>
                 <action method="addRenderer"><type>multi</type><block>bundle/catalog_product_view_type_bundle_option_multi</block></action>
@@ -218,12 +226,18 @@ Additional block for bundle product type
             <block type="bundle/catalog_product_view" name="bundle.tierprices" as="tierprices" before="-" template="bundle/catalog/product/view/tierprices.phtml"/>
             <block type="bundle/catalog_product_view" name="bundle.back.button" as="backButton" after="-" template="bundle/catalog/product/view/backbutton.phtml"/>
             <action method="unsetChild"><block>product.info.addtocart</block></action>
+            <action method="setHideRequiredNotice"><flag>1</flag></action>
+            <action method="unsetChild"><block>product.info.addto</block></action>
             <block type="cataloginventory/qtyincrements" name="product.info.extrahint" as="extrahint" template="cataloginventory/qtyincrements.phtml"/>
         </reference>
         <reference name="product.clone_prices">
             <action method="addPriceBlockType"><type>bundle</type><block>bundle/catalog_product_price</block><template>bundle/catalog/product/view/price.phtml</template></action>
         </reference>
     </PRODUCT_TYPE_bundle>
+
+    <review_product_list>
+        <remove name="customize.button"/>
+    </review_product_list>
 
     <sales_order_view>
         <reference name="order_items">

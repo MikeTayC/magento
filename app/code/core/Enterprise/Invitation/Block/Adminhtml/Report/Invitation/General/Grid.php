@@ -90,7 +90,7 @@ class Enterprise_Invitation_Block_Adminhtml_Report_Invitation_General_Grid exten
         ));
 
         $this->addExportType('*/*/exportCsv', Mage::helper('enterprise_invitation')->__('CSV'));
-        $this->addExportType('*/*/exportExcel', Mage::helper('enterprise_invitation')->__('Excel'));
+        $this->addExportType('*/*/exportExcel', Mage::helper('enterprise_invitation')->__('Excel XML'));
 
         return parent::_prepareColumns();
     }

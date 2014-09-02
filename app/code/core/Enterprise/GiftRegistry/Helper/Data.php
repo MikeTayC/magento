@@ -194,7 +194,8 @@ class Enterprise_GiftRegistry_Helper_Data extends Mage_Core_Helper_Abstract
             $formatIn = Mage::app()->getLocale()->getDateFormat($formatIn);
         }
         $filterInput = new Zend_Filter_LocalizedToNormalized(array(
-            'date_format' => $formatIn
+            'date_format' => $formatIn,
+            'locale'      => Mage::app()->getLocale()->getLocaleCode()
         ));
         $filterInternal = new Zend_Filter_NormalizedToLocalized(array(
             'date_format' => Varien_Date::DATE_INTERNAL_FORMAT

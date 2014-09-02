@@ -1,13 +1,13 @@
 <?php
 /**
- * Magento
+ * Magento Enterprise Edition
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * http://www.magentocommerce.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
  * to license@magentocommerce.com so we can send you a copy immediately.
@@ -21,7 +21,7 @@
  * @category    Mage
  * @package     Mage_Connect
  * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
@@ -994,6 +994,9 @@ END;
     {
         if (is_array($this->_dependencyPhpExtensions)) return $this->_dependencyPhpExtensions;
         $this->_dependencyPhpExtensions = array();
+        if (!isset($this->_packageXml->dependencies->required->extension)) {
+            return $this->_dependencyPhpExtensions;
+        }
         foreach($this->_packageXml->dependencies->required->extension as $_package) {
             $this->_dependencyPhpExtensions[] = array(
                 'name'    => (string)$_package->name,
@@ -1012,6 +1015,9 @@ END;
     public function getDependencyPackages()
     {
         $this->_dependencyPackages = array();
+        if (!isset($this->_packageXml->dependencies->required->package)) {
+            return $this->_dependencyPackages;
+        }
         foreach($this->_packageXml->dependencies->required->package as $_package) {
             $add = array(
                 'name'    => (string)$_package->name,
@@ -1322,5 +1328,172 @@ END;
     public function setConfig($config)
     {
         $this->_config = $config;
+    }
+
+    /**
+     * Import package information from previous version of Magento Connect Manager
+     *
+     * @param array $data
+     *
+     * @return Mage_Connect_Package
+     */
+    public function importDataV1x(array $data)
+    {
+        $this->_packageXml = null;
+        $this->_init();
+        // Import simple data
+        if (isset($data['name'])) {
+            $this->setName($data['name']);
+        }
+        if (isset($data['summary'])) {
+            $this->setSummary($data['summary']);
+        }
+        if (isset($data['description'])) {
+            $this->setDescription($data['description']);
+        }
+        if (isset($data['channel'])) {
+            $this->setChannel($this->convertChannelFromV1x($data['channel']));
+        }
+        if (isset($data['license'])) {
+            if (is_array($data['license'])) {
+                $this->setLicense($data['license']['_content'], $data['license']['attribs']['uri']);
+            } else {
+                $this->setLicense($data['license']);
+            }
+        }
+        if (isset($data['version'])) {
+            $this->setVersion($data['version']['release']);
+        }
+        if (isset($data['stability'])) {
+            $this->setStability($data['stability']['release']);
+        }
+        if (isset($data['notes'])) {
+            $this->setNotes($data['notes']);
+        }
+        if (isset($data['date'])) {
+            $this->setDate($data['date']);
+        }
+        if (isset($data['time'])) {
+            $this->setTime($data['time']);
+        }
+
+        // Import authors
+        $authors = array();
+        $authorRoles = array('lead', 'developer', 'contributor', 'helper');
+        foreach ($authorRoles as $authorRole) {
+            if (isset($data[$authorRole])) {
+                $authorList = $data[$authorRole];
+                if (!is_array($authorList) || isset($authorList['name'])) {
+                    $authorList = array($authorList);
+                }
+                foreach ($authorList as $authorRawData) {
+                    $author = array();
+                    $author['name'] = $authorRawData['name'];
+                    $author['user'] = $authorRawData['user'];
+                    $author['email'] = $authorRawData['email'];
+                    array_push($authors, $author);
+                }
+            }
+        }
+        $this->setAuthors($authors);
+
+        // Import dependencies
+        $packages = array();
+        $extensions = array();
+        if (isset($data['dependencies']) && is_array($data['dependencies'])) {
+            $dependencySections = array('required', 'optional');
+            $elementTypes = array('package', 'extension');
+            foreach ($dependencySections as $dependencySection) {
+                if (isset($data['dependencies'][$dependencySection])) {
+                    // Handle required PHP version
+                    if ($dependencySection == 'required' && isset($data['dependencies']['required']['php'])) {
+                        $this->setDependencyPhpVersion($data['dependencies']['required']['php']['min'], $data['dependencies']['required']['php']['max']);
+                    }
+                    // Handle extensions
+                    if (isset($data['dependencies'][$dependencySection]['extension'])) {
+                        $extensionList = $data['dependencies'][$dependencySection]['extension'];
+                        if (!is_array($extensionList) || isset($extensionList['name'])) {
+                            $extensionList = array($extensionList);
+                        }
+                        foreach ($extensionList as $extensionRawData) {
+                            $extension = array();
+                            $extension['name'] = $extensionRawData['name'];
+                            $extension['min_version'] = isset($extensionRawData['min']) ? $extensionRawData['min'] : null;
+                            $extension['max_version'] = isset($extensionRawData['max']) ? $extensionRawData['max'] : null;
+                            array_push($extensions, $extension);
+                        }
+                    }
+                    // Handle packages
+                    if (isset($data['dependencies'][$dependencySection]['package'])) {
+                        $packageList = $data['dependencies'][$dependencySection]['package'];
+                        if (!is_array($packageList) || isset($packageList['name'])) {
+                            $packageList = array($packageList);
+                        }
+                        foreach ($packageList as $packageRawData) {
+                            $package = array();
+                            $package['name'] = $packageRawData['name'];
+                            $package['channel'] = $this->convertChannelFromV1x($packageRawData['channel']);
+                            $package['min_version'] = isset($packageRawData['min']) ? $packageRawData['min'] : null;
+                            $package['max_version'] = isset($packageRawData['max']) ? $packageRawData['max'] : null;
+                            array_push($packages, $package);
+                        }
+                    }
+                }
+            }
+        }
+        $this->setDependencyPackages($packages);
+        $this->setDependencyPhpExtensions($extensions);
+
+        // Import contents
+        if (isset($data['contents']) && is_array($data['contents']) && is_array($data['contents']['dir'])) {
+            // Handle files
+            $root = $data['contents']['dir'];
+            if (isset($data['contents']['dir']['file'])) {
+                $fileList = $data['contents']['dir']['file'];
+                if (!is_array($fileList) || isset($fileList['attribs'])) {
+                    $fileList = array($fileList);
+                }
+                foreach ($fileList as $fileRawData) {
+                    $targetName = $fileRawData['attribs']['role'];
+                    $parentTargetNode = $this->_getNode('target', $this->_packageXml->contents, $targetName);
+                    $filePath = $fileRawData['attribs']['name'];
+                    $filePathParts = explode('/', $filePath);
+                    $fileName = array_pop($filePathParts);
+                    $parentDirNode = null;
+                    if (!empty($filePathParts)) {
+                        $parentDirNode = $parentTargetNode;
+                        foreach ($filePathParts as $directoryName) {
+                            $parentDirNode = $this->_getNode('dir', $parentDirNode, $directoryName);
+                        }
+                    } else {
+                        $parentDirNode = $this->_getNode('dir', $parentTargetNode, '.');
+                    }
+                    $fileNode = $parentDirNode->addChild('file');
+                    $fileNode->addAttribute('name', $fileName);
+                    $fileNode->addAttribute('hash', $fileRawData['attribs']['md5sum']);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Convert package channel in order for it to be compatible with current version of Magento Connect Manager
+     *
+     * @param string $channel
+     *
+     * @return string
+     */
+    public function convertChannelFromV1x($channel)
+    {
+        $channelMap = array(
+            'connect.magentocommerce.com/community' => 'community',
+            'connect.magentocommerce.com/core' => 'community'
+        );
+        if (!empty($channel) && isset($channelMap[$channel])) {
+            $channel = $channelMap[$channel];
+        }
+        return $channel;
     }
 }

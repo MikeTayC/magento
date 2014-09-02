@@ -48,7 +48,7 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Products
     }
 
     /**
-     * Return custom object name for js grid 
+     * Return custom object name for js grid
      *
      * @return string
      */
@@ -65,11 +65,11 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Products
     public function getItemsCollection()
     {
         if (!$this->hasData('items_collection')) {
+            $attributes = Mage::getSingleton('catalog/config')->getProductAttributes();
             $collection = Mage::getModel('catalog/product')->getCollection()
                 ->setStore($this->_getStore())
-                ->addAttributeToSelect('name')
+                ->addAttributeToSelect($attributes)
                 ->addAttributeToSelect('sku')
-                ->addAttributeToSelect('price')
                 ->addAttributeToFilter('type_id',
                     array_keys(Mage::getConfig()->getNode('adminhtml/sales/order/create/available_product_types')->asArray())
                 )
@@ -96,6 +96,7 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Products
 
         $this->addColumn('name', array(
             'header'    => Mage::helper('enterprise_checkout')->__('Product Name'),
+            'renderer'  => 'adminhtml/sales_order_create_search_grid_renderer_product',
             'index'     => 'name'
         ));
 
@@ -108,9 +109,11 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Products
         $this->addColumn('price', array(
             'header'    => Mage::helper('enterprise_checkout')->__('Price'),
             'type'      => 'currency',
+            'column_css_class' => 'price',
             'currency_code' => $this->_getStore()->getCurrentCurrencyCode(),
             'rate'      => $this->_getStore()->getBaseCurrency()->getRate($this->_getStore()->getCurrentCurrencyCode()),
-            'index'     => 'price'
+            'index'     => 'price',
+            'renderer'  => 'adminhtml/sales_order_create_search_grid_renderer_price'
         ));
 
         $this->_addControlColumns();
@@ -178,5 +181,27 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Products
     public function getGridUrl()
     {
         return $this->getUrl('*/*/products', array('_current'=>true));
+    }
+
+    /**
+     * Add columns with controls to manage added products and their quantity
+     *
+     * @return Mage_Adminhtml_Block_Widget_Grid
+     */
+    protected function _addControlColumns()
+    {
+        parent::_addControlColumns();
+        $this->getColumn('in_products')->setHeader(" ");
+    }
+
+    /*
+     * Add custom options to product collection
+     *
+     * return Enterprise_Checkout_Block_Adminhtml_Manage_Accordion_Products
+     */
+    protected function _afterLoadCollection()
+    {
+        $this->getCollection()->addOptionsToResult();
+        return parent::_afterLoadCollection();
     }
 }
