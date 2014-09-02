@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -37,7 +37,7 @@ class Enterprise_GiftRegistry_Model_Resource_Item_Collection extends Mage_Core_M
     /**
      * List of product IDs
      * Contains IDs of products related to items and their options
-     * 
+     *
      * @var array
      */
     protected $_productIds = array();
@@ -63,6 +63,50 @@ class Enterprise_GiftRegistry_Model_Resource_Item_Collection extends Mage_Core_M
                 'e.entity_id = main_table.entity_id', 'website_id')
             ->where('main_table.entity_id = ?', (int)$entityId);
 
+        return $this;
+    }
+
+    /**
+     * Add product filter to collection
+     *
+     * @param int $productId
+     * @return Enterprise_GiftRegistry_Model_Resource_Item_Collection
+     */
+    public function addProductFilter($productId)
+    {
+        if ((int)$productId > 0) {
+            $this->addFieldToFilter('product_id ', (int)$productId);
+        }
+        return $this;
+    }
+
+    /**
+     * Add website filter to collection
+     *
+     * @return Enterprise_GiftRegistry_Model_Resource_Item_Collection
+     */
+    public function addWebsiteFilter()
+    {
+        $this->getSelect()->join(
+            array('cpw' => $this->getTable('catalog/product_website')),
+            'cpw.product_id = main_table.product_id AND cpw.website_id = e.website_id'
+        );
+        return $this;
+    }
+
+    /**
+     * Add item filter to collection
+     *
+     * @param int|array $itemId
+     * @return Enterprise_GiftRegistry_Model_Resource_Item_Collection
+     */
+    public function addItemFilter($itemId)
+    {
+        if (is_array($itemId)) {
+            $this->addFieldToFilter('item_id', array('in' => $itemId));
+        } elseif ((int)$itemId > 0) {
+            $this->addFieldToFilter('item_id', (int)$itemId);
+        }
         return $this;
     }
 

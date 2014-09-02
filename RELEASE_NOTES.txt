@@ -1,3 +1,288 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+] NOTE: Current Release Notes are maintained at:                                 [
+]                                                                                [
+] http://www.magentocommerce.com/knowledge-base/entry/ee-113-later-release-notes [
+]                                                                                [
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+==== 1.13.0.2 ==== 
+
+IMPORTANT: This version has non-standard upgrade requirements. Please make sure to read 
+http://www.magentocommerce.com/knowledge-base/entry/ce18-and-ee113-upgrading 
+before upgrading.
+
+
+
+==== 1.13.0.1 ====
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!
+Important: Use EE 1.13.0.1 for ALL new installations and upgrades avoid issues with missing products on your web store due to duplicate URL key issues during the upgrade. For more information, see the upgrade path documentation at:
+
+http://www.magentocommerce.com/knowledge-base/entry/ce18-and-ee113-upgrading#prereq-upgrade-compat
+!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+About URL Keys and URL Rewriting Improvements in Magento EE 1.13.0.0 and Later
+------------------------------------------------------------------------------
+One of the results of the performance improvements made to URL rewrites in EE 1.13.0.0 and later is that URL keys must be unique in a particular webstore. There are several things for you to be aware of - whether you're installing EE 1.13.0.0 and later for the first time or whether you're upgrading from an earlier EE release.
+
+----- How URL Keys Work in New Magento EE 1.13.0.0 Installations -----
+To facilitate URL key uniqueness, Magento EE 1.13.0.0 and later create a unique key for you when you add a product or category with the same name as an existing product or category.
+
+For example, if you already have a category named Apparel/Shoes and you create a category named Specials/Shoes, the second category's URL key is the category name separated from its ID by a dash character (for example, shoes-42). Duplicate URL keys for products work the same way.
+By default, URLs for products assigned to same-named categories are:
+
+Original category: http://www.example.com/shoes/kenneth-cole-new-york-men-s-con-verge-slip-on.html
+New duplicate category: http://www.example.com/shoes-42/kenneth-cole-new-york-men-s-con-verge-slip-on.html
+
+----- Additional Information About URL Keys After an Upgrade ----- 
+During the upgrade process, Magento does the following:
+
+Moves your existing URL redirects as-is and designates them as custom redirects. You can edit the custom URL redirects the same way you edit other URL redirects.
+Creates a new URL redirect.
+All new category URLs are rendered in the top navigation bar in your web store.
+
+The new URLs have minimal to no impact on search engines because all URLs can be used to access categories and products. In addition, there are fewer total URLs created for products and categories, which maximizes search engine optimization.
+
+
+==== Fixes ====
+A remote code execution vulnerability was fixed.
+On a clean installation, display errors are hidden.
+Critical upgrade issues that affected duplicate product and category URL keys were resolved. 
+ * One issue prevented web store users from viewing products and categories that had duplicate URL keys before upgrading.
+ * One issue affected a custom URL key assigned to a product that was associated with different store views. After upgrading, the product is viewable on the web store on all store views and, in addition, a new URL key is created for the product.
+ In EE 1.13.0.1 and later, URL keys are globally unique among all stores - not just unique in a particular store.
+Issues with importing products with Append Complex Data selecting from a comma-separated value (.csv) file have been resolved.
+
+
+
+==== 1.13.0.0 ====
+
+==== Highlights ====
+Major overhaul of tax calculation formulas, correction of rounding errors, and additional assistance with configuration
+Most indexing processes now run only to update products, categories, URL redirects, and so on that have changed - eliminating the need for manual full reindexing
+Additional option of using Redis NoSQL for cache and session storage in multi-host deployments (recommended for new deployments)
+Full page caching now invalidates only pages that are affected by product or category changes
+Optimized cache adapters for single-server systems
+Elimination of many types of database deadlocks
+
+==== Security Enhancements ====
+The Magento Admin Panel and web stores no longer allow web browsers to store user names or passwords.
+The Magento web store has additional Cross Site Request Forgery (CSRF) protections, meaning an imposter can no longer impersonate a newly registered customer and perform actions on the customer's behalf.
+In earlier versions, Magento was vulnerable to a session fixation attack during the registration process. After logging in to their account, a registered user's session ID did not change. Therefore, if an attacker had knowledge of an unauthorized session ID and if that user successfully registers, the attacker was able to take over the newly registered account.
+Now, the session ID changes after successful registration, making unauthorized use of an account impossible.
+The cryptographic methods used to store passwords were improved to enhance security.
+
+==== Performance Improvements ====
+Limited the way Magento performs large database lookups. 
+Checkout performance improvements achieved by:
+* Eliminating unnecessary calls to gift wrapping when loading the Shipping Method checkout step
+* Eliminating unnecessary RSS cache cleanups when RSS functionality is disabled
+* The locale used to send a new order confirmation e-mail now first checks to see if the customer's locale is the same as the store's locale before attempting to localize the e-mail.
+* Improving the overall checkout process performance by loading the progress information for the current checkout step only
+You can load a large number of tax codes (35,000 or so) without impacting performance. 
+Magento uses MySQL database triggers to improve access to the database during reindexing.
+
+==== Tax Calculation Fixes ====
+
+== General Tax Notes ==
+Based on Magento testing and merchant experience, certain tax configuration settings have been determined to be susceptible to rounding issues and can be confusing to buyers. To help you avoid issues with those settings, warning messages display in the Admin Panel if you attempt to save such a configuration.
+Administrative users can choose to dismiss the messages and can still save the configuration; however, Magento strongly recommends you change the configuration in a way recommended by the details displayed in the message.
+Bundle pricing is more consistent as follows:
+* The calculation formula is:
+   Sub item price = Sub item base price * Applicable tiered price adjustment or discount, then rounded
+   Bundle price = Sum (round(sub item price * qty))
+* When non-integer quantities are multiplied by a product price, Magento rounds the resulting subtotal is as follows:
+   round(unit price * non-integer quantity)
+All product price information on which taxation is based are rounded to two digits of precision regardless of how many digits of precision have been loaded into the database (for example, $10.24 instead of $10.2385). This situation can occur when certain integrations enable third-party applications to send four-digit precision prices to Magento. 
+Starting with this release those additional digits will have no impact on customer facing prices. Forcing two digits of precision enables more exact calculations involving Fixed Product Tax (FPT), discounts, and taxes - among other concerns.
+For certain Canadian provinces and localities, calculations and methods were updated to support changing legal requirements in Canada:
+* Provincial Sales Tax (PST)
+* Goods and Services Tax (GST)
+* Taxe de vente du Quebec (TVQ), also referred to as Quebec Sales Tax (QST)
+
+== Rounding Error Fixes ==
+Calculating taxes for bundled products with tiered pricing.
+Calculating the price before customization for bundled products.
+Calculating the grand total of items added to a cart in a different order.
+Viewing an order when taxes are calculated after a discount using either row-based or unit price.
+Applying a discount to an order with a shipping address different than the billing address.
+Calculating the grand total based on the order in which products are added to the shopping cart.
+Specifying prices display in the web store excluding tax and a 20% tax rate (or discount rate) now calculates the grand total correctly. It is now possible to have grand totals in amounts like 6.99, 9.99, or 99.99 - regardless of the currency units used in the web store.
+Adding multiple items to a cart does not affect the accuracy with which taxation is calculated.
+Subtotal (Incl. Tax) is now correct when catalog and shipping prices include tax. Both tax and discounts are applied after tax. 
+Prices displayed in the cart and on the catalog page are consistent and correct when catalog prices include tax, and when items in the catalog are set to display both including and excluding tax.
+Error in calculating the Grand Total Excl. Tax was resolved. This error occurred in a specific configuration: tax is applied to FPT, FPT is included in the subtotal, and the customer selects non-taxable flat rate shipping. 
+
+== Fixed Product Tax (FPT) Fixes ==
+Price in the cart displays the correct before-tax price and grand total.
+Subtotals displayed in the cart (both Including Tax and Excluding Tax) are now correctly calculated when FPT is applied.
+Free shipping offers are now processed correctly when FPT is applied.
+FPT taxes are calculated correctly when a discount is applied.
+
+== Discount Calculation Fixes ==
+The Row Subtotal displayed in the cart is calculated correctly (that is, both Excl. Tax and Incl. Tax are correct).
+The price for bundled items now displays with tax included if the bundle is configured to do so.
+Taxation is now correctly calculated on a product with a discounted price.
+Taxation on discounts is now calculated correctly when the ship-to country is different from the web store's default country.
+
+== Display Fixes ==
+Row Subtotal displays correctly in the shopping cart when:
+* FPT is applied.
+* A discount is applied to a situation where the tax the customer pays is different from the tax specified for the web store's locale (for example, when the shipping origin is different than the shipping address).
+Subtotal including tax on a credit memo is correct when one or more items in the memo includes FPT.
+Item subtotal displays correctly when a discount is applied to a purchase that includes FPT.
+If the administrator sets catalog prices to exclude tax and to display product prices in catalog as including tax, the price of the product in your web store includes applicable taxes. 
+When Minimum Advertised Price (MAP) is enabled and the customer examines the price of a product in a gift registry, the price includes all of the following: price, actual price, price including tax, and price excluding tax.
+The amount of tax displayed in the Order Totals section of the shopping cart is now correct when free shipping and a shopping cart rule discount are applied.
+
+== API Fixes ==
+Requesting a product using a call like the following returns the product with the specified numeric SKU value (8888 in the following example):
+  $result = $client->call($sessionId, 'catalog_product.info', '8888', null, null, 'sku'); 
+Order status is changed correctly using salesOrderAddComment.
+The shoppingCartProductMoveToCustomerQuote method works properly.
+You can now use from-to complex filters to perform "window" filtration on a single field. For example, you can use from and to on the created_at return a list of sales orders using the salesOrderList.
+When you use the SOAP API v.2.0 with WS-I Compliance enabled to retrieve sales orders information, the server responds with the correct Content-Length header.
+The productGetSpecialPrice method returns special price information for a product, whether or not WS-I Compliance is enabled.
+The shoppingCartPaymentList method returns the list of the available payment methods for the shopping cart appropriately. The following error is no longer returned:
+  SOAP-ERROR: Encoding: object has no 'code' property in name
+The following issues with WSDL and WS-I Compliance are resolved:
+* The productAttributeAddOption and catalogProductAttributeUpdate methods are now supported when WS-I Compliance is enabled.
+* The WSDL declaration for salesOrderCreditmemoCreate is now correct; that is, it matches the code.
+* You can now add a C# web reference in Microsoft Visual Studio 2010 using the Magento WSDL. 
+* For example, this command no longer fails:
+  C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bin> wsdl /out:Magento.cs /v http://magentohost/api/v2_soap/?wsdl
+* The WS-I Compliance mode WSDL now includes catalogProductAttributeInfo.
+XML-RPC API: Using the product_custom_option.add operation with multicall no longer results in redundant options.
+
+==== Fixes ====
+
+== Web Store and Shopping Cart Fixes ==
+A customer's account created date is correct. 
+When a product price is set with website scope and an administrative user has access to only one website, the default price is taken from that website scope. Also, when saving the product on the website scope, the price is updated only in that scope and not in the default scope. 
+An error no longer displays on your web store after a customer places an order. (The error message was There has been an error processing your request. Please contact us or try again later). 
+Restricted coupon codes work properly, even if the customer has selected the Remember me check box. 
+Using the Table Rates shipping option, free shipping options work properly. 
+Issues with shipping table rates have been resolved. 
+Reward Points are now granted one time per order, even when comments are added to the order later. 
+Entering a value such as 10,50 (using a comma character and not a period) for Adjustment Fee now results in the correct amount of credit being applied to the transaction. 
+Unit price for bundled products is now calculated correctly. 
+The tiered price of bundled items now displays properly on the web store. 
+Composite products can be successfully reordered. 
+You can now use special characters in a product URL key. 
+After a customer visits the sitemap, web stores URLs are no longer prepended by /sitemap/catalog/string. 
+Welcome messages now display properly in the web store after a customer's profile information is changed. 
+Recently viewed products now display updates properly. 
+Armed Forces Middle East is now available for State when checking out. 
+Gift wrapping charges now display properly in a PDF invoice. 
+Searching for a customer's orders and returns works properly. 
+Shipping is calculated correctly if you select Using origin weight (few requests) for Packages Request Type. 
+Free shipping is no longer available to a customer during checkout if the option was disabled by an administrator. 
+A user can navigate your web store while downloading a downloadable product. 
+You can now specify weight units in kilograms (kg) using the FedEx shipping method. 
+FedEx shipping rates are now consistent with Magento discounted rates. 
+Fixed issues with United Parcel Service (UPS) shipping rates. 
+An issue that caused a fatal error in the web store for an item in a gift registry has been resolved. The issue occurred when the item was removed from a website after a user had added the item to their gift registry. 
+UPS shipping labels have the word SAMPLE printed on them only when you request a sample label. 
+Changes made to United States Post Office (USPS) APIs and rates have been incorporated in Magento. 
+You can now process a return materials authorization (RMA) for an order that was shipped to multiple addresses. 
+The products in a customer's wish list no longer disappear after one or more products are edited by an administrator. 
+Administrators can view the contents of a customer's shopping cart. 
+The price of a simple product now displays properly when category permissions are enabled. 
+Issues with purchasing a product using a gift card created with a custom option have been resolved. 
+
+== Promotional Price Rule Fixes ==
+Shopping cart price rules applied to specific customer groups work properly. 
+Catalog price rules are applied properly to customer groups. 
+The scope of a product attribute is now honored by a catalog price rule. 
+Discounts specified by a shopping cart price rule are applied properly when a particular order is shipped to multiple addresses. 
+You can add a gift card to an order that qualifies for a 100% purchase price discount specified by a shopping cart price rule. 
+A discount specified by a shopping cart price rule that allows for more than one use per customer is applied the correct number of times if the customer ships orders to more than one address. 
+When an administrative user whose role is restricted to only viewing catalog price rules, the user cannot add or edit catalog price rules. 
+Shopping cart price rules now work properly with bundled products. 
+
+== Administrative Ordering and Credit Memo Fixes ==
+When you create an order using the Admin Panel and you have multiple stores, the State/Province field updates appropriately for the country in which the order is placed. 
+When you create an order using the Admin Panel and you have specified a default billing address and a default shipping address, the addresses are used correctly. 
+Orders placed by an administrator display in a customer's last order list. 
+Product comparisons now display properly when an administrator makes a change using the Admin Panel (for example, deleting a product from a customer's comparison list). 
+You can now cancel an order using the Admin Panel. 
+Orders and invoices that include taxable shipping - when created in the Admin Panel - now calculate the shipping taxes properly. 
+Products added to a customer's wish list by an administrator display properly. 
+Issues with the incorrect number of reward points being credited when issuing credit memos have been resolved. 
+
+== Import Fixes ==
+The quantity (QTY) of all products imports correctly. 
+The value of Maximum Qty Allowed in Shopping Cart (use_cfg_max_sale_qty) is correct. 
+The product displays correctly in layered navigation. 
+Importing customer lists with capitalization variations in the e-mail address now imports the customer only once (for example, user@example.com and User@example.com). 
+The catalog_product_entity_url_key is processed properly; now, all imported products have url_key values in the catalog_product_entity_url_key table. 
+
+== Payment Method Fixes ==
+Resolved issue sending customer e-mail when using Payflow Link. 
+Security issues with Google Checkout payments have been resolved.
+Security issues with Authorize.net payments have been resolved.
+Magento conforms to the latest version of the PayPal Instant Payment Notification (IPN) guidelines.
+The contents of a shopping cart are unaffected by canceling a PayPal payment.
+Issues with not being able to continue checkout after switching payment methods have been resolved.
+You can now process partial refunds and invoices for orders that were placed using Payflow Pro.
+Payflow Link and Payments Advance now capture IPN transactions properly.
+Special characters (such as e-mail addresses) are now handled properly by the Magento Payflow API integration.
+Resolved errors with orders placed using the Website Payments Pro payment method.
+PayPal Express Checkout payments are handled properly when a shopping cart price rule is specified.
+Any PayPal Name-Value Pair (NVP) payment method no longer automatically refunds an order when a chargeback is initiated. Magento now allows the dispute to be resolved before taking the appropriate action.
+PayPal NVP payment methods include: PayPal Payments Pro (including PayPal Payments Pro Hosted), Payments Standard, and all Payflow methods.
+PayPal Pro now correctly processes the shipping address for an order.
+PayPal Express Checkout and PayPal Pro now handle partial refunds properly. 
+Fixed rounding errors that were preventing PayPal Express Checkout transactions from completing. The error occurred with the following configuration:
+* tax calculation method based on the total
+* tax calculated based on the shipping address
+* catalog prices exclude tax
+* shipping prices exclude tax
+* customer discount applied after a discount
+* discount applied to prices excluding tax
+* tax applied to a custom price if available
+The order status Suspected Fraud is now supported by PayPal Payments Pro (hosted) when PayPal fraud protection is enabled. Using the Magento Admin Panel, the merchant can also accept or deny any Suspected Fraud orders and have that decision applied to the PayPal transaction. 
+Using Ogone, transactions display in the Magento Admin Panel after you capture them. 
+When an administrator places an order and uses PSi Gate, then cancels the order, the PSi Gate gateway displays both the order and the void transactions. 
+The following fields related to PayPal's Payflow Pro Gateway payment method are now implemented properly:
+* [custref] is the Magento customer's ID
+* [INVNUM] is Magento's order number
+
+== Payment Method Fixes ==
+MySQL database deadlock issues were resolved. 
+EE 1.13 is now World Wide Web Consortium (W3C) compliant. 
+A fatal error in GiftRegistry/Model/Item/Option.php has been resolved. 
+When an administrative user whose role is restricted to managing products attempts to edit Inventory settings, only the available options display. 
+Related product information updates appropriately in the Admin Panel. 
+Issues with editing product inventory settings and category attributes using the Google Chrome web browser have been resolved. 
+Rolling back after a backup now works properly. 
+You can now fetch data for a PayPal Settlement Report using a custom Secure FTP (SFTP) server. 
+You can now save a category with the option Available Product Listing Sort By: Best value or Price enabled. 
+The following fixes relate to full page caching:
+* Breadcrumbs to a product work for all categories with which the product is associated. 
+* The correct customer name displays on a gift card. 
+* Product tags display properly. 
+* Related products display properly. 
+* magento-install-dir/app/code/core/Enterprise/PageCache/Model/Config.php was modified to enable you to set specific lifetimes for certain blocks. 
+* Automated e-mail marketing reminder rules work properly. 
+* Issues with session cookies have been resolved.
+
+==== Changes ====
+There is a new management page in the Admin Panel: System > Configuration > ADVANCED > Index Management.
+The options on the System > Index Management are significantly different. In particular, because manual reindexing is no longer required for most indexers, there are fewer check boxes and the page mostly displays status information. 
+In the Admin Panel, Catalog > Manage Products > <edit-product> > General tab page option Create Permanent Redirect for old URL if URL key changed changes to Create Custom Redirect for old URL.
+The feature behaves the same way; namely, selecting Yes creates a redirect for the old URL that points to the new URL if a page is moved.
+Note: The wording of this option is expected to change back to the previous wording in a subsequent release.
+The options Product URL Suffix and Category URL Suffix return errors if anything except alphanumerical characters or underscore are entered.
+The catalog_product_entity_url_key and catalog_category_entity_url_key database tables for the corresponding url_key attributes have been added.
+
+==== Thanks ====
+Magento acknowledges and thanks everyone in the Magento Community who contributed to this release.
+
+
+
 ==== 1.12.0.2 ====
 
 === Fixes ===

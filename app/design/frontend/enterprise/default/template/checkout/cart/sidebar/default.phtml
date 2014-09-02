@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -28,19 +28,19 @@
 <?php $canApplyMsrp = Mage::helper('catalog')->canApplyMsrp($_item->getProduct(), Mage_Catalog_Model_Product_Attribute_Source_Msrp_Type::TYPE_BEFORE_ORDER_CONFIRM); ?>
 <li class="item">
     <?php if ($this->hasProductUrl()): ?>
-        <a href="<?php echo $this->getProductUrl()?>" title="<?php echo $this->htmlEscape($this->getProductName()) ?>" class="product-image"><img src="<?php echo $this->getProductThumbnail()->resize(50)->setWatermarkSize('30x10'); ?>" alt="<?php echo $this->htmlEscape($this->getProductName()) ?>" /></a>
+        <a href="<?php echo $this->getProductUrl()?>" title="<?php echo $this->escapeHtml($this->getProductName()) ?>" class="product-image"><img src="<?php echo $this->getProductThumbnail()->resize(50)->setWatermarkSize('30x10'); ?>" alt="<?php echo $this->escapeHtml($this->getProductName()) ?>" /></a>
     <?php else: ?>
         <span class="product-image">
-            <img src="<?php echo $this->getProductThumbnail()->resize(50)->setWatermarkSize('30x10'); ?>" alt="<?php echo $this->htmlEscape($this->getProductName()) ?>" title="<?php echo $this->htmlEscape($this->getProductName()) ?>" />
+            <img src="<?php echo $this->getProductThumbnail()->resize(50)->setWatermarkSize('30x10'); ?>" alt="<?php echo $this->escapeHtml($this->getProductName()) ?>" title="<?php echo $this->escapeHtml($this->getProductName()) ?>" />
         </span>
     <?php endif; ?>
 
     <div class="product-details">
         <p class="product-name">
             <?php if ($this->hasProductUrl()): ?>
-                <a href="<?php echo $this->getProductUrl() ?>"><?php echo $this->htmlEscape($this->getProductName()) ?></a>
+                <a href="<?php echo $this->getProductUrl() ?>"><?php echo $this->escapeHtml($this->getProductName()) ?></a>
             <?php else: ?>
-                <?php echo $this->htmlEscape($this->getProductName()) ?>
+                <?php echo $this->escapeHtml($this->getProductName()) ?>
             <?php endif; ?>
         </p>
         <table cellpadding="0">
@@ -163,7 +163,7 @@
                     <p><?php echo $this->__('Options Details'); ?></p>
                     <dl>
                         <?php foreach ($_options as $_option) : ?>
-                        <dt><?php echo $this->htmlEscape($_option['label']) ?></dt>
+                        <dt><?php echo $this->escapeHtml($_option['label']) ?></dt>
                         <dd>
                             <?php if (is_array($_option['value'])): ?>
                             <?php echo nl2br(implode("\n", $_option['value'])) ?>

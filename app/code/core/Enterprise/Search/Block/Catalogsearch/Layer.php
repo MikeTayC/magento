@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -103,7 +103,11 @@ class Enterprise_Search_Block_Catalogsearch_Layer extends Mage_CatalogSearch_Blo
      */
     public function canShowBlock()
     {
-        return ($this->canShowOptions() || count($this->getLayer()->getState()->getFilters()));
+        $helper = Mage::helper('enterprise_search');
+        if ($helper->isThirdPartSearchEngine() && $helper->isActiveEngine()) {
+            return ($this->canShowOptions() || count($this->getLayer()->getState()->getFilters()));
+        }
+        return parent::canShowBlock();
     }
 
     /**

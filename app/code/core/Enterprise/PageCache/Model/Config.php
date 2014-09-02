@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -78,6 +78,17 @@ class Enterprise_PageCache_Model_Config extends Varien_Simplexml_Config
     }
 
     /**
+     * Retrieve all declared placeholders as array
+     *
+     * @return array
+     */
+    public function getDeclaredPlaceholders()
+    {
+        $this->_initPlaceholders();
+        return $this->_placeholders;
+    }
+
+    /**
      * Create placeholder object based on block information
      *
      * @param Mage_Core_Block_Abstract $block
@@ -108,6 +119,11 @@ class Enterprise_PageCache_Model_Config extends Varien_Simplexml_Config
                 . ' container="' . $placeholderData['container'] . '"'
                 . ' block="' . get_class($block) . '"';
             $placeholder.= ' cache_id="' . $block->getCacheKey() . '"';
+
+            if (!empty($placeholderData['cache_lifetime'])) {
+                $placeholder .= ' cache_lifetime="' . $placeholderData['cache_lifetime'] . '"';
+            }
+
             foreach ($block->getCacheKeyInfo() as $k => $v) {
                 if (is_string($k) && !empty($k)) {
                     $placeholder .= ' ' . $k . '="' . $v . '"';

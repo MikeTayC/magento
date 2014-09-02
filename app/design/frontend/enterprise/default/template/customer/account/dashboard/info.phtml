@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -29,8 +29,8 @@
         <div class="info-box">
             <h3 class="box-title"><?php echo $this->__('Contact Information') ?> <span class="separator">|</span> <a href="<?php echo $this->getUrl('customer/account/edit') ?>"><?php echo $this->__('Edit') ?></a></h3>
             <p class="box-content">
-                <?php echo $this->htmlEscape($this->getCustomer()->getName()) ?><br />
-                <?php echo $this->htmlEscape($this->getCustomer()->getEmail()) ?><br />
+                <?php echo $this->escapeHtml($this->getCustomer()->getName()) ?><br />
+                <?php echo $this->escapeHtml($this->getCustomer()->getEmail()) ?><br />
                 <a href="<?php echo $this->getChangePasswordUrl() ?>"><?php echo $this->__('Change Password') ?></a>
             </p>
         </div>

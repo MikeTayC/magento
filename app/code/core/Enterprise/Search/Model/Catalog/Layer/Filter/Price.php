@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -33,6 +33,9 @@
  */
 class Enterprise_Search_Model_Catalog_Layer_Filter_Price extends Mage_Catalog_Model_Layer_Filter_Price
 {
+    /**
+     * Cache tag
+     */
     const CACHE_TAG = 'MAXPRICE';
 
     /**
@@ -99,18 +102,18 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Price extends Mage_Catalog_Mo
             }
 
             if (!$isAuto && !empty($facets)) {
-                $range  = $this->getPriceRange();
+                $range = $this->getPriceRange();
             }
 
             $i = 0;
             $maxIntervalsNumber = $this->getMaxIntervalsNumber();
             $lastSeparator = null;
             foreach ($facets as $key => $count) {
-                ++$i;
-                preg_match('/\[([\d\.\\\*]+) TO ([\d\.\\\*]+)\]$/', $key, $separator);
-                $separator[1] = str_replace('\\*', '*', $separator[1]);
-                $separator[2] = str_replace('\\*', '*', $separator[2]);
+                if (!preg_match('/\[([\d\.\*]+) TO ([\d\.\*]+)\]$/', $key, $separator)) {
+                    continue;
+                }
 
+                ++$i;
                 $label = null;
                 $value = null;
                 if (isset($this->_facets[$separator[1] . '_' . $separator[2]])) {
@@ -359,25 +362,66 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Price extends Mage_Catalog_Mo
      */
     public function addFacetCondition()
     {
-        if (Mage::app()->getStore()->getConfig(self::XML_PATH_RANGE_CALCULATION) == self::RANGE_CALCULATION_IMPROVED) {
+        $calculation = Mage::app()->getStore()->getConfig(self::XML_PATH_RANGE_CALCULATION);
+        if ($calculation == self::RANGE_CALCULATION_IMPROVED) {
             return $this->_addCalculatedFacetCondition();
         }
 
         $this->_facets = array();
         $range    = $this->getPriceRange();
         $maxPrice = $this->getMaxPriceInt();
-        if ($maxPrice >= 0) {
-            $priceFacets = array();
-            $facetCount  = ceil($maxPrice / $range);
+        $priceFacets = array();
+        /** @var $productCollection Enterprise_Search_Model_Resource_Collection */
+        $productCollection = $this->getLayer()->getProductCollection();
+        if ($maxPrice > 0) {
+            if ($calculation == self::RANGE_CALCULATION_MANUAL
+                || $range == $this->getLayer()->getCurrentCategory()->getFilterPriceRange()
+            ) {
+                $startPriceInterval = 0;
+                $currentMaxPrice = 0;
+                $facetCount = $this->getMaxIntervalsNumber();
+                do {
+                    for ($i = 0; $i < $facetCount; $i++) {
+                        $separator = array(
+                            $startPriceInterval + $i * $range,
+                            $startPriceInterval + ($i + 1) * $range
+                        );
+                        $facetedRange = $this->_prepareFacetRange($separator[0], $separator[1]);
+                        $this->_facets[$facetedRange['from'] . '_' . $facetedRange['to']] = $separator;
+                        $priceFacets[] = $facetedRange;
+                    }
 
-            for ($i = 0; $i < $facetCount + 1; $i++) {
-                $separator = array($i * $range, ($i + 1) * $range);
-                $facetedRange = $this->_prepareFacetRange($separator[0], $separator[1]);
-                $this->_facets[$facetedRange['from'] . '_' . $facetedRange['to']] = $separator;
-                $priceFacets[] = $facetedRange;
+                    $currentMaxPrice = $priceFacets[count($priceFacets) - 1]['to'];
+                    $result = $productCollection->getPriceData($currentMaxPrice, null, 1);
+                    $startPriceInterval = count($result) ? floor($result[0] / $range) * $range : $maxPrice;
+                    if (($startPriceInterval && --$facetCount == 0) || $startPriceInterval == $maxPrice) {
+                        $separator = array(
+                            $startPriceInterval,
+                            $maxPrice + $range
+                        );
+                        $facetedRange = $this->_prepareFacetRange($separator[0], $separator[1]);
+                        $this->_facets[$facetedRange['from'] . '_' . $facetedRange['to']] = $separator;
+                        $priceFacets[] = $facetedRange;
+                        break;
+                    }
+                } while ($maxPrice > $currentMaxPrice);
+            } else {
+                $facetCount = ceil($maxPrice / $range);
+                for ($i = 0; $i < $facetCount + 1; $i++) {
+                    $separator = array($i * $range, ($i + 1) * $range);
+                    $facetedRange = $this->_prepareFacetRange($separator[0], $separator[1]);
+                    $this->_facets[$facetedRange['from'] . '_' . $facetedRange['to']] = $separator;
+                    $priceFacets[] = $facetedRange;
+                }
             }
 
-            $this->getLayer()->getProductCollection()->setFacetCondition($this->_getFilterField(), $priceFacets);
+            $productCollection->setFacetCondition($this->_getFilterField(), $priceFacets);
+        } elseif ($maxPrice == 0) {
+            $separator = array(0,1);
+            $facetedRange = $this->_prepareFacetRange($separator[0], $separator[1]);
+            $this->_facets[$facetedRange['from'] . '_' . $facetedRange['to']] = $separator;
+            $priceFacets[] = $facetedRange;
+            $productCollection->setFacetCondition($this->_getFilterField(), $priceFacets);
         }
 
         return $this;

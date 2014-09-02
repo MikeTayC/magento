@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -194,6 +194,8 @@ class Enterprise_Pbridge_Model_Payment_Method_Payflow_Pro extends Mage_Paypal_Mo
      */
     public function capture(Varien_Object $payment, $amount)
     {
+        $payment->setShouldCloseParentTransaction(!$this->_getCaptureAmount($amount));
+        $payment->setFirstCaptureFlag(!$this->getInfoInstance()->hasAmountPaid());
         $response = $this->getPbridgeMethodInstance()->capture($payment, $amount);
         if (!$response) {
             $response = $this->getPbridgeMethodInstance()->authorize($payment, $amount);
@@ -214,6 +216,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Payflow_Pro extends Mage_Paypal_Mo
     {
         $response = $this->getPbridgeMethodInstance()->refund($payment, $amount);
         $payment->addData((array)$response);
+        $payment->setShouldCloseParentTransaction(!$payment->getCreditmemo()->getInvoice()->canRefund());
         return $this;
     }
 

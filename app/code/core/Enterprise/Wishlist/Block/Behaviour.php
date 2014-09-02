@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Wishlist
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -83,6 +83,20 @@ class Enterprise_Wishlist_Block_Behaviour extends Mage_Core_Block_Template
     {
         $customerId = Mage::getSingleton('customer/session')->getCustomerId();
         return !Mage::helper('enterprise_wishlist')->isWishlistLimitReached($wishlistList) && $customerId;
+    }
+
+    /**
+     * Get customer wishlist list
+     *
+     * @return array
+     */
+    public function getWishlistShortList()
+    {
+        $wishlistData = array();
+        foreach($this->getWishlists() as $wishlist){
+            $wishlistData[] = array('id' => $wishlist->getId(), 'name' => $wishlist->getName());
+        }
+        return $wishlistData;
     }
 
     /**

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -75,7 +75,8 @@ class Enterprise_GiftRegistry_ViewController extends Mage_Core_Controller_Front_
     public function addToCartAction()
     {
         $items = $this->getRequest()->getParam('items');
-        if (!$items) {
+
+        if (!$items || !$this->_validateFormKey()) {
             $this->_redirect('*/*', array('_current' => true));
             return;
         }
@@ -102,7 +103,9 @@ class Enterprise_GiftRegistry_ViewController extends Mage_Core_Controller_Front_
             $success = true;
             if (!$count) {
                 $success = false;
-                $session->addError(Mage::helper('enterprise_giftregistry')->__('Please specify the quantity of items that you want to add to cart.'));
+                $session->addError(
+                    Mage::helper('enterprise_giftregistry')->__('Please specify the quantity of items that you want to add to cart.')
+                );
             }
         } catch (Mage_Core_Exception $e) {
             $session->addError(Mage::helper('enterprise_giftregistry')->__($e->getMessage()));

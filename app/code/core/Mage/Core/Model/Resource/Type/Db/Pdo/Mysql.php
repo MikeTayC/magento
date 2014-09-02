@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -68,7 +68,7 @@ class Mage_Core_Model_Resource_Type_Db_Pdo_Mysql extends Mage_Core_Model_Resourc
      */
     protected function _getDbAdapterClassName()
     {
-        return 'Varien_Db_Adapter_Pdo_Mysql';
+        return 'Magento_Db_Adapter_Pdo_Mysql';
     }
 
 }

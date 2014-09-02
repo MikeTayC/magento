@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -126,11 +126,11 @@
                 <block type="enterprise_giftregistry/items" name="giftregistry_items" template="giftregistry/view/items.phtml">
                     <block type="catalog/product_price" template="catalog/product/price_msrp_item.phtml" name="enterprise.giftregistry.item.price" />
 
-                    <action method="addItemRender"><type>default</type><block>checkout/cart_item_renderer</block><template>giftregistry/view/items/default.phtml</template></action>
-                    <action method="addItemRender"><type>simple</type><block>checkout/cart_item_renderer</block><template>giftregistry/view/items/default.phtml</template></action>
+                    <action method="addItemRender"><type>default</type><block>enterprise_giftregistry/items_renderer</block><template>giftregistry/view/items/default.phtml</template></action>
+                    <action method="addItemRender"><type>simple</type><block>enterprise_giftregistry/items_renderer</block><template>giftregistry/view/items/default.phtml</template></action>
                     <action method="addItemRender"><type>grouped</type><block>checkout/cart_item_renderer_grouped</block><template>giftregistry/view/items/default.phtml</template></action>
-                    <action method="addItemRender"><type>configurable</type><block>checkout/cart_item_renderer_configurable</block><template>giftregistry/view/items/default.phtml</template></action>
-                    <action method="addItemRender"><type>bundle</type><block>bundle/checkout_cart_item_renderer</block><template>giftregistry/view/items/default.phtml</template></action>
+                    <action method="addItemRender"><type>configurable</type><block>enterprise_giftregistry/items_renderer_configurable</block><template>giftregistry/view/items/default.phtml</template></action>
+                    <action method="addItemRender"><type>bundle</type><block>enterprise_giftregistry/items_renderer_bundle</block><template>giftregistry/view/items/default.phtml</template></action>
                     <action method="addItemRender"><type>giftcard</type><block>enterprise_giftcard/checkout_cart_item_renderer</block><template>giftregistry/view/items/default.phtml</template></action>
                 </block>
                 <block type="enterprise_giftregistry/customer_items" name="giftregistry.view.items" template="giftregistry/view/items.phtml"/>

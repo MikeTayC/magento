@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -41,8 +41,8 @@
                         $option['title'] = $option['label'];
                     }
                     ?>
-                        <option value="<?php echo $this->htmlEscape($option['value']) ?>" title="<?php echo $this->htmlEscape($option['title']) ?>">
-                            <?php echo $this->htmlEscape($option['label']) ?>
+                        <option value="<?php echo $this->escapeHtml($option['value']) ?>" title="<?php echo $this->escapeHtml($option['title']) ?>">
+                            <?php echo $this->escapeHtml($option['label']) ?>
                         </option>
                     <?php }
                 }

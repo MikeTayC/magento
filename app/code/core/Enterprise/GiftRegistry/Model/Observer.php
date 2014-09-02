@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -240,6 +240,50 @@ class Enterprise_GiftRegistry_Model_Observer
                 $parent->setGiftregistryItemId($giftregistryItemId);
             }
         }
+        return $this;
+    }
+
+    /**
+     * Clean up gift registry items that belongs to the product.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_Cms_Model_Observer
+     */
+    public function deleteProduct(Varien_Event_Observer $observer)
+    {
+        /** @var $product Mage_Catalog_Model_Product */
+        $product = $observer->getEvent()->getProduct();
+
+        if ($product->getParentId()) {
+            $productId = $product->getParentId();
+        } else {
+            $productId = $product->getId();
+        }
+
+        /** @var $grItem Enterprise_GiftRegistry_Model_Item */
+        $grItem = Mage::getModel('Enterprise_GiftRegistry_Model_Item');
+        /** @var $collection Enterprise_GiftRegistry_Model_Resource_Item_Collection */
+        $collection = $grItem->getCollection()->addProductFilter($productId);
+
+        foreach($collection->getItems() as $item) {
+            $item->delete();
+        }
+
+        /** @var $options Enterprise_GiftRegistry_Model_Item_Option*/
+        $options = Mage::getModel('Enterprise_GiftRegistry_Model_Item_Option');
+        $optionCollection = $options->getCollection()->addProductFilter($productId);
+
+        $itemsArray = array();
+        foreach($optionCollection->getItems() as $optionItem) {
+            $itemsArray[$optionItem->getItemId()]  = $optionItem->getItemId();
+        }
+
+        $collection = $grItem->getCollection()->addItemFilter(array_keys($itemsArray));
+
+        foreach($collection->getItems() as $item) {
+            $item->delete();
+        }
+
         return $this;
     }
 }

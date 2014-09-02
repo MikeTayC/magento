@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Cms
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -49,6 +49,7 @@ class Mage_Cms_Block_Page extends Mage_Core_Block_Abstract
             } else {
                 $page = Mage::getSingleton('cms/page');
             }
+            $this->addModelTags($page);
             $this->setData('page', $page);
         }
         return $this->getData('page');

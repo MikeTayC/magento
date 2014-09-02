@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_ImportExport
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -82,6 +82,14 @@
                 </system_enterprise_import_export_log_error_email_template>
             </email>
         </template>
+        <importexport module="importexport">
+            <import_entities>
+                <catalog_product translate="label">
+                    <model_token>enterprise_importexport/import_entity_product</model_token>
+                    <label>Products</label>
+                </catalog_product>
+            </import_entities>
+        </importexport>
     </global>
     <admin>
         <routers>

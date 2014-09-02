@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_SalesArchive
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -111,6 +111,70 @@
                     </enterprise_salesarchive>
                 </observers>
             </sales_order_creditmemo_resource_update_grid_records>
+            <controller_action_postdispatch_adminhtml_sales_order_shipment_massPrintShippingLabel>
+                <observers>
+                    <enterprise_salesarchive>
+                        <class>enterprise_salesarchive/observer</class>
+                        <method>replaceSalesOrderRedirect</method>
+                    </enterprise_salesarchive>
+                </observers>
+            </controller_action_postdispatch_adminhtml_sales_order_shipment_massPrintShippingLabel>
+            <controller_action_postdispatch_adminhtml_sales_order_pdfshipments>
+                <observers>
+                    <enterprise_salesarchive>
+                        <class>enterprise_salesarchive/observer</class>
+                        <method>replaceSalesOrderRedirect</method>
+                    </enterprise_salesarchive>
+                </observers>
+            </controller_action_postdispatch_adminhtml_sales_order_pdfshipments>
+            <controller_action_postdispatch_adminhtml_sales_order_pdfinvoices>
+                <observers>
+                    <enterprise_salesarchive>
+                        <class>enterprise_salesarchive/observer</class>
+                        <method>replaceSalesOrderRedirect</method>
+                    </enterprise_salesarchive>
+                </observers>
+            </controller_action_postdispatch_adminhtml_sales_order_pdfinvoices>
+            <controller_action_postdispatch_adminhtml_sales_order_pdfcreditmemos>
+                <observers>
+                    <enterprise_salesarchive>
+                        <class>enterprise_salesarchive/observer</class>
+                        <method>replaceSalesOrderRedirect</method>
+                    </enterprise_salesarchive>
+                </observers>
+            </controller_action_postdispatch_adminhtml_sales_order_pdfcreditmemos>
+            <controller_action_postdispatch_adminhtml_sales_order_pdfdocs>
+                <observers>
+                    <enterprise_salesarchive>
+                        <class>enterprise_salesarchive/observer</class>
+                        <method>replaceSalesOrderRedirect</method>
+                    </enterprise_salesarchive>
+                </observers>
+            </controller_action_postdispatch_adminhtml_sales_order_pdfdocs>
+            <controller_action_postdispatch_adminhtml_sales_order_massHold>
+                <observers>
+                    <enterprise_salesarchive>
+                        <class>enterprise_salesarchive/observer</class>
+                        <method>replaceSalesOrderRedirect</method>
+                    </enterprise_salesarchive>
+                </observers>
+            </controller_action_postdispatch_adminhtml_sales_order_massHold>
+            <controller_action_postdispatch_adminhtml_sales_order_massUnhold>
+                <observers>
+                    <enterprise_salesarchive>
+                        <class>enterprise_salesarchive/observer</class>
+                        <method>replaceSalesOrderRedirect</method>
+                    </enterprise_salesarchive>
+                </observers>
+            </controller_action_postdispatch_adminhtml_sales_order_massUnhold>
+            <controller_action_postdispatch_adminhtml_sales_order_massCancel>
+                <observers>
+                    <enterprise_salesarchive>
+                        <class>enterprise_salesarchive/observer</class>
+                        <method>replaceSalesOrderRedirect</method>
+                    </enterprise_salesarchive>
+                </observers>
+            </controller_action_postdispatch_adminhtml_sales_order_massCancel>
         </events>
     </global>
     <admin>

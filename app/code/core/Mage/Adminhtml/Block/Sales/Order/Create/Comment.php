@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -45,7 +45,7 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Comment extends Mage_Adminhtml_Blo
 
     public function getCommentNote()
     {
-        return $this->htmlEscape($this->getQuote()->getCustomerNote());
+        return $this->escapeHtml($this->getQuote()->getCustomerNote());
     }
 
     public function getNoteNotify()

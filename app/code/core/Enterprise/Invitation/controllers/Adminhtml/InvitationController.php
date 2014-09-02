@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Invitation
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -153,13 +153,19 @@ class Enterprise_Invitation_Adminhtml_InvitationController extends Mage_Adminhtm
                 }
             }
             if ($sentCount) {
-                $this->_getSession()->addSuccess(Mage::helper('enterprise_invitation')->__('%d invitation(s) were sent.', $sentCount));
+                $this->_getSession()->addSuccess(
+                    Mage::helper('enterprise_invitation')->__('%d invitation(s) were sent.', $sentCount)
+                );
             }
             if ($failedCount) {
-                $this->_getSession()->addError(Mage::helper('enterprise_invitation')->__('Failed to send %1$d of %2$d invitation(s).', $failedCount, count($emails)));
+                $this->_getSession()->addError(
+                    Mage::helper('enterprise_invitation')->__('Failed to send %1$d of %2$d invitation(s).', $failedCount, count($emails))
+                );
             }
             if ($customerExistsCount) {
-                $this->_getSession()->addNotice(Mage::helper('enterprise_invitation')->__('%d invitation(s) were not sent, because customer accounts already exist for specified email addresses.', $customerExistsCount));
+                $this->_getSession()->addNotice(
+                    Mage::helper('enterprise_invitation')->__('%d invitation(s) were not sent, because customer accounts already exist for specified email addresses.', $customerExistsCount)
+                );
             }
             $this->_getSession()->unsInvitationFormData();
             $this->_redirect('*/*/');
@@ -198,7 +204,9 @@ class Enterprise_Invitation_Adminhtml_InvitationController extends Mage_Adminhtm
                 //If there was no validation errors trying to save
                 $invitation->save();
 
-                $this->_getSession()->addSuccess(Mage::helper('enterprise_invitation')->__('The invitation has been saved.'));
+                $this->_getSession()->addSuccess(
+                    Mage::helper('enterprise_invitation')->__('The invitation has been saved.')
+                );
             }
         }
         catch (Mage_Core_Exception $e) {
@@ -244,13 +252,19 @@ class Enterprise_Invitation_Adminhtml_InvitationController extends Mage_Adminhtm
                 }
             }
             if (!$found) {
-                $this->_getSession()->addError(Mage::helper('enterprise_invitation')->__('No invitations have been resent'));
+                $this->_getSession()->addError(
+                    Mage::helper('enterprise_invitation')->__('No invitations have been resent')
+                );
             }
             if ($sent) {
-                $this->_getSession()->addSuccess(Mage::helper('enterprise_invitation')->__('%1$d of %2$d invitations were sent.', $sent, $found));
+                $this->_getSession()->addSuccess(
+                    Mage::helper('enterprise_invitation')->__('%1$d of %2$d invitations were sent.', $sent, $found)
+                );
             }
             if ($failed = ($found - $sent)) {
-                $this->_getSession()->addError(Mage::helper('enterprise_invitation')->__('Failed to send %d invitation(s).', $failed));
+                $this->_getSession()->addError(
+                    Mage::helper('enterprise_invitation')->__('Failed to send %d invitation(s).', $failed)
+                );
             }
             if ($customerExists) {
                 $this->_getSession()->addNotice(
@@ -295,10 +309,14 @@ class Enterprise_Invitation_Adminhtml_InvitationController extends Mage_Adminhtm
                 }
             }
             if ($cancelled) {
-                $this->_getSession()->addSuccess(Mage::helper('enterprise_invitation')->__('%1$d of %2$d invitations were discarded.', $cancelled, $found));
+                $this->_getSession()->addSuccess(
+                    Mage::helper('enterprise_invitation')->__('%1$d of %2$d invitations were discarded.', $cancelled, $found)
+                );
             }
             if ($failed = ($found - $cancelled)) {
-                $this->_getSession()->addNotice(Mage::helper('enterprise_invitation')->__('%d of selected invitation(s) were skipped.', $failed));
+                $this->_getSession()->addNotice(
+                    Mage::helper('enterprise_invitation')->__('%d of selected invitation(s) were skipped.', $failed)
+                );
             }
         }
         catch (Mage_Core_Exception $e) {

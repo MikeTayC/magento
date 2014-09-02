@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -80,23 +80,41 @@ abstract class Enterprise_TargetRule_Model_Resource_Index_Abstract extends Mage_
         return Mage::getResourceSingleton('catalog/product');
     }
 
+    /**
+     * Retrieve Product Table Name
+     *
+     * @return string
+     */
+    public function getProductTable()
+    {
+        if (empty($this->_mainTable)) {
+            Mage::throwException(Mage::helper('core')->__('Empty main table name'));
+        }
+        return $this->getTable($this->_mainTable . '_product');
+    }
+
+    /**
+     * Loads product IDs by Index object and customer segment ID
+     *
+     * @param Enterprise_TargetRule_Model_Index $object
+     * @param int $segmentId
+     * @return array
+     */
     public function loadProductIdsBySegmentId($object, $segmentId)
     {
         $select = $this->_getReadAdapter()->select()
-            ->from($this->getMainTable(), 'product_ids')
-            ->where('entity_id = :entity_id')
-            ->where('store_id = :store_id')
-            ->where('customer_group_id = :customer_group_id')
-            ->where('customer_segment_id = :customer_segment_id');
-        $bind = array(
-            ':entity_id' => $object->getProduct()->getEntityId(),
-            ':store_id' => $object->getStoreId(),
-            ':customer_group_id' => $object->getCustomerGroupId(),
-            ':customer_segment_id' => $segmentId
-        );
-        $value  = $this->_getReadAdapter()->fetchOne($select, $bind);
+            ->from(array('i' => $this->getMainTable()), array())
+            ->joinInner(
+                array('p' => $this->getProductTable()),
+                'i.targetrule_id = p.targetrule_id',
+                'product_id'
+            )
+            ->where('i.entity_id = ?', $object->getProduct()->getEntityId())
+            ->where('i.store_id = ?', $object->getStoreId())
+            ->where('i.customer_group_id = ?', $object->getCustomerGroupId())
+            ->where('i.customer_segment_id = ?', $segmentId);
 
-        return (!empty($value)) ? explode(',', $value) :array();
+        return $this->_getReadAdapter()->fetchCol($select);
     }
 
     /**
@@ -129,24 +147,76 @@ abstract class Enterprise_TargetRule_Model_Resource_Index_Abstract extends Mage_
     }
 
     /**
+     * Clean products off the index
+     *
+     * @param int $targetruleId
+     * @return Enterprise_TargetRule_Model_Resource_Index_Abstract
+     */
+    public function deleteIndexProducts($targetruleId)
+    {
+        $this->_getWriteAdapter()->delete($this->getProductTable(), array('targetrule_id = ?' => $targetruleId));
+
+        return $this;
+    }
+
+    /**
+     * Save product IDs for index
+     *
+     * @param int $targetruleId
+     * @param string|array $productIds
+     * @return Enterprise_TargetRule_Model_Resource_Index_Abstract
+     */
+    public function saveIndexProducts($targetruleId, $productIds)
+    {
+        if (is_string($productIds)) {
+            $productIds = explode(',', $productIds);
+        }
+
+        if (count($productIds) > 0) {
+            $data = array();
+            foreach ($productIds as $productId) {
+                $data[] = array(
+                    'targetrule_id' => $targetruleId,
+                    'product_id'    => $productId,
+                );
+            }
+            $this->_getWriteAdapter()->insertMultiple($this->getProductTable(), $data);
+        }
+
+        return $this;
+    }
+
+    /**
      * Save matched product Ids by customer segments
      *
      * @param Enterprise_TargetRule_Model_Index $object
      * @param int $segmentId
-     * @param string $productIds
+     * @param string|array $productIds
      * @return Enterprise_TargetRule_Model_Resource_Index_Abstract
      */
     public function saveResultForCustomerSegments($object, $segmentId, $productIds)
     {
-        $adapter = $this->_getWriteAdapter();
-        $data    = array(
-            'entity_id' => $object->getProduct()->getEntityId(),
-            'store_id' => $object->getStoreId(),
-            'customer_group_id' => $object->getCustomerGroupId(),
-            'customer_segment_id' => $segmentId,
-            'product_ids' => $productIds,
-        );
-        $adapter->insertOnDuplicate($this->getMainTable(), $data, array('product_ids'));
+        $select = $this->_getReadAdapter()->select()
+            ->from($this->getMainTable(), 'targetrule_id')
+            ->where('entity_id = ?', $object->getProduct()->getEntityId())
+            ->where('store_id = ?', $object->getStoreId())
+            ->where('customer_group_id = ?', $object->getCustomerGroupId())
+            ->where('customer_segment_id = ?', $segmentId);
+        $targetruleId = $this->_getReadAdapter()->fetchOne($select);
+        if (!$targetruleId) {
+            $data = array(
+                'entity_id'           => $object->getProduct()->getEntityId(),
+                'store_id'            => $object->getStoreId(),
+                'customer_group_id'   => $object->getCustomerGroupId(),
+                'customer_segment_id' => $segmentId,
+            );
+            $this->_getWriteAdapter()->insert($this->getMainTable(), $data);
+            $targetruleId = $this->_getWriteAdapter()->lastInsertId();
+        } else {
+            $this->deleteIndexProducts($targetruleId);
+        }
+        $this->saveIndexProducts($targetruleId, $productIds);
+
         return $this;
     }
 
@@ -182,7 +252,7 @@ abstract class Enterprise_TargetRule_Model_Resource_Index_Abstract extends Mage_
     public function removeIndex($entityIds)
     {
         $this->_getWriteAdapter()->delete($this->getMainTable(), array(
-            'entity_id IN(?)'   => $entityIds
+            'entity_id IN (?)' => $entityIds
         ));
 
         return $this;

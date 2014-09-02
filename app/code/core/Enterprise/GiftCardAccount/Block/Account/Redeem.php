@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -45,6 +45,6 @@ class Enterprise_GiftCardAccount_Block_Account_Redeem extends Mage_Core_Block_Te
     {
         $code = $this->getRequest()->getParam('giftcard', '');
 
-        return $this->htmlEscape($code);
+        return $this->escapeHtml($code);
     }
 }

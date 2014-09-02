@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Wishlist
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -65,5 +65,18 @@ class Enterprise_Wishlist_Block_Customer_Sidebar extends Mage_Wishlist_Block_Cus
     protected function _createWishlistItemCollection()
     {
         return $this->_getHelper()->getWishlistItemCollection();
+    }
+
+    /**
+     * Retrieve cache tags
+     *
+     * @return array
+     */
+    public function getCacheTags()
+    {
+        return array_merge(
+            parent::getCacheTags(),
+            $this->getItemsTags($this->getWishlistItems())
+        );
     }
 }

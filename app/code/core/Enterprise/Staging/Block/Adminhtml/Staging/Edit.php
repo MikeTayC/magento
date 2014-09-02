@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -266,7 +266,7 @@ class Enterprise_Staging_Block_Adminhtml_Staging_Edit extends Mage_Adminhtml_Blo
     {
         $header = '';
         if ($this->getStaging()->getId()) {
-            $header = $this->htmlEscape($this->getStaging()->getName());
+            $header = $this->escapeHtml($this->getStaging()->getName());
         } else {
             $header = Mage::helper('enterprise_staging')->__('Create New Staging Website');
         }

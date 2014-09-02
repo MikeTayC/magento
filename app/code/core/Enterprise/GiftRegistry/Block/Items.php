@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -29,7 +29,6 @@
  */
 class Enterprise_GiftRegistry_Block_Items extends Mage_Checkout_Block_Cart
 {
-
     /**
      * Return list of gift registry items
      *
@@ -39,11 +38,13 @@ class Enterprise_GiftRegistry_Block_Items extends Mage_Checkout_Block_Cart
     {
         if (!$this->hasItemCollection()) {
             $collection = Mage::getModel('enterprise_giftregistry/item')->getCollection()
-                ->addRegistryFilter($this->getEntity()->getId());
+                ->addRegistryFilter($this->getEntity()->getId())
+                ->addWebsiteFilter();
 
             $quoteItemsCollection = array();
             $quote = Mage::getModel('sales/quote')->setItemCount(true);
             $emptyQuoteItem = Mage::getModel('sales/quote_item');
+
             foreach ($collection as $item) {
                 $product = $item->getProduct();
                 $remainingQty = $item->getQty() - $item->getQtyFulfilled();
@@ -83,7 +84,7 @@ class Enterprise_GiftRegistry_Block_Items extends Mage_Checkout_Block_Cart
     /**
      * Return current gift registry entity
      *
-     * @return Enterprise_GiftRegistry_Model_Mysql4_Item_Collection
+     * @return Enterprise_GiftRegistry_Model_Entity
      */
     public function getEntity()
     {
@@ -96,7 +97,6 @@ class Enterprise_GiftRegistry_Block_Items extends Mage_Checkout_Block_Cart
     /**
      * Return "add to cart" url
      *
-     * @param Enterprise_GiftRegistry_Model_Item $item
      * @return string
      */
     public function getActionUrl()
@@ -123,5 +123,4 @@ class Enterprise_GiftRegistry_Block_Items extends Mage_Checkout_Block_Cart
     {
         return $this->getUrl('giftregistry');
     }
-
 }

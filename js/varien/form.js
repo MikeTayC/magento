@@ -19,7 +19,7 @@
  *
  * @category    Varien
  * @package     js
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 VarienForm = Class.create();
@@ -251,6 +251,9 @@ RegionUpdater.prototype = {
                     def = this.regionTextEl.value.toLowerCase();
                 }
                 this.regionTextEl.value = '';
+            }
+            if (this.regionSelectEl && this.regionSelectEl.value && !def) {
+                def = this.regionSelectEl.value;
             }
 
             this.regionSelectEl.options.length = 1;

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_GiftMessage
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -204,7 +204,7 @@ class Mage_GiftMessage_Block_Adminhtml_Sales_Order_View_Items extends Mage_Admin
      */
     public function getSender()
     {
-        return $this->htmlEscape($this->getMessage()->getSender());
+        return $this->escapeHtml($this->getMessage()->getSender());
     }
 
     /**
@@ -214,7 +214,7 @@ class Mage_GiftMessage_Block_Adminhtml_Sales_Order_View_Items extends Mage_Admin
      */
     public function getRecipient()
     {
-        return $this->htmlEscape($this->getMessage()->getRecipient());
+        return $this->escapeHtml($this->getMessage()->getRecipient());
     }
 
     /**
@@ -224,6 +224,6 @@ class Mage_GiftMessage_Block_Adminhtml_Sales_Order_View_Items extends Mage_Admin
      */
     public function getMessageText()
     {
-        return $this->htmlEscape($this->getMessage()->getMessage());
+        return $this->escapeHtml($this->getMessage()->getMessage());
     }
 }

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -53,7 +53,7 @@ class Enterprise_GiftWrapping_Block_Adminhtml_Sales_Order_View_Link extends Mage
         if ($this->getItem()->getGwId()) {
             $wrappingModel = Mage::getModel('enterprise_giftwrapping/wrapping')->load($this->getItem()->getGwId());
             if ($wrappingModel->getId()) {
-                return $this->htmlEscape($wrappingModel->getDesign());
+                return $this->escapeHtml($wrappingModel->getDesign());
             }
         }
         return '';

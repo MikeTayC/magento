@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogPermissions
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -159,7 +159,10 @@ class Enterprise_CatalogPermissions_Model_Observer
     /**
      * Apply category view for tree
      *
+     * @deprecated after 1.12.0.2
+     *
      * @param Varien_Event_Observer $observer
+     *
      * @return Enterprise_CatalogPermissions_Model_Observer
      */
     public function applyPriceGrantOnPriceIndex(Varien_Event_Observer $observer)
@@ -180,7 +183,10 @@ class Enterprise_CatalogPermissions_Model_Observer
     /**
      * Applies permissions on product count for categories
      *
+     * @deprecated after 1.12.0.2
+     *
      * @param Varien_Event_Observer $observer
+     *
      * @return Enterprise_CatalogPermissions_Model_Observer
      */
     public function applyCategoryPermissionOnProductCount(Varien_Event_Observer $observer)
@@ -226,6 +232,25 @@ class Enterprise_CatalogPermissions_Model_Observer
             Mage::throwException(
                 Mage::helper('enterprise_catalogpermissions')->__('You have no permissions to access this category')
             );
+        }
+        return $this;
+    }
+
+    /**
+     * Set collection limitation condition
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_CatalogPermissions_Model_Observer
+     */
+    public function setCollectionLimitationCondition(Varien_Event_Observer $observer)
+    {
+        if (!$this->_helper->isEnabled()) {
+            return $this;
+        }
+
+        $collection = $observer->getEvent()->getCollection();
+        if (is_null($observer->getEvent()->getCategoryId())) {
+            $this->_getIndexModel()->setCollectionLimitationCondition($collection);
         }
         return $this;
     }

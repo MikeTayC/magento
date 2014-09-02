@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PromotionPermissions
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -138,7 +138,7 @@ class Enterprise_PromotionPermissions_Model_Observer
                 if (!$this->_canEditCatalogRules) {
                     $block->removeButton('delete');
                     $block->removeButton('save');
-                    $block->removeButton('save_and_continue');
+                    $block->removeButton('save_and_continue_edit');
                     $block->removeButton('save_apply');
                     $block->removeButton('reset');
                 }

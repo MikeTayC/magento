@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -211,7 +211,7 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Abstract
     protected function _matchCustomers()
     {
         $threshold   = Mage::helper('enterprise_reminder')->getSendFailureThreshold();
-        $currentDate = Mage::getModel('core/date')->date('Y-m-d');
+        $currentDate = Mage::getSingleton('core/date')->date('Y-m-d');
         $rules       = $this->getCollection()->addDateFilter($currentDate)->addIsActiveFilter(1);
 
         if ($this->getRuleId()) {
@@ -231,7 +231,7 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Abstract
             }
 
             foreach ($websiteIds as $websiteId) {
-                $this->_getResource()->saveMatchedCustomers($rule, $salesRule, $websiteId, $threshold);
+                $this->_getResource()->saveMatchedCustomers(clone $rule, $salesRule, $websiteId, $threshold);
             }
         }
         return $this;

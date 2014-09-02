@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -320,8 +320,9 @@ class Enterprise_Pbridge_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function prepareCart($order)
     {
+        /** @var $paypalCart Mage_Paypal_Model_Cart */
         $paypalCart = Mage::getModel('paypal/cart', array($order))->isDiscountAsItem(true);
-        return array($paypalCart->getItems(true), $paypalCart->getTotals());
+        return array($paypalCart->getItems(true), $paypalCart->getTotals(), $paypalCart->areItemsValid());
     }
 
     /**

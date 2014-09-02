@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -30,7 +30,7 @@
 <?php if ($this->getCurrentWishlist()): ?>
 <div class="wishlist-management">
     <div class="sub-title">
-        <h2><?php echo $this->escapeHtml($this->getCurrentWishlist()->getName());?><a href="#" onclick="Enterprise.Wishlist.edit('<?php echo $this->getEditUrl($this->getCurrentWishlist()->getId());?>', '<?php echo $this->helper('core')->jsQuoteEscape($this->escapeHtml($this->getCurrentWishlist()->getName()));?>', <?php echo $this->getCurrentWishlist()->getVisibility() ? 'true' : 'false';?>)" title="<?php echo $this->__('Edit Wishlist')?>" class="link-edit wishlist-edit"><?php echo $this->__('Edit')?></a><span class="item-count">(<?php echo $this->getItemCount($this->getCurrentWishlist());?>)</span></h2>
+        <h2><?php echo $this->escapeHtml($this->getCurrentWishlist()->getName());?><a href="#" onclick="Enterprise.Wishlist.edit('<?php echo $this->getEditUrl($this->getCurrentWishlist()->getId());?>', '<?php echo $this->helper('core')->quoteEscape($this->getCurrentWishlist()->getName(), true);?>', <?php echo $this->getCurrentWishlist()->getVisibility() ? 'true' : 'false';?>)" title="<?php echo $this->__('Edit Wishlist')?>" class="link-edit wishlist-edit"><?php echo $this->__('Edit')?></a><span class="item-count">(<?php echo $this->getItemCount($this->getCurrentWishlist());?>)</span></h2>
     </div>
     <?php if ($this->canCreateWishlists($this->getWishlists())): ?>
         <button type="button" id="wishlist-create-button" onclick="Enterprise.Wishlist.create('<?php echo $this->getCreateUrl();?>')" title="<?php echo $this->__('Create New Wishlist') ?>" class="button btn-create"><span><span><?php echo $this->__('Create New Wishlist') ?></span></span></button>

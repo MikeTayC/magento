@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -273,9 +273,9 @@ abstract class Enterprise_TargetRule_Block_Catalog_Product_List_Abstract
             $collection->addFieldToFilter('entity_id', array('in' => $productIds));
             $this->_addProductAttributesAndPrices($collection);
 
+            $collection->setFlag('is_link_collection', true);
             Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($collection);
             $collection->setPageSize($limit)->setFlag('do_not_use_category_id', true);
-
             foreach ($collection as $item) {
                 $items[$item->getEntityId()] = $item;
             }
@@ -328,5 +328,15 @@ abstract class Enterprise_TargetRule_Block_Catalog_Product_List_Abstract
         }
 
         return $this->_allProductIds;
+    }
+
+    /**
+     * Retrieve block cache tags
+     *
+     * @return array
+     */
+    public function getCacheTags()
+    {
+        return array_merge(parent::getCacheTags(), $this->getItemsTags($this->getItemCollection()));
     }
 }

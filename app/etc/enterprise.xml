@@ -30,8 +30,12 @@
             <request_processors>
                 <ee>Enterprise_PageCache_Model_Processor</ee>
             </request_processors>
+            <frontend_options>
+                <slab_size>1040000</slab_size>
+            </frontend_options>
         </cache>
         <full_page_cache>
+            <backend>Mage_Cache_Backend_File</backend>
             <backend_options>
                 <cache_dir>full_page_cache</cache_dir>
             </backend_options>

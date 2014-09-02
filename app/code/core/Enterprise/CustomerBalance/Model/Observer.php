@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -116,7 +116,9 @@ class Enterprise_CustomerBalance_Model_Observer
                     ->setUpdateSection('payment-method')
                     ->setGotoSection('payment');
 
-                Mage::throwException(Mage::helper('enterprise_customerbalance')->__('Not enough Store Credit Amount to complete this Order.'));
+                Mage::throwException(
+                    Mage::helper('enterprise_customerbalance')->__('Not enough Store Credit Amount to complete this Order.')
+                );
             }
         }
 
@@ -404,7 +406,9 @@ class Enterprise_CustomerBalance_Model_Observer
             $creditmemo->getCustomerBalanceReturnMax();
 
         if ((float)(string)$creditmemo->getCustomerBalanceTotalRefunded() > (float)(string)$customerBalanceReturnMax) {
-            Mage::throwException(Mage::helper('enterprise_customerbalance')->__('Store credit amount cannot exceed order amount.'));
+            Mage::throwException(
+                Mage::helper('enterprise_customerbalance')->__('Store credit amount cannot exceed order amount.')
+            );
         }
         //doing actual refund to customer balance if user have submitted refund form
         if ($creditmemo->getCustomerBalanceRefundFlag() && $creditmemo->getBsCustomerBalTotalRefunded()) {
@@ -611,5 +615,32 @@ class Enterprise_CustomerBalance_Model_Observer
                 );
             }
         }
+    }
+
+    /**
+     * Extend sales amount expression with customer balance refunded value
+     *
+     * @param Varien_Event_Observer $observer
+     * @return void
+     */
+    public function extendSalesAmountExpression(Varien_Event_Observer $observer)
+    {
+        /** @var $expressionTransferObject Varien_Object */
+        $expressionTransferObject = $observer->getEvent()->getExpressionObject();
+        /** @var $adapter Varien_Db_Adapter_Interface */
+        $adapter = $observer->getEvent()->getCollection()->getConnection();
+        $expressionTransferObject->setExpression($expressionTransferObject->getExpression() . ' + (%s)');
+        $arguments = $expressionTransferObject->getArguments();
+        $arguments[] = $adapter->getCheckSql(
+            $adapter->prepareSqlCondition('main_table.bs_customer_bal_total_refunded', array('null' => null)),
+            0,
+            sprintf(
+                'main_table.bs_customer_bal_total_refunded - %s - %s',
+                $adapter->getIfNullSql('main_table.base_tax_refunded', 0),
+                $adapter->getIfNullSql('main_table.base_shipping_refunded', 0)
+            )
+        );
+
+        $expressionTransferObject->setArguments($arguments);
     }
 }

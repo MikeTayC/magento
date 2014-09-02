@@ -36,6 +36,7 @@
 ?>
 <!--<h2 class="subtitle"><?php echo $this->__('Gift Registry Items') ?></h2>-->
 <form action="<?php echo $this->getActionUrl() ?>" method="post">
+    <?php echo $this->getBlockHtml('formkey') ?>
     <fieldset>
         <ul class="list">
             <?php foreach($this->getItems() as $_item): ?>

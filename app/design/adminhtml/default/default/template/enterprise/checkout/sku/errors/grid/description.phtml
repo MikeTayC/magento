@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -39,7 +39,7 @@
     </div>
 
     <?php if ($_item->getQtyMaxAllowed()): ?>
-        <?php echo $this->__('Only <span id="' . $_sku . '_max_allowed">%s</span> in stock', $_item->getQtyMaxAllowed()) ?>
+        <?php echo $this->__('Only <span id="%s_max_allowed">%s</span> in stock', $_sku, $_item->getQtyMaxAllowed()) ?>
     <?php endif ?>
     <input type="hidden" name="sku" value="<?php echo $_sku ?>"/>
     <input type="checkbox" name="<?php echo $this->getSourceId() ?>" value="<?php echo $_sku ?>" checked="checked" style="display:none"/>

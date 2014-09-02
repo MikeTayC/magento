@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -33,6 +33,7 @@
 <div class="failed-products">
     <h2 class="sub-title"><?php echo $this->__('Products Requiring Attention') ?></h2>
     <form action="<?php echo $this->getFormActionUrl() ?>" method="post">
+        <?php echo $this->getBlockHtml('formkey') ?>
         <fieldset>
             <table id="failed-products-table" class="data-table cart-table">
                 <col width="1" />

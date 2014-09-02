@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogPermissions
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -138,7 +138,9 @@ class Enterprise_CatalogPermissions_Block_Adminhtml_Catalog_Category_Tab_Permiss
             $index  = Mage::getModel('enterprise_catalogpermissions/permission_index')
                 ->getIndexForCategory($categoryId, null, null);
             foreach ($index as $row) {
-                $permissionKey = $row['website_id'] . '_' . $row['customer_group_id'];
+                $permissionKey = (isset($row['website_id']) ? $row['website_id'] : 'default')
+                    . '_'
+                    . (isset($row['customer_group_id']) ? $row['customer_group_id'] : 'default');
                 $permissions[$permissionKey] = array(
                     'category'  => $row['grant_catalog_category_view'],
                     'product'   => $row['grant_catalog_product_price'],
@@ -169,11 +171,20 @@ class Enterprise_CatalogPermissions_Block_Adminhtml_Catalog_Category_Tab_Permiss
 
                 $permissionKey = $websiteId . '_' . $groupId;
                 if (!isset($permissions[$permissionKey])) {
-                    $permissions[$permissionKey] = array(
-                        'category'  => $category ? $allow : $deny,
-                        'product'   => $product ? $allow : $deny,
-                        'checkout'  => $checkout ? $allow : $deny
-                    );
+
+                    if (isset($permissions[$websiteId . '_default'])) {
+                        $permissions[$permissionKey] = $permissions[$websiteId . '_default'];
+                    } elseif(isset($permissions['default_' . $groupId])) {
+                        $permissions[$permissionKey] = $permissions['default_' . $groupId];
+                    } elseif(isset($permissions['default_default'])) {
+                        $permissions[$permissionKey] = $permissions['default_default'];
+                    } else {
+                        $permissions[$permissionKey] = array(
+                            'category'  => $category ? $allow : $deny,
+                            'product'   => $product ? $allow : $deny,
+                            'checkout'  => $checkout ? $allow : $deny
+                        );
+                    }
                 } else {
                     // validate and rewrite parent values for exists data
                     $data = $permissions[$permissionKey];

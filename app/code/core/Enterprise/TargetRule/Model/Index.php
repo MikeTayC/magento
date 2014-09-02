@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -28,7 +28,6 @@
 /**
  * TargetRule Product Index by Rule Product List Type Model
  *
- * @method Enterprise_TargetRule_Model_Resource_Index _getResource()
  * @method Enterprise_TargetRule_Model_Resource_Index getResource()
  * @method Enterprise_TargetRule_Model_Index setEntityId(int $value)
  * @method int getTypeId()
@@ -406,8 +405,9 @@ class Enterprise_TargetRule_Model_Index extends Mage_Index_Model_Indexer_Abstrac
         // remove old matched product index
         $indexResource->removeProductIndex($product->getId());
 
-        $ruleCollection = Mage::getResourceModel('enterprise_targetrule/rule_collection')
-            ->addProductFilter($product->getId());
+        /** @var $ruleCollection Enterprise_TargetRule_Model_Resource_Rule_Collection */
+        $ruleCollection = Mage::getResourceModel('enterprise_targetrule/rule_collection');
+        $ruleCollection->removeProductFromRules($product->getId());
 
         foreach ($ruleCollection as $rule) {
             /** @var $rule Enterprise_TargetRule_Model_Rule */

@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -33,6 +33,7 @@
             <depends>
                 <Mage_Adminhtml/>
                 <Mage_GiftMessage/>
+                <Mage_Tax/>
             </depends>
         </Enterprise_GiftWrapping>
     </modules>

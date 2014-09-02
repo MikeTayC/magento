@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -124,14 +124,8 @@ selectOptionType = {
 Validation.addAllThese([
     ['required-option-select-rows', <?php echo $coreHelper->jsonEncode($this->__('Please add rows to option.')); ?>, function(v, elm) {
         var optionContainerElm = elm.up(1);
-        var resultFlag = false;
-        $$('#'+optionContainerElm.id+' .select-option-code').each(function(elm){
-            // check is element visible
-            if (elm.offsetWidth) {
-                resultFlag = true;
-            }
-        });
-        return resultFlag;
-}]]);
+        return !!$(optionContainerElm).select('tr:not(.no-display) .select-option-code').length;
+    }]
+]);
 //]]>
 </script>

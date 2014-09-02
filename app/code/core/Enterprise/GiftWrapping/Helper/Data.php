@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -33,35 +33,56 @@
  */
 class Enterprise_GiftWrapping_Helper_Data extends Mage_Core_Helper_Abstract
 {
-    /**
+    /**#@+
      * Gift wrapping allow section in configuration
      */
     const XML_PATH_ALLOWED_FOR_ITEMS = 'sales/gift_options/wrapping_allow_items';
     const XML_PATH_ALLOWED_FOR_ORDER = 'sales/gift_options/wrapping_allow_order';
+    /**#@-*/
 
     /**
      * Gift wrapping tax class
      */
     const XML_PATH_TAX_CLASS = 'tax/classes/wrapping_tax_class';
 
-    /**
+    /**#@+
      * Shopping cart display settings
      */
     const XML_PATH_PRICE_DISPLAY_CART_WRAPPING        = 'tax/cart_display/gift_wrapping';
     const XML_PATH_PRICE_DISPLAY_CART_PRINTED_CARD    = 'tax/cart_display/printed_card';
+    /**#@-*/
 
-    /**
+    /**#@+
      * Sales display settings
      */
     const XML_PATH_PRICE_DISPLAY_SALES_WRAPPING        = 'tax/sales_display/gift_wrapping';
     const XML_PATH_PRICE_DISPLAY_SALES_PRINTED_CARD    = 'tax/sales_display/printed_card';
+    /**#@-*/
 
-    /**
+    /**#@+
      * Gift receipt and printed card settings
      */
     const XML_PATH_ALLOW_GIFT_RECEIPT = 'sales/gift_options/allow_gift_receipt';
     const XML_PATH_ALLOW_PRINTED_CARD = 'sales/gift_options/allow_printed_card';
     const XML_PATH_PRINTED_CARD_PRICE = 'sales/gift_options/printed_card_price';
+    /**#@-*/
+
+    /**
+     * Factory instance
+     *
+     * @var Mage_Core_Model_Factory
+     */
+    protected $_factory;
+
+    /**
+     * Initialize helper instance
+     *
+     * @param array $args
+     */
+    public function __construct(array $args = array())
+    {
+        $this->_factory = !empty($args['factory']) ? $args['factory'] : Mage::getSingleton('core/factory');
+    }
 
     /**
      * Check availablity of gift wrapping for product
@@ -408,7 +429,7 @@ class Enterprise_GiftWrapping_Helper_Data extends Mage_Core_Helper_Abstract
         $total = array(
             'code'      => $code,
             'value'     => $value,
-            'base_value'=> $baseValue,
+            'base_value' => $baseValue,
             'label'     => $label
         );
         $totals[] = $total;
@@ -447,5 +468,26 @@ class Enterprise_GiftWrapping_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
         return $store->roundPrice($price);
+    }
+
+    /**
+     * Check if tax calculation type and price display settings are compatible
+     *
+     * invalid settings if
+     *      Tax Calculation Method Based On 'Total' or 'Row'
+     *      and at least one Display Settings has 'Including and Excluding Tax' value
+     *
+     * @param mixed $store
+     * @return bool
+     */
+    public function checkDisplaySettings($store)
+    {
+        if ($this->_factory->getHelper('tax')->getCalculationAgorithm($store)
+            == Mage_Tax_Model_Calculation::CALC_UNIT_BASE
+        ) {
+            return true;
+        }
+        return !$this->displayCartWrappingBothPrices($store) && !$this->displayCartCardBothPrices($store)
+                && !$this->displaySalesWrappingBothPrices($store) && !$this->displaySalesCardBothPrices($store);
     }
 }

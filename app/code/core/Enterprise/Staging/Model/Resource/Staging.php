@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -345,7 +345,9 @@ class Enterprise_Staging_Model_Resource_Staging extends Mage_Core_Model_Resource
                 return $resourceAdapter;
             }
         }
-        throw new Enterprise_Staging_Exception(Mage::helper('enterprise_staging')->__('Wrong item resource adapter model.'));
+        throw new Enterprise_Staging_Exception(
+            Mage::helper('enterprise_staging')->__('Wrong item resource adapter model.')
+        );
     }
 
     /**

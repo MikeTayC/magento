@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -103,6 +103,28 @@ class Enterprise_GiftRegistry_Model_Resource_Item_Option_Collection
             $this->addFieldToFilter('item_id', $item->getId());
         } else {
             $this->addFieldToFilter('item_id', $item);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Apply product(s) filter to collection
+     *
+     * @param  int|Mage_Catalog_Model_Product|array $product
+     * @return Enterprise_GiftRegistry_Model_Resource_Item_Option_Collection
+     */
+    public function addProductFilter($product)
+    {
+        if (is_array($product)) {
+            $this->addFieldToFilter('product_id', array('in' => $product));
+        } else if ($product instanceof Mage_Catalog_Model_Product) {
+            $this->addFieldToFilter('product_id', $product->getId());
+        } elseif ((int)$product > 0) {
+            $this->addFieldToFilter('product_id', (int)$product);
+        } else {
+            $this->_totalRecords = 0;
+            $this->_setIsLoaded(true);
         }
 
         return $this;

@@ -20,12 +20,17 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 class Enterprise_GiftCardAccount_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    /**
+     * Maximal gift card code length according to database table definitions (longer codes are truncated)
+     */
+    const GIFT_CARD_CODE_MAX_LENGTH = 255;
+
     /**
      * Unserialize and return gift card list from specified object
      *

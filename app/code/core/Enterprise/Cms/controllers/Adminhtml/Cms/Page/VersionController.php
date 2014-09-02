@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -139,7 +139,9 @@ class Enterprise_Cms_Adminhtml_Cms_Page_VersionController extends Enterprise_Cms
                 $version->save();
 
                 // display success message
-                Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('enterprise_cms')->__('The version has been saved.'));
+                Mage::getSingleton('adminhtml/session')->addSuccess(
+                    Mage::helper('enterprise_cms')->__('The version has been saved.')
+                );
                 // clear previously saved data from session
                 Mage::getSingleton('adminhtml/session')->setFormData(false);
                 // check if 'Save and Continue'
@@ -219,7 +221,9 @@ class Enterprise_Cms_Adminhtml_Cms_Page_VersionController extends Enterprise_Cms
                 $this->_getSession()->addError($e->getMessage());
             } catch (Exception $e) {
                 Mage::logException($e);
-                $this->_getSession()->addError(Mage::helper('enterprise_cms')->__('An error occurred while deleting revisions.'));
+                $this->_getSession()->addError(
+                    Mage::helper('enterprise_cms')->__('An error occurred while deleting revisions.')
+                );
             }
         }
         $this->_redirect('*/*/edit', array('_current' => true, 'tab' => 'revisions'));
@@ -242,7 +246,9 @@ class Enterprise_Cms_Adminhtml_Cms_Page_VersionController extends Enterprise_Cms
             try {
                 $version->delete();
                 // display success message
-                Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('enterprise_cms')->__('The version has been deleted.'));
+                Mage::getSingleton('adminhtml/session')->addSuccess(
+                    Mage::helper('enterprise_cms')->__('The version has been deleted.')
+                );
                 $this->_redirect('*/cms_page/edit', array('page_id' => $version->getPageId()));
                 return;
             } catch (Mage_Core_Exception $e) {
@@ -251,7 +257,9 @@ class Enterprise_Cms_Adminhtml_Cms_Page_VersionController extends Enterprise_Cms
                 $error = true;
             } catch (Exception $e) {
                 Mage::logException($e);
-                Mage::getSingleton('adminhtml/session')->addError(Mage::helper('enterprise_cms')->__('An error occurred while deleting the version.'));
+                Mage::getSingleton('adminhtml/session')->addError(
+                    Mage::helper('enterprise_cms')->__('An error occurred while deleting the version.')
+                );
                 $error = true;
             }
 
@@ -262,7 +270,9 @@ class Enterprise_Cms_Adminhtml_Cms_Page_VersionController extends Enterprise_Cms
             }
         }
         // display error message
-        Mage::getSingleton('adminhtml/session')->addError(Mage::helper('enterprise_cms')->__('Unable to find a version to delete.'));
+        Mage::getSingleton('adminhtml/session')->addError(
+            Mage::helper('enterprise_cms')->__('Unable to find a version to delete.')
+        );
         // go to grid
         $this->_redirect('*/cms_page/edit', array('_current' => true));
         return $this;
@@ -297,7 +307,9 @@ class Enterprise_Cms_Adminhtml_Cms_Page_VersionController extends Enterprise_Cms
             try {
                 $version->save();
                 // display success message
-                Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('enterprise_cms')->__('The new version has been created.'));
+                Mage::getSingleton('adminhtml/session')->addSuccess(
+                    Mage::helper('enterprise_cms')->__('The new version has been created.')
+                );
                 // clear previously saved data from session
                 Mage::getSingleton('adminhtml/session')->setFormData(false);
                 if (isset($data['revision_id'])) {

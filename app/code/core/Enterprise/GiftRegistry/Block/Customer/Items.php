@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -116,6 +116,16 @@ class Enterprise_GiftRegistry_Block_Customer_Items extends Mage_Catalog_Block_Pr
     public function getBackUrl()
     {
         return $this->getUrl('giftregistry');
+    }
+
+    /**
+     * Return back url to search result page
+     *
+     * @return string
+     */
+    public function getSearchBackUrl()
+    {
+        return $this->getUrl('*/search/results');
     }
 
     /**

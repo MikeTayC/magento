@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Api2
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -60,10 +60,7 @@ class Mage_Api2_Block_Adminhtml_Roles_Tab_Info extends Mage_Adminhtml_Block_Widg
             /** @var $helper Mage_Core_Helper_Data */
             $helper = Mage::helper('core');
 
-            $data['note'] = Mage::helper('api2')->__(
-                '%s role is protected.',
-                $helper->escapeHtml($this->getRole()->getRoleName())
-            );
+            $data['note'] = Mage::helper('api2')->__('%s role is protected.', $helper->escapeHtml($this->getRole()->getRoleName()));
             $data['readonly'] = 'readonly';
         }
         $fieldset->addField('role_name', 'text', $data);

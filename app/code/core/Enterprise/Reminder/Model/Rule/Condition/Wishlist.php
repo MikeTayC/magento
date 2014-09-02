@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -119,7 +119,9 @@ class Enterprise_Reminder_Model_Rule_Condition_Wishlist
     {
         $conditionValue = (int)$this->getValue();
         if ($conditionValue < 1) {
-            Mage::throwException(Mage::helper('enterprise_reminder')->__('Root wishlist condition should have days value at least 1.'));
+            Mage::throwException(
+                Mage::helper('enterprise_reminder')->__('Root wishlist condition should have days value at least 1.')
+            );
         }
 
         $wishlistTable = $this->getResource()->getTable('wishlist/wishlist');

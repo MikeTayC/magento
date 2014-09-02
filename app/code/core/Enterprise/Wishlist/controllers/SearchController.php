@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Wishlist
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -179,6 +179,9 @@ class Enterprise_Wishlist_SearchController extends Mage_Core_Controller_Front_Ac
      */
     public function addtocartAction()
     {
+        if (!$this->_validateFormKey()) {
+            return $this->_redirect('*/*');
+        }
         $messages   = array();
         $addedItems = array();
         $notSalable = array();

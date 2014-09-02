@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -91,11 +91,11 @@
 <div class="event-bottom"></div>
 </div>
 <div class="category-info">
-    <a class="category-show" href="<?php echo $this->getCategoryUrl($_category); ?>" title="<?php echo $this->htmlEscape($_category->getName()) ?>">
+    <a class="category-show" href="<?php echo $this->getCategoryUrl($_category); ?>" title="<?php echo $this->escapeHtml($_category->getName()) ?>">
     <?php if ($this->getEventImageUrl($_event)): ?>
-    <img src="<?php echo $this->getEventImageUrl($_event); ?>" title="<?php echo $this->htmlEscape($_category->getName()) ?>" alt="<?php echo $this->htmlEscape($_category->getName()) ?>" />
+    <img src="<?php echo $this->getEventImageUrl($_event); ?>" title="<?php echo $this->escapeHtml($_category->getName()) ?>" alt="<?php echo $this->escapeHtml($_category->getName()) ?>" />
     <?php else: ?>
-    <span class="category-name"><?php echo $this->htmlEscape($_category->getName()) ?></span>
+    <span class="category-name"><?php echo $this->escapeHtml($_category->getName()) ?></span>
     <?php endif; ?>
     </a>
 </div>

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -216,6 +216,6 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Form_Address
      */
     public function getAddressAsString($address)
     {
-        return $this->htmlEscape($address->format('oneline'));
+        return $this->escapeHtml($address->format('oneline'));
     }
 }

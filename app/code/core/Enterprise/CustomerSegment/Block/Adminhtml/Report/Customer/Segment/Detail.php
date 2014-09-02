@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -42,9 +42,10 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Detail
     {
         $this->_blockGroup = 'enterprise_customersegment';
         $this->_controller = 'adminhtml_report_customer_segment_detail';
-        $this->_headerText = (!$this->htmlEscape($this->getCustomerSegment()->getName()))
-            ? Mage::helper('enterprise_customersegment')->__('Customer Segments Report')
-            : Mage::helper('enterprise_customersegment')->__('Customer Segment Report \'%s\'',$this->htmlEscape($this->getCustomerSegment()->getName()));
+        $name = $this->getCustomerSegment() ? $this->getCustomerSegment()->getName() : false;
+        $this->_headerText = $name
+            ? $this->__('Customer Segment Report \'%s\'', $this->escapeHtml($name))
+            : $this->__('Customer Segments Report');
 
         parent::__construct();
         $this->_removeButton('add');

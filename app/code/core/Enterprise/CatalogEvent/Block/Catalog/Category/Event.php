@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogEvent
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -77,5 +77,15 @@ class Enterprise_CatalogEvent_Block_Catalog_Category_Event extends Enterprise_Ca
         return Mage::helper('enterprise_catalogevent')->isEnabled() &&
                $this->getEvent() &&
                $this->getEvent()->canDisplayCategoryPage();
+    }
+
+    /**
+     * Retrieve block cache tags based on category
+     *
+     * @return array
+     */
+    public function getCacheTags()
+    {
+        return array_merge(parent::getCacheTags(), $this->getCategory()->getCacheIdTags());
     }
 }

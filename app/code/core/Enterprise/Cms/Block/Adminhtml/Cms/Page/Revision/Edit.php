@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -96,7 +96,11 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Page_Revision_Edit extends Mage_Adminht
         if ($config->canCurrentUserSaveRevision()) {
             $this->_updateButton('save', 'label', Mage::helper('enterprise_cms')->__('Save'));
             $this->_updateButton('save', 'onclick', 'editForm.submit(\'' . $this->getSaveUrl() . '\');');
-            $this->_updateButton('saveandcontinue', 'onclick', 'editForm.submit(\'' . $this->getSaveUrl() . '\'+\'back/edit/\');');
+            $this->_updateButton(
+                'saveandcontinue',
+                'onclick',
+                'editForm.submit(\'' . $this->getSaveUrl() . '\'+\'back/edit/\');'
+            );
 
             // Adding button to create new version
             $this->_addButton('new_version', array(
@@ -138,10 +142,10 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Page_Revision_Edit extends Mage_Adminht
     public function getHeaderText()
     {
         $revisionNumber = Mage::registry('cms_page')->getRevisionNumber();
-        $title = $this->htmlEscape(Mage::registry('cms_page')->getTitle());
+        $title = $this->escapeHtml(Mage::registry('cms_page')->getTitle());
 
         if ($revisionNumber) {
-            return Mage::helper('enterprise_cms')->__("Edit Page '%s' Revision #%s", $title, $this->htmlEscape($revisionNumber));
+            return Mage::helper('enterprise_cms')->__("Edit Page '%s' Revision #%s", $title, $this->escapeHtml($revisionNumber));
         } else {
             return Mage::helper('enterprise_cms')->__("Edit Page '%s' New Revision", $title);
         }

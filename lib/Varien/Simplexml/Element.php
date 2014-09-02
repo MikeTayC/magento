@@ -20,7 +20,7 @@
  *
  * @category    Varien
  * @package     Varien_Simplexml
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -327,7 +327,11 @@ class Varien_Simplexml_Element extends SimpleXMLElement
         }
         $value = (string)$value;
 
-        $value = str_replace(array('&', '"', "'", '<', '>'), array('&amp;', '&quot;', '&apos;', '&lt;', '&gt;'), $value);
+        $value = str_replace(
+            array('&', '"', "'", '<', '>'),
+            array('&amp;', '&quot;', '&apos;', '&lt;', '&gt;'),
+            $value
+        );
 
         return $value;
     }
@@ -412,7 +416,7 @@ class Varien_Simplexml_Element extends SimpleXMLElement
             // handle string node
             if (isset($this->$sourceName)) {
                 // if target already has children return without regard
-                if ($this->$sourceName->children()) {
+                if ($this->$sourceName->hasChildren()) {
                     return $this;
                 }
                 if ($overwrite) {

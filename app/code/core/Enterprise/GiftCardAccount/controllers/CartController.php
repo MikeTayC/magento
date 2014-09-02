@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -45,11 +45,14 @@ class Enterprise_GiftCardAccount_CartController extends Mage_Core_Controller_Fro
         if (isset($data['giftcard_code'])) {
             $code = $data['giftcard_code'];
             try {
+                if (strlen($code) > Enterprise_GiftCardAccount_Helper_Data::GIFT_CARD_CODE_MAX_LENGTH) {
+                    Mage::throwException(Mage::helper('enterprise_giftcardaccount')->__('Wrong gift card code.'));
+                }
                 Mage::getModel('enterprise_giftcardaccount/giftcardaccount')
                     ->loadByCode($code)
                     ->addToCart();
                 Mage::getSingleton('checkout/session')->addSuccess(
-                    $this->__('Gift Card "%s" was added.', Mage::helper('core')->htmlEscape($code))
+                    $this->__('Gift Card "%s" was added.', Mage::helper('core')->escapeHtml($code))
                 );
             } catch (Mage_Core_Exception $e) {
                 Mage::dispatchEvent('enterprise_giftcardaccount_add', array('status' => 'fail', 'code' => $code));
@@ -71,7 +74,7 @@ class Enterprise_GiftCardAccount_CartController extends Mage_Core_Controller_Fro
                     ->loadByCode($code)
                     ->removeFromCart();
                 Mage::getSingleton('checkout/session')->addSuccess(
-                    $this->__('Gift Card "%s" was removed.', Mage::helper('core')->htmlEscape($code))
+                    $this->__('Gift Card "%s" was removed.', Mage::helper('core')->escapeHtml($code))
                 );
             } catch (Mage_Core_Exception $e) {
                 Mage::getSingleton('checkout/session')->addError(

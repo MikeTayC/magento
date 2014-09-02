@@ -1,7 +1,4 @@
 "%s order(s) have been archived.","%s order(s) have been archived."
-"%s order(s) have been canceled.","%s order(s) have been canceled."
-"%s order(s) have been put on hold.","%s order(s) have been put on hold."
-"%s order(s) have been released from holding status.","%s order(s) have been released from holding status."
 "%s order(s) have been removed from archive.","%s order(s) have been removed from archive."
 "Add","Add"
 "Archive","Archive"

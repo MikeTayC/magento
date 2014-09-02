@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -42,7 +42,7 @@ class Mage_Adminhtml_Block_Urlrewrite_Link extends Mage_Core_Block_Abstract
     {
         if ($this->getItem()) {
             return '<p>' . $this->getLabel() . ' <a href="' . $this->getItemUrl() . '">'
-                . $this->htmlEscape($this->getItem()->getName()) . '</a></p>';
+                . $this->escapeHtml($this->getItem()->getName()) . '</a></p>';
         }
     }
 }

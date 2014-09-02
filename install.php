@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -121,7 +121,7 @@
 if (version_compare(phpversion(), '5.2.0', '<')===true) {
     die('ERROR: Whoops, it looks like you have an invalid PHP version. Magento supports PHP 5.2.0 or newer.');
 }
-
+set_include_path(dirname(__FILE__) . PATH_SEPARATOR . get_include_path());
 require 'app/Mage.php';
 
 try {

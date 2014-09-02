@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Banner
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -77,8 +77,16 @@ class Enterprise_Banner_Model_Banner extends Mage_Core_Model_Abstract
     protected $_contents = array();
 
     /**
+     * Initialize cache tag
+     */
+    public function __construct()
+    {
+        $this->_cacheTag = 'banner';
+        parent::__construct();
+    }
+
+    /**
      * Initialize banner model
-     *
      */
     protected function _construct()
     {
@@ -124,8 +132,8 @@ class Enterprise_Banner_Model_Banner extends Mage_Core_Model_Abstract
     /**
      * Get banner content for specific store
      *
-     * @param   store $store
-     * @return  string | false
+     * @param   Mage_Core_Model_Store|int|string $store
+     * @return  string|bool
      */
     public function getStoreContent($store = null)
     {
@@ -196,7 +204,11 @@ class Enterprise_Banner_Model_Banner extends Mage_Core_Model_Abstract
     protected function _afterSave()
     {
         if ($this->hasStoreContents()) {
-            $this->_getResource()->saveStoreContents($this->getId(), $this->getStoreContents(), $this->getStoreContentsNotUse());
+            $this->_getResource()->saveStoreContents(
+                $this->getId(),
+                $this->getStoreContents(),
+                $this->getStoreContentsNotUse()
+            );
         }
         if ($this->hasBannerCatalogRules()) {
             $this->_getResource()->saveCatalogRules(
@@ -237,7 +249,9 @@ class Enterprise_Banner_Model_Banner extends Mage_Core_Model_Abstract
             }
         }
         if (!$flag) {
-            Mage::throwException(Mage::helper('enterprise_banner')->__('Please specify default content for at least one store view.'));
+            Mage::throwException(
+                Mage::helper('enterprise_banner')->__('Please specify default content for at least one store view.')
+            );
         }
         return parent::_beforeSave();
     }

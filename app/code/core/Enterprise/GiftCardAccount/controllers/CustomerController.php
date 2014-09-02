@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -56,7 +56,7 @@ class Enterprise_GiftCardAccount_CustomerController extends Mage_Core_Controller
                 Mage::getModel('enterprise_giftcardaccount/giftcardaccount')->loadByCode($code)
                     ->setIsRedeemed(true)->redeem();
                 Mage::getSingleton('customer/session')->addSuccess(
-                    $this->__('Gift Card "%s" was redeemed.', Mage::helper('core')->htmlEscape($code))
+                    $this->__('Gift Card "%s" was redeemed.', Mage::helper('core')->escapeHtml($code))
                 );
             } catch (Mage_Core_Exception $e) {
                 Mage::getSingleton('customer/session')->addError($e->getMessage());

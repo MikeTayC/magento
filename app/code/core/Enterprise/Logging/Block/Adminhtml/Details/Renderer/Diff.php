@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -64,7 +64,7 @@ class Enterprise_Logging_Block_Adminhtml_Details_Renderer_Diff
                 if (!$specialFlag) {
                     $html = '<dl>';
                     foreach ($dataArray as $key => $value) {
-                        $html .= '<dt>' . $key . '</dt><dd>' . $this->htmlEscape($value) . '</dd>';
+                        $html .= '<dt>' . $key . '</dt><dd>' . $this->escapeHtml($value) . '</dd>';
                     }
                     $html .= '</dl>';
                 }

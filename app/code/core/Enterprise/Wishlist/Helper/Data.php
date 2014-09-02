@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Wishlist
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -47,7 +47,7 @@ class Enterprise_Wishlist_Helper_Data extends Mage_Wishlist_Helper_Data
      */
     protected function _createWishlistItemCollection()
     {
-        if ($this->isMultipleEnabled()) {
+        if ($this->isMultipleEnabled() && $this->getCustomer()) {
             return Mage::getModel('wishlist/item')->getCollection()
                 ->addCustomerIdFilter($this->getCustomer()->getId())
                 ->addStoreFilter(Mage::app()->getStore()->getWebsite()->getStoreIds())

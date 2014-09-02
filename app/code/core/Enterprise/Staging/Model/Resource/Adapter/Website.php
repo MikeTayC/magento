@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -65,7 +65,9 @@ class Enterprise_Staging_Model_Resource_Adapter_Website extends Enterprise_Stagi
             $password = trim($website->getMasterPassword());
             if ($password) {
                  if(Mage::helper('core/string')->strlen($password)<6){
-                    throw new Enterprise_Staging_Exception(Mage::helper('enterprise_staging')->__('The password must have at least 6 characters. Leading or trailing spaces will be ignored.'));
+                    throw new Enterprise_Staging_Exception(
+                        Mage::helper('enterprise_staging')->__('The password must have at least 6 characters. Leading or trailing spaces will be ignored.')
+                    );
                 }
                 $stagingWebsite->setData('master_password' , Mage::helper('core')->encrypt($password));
             }
@@ -137,7 +139,9 @@ class Enterprise_Staging_Model_Resource_Adapter_Website extends Enterprise_Stagi
             $password = trim($website->getMasterPassword());
             if ($password) {
                  if(Mage::helper('core/string')->strlen($password)<6){
-                    throw new Enterprise_Staging_Exception(Mage::helper('enterprise_staging')->__('The password must have at least 6 characters. Leading or trailing spaces will be ignored.'));
+                    throw new Enterprise_Staging_Exception(
+                        Mage::helper('enterprise_staging')->__('The password must have at least 6 characters. Leading or trailing spaces will be ignored.')
+                    );
                 }
                 $stagingWebsite->setData('master_password' , Mage::helper('core')->encrypt($password));
             }

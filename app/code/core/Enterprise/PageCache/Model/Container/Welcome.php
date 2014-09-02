@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -59,8 +59,8 @@ class Enterprise_PageCache_Model_Container_Welcome extends Enterprise_PageCache_
      */
     protected function _renderBlock()
     {
-        $block = Mage::app()->getLayout()->createBlock('page/html_header');
+        $block = $this->_getPlaceHolderBlock();
         Mage::dispatchEvent('render_block', array('block' => $block, 'placeholder' => $this->_placeholder));
-        return $block->getWelcome();
+        return $block->toHtml();
     }
 }

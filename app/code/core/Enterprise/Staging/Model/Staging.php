@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -325,18 +325,21 @@ class Enterprise_Staging_Model_Staging extends Mage_Core_Model_Abstract
 
         Mage::getConfig()->reinit();
         Mage::app()->reinitStores();
+        $isCategoryFlatAvailable = Mage::helper('catalog/category_flat')->isAvailable();
 
         // rebuild flat tables after rollback
         if ($process == 'rollback') {
-            if (Mage::helper('catalog/category_flat')->isBuilt()) {
-                Mage::getResourceModel('catalog/category_flat')->rebuild();
+            if ($isCategoryFlatAvailable) {
+                Mage::getSingleton('index/indexer')
+                    ->getProcessByCode(Mage_Catalog_Helper_Category_Flat::CATALOG_CATEGORY_FLAT_PROCESS_CODE)
+                    ->reindexEverything();
             }
 
             $stores = $this->getMapperInstance()->getStores();
             if (!empty($stores)) {
                 foreach ($stores as $storeIds) {
                     if (isset($storeIds[0]) && $storeIds[0]) {
-                        if (Mage::helper('catalog/product_flat')->isBuilt()) {
+                        if ($isCategoryFlatAvailable) {
                             Mage::getResourceModel('catalog/product_flat_indexer')->rebuild($storeIds[0]);
                         }
                     }
@@ -344,26 +347,6 @@ class Enterprise_Staging_Model_Staging extends Mage_Core_Model_Abstract
             }
         }
 
-//        $needToRebuiltFlat = false;
-//        switch ($process) {
-//            case 'create':
-//            case 'rollback':
-//                $needToRebuiltFlat = true;
-//                break;
-//            case 'merge':
-//                if (!$this->canUnschedule()) {
-//                    $needToRebuiltFlat = true;
-//                }
-//                break;
-//        }
-//        if ($needToRebuiltFlat) {
-//            if (Mage::helper('catalog/category_flat')->isRebuilt()) {
-//                Mage::getResourceModel('catalog/category_flat')->rebuild();
-//            }
-//            if (Mage::helper('catalog/product_flat')->isBuilt()) {
-//                Mage::getResourceModel('catalog/product_flat_indexer')->rebuild();
-//            }
-//        }
         $this->releaseCoreFlag();
         return $this;
     }

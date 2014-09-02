@@ -20,13 +20,13 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 
 /**
- * Enter description here ...
+ * Crawler resource model
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
@@ -36,11 +36,10 @@ class Enterprise_PageCache_Model_Resource_Crawler extends Mage_Core_Model_Resour
 {
     /**
      * Internal constructor
-     *
      */
     protected function _construct()
     {
-        $this->_init('core/url_rewrite', 'url_rewrite_id');
+        $this->_init('enterprise_urlrewrite/url_rewrite', 'url_rewrite_id');
     }
 
     /**
@@ -66,6 +65,7 @@ class Enterprise_PageCache_Model_Resource_Crawler extends Mage_Core_Model_Resour
      *
      * @param  $storeId
      * @return array
+     * @deprecated after 1.12.0.2 - use getUrlsPaths() instead
      */
     public function getUrlsPaths($storeId)
     {
@@ -75,5 +75,40 @@ class Enterprise_PageCache_Model_Resource_Crawler extends Mage_Core_Model_Resour
             ->where('store_id=?', $storeId)
             ->where('is_system=1');
         return $adapter->fetchCol($select);
+    }
+
+    /**
+     * Retrieves request_path's that should be visited by crawler
+     *
+     * @param int $storeId
+     * @return array
+     */
+    public function getRequestPaths($storeId)
+    {
+        $storeIdExpr = $this->_getReadAdapter()->getIfNullSql('url_category.store_id', 'url_product.store_id');
+
+        $select = $this->_getReadAdapter()->select()
+            ->from(array('url_rewrite' => $this->getTable('enterprise_urlrewrite/url_rewrite')),
+                array('request_path', 'store_id' => $storeIdExpr))
+            ->joinLeft(array('url_product' => $this->getTable('enterprise_urlrewrite/product')),
+                'url_product.url_rewrite_id = url_rewrite.url_rewrite_id AND ' .
+                $this->_getReadAdapter()->quoteInto('url_product.store_id = ?', $storeId),
+                array()
+            )
+            ->joinLeft(array('url_category' => $this->getTable('enterprise_urlrewrite/category')),
+                'url_category.url_rewrite_id = url_rewrite.url_rewrite_id AND ' .
+                $this->_getReadAdapter()->quoteInto('url_category.store_id = ?', $storeId),
+                array()
+            )
+            ->where('is_system = ?', 1);
+
+        $result = $this->_getReadAdapter()->fetchAll($select);
+        $requestPaths = array();
+        foreach ($result as $item) {
+            if ($storeId == $item['store_id']) {
+                $requestPaths[] = $item['request_path'];
+            }
+        }
+        return $requestPaths;
     }
 }

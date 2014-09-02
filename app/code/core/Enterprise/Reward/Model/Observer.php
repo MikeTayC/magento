@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -495,7 +495,9 @@ class Enterprise_Reward_Model_Observer
                     ->setUpdateSection('payment-method')
                     ->setGotoSection('payment');
 
-                Mage::throwException(Mage::helper('enterprise_reward')->__('Not enough Reward Points to complete this Order.'));
+                Mage::throwException(
+                    Mage::helper('enterprise_reward')->__('Not enough Reward Points to complete this Order.')
+                );
             }
         }
 
@@ -957,11 +959,15 @@ class Enterprise_Reward_Model_Observer
                 ->setActionEntity($order)
                 ->setPointsDelta($order->getRewardSalesrulePoints())
                 ->updateRewardPoints();
-            if ($reward->getPointsDelta()) {
-                $order->addStatusHistoryComment(
-                    Mage::helper('enterprise_reward')->__('Customer earned promotion extra %s.', Mage::helper('enterprise_reward')->formatReward($reward->getPointsDelta()))
-                )->save();
-            }
+
+            /* Set to 0 to prevent further processing */
+            $order->setRewardSalesrulePoints(0)
+                ->save();
+
+            $order->addStatusHistoryComment(
+                Mage::helper('enterprise_reward')->__('Customer earned promotion extra %s.', Mage::helper('enterprise_reward')->formatReward($reward->getPointsDelta()))
+            )->save();
+
         }
         return $this;
     }

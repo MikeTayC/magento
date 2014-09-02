@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -34,7 +34,7 @@
             <link_display translate="label description">
                 <visible>1</visible>
                 <label>Display a Link to Loading a Spreadsheet</label>
-                <description>Defines whether a link to My Account &gt; Order by SKU page will be displayed on the widget</description>
+                <description>Defines whether a link to My Account &amp;gt; Order by SKU page will be displayed on the widget</description>
                 <type>select</type>
                 <sort_order>10</sort_order>
                 <source_model>adminhtml/system_config_source_yesno</source_model>
@@ -43,7 +43,7 @@
                 <required>1</required>
                 <visible>1</visible>
                 <label>Link Text</label>
-                <description>The text of the link to the My Account &gt; Order by SKU page</description>
+                <description>The text of the link to the My Account &amp;gt; Order by SKU page</description>
                 <type>text</type>
                 <sort_order>20</sort_order>
                 <value>Load a list of SKUs</value>

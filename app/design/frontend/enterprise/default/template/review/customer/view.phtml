@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -30,14 +30,14 @@
         <h1><?php echo $this->__('Review Details') ?></h1>
     </div>
     <div class="product-img-box">
-        <a class="product-image" href="<?php echo $this->getProductData()->getProductUrl() ?>"><img src="<?php echo $this->helper('catalog/image')->init($this->getProductData(), 'image')->resize(285, 285); ?>" alt="<?php echo $this->htmlEscape($this->getProductData()->getName()) ?>" height="285" width="285" /></a>
+        <a class="product-image" href="<?php echo $this->getProductData()->getProductUrl() ?>"><img src="<?php echo $this->helper('catalog/image')->init($this->getProductData(), 'image')->resize(285, 285); ?>" alt="<?php echo $this->escapeHtml($this->getProductData()->getName()) ?>" height="285" width="285" /></a>
         <?php if( $this->getRating() && $this->getRating()->getSize()): ?>
         <p><?php echo $this->__('Average Customer Rating:') ?></p>
         <?php echo $this->getReviewsSummaryHtml($this->getProductData()) ?>
         <?php endif; ?>
     </div>
     <div class="details">
-        <h2 class="product-name"><?php echo $this->htmlEscape($this->getProductData()->getName()) ?></h2>
+        <h2 class="product-name"><?php echo $this->escapeHtml($this->getProductData()->getName()) ?></h2>
         <?php if( $this->getRating() && $this->getRating()->getSize()): ?>
         <strong><?php echo ($this->isReviewOwner()) ? $this->__('Your Rating:') : $this->__('Rating:'); ?></strong>
         <table class="data-table review-summary-table">
@@ -61,7 +61,7 @@
                 <?php echo $this->__('Review (submitted on %s):', $this->dateFormat($this->getReviewData()->getCreatedAt())) ?>
             <?php endif;?>
         </p>
-        <p><?php echo nl2br($this->htmlEscape($this->getReviewData()->getDetail())) ?></p>
+        <p><?php echo nl2br($this->escapeHtml($this->getReviewData()->getDetail())) ?></p>
     </div>
     <div class="buttons-set">
         <p class="back-link"><a href="<?php echo $this->getBackUrl() ?>"><small>&laquo; </small><?php echo $this->__('Back to My Reviews') ?></a></p>

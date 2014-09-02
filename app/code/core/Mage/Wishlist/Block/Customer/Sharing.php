@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Wishlist
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -81,7 +81,7 @@ class Mage_Wishlist_Block_Customer_Sharing extends Mage_Core_Block_Template
             return null;
         }
         else {
-            return $this->htmlEscape($this->_enteredData[$key]);
+            return $this->escapeHtml($this->_enteredData[$key]);
         }
     }
 

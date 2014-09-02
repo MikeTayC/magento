@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -161,6 +161,37 @@
                 </order_invoice>
             </old_fields_map>
         </sales>
+
+        <pdf>
+            <invoice>
+                <giftwrapping>enterprise_giftwrapping/sales_pdf_items_invoice_giftwrapping</giftwrapping>
+            </invoice>
+            <shipment>
+                <giftwrapping>enterprise_giftwrapping/sales_pdf_items_shipment_giftwrapping</giftwrapping>
+            </shipment>
+            <creditmemo>
+                <giftwrapping>enterprise_giftwrapping/sales_pdf_items_creditmemo_giftwrapping</giftwrapping>
+            </creditmemo>
+            <totals>
+                <giftwrapping_items translate="title">
+                    <title>Gift Wrapping for Items</title>
+                    <source_field>gw_items_price</source_field>
+                    <model>enterprise_giftwrapping/sales_pdf_items</model>
+                    <font_size>7</font_size>
+                    <display_zero>0</display_zero>
+                    <sort_order>240</sort_order>
+                </giftwrapping_items>
+                <giftwrapping_order translate="title">
+                    <title>Gift Wrapping for Order</title>
+                    <source_field>gw_price</source_field>
+                    <model>enterprise_giftwrapping/sales_pdf_order</model>
+                    <font_size>7</font_size>
+                    <display_zero>0</display_zero>
+                    <sort_order>250</sort_order>
+                </giftwrapping_order>
+            </totals>
+        </pdf>
+
         <events>
             <sales_quote_collect_totals_before>
                 <observers>
@@ -186,6 +217,15 @@
                     </enterprise_giftwrapping>
                 </observers>
             </paypal_prepare_line_items>
+
+            <pdf_item_draw_after>
+                <observers>
+                    <enterprise_giftwrapping>
+                        <class>enterprise_giftwrapping/observer</class>
+                        <method>addGiftWrappingInfoForItemToPdf</method>
+                    </enterprise_giftwrapping>
+                </observers>
+            </pdf_item_draw_after>
         </events>
         <fieldsets>
             <sales_convert_quote_item>

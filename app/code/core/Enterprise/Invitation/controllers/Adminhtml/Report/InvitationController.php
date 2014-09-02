@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Invitation
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -42,7 +42,10 @@ class Enterprise_Invitation_Adminhtml_Report_InvitationController extends Mage_A
     {
         $this->loadLayout()
             ->_addBreadcrumb(Mage::helper('reports')->__('Reports'), Mage::helper('reports')->__('Reports'))
-            ->_addBreadcrumb(Mage::helper('enterprise_invitation')->__('Invitations'), Mage::helper('enterprise_invitation')->__('Invitations'));
+            ->_addBreadcrumb(
+                Mage::helper('enterprise_invitation')->__('Invitations'),
+                Mage::helper('enterprise_invitation')->__('Invitations')
+            );
         return $this;
     }
 
@@ -57,7 +60,10 @@ class Enterprise_Invitation_Adminhtml_Report_InvitationController extends Mage_A
 
         $this->_initAction()
             ->_setActiveMenu('report/enterprise_invitation/general')
-            ->_addBreadcrumb(Mage::helper('enterprise_invitation')->__('General Report'), Mage::helper('enterprise_invitation')->__('General Report'))
+            ->_addBreadcrumb(
+                Mage::helper('enterprise_invitation')->__('General Report'),
+                Mage::helper('enterprise_invitation')->__('General Report')
+            )
             ->_addContent($this->getLayout()->createBlock('enterprise_invitation/adminhtml_report_invitation_general'))
             ->renderLayout();
     }
@@ -97,7 +103,10 @@ class Enterprise_Invitation_Adminhtml_Report_InvitationController extends Mage_A
 
         $this->_initAction()
             ->_setActiveMenu('report/enterprise_invitation/customer')
-            ->_addBreadcrumb(Mage::helper('enterprise_invitation')->__('Invitation Report by Customers'), Mage::helper('enterprise_invitation')->__('Invitation Report by Customers'))
+            ->_addBreadcrumb(
+                Mage::helper('enterprise_invitation')->__('Invitation Report by Customers'),
+                Mage::helper('enterprise_invitation')->__('Invitation Report by Customers')
+            )
             ->_addContent($this->getLayout()->createBlock('enterprise_invitation/adminhtml_report_invitation_customer'))
             ->renderLayout();
     }
@@ -137,7 +146,10 @@ class Enterprise_Invitation_Adminhtml_Report_InvitationController extends Mage_A
 
         $this->_initAction()
             ->_setActiveMenu('report/enterprise_invitation/order')
-            ->_addBreadcrumb(Mage::helper('enterprise_invitation')->__('Invitation Report by Customers'), Mage::helper('enterprise_invitation')->__('Invitation Report by Order Conversion Rate'))
+            ->_addBreadcrumb(
+                Mage::helper('enterprise_invitation')->__('Invitation Report by Customers'),
+                Mage::helper('enterprise_invitation')->__('Invitation Report by Order Conversion Rate')
+            )
             ->_addContent($this->getLayout()->createBlock('enterprise_invitation/adminhtml_report_invitation_order'))
             ->renderLayout();
     }

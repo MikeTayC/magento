@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogPermissions
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -45,7 +45,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
-                            <comment>&lt;strong style="color:red"&gt;Warning!&lt;/strong&gt; By default this feature restricts all categories.</comment>
+                            <comment><![CDATA[<strong style="color:red">Warning!</strong> By default this feature restricts all categories.]]></comment>
                         </enabled>
                         <grant_catalog_category_view translate="label">
                             <label>Allow Browsing Category</label>

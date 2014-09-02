@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -59,6 +59,7 @@
 
 <h2 class="subtitle"><?php echo $this->__('Wishlist Items') ?></h2>
 <form method="post" action="<?php echo $this->getToCartUrl();?>" id="wishlist-info-form">
+    <?php echo $this->getBlockHtml('formkey') ?>
     <?php $this->getChild('items')->setItems($this->getWishlistItems()); ?>
     <?php echo $this->getChildHtml('items');?>
     <?php if (count($wishlistItems) && $this->isSaleable()): ?>

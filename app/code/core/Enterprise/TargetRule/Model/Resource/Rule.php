@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -68,6 +68,19 @@ class Enterprise_TargetRule_Model_Resource_Rule extends Mage_Rule_Model_Resource
             ->where('rule_id = ?', $object->getId())
             ->query()->fetchAll(Zend_Db::FETCH_COLUMN);
         return empty($ids) ? array() : $ids;
+    }
+
+    /**
+     * Remove Product From Rules
+     *
+     * @param int $productId
+     */
+    public function removeProductFromRules($productId)
+    {
+        $this->_getWriteAdapter()->delete(
+            $this->getTable('enterprise_targetrule/product'),
+            'product_id = ' . $this->_getWriteAdapter()->quote($productId)
+        );
     }
 
     /**
@@ -127,7 +140,15 @@ class Enterprise_TargetRule_Model_Resource_Rule extends Mage_Rule_Model_Resource
         $this->saveCustomerSegments($object->getId(), $segmentIds);
 
         $this->unbindRuleFromEntity($object->getId(), array(), 'product');
-        $this->bindRuleToEntity($object->getId(), $object->getMatchingProductIds(), 'product');
+        /** @var $catalogFlatHelper Mage_Catalog_Helper_Product_Flat */
+        $catalogFlatHelper = Mage::helper('catalog/product_flat');
+        $storeId = Mage::app()->getDefaultStoreView()->getId();
+
+        if ($catalogFlatHelper->isEnabled() && $catalogFlatHelper->isBuilt($storeId)) {
+            $this->_fillProductsByRule($object, $storeId);
+        } else {
+            $this->bindRuleToEntity($object->getId(), $object->getMatchingProductIds(), 'product');
+        }
 
         $typeId = (!$object->isObjectNew() && $object->getOrigData('apply_to') != $object->getData('apply_to'))
             ? null
@@ -140,6 +161,35 @@ class Enterprise_TargetRule_Model_Resource_Rule extends Mage_Rule_Model_Resource
         );
 
         return $this;
+    }
+
+    /**
+     * Insert data for rule
+     *
+     * @param Enterprise_TargetRule_Model_Rule $rule
+     */
+    protected function _fillProductsByRule(Enterprise_TargetRule_Model_Rule $rule)
+    {
+        foreach (Mage::app()->getStores(false) as $store) {
+            /** @var $store Mage_Core_Model_Store */
+            $productIdsSelect = $rule->getProductFlatSelect($store->getId());
+            $productIdsSelect->columns(
+                array(
+                    'rule_id' => new Zend_Db_Expr(
+                        $rule->getId()
+                    )
+                )
+            );
+
+            $this->_getWriteAdapter()->query(
+                $this->_getWriteAdapter()->insertFromSelect(
+                    $productIdsSelect,
+                    $this->getTable('enterprise_targetrule/product'),
+                    array('product_id', 'rule_id'),
+                    Varien_Db_Adapter_Interface::INSERT_IGNORE
+                )
+            );
+        }
     }
 
     /**

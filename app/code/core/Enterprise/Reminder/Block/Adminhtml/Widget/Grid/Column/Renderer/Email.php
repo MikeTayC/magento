@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -38,7 +38,7 @@ class Enterprise_Reminder_Block_Adminhtml_Widget_Grid_Column_Renderer_Email
      */
     protected function _getValue(Varien_Object $row)
     {
-        $customerEmail = $this->htmlEscape($row->getData($this->getColumn()->getIndex()));
-        return '<a href="mailto:' . $customerEmail . '">' . $this->htmlEscape($customerEmail) . '</a>';
+        $customerEmail = $this->escapeHtml($row->getData($this->getColumn()->getIndex()));
+        return '<a href="mailto:' . $customerEmail . '">' . $this->escapeHtml($customerEmail) . '</a>';
     }
 }

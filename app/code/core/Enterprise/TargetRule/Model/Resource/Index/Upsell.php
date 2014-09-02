@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -47,6 +47,6 @@ class Enterprise_TargetRule_Model_Resource_Index_Upsell extends Enterprise_Targe
      */
     protected function _construct()
     {
-        $this->_init('enterprise_targetrule/index_upsell', 'entity_id');
+        $this->_init('enterprise_targetrule/index_upsell', 'targetrule_id');
     }
 }

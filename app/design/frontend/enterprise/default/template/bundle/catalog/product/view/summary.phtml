@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -31,9 +31,9 @@
         <div class="block-title">
             <h2><?php echo $this->__('Your Customization'); ?></h2>
         </div>
-        <img class="product-image no-display" src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(58); ?>" width="58" height="58" alt="<?php echo $this->htmlEscape($this->getImageLabel($_product, 'small_image')) ?>" />
+        <img class="product-image no-display" src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(58); ?>" width="58" height="58" alt="<?php echo $this->escapeHtml($this->getImageLabel($_product, 'small_image')) ?>" />
         <div class="product-details">
-            <h3 class="product-name no-display"><?php echo $this->htmlEscape($_product->getName()) ?></h3>
+            <h3 class="product-name no-display"><?php echo $this->escapeHtml($_product->getName()) ?></h3>
             <?php if($_product->getIsSalable()): ?>
                 <p class="availability in-stock"><?php echo $this->__('Availability') ?>: <span><?php echo $this->__('In stock') ?></span></p>
             <?php else: ?>

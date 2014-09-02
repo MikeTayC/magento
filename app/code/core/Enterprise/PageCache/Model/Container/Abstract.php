@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -40,6 +40,13 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
      * @var Enterprise_PageCache_Model_Container_Placeholder
      */
     protected $_placeholder;
+
+    /**
+     * Placeholder block instance
+     *
+     * @var Mage_Core_Block_Abstract
+     */
+    protected $_placeholderBlock;
 
     /**
      * Class constructor
@@ -102,6 +109,9 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
         if (Mage::getStoreConfig(Enterprise_PageCache_Model_Processor::XML_PATH_CACHE_DEBUG)) {
             $debugBlock = new Enterprise_PageCache_Block_Debug();
             $debugBlock->setDynamicBlockContent($blockContent);
+            $debugBlock->setTags($this->_getPlaceHolderBlock()->getCacheTags());
+
+            $debugBlock->setType($this->_placeholder->getName());
             $this->_applyToContent($content, $debugBlock->toHtml());
         } else {
             $this->_applyToContent($content, $blockContent);
@@ -109,10 +119,10 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
 
         $subprocessor = $this->_processor->getSubprocessor();
         if ($subprocessor) {
-            $contentWithOutNestedBlocks = $subprocessor->replaceContentToPlaceholderReplacer($blockContent);
+            $contentWithoutNestedBlocks = $subprocessor->replaceContentToPlaceholderReplacer($blockContent);
+            $this->saveCache($contentWithoutNestedBlocks);
         }
 
-        $this->saveCache($contentWithOutNestedBlocks);
         return true;
     }
 
@@ -120,13 +130,14 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
      * Save rendered block content to cache storage
      *
      * @param string $blockContent
+     * @param array $tags
      * @return Enterprise_PageCache_Model_Container_Abstract
      */
-    public function saveCache($blockContent)
+    public function saveCache($blockContent, $tags = array())
     {
         $cacheId = $this->_getCacheId();
         if ($cacheId !== false) {
-            $this->_saveCache($blockContent, $cacheId);
+            $this->_saveCache($blockContent, $cacheId, $tags);
         }
         return $this;
     }
@@ -176,16 +187,12 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
     protected function _saveCache($data, $id, $tags = array(), $lifetime = null)
     {
         $tags[] = Enterprise_PageCache_Model_Processor::CACHE_TAG;
+        $tags = array_merge($tags, $this->_getPlaceHolderBlock()->getCacheTags());
         if (is_null($lifetime)) {
             $lifetime = $this->_placeholder->getAttribute('cache_lifetime') ?
                 $this->_placeholder->getAttribute('cache_lifetime') : false;
         }
-
-        /**
-         * Replace all occurrences of session_id with unique marker
-         */
-        Enterprise_PageCache_Helper_Url::replaceSid($data);
-
+        Enterprise_PageCache_Helper_Data::prepareContentPlaceholders($data);
         Enterprise_PageCache_Model_Cache::getCacheInstance()->save($data, $id, $tags, $lifetime);
         return $this;
     }
@@ -248,8 +255,7 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
             return null;
         }
 
-        return $this->_processor
-            ->getMetadata(Enterprise_PageCache_Model_Processor_Product::METADATA_PRODUCT_ID);
+        return $this->_processor->getMetadata(Enterprise_PageCache_Model_Processor_Product::METADATA_PRODUCT_ID);
     }
 
     /**
@@ -259,25 +265,34 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
      */
     protected function _getRequestId()
     {
-        if (!$this->_processor) {
-            return null;
-        }
-
-        return $this->_processor->getRequestId();
+        return !$this->_processor ? null : $this->_processor->getRequestId();
     }
 
     /**
-     * Get Place Holder Block
+     * Get Placeholder Block
      *
      * @return Mage_Core_Block_Abstract
      */
     protected function _getPlaceHolderBlock()
     {
-        $blockName = $this->_placeholder->getAttribute('block');
-        $block = new $blockName;
-        $block->setTemplate($this->_placeholder->getAttribute('template'));
-        $block->setLayout(Mage::app()->getLayout());
-        $block->setSkipRenderTag(true);
-        return $block;
+        if (null === $this->_placeholderBlock) {
+            $blockName = $this->_placeholder->getAttribute('block');
+            $this->_placeholderBlock = new $blockName;
+            $this->_placeholderBlock->setTemplate($this->_placeholder->getAttribute('template'));
+            $this->_placeholderBlock->setLayout(Mage::app()->getLayout());
+            $this->_placeholderBlock->setSkipRenderTag(true);
+        }
+        return $this->_placeholderBlock;
+    }
+
+    /**
+     * Set placeholder block
+     *
+     * @param Mage_Core_Block_Abstract $block
+     * @return Enterprise_PageCache_Model_Container_Abstract
+     */
+    public function setPlaceholderBlock(Mage_Core_Block_Abstract $block) {
+        $this->_placeholderBlock = $block;
+        return $this;
     }
 }

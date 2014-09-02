@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -33,7 +33,6 @@
  * @method int getProductId()
  * @method Enterprise_GiftRegistry_Model_Item setProductId(int $value)
  * @method float getQty()
- * @method Enterprise_GiftRegistry_Model_Item setQty(float $value)
  * @method float getQtyFulfilled()
  * @method Enterprise_GiftRegistry_Model_Item setQtyFulfilled(float $value)
  * @method string getNote()
@@ -115,16 +114,6 @@ class Enterprise_GiftRegistry_Model_Item extends Mage_Core_Model_Abstract
 
         if (!$product->isVisibleInSiteVisibility()) {
             if ($product->getStoreId() == $storeId) {
-                return false;
-            }
-            $urlData = Mage::getResourceSingleton('catalog/url')
-                ->getRewriteByProductStore(array($product->getId() => $storeId));
-            if (!isset($urlData[$product->getId()])) {
-                return false;
-            }
-            $product->setUrlDataObject(new Varien_Object($urlData));
-            $visibility = $product->getUrlDataObject()->getVisibility();
-            if (!in_array($visibility, $product->getVisibleInSiteVisibilities())) {
                 return false;
             }
         }
@@ -413,7 +402,9 @@ class Enterprise_GiftRegistry_Model_Item extends Mage_Core_Model_Abstract
         if (!isset($this->_optionsByCode[$option->getCode()])) {
             $this->_optionsByCode[$option->getCode()] = $option;
         } else {
-            Mage::throwException(Mage::helper('enterprise_giftregistry')->__('An item option with code %s already exists.', $option->getCode()));
+            Mage::throwException(
+                Mage::helper('enterprise_giftregistry')->__('An item option with code %s already exists.', $option->getCode())
+            );
         }
         return $this;
     }

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -158,7 +158,9 @@ class Enterprise_Search_Model_Observer
          * Cleaning MAXPRICE cache
          */
         $cacheTag = Mage::getSingleton('enterprise_search/catalog_layer_filter_price')->getCacheTag();
-        Mage::app()->cleanCache(array($cacheTag));
+        Mage::dispatchEvent('clean_cache_by_tags', array('tags' => array(
+            $cacheTag
+        )));
     }
 
     /**
@@ -282,5 +284,25 @@ class Enterprise_Search_Model_Observer
         } else {
             $indexer->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
         }
+    }
+
+    /**
+     * Retrieve Fulltext Search instance
+     *
+     * @return Mage_CatalogSearch_Model_Fulltext
+     */
+    protected function _getIndexer()
+    {
+        return Mage::getSingleton('catalogsearch/fulltext');
+    }
+
+    /**
+     * Reindex data after catalog category/product partial reindex
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function rebuiltIndex(Varien_Event_Observer $observer)
+    {
+        $this->_getIndexer()->rebuildIndex(null, $observer->getEvent()->getProductIds())->resetSearchResults();
     }
 }

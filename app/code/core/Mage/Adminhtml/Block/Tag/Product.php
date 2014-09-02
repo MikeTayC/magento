@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -60,7 +60,7 @@ class Mage_Adminhtml_Block_Tag_Product extends Mage_Adminhtml_Block_Widget_Grid_
         $tagInfo = Mage::getModel('tag/tag')
             ->load(Mage::registry('tagId'));
 
-        $this->_headerText = Mage::helper('tag')->__("Products Tagged with '%s'", $this->htmlEscape($tagInfo->getName()));
+        $this->_headerText = Mage::helper('tag')->__("Products Tagged with '%s'", $this->escapeHtml($tagInfo->getName()));
     }
 
 }

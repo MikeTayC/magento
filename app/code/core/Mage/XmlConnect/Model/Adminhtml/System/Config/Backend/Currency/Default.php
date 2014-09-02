@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_XmlConnect
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -37,7 +37,7 @@ class Mage_XmlConnect_Model_Adminhtml_System_Config_Backend_Currency_Default
     /**
      * Update all applications "updated at" parameter with current date
      *
-     * @return this
+     * @return Mage_XmlConnect_Model_Adminhtml_System_Config_Backend_Currency_Default
      */
     protected function _afterSave()
     {

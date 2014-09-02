@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -368,6 +368,14 @@
                     </enterprise_customerbalance>
                 </observers>
             </adminhtml_customer_prepare_save>
+            <sales_prepare_amount_expression>
+                <observers>
+                    <enterprise_customerbalance>
+                        <class>enterprise_customerbalance/observer</class>
+                        <method>extendSalesAmountExpression</method>
+                    </enterprise_customerbalance>
+                </observers>
+            </sales_prepare_amount_expression>
         </events>
         <translate>
             <modules>

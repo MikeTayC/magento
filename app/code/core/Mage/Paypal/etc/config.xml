@@ -21,14 +21,14 @@
  *
  * @category    Mage
  * @package     Mage_Paypal
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Mage_Paypal>
-            <version>1.6.0.2</version>
+            <version>1.6.0.4</version>
         </Mage_Paypal>
     </modules>
     <global>

@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -29,11 +29,7 @@
 ?>
 <script type="text/javascript">
 //<![CDATA[
-Enterprise.Wishlist.list = [
-<?php foreach($this->getWishlists() as $wishlist): ?>
-    {id: <?php echo $wishlist->getId();?>, name: '<?php echo $this->helper('core')->jsQuoteEscape($this->escapeHtml($wishlist->getName())); ?>'},
-<?php endforeach; ?>
-];
+Enterprise.Wishlist.list = <?php echo $this->helper('core')->jsonEncode($this->getWishlistShortList()); ?>;
 if (!Enterprise.Wishlist.url) {
     Enterprise.Wishlist.url = {};
 }

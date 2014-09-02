@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Paypal
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -413,6 +413,16 @@ class Mage_Paypal_Model_Cart
         }
 
         $this->_areItemsValid = $this->_areItemsValid && $this->_areTotalsValid;
+    }
+
+    /**
+     * Check whether items are valid
+     *
+     * @return bool
+     */
+    public function areItemsValid()
+    {
+        return $this->_areItemsValid;
     }
 
     /**

@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogPermissions
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -71,13 +71,16 @@
                 </setup>
             </enterprise_catalogpermissions_setup>
         </resources>
-        <index>
-            <indexer>
-                <catalogpermissions>
-                    <model>enterprise_catalogpermissions/permission_index</model>
-                </catalogpermissions>
-            </indexer>
-        </index>
+        <events>
+            <enterprise_after_reindex_process_catalog_category_product>
+                <observers>
+                    <enterprise_catalogpermissions>
+                        <class>enterprise_catalogpermissions/adminhtml_observer</class>
+                        <method>applyPermissionsAfterReindex</method>
+                    </enterprise_catalogpermissions>
+                </observers>
+            </enterprise_after_reindex_process_catalog_category_product>
+        </events>
     </global>
     <adminhtml>
         <events>
@@ -97,22 +100,6 @@
                     </enterprise_catalogpermissions>
                 </observers>
             </category_move>
-            <store_add>
-                <observers>
-                    <enterprise_catalogpermissions>
-                        <class>enterprise_catalogpermissions/adminhtml_observer</class>
-                        <method>reindexProducts</method>
-                    </enterprise_catalogpermissions>
-                </observers>
-            </store_add>
-            <website_add>
-                <observers>
-                    <enterprise_catalogpermissions>
-                        <class>enterprise_catalogpermissions/adminhtml_observer</class>
-                        <method>reindexProducts</method>
-                    </enterprise_catalogpermissions>
-                </observers>
-            </website_add>
             <customer_group_save_after>
                 <observers>
                     <enterprise_catalogpermissions>
@@ -129,14 +116,6 @@
                     </enterprise_catalogpermissions>
                 </observers>
             </controller_action_postdispatch>
-            <catalog_product_save_after>
-                <observers>
-                    <enterprise_catalogpermissions>
-                        <class>enterprise_catalogpermissions/adminhtml_observer</class>
-                        <method>saveProductPermissionIndex</method>
-                    </enterprise_catalogpermissions>
-                </observers>
-            </catalog_product_save_after>
             <adminhtml_catalog_category_tabs>
                 <observers>
                     <enterprise_catalogpermissions>
@@ -145,38 +124,14 @@
                     </enterprise_catalogpermissions>
                 </observers>
             </adminhtml_catalog_category_tabs>
-            <catalog_product_import_after>
-                <observers>
-                    <enterprise_catalogpermissions>
-                        <class>enterprise_catalogpermissions/adminhtml_observer</class>
-                        <method>reindexProducts</method>
-                    </enterprise_catalogpermissions>
-                </observers>
-            </catalog_product_import_after>
-            <catalog_product_to_website_change>
-                <observers>
-                    <enterprise_catalogpermissions>
-                        <class>enterprise_catalogpermissions/adminhtml_observer</class>
-                        <method>reindexAfterProductAssignedWebsite</method>
-                    </enterprise_catalogpermissions>
-                </observers>
-            </catalog_product_to_website_change>
-            <admin_system_config_changed_section_enterprise_catalogpermissions>
-                <observers>
-                    <enterprise_catalogpermissions>
-                        <class>enterprise_catalogpermissions/adminhtml_observer</class>
-                        <method>cleanCacheOnConfigChange</method>
-                    </enterprise_catalogpermissions>
-                </observers>
-            </admin_system_config_changed_section_enterprise_catalogpermissions>
-            <after_reindex_process_catalog_category_product>
+            <admin_system_config_changed_section_catalog>
                 <observers>
                     <enterprise_catalogpermissions>
                         <class>enterprise_catalogpermissions/adminhtml_observer</class>
                         <method>applyPermissionsAfterReindex</method>
                     </enterprise_catalogpermissions>
                 </observers>
-            </after_reindex_process_catalog_category_product>
+            </admin_system_config_changed_section_catalog>
         </events>
         <translate>
             <modules>
@@ -197,14 +152,6 @@
     </adminhtml>
     <frontend>
         <events>
-            <catalog_product_collection_before_add_count_to_categories>
-                <observers>
-                    <enterprise_catalogpermissions>
-                        <class>enterprise_catalogpermissions/observer</class>
-                        <method>applyCategoryPermissionOnProductCount</method>
-                    </enterprise_catalogpermissions>
-                </observers>
-            </catalog_product_collection_before_add_count_to_categories>
             <catalog_product_is_salable_after>
                 <observers>
                     <enterprise_catalogpermissions>
@@ -229,14 +176,22 @@
                     </enterprise_catalogpermissions>
                 </observers>
             </catalog_category_collection_add_is_active_filter>
-            <catalog_category_tree_init_inactive_category_ids>
+            <enterprise_catalog_category_tree_init_inactive_category_ids>
                 <observers>
                     <enterprise_catalogpermissions>
                         <class>enterprise_catalogpermissions/observer</class>
                         <method>applyCategoryInactiveIds</method>
                     </enterprise_catalogpermissions>
                 </observers>
-            </catalog_category_tree_init_inactive_category_ids>
+            </enterprise_catalog_category_tree_init_inactive_category_ids>
+            <catalog_product_collection_apply_limitations_before>
+                <observers>
+                    <enterprise_catalogpermissions>
+                        <class>enterprise_catalogpermissions/observer</class>
+                        <method>setCollectionLimitationCondition</method>
+                    </enterprise_catalogpermissions>
+                </observers>
+            </catalog_product_collection_apply_limitations_before>
             <catalog_product_collection_apply_limitations_after>
                 <observers>
                     <enterprise_catalogpermissions>
@@ -245,14 +200,6 @@
                     </enterprise_catalogpermissions>
                 </observers>
             </catalog_product_collection_apply_limitations_after>
-            <catalog_prepare_price_select>
-                <observers>
-                    <enterprise_catalogpermissions>
-                        <class>enterprise_catalogpermissions/observer</class>
-                        <method>applyPriceGrantOnPriceIndex</method>
-                    </enterprise_catalogpermissions>
-                </observers>
-            </catalog_prepare_price_select>
             <catalog_product_collection_load_after>
                 <observers>
                     <enterprise_catalogpermissions>

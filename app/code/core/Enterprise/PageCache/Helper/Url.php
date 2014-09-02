@@ -20,12 +20,16 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 /**
  * Url processing helper
+ *
+ * @category    Enterprise
+ * @package     Enterprise_PageCache
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Enterprise_PageCache_Helper_Url
 {
@@ -36,7 +40,7 @@ class Enterprise_PageCache_Helper_Url
      */
     protected static function _getSidMarker()
     {
-        return '{{' . chr(1) . chr(2) . chr(3) . '_SID_MARKER_' . chr(3) . chr(2) . chr(1) . '}}';
+        return Enterprise_PageCache_Helper_Data::wrapPlaceholderString('_SID_MARKER_');
     }
 
     /**
@@ -63,7 +67,8 @@ class Enterprise_PageCache_Helper_Url
     /**
      * Restore session_id from marker value
      *
-     * @param  string $content
+     * @param string $content
+     * @param string $sidValue
      * @return bool
      */
     public static function restoreSid(&$content, $sidValue)
@@ -89,5 +94,17 @@ class Enterprise_PageCache_Helper_Url
         $replace = '/$1/' . $urlHelper->getEncodedUrl() . '/';
         $content = preg_replace($search, $replace, $content);
         return $content;
+    }
+
+    /**
+     * Prepare request path tag
+     *
+     * @param string $path
+     * @return string
+     */
+    public static function prepareRequestPathTag($path)
+    {
+        $path = trim((string)$path, '/ ');
+        return Enterprise_PageCache_Model_Processor::REQUEST_PATH_PREFIX . md5($path);
     }
 }

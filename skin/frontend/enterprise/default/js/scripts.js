@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -138,7 +138,7 @@ Enterprise.Bundle = {
          }
 
          if (this.summaryTemplate && $('bundle-summary')) {
-             var summaryHTML = '';
+             var summaryHTMLArray = [];
              for (var option in this.config.options) {
                 if (typeof (this.config.selected[option]) !== 'undefined') {
                     var optionHTML = '';
@@ -152,11 +152,13 @@ Enterprise.Bundle = {
                     }
 
                     if (optionHTML.length > 0) {
-                        summaryHTML += this.summaryTemplate.evaluate({label:this.config.options[option].title.escapeHTML(), options: optionHTML});
+                        var position = parseInt(this.config.options[option].position);
+                        summaryHTMLArray[position] = this.summaryTemplate.evaluate({label:this.config.options[option].title.escapeHTML(), options: optionHTML});
                     }
                 }
              }
 
+             var summaryHTML = summaryHTMLArray.join('');
              if (typeof($('bundle-summary').update(summaryHTML).childElements().last()) != 'undefined') {
                  $('bundle-summary').update(summaryHTML).childElements().last().addClassName('last');
              }

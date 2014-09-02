@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     base_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -36,7 +36,7 @@
 </li>
 <li>
     <div class="captcha-image" id="captcha-image-box-<?php echo $this->getFormId()?>">
-        <img id="catpcha-reload" class="captcha-reload" src="<?php echo $this->getSkinUrl('images/reload.png') ?>" alt="<?php echo $this->__('Reload captcha') ?>" onclick="$('<?php echo $this->getFormId()?>').captcha.refresh(this)">
+        <img id="captcha-reload" class="captcha-reload" src="<?php echo $this->getSkinUrl('images/reload.png') ?>" alt="<?php echo $this->__('Reload captcha') ?>" onclick="$('<?php echo $this->getFormId()?>').captcha.refresh(this)">
         <img id="<?php echo $this->getFormId() ?>" class="captcha-img" height="<?php echo $this->getImgHeight() ?>" src="<?php echo $captcha->getImgSrc() ?>"/>
         <?php if ($captcha->isCaseSensitive()) :?>
         <div class="captcha-note">

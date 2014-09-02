@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogEvent
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -106,9 +106,11 @@ class Enterprise_CatalogEvent_Block_Adminhtml_Event_Grid extends Mage_Adminhtml_
             'index' => 'status',
             'type' => 'options',
             'options' => array(
-                Enterprise_CatalogEvent_Model_Event::STATUS_UPCOMING => Mage::helper('enterprise_catalogevent')->__('Upcoming'),
-                Enterprise_CatalogEvent_Model_Event::STATUS_OPEN 	  => Mage::helper('enterprise_catalogevent')->__('Open'),
-                Enterprise_CatalogEvent_Model_Event::STATUS_CLOSED   => Mage::helper('enterprise_catalogevent')->__('Closed')
+                Enterprise_CatalogEvent_Model_Event::STATUS_UPCOMING => Mage::helper('enterprise_catalogevent')
+                    ->__('Upcoming'),
+                Enterprise_CatalogEvent_Model_Event::STATUS_OPEN => Mage::helper('enterprise_catalogevent')->__('Open'),
+                Enterprise_CatalogEvent_Model_Event::STATUS_CLOSED =>
+                    Mage::helper('enterprise_catalogevent')->__('Closed')
             ),
             'width' => 140
         ));
@@ -120,8 +122,10 @@ class Enterprise_CatalogEvent_Block_Adminhtml_Event_Grid extends Mage_Adminhtml_
             'renderer' => 'enterprise_catalogevent/adminhtml_event_grid_column_renderer_bitmask',
             'options' => array(
                 0 => Mage::helper('enterprise_catalogevent')->__('Lister Block'),
-                Enterprise_CatalogEvent_Model_Event::DISPLAY_CATEGORY_PAGE => Mage::helper('enterprise_catalogevent')->__('Category Page'),
-                Enterprise_CatalogEvent_Model_Event::DISPLAY_PRODUCT_PAGE  => Mage::helper('enterprise_catalogevent')->__('Product Page')
+                Enterprise_CatalogEvent_Model_Event::DISPLAY_CATEGORY_PAGE =>
+                    Mage::helper('enterprise_catalogevent')->__('Category Page'),
+                Enterprise_CatalogEvent_Model_Event::DISPLAY_PRODUCT_PAGE =>
+                    Mage::helper('enterprise_catalogevent')->__('Product Page')
             )
         ));
 
@@ -138,12 +142,14 @@ class Enterprise_CatalogEvent_Block_Adminhtml_Event_Grid extends Mage_Adminhtml_
             'sortable'  => false,
             'filter'    => false,
             'type'      => 'action',
+            'getter'    => 'getId',
             'actions'   => array(
                 array(
-                    'url'       => $this->getUrl('*/*/edit') . 'id/$event_id',
-                    'caption'   => $this->helper('enterprise_catalogevent')->__('Edit'),
-                ),
-            )
+                    'caption' => $this->helper('enterprise_catalogevent')->__('Edit'),
+                    'url'     => array('base'=>'*/*/edit'),
+                    'field'   => 'id'
+                )
+            ),
         ));
 
         return parent::_prepareColumns();

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -104,6 +104,19 @@ class Enterprise_TargetRule_Model_Resource_Rule_Collection extends Mage_Rule_Mod
 
         return $this;
     }
+
+    /**
+     * Remove Product From Rules
+     *
+     * @param int $productId
+     */
+    public function removeProductFromRules($productId)
+    {
+        $resource = $this->getResource();
+        /** @var $resource Enterprise_TargetRule_Model_Resource_Rule */
+        $resource->removeProductFromRules($productId);
+    }
+
     /**
      * Add filter by segment id to collection
      *

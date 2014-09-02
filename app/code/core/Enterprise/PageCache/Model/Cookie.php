@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -48,6 +48,8 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
     const COOKIE_WISHLIST_ITEMS     = 'WISHLIST_CNT';
 
     const COOKIE_CUSTOMER_LOGGED_IN = 'CUSTOMER_AUTH';
+
+    const COOKIE_FORM_KEY           = 'CACHED_FRONT_FORM_KEY';
 
     /**
      * Subprocessors cookie names
@@ -209,5 +211,25 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
     public static function setCategoryViewedCookieValue($id)
     {
         setcookie(self::COOKIE_CATEGORY_ID, $id, 0, '/');
+    }
+
+    /**
+     * Set cookie with form key for cached front
+     *
+     * @param string $formKey
+     */
+    public static function setFormKeyCookieValue($formKey)
+    {
+        setcookie(self::COOKIE_FORM_KEY, $formKey, 0, '/');
+    }
+
+    /**
+     * Get form key cookie value
+     *
+     * @return string|bool
+     */
+    public static function getFormKeyCookieValue()
+    {
+        return (isset($_COOKIE[self::COOKIE_FORM_KEY])) ? $_COOKIE[self::COOKIE_FORM_KEY] : false;
     }
 }

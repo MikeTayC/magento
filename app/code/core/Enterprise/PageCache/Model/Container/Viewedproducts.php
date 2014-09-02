@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -55,7 +55,6 @@ class Enterprise_PageCache_Model_Container_Viewedproducts extends Enterprise_Pag
         $cacheId = $this->_placeholder->getAttribute('cache_id');
         $productIds = $this->_getProductIds();
         if ($cacheId && $productIds) {
-            sort($productIds);
             $cacheId = 'CONTAINER_' . md5($cacheId . implode('_', $productIds)
                 . $this->_getCookieValue(Mage_Core_Model_Store::COOKIE_CURRENCY, ''));
             return $cacheId;
@@ -70,8 +69,10 @@ class Enterprise_PageCache_Model_Container_Viewedproducts extends Enterprise_Pag
      */
     protected function _renderBlock()
     {
+        /** @var $block Mage_Reports_Block_Product_Abstract */
         $block = $this->_getPlaceHolderBlock();
         $block->setProductIds($this->_getProductIds());
+        $block->useProductIdsOrder();
         Mage::dispatchEvent('render_block', array('block' => $block, 'placeholder' => $this->_placeholder));
         return $block->toHtml();
     }

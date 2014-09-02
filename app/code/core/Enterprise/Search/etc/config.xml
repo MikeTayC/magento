@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -93,6 +93,23 @@
                     </enterprise_search>
                 </observers>
             </catalogsearch_index_process_complete>
+
+            <catelogsearch_searchable_attributes_load_after>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>storeSearchableAttributes</method>
+                    </enterprise_search>
+                </observers>
+            </catelogsearch_searchable_attributes_load_after>
+            <catalog_category_product_partial_reindex>
+                <observers>
+                    <enterprise_search>
+                        <class>enterprise_search/observer</class>
+                        <method>rebuiltIndex</method>
+                    </enterprise_search>
+                </observers>
+            </catalog_category_product_partial_reindex>
         </events>
     </global>
 
@@ -125,15 +142,6 @@
                     </enterprise_search>
                 </observers>
             </adminhtml_catalog_product_attribute_edit_prepare_form>
-
-            <catelogsearch_searchable_attributes_load_after>
-                <observers>
-                    <enterprise_search>
-                        <class>enterprise_search/observer</class>
-                        <method>storeSearchableAttributes</method>
-                    </enterprise_search>
-                </observers>
-            </catelogsearch_searchable_attributes_load_after>
 
             <catalogsearch_query_save_after>
                 <observers>

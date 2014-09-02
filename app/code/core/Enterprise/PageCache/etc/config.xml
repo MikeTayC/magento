@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -85,10 +85,192 @@
                     </enterprise_pagecache>
                 </observers>
             </core_clean_cache>
+            <clean_cache_by_tags>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>cleanCacheByTags</method>
+                    </enterprise_pagecache>
+                </observers>
+            </clean_cache_by_tags>
+            <model_save_commit_after>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>processEntityAction</method>
+                    </enterprise_pagecache>
+                </observers>
+            </model_save_commit_after>
+            <model_delete_commit_after>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>processEntityAction</method>
+                    </enterprise_pagecache>
+                </observers>
+            </model_delete_commit_after>
+            <sales_order_place_after>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>registerNewOrder</method>
+                    </enterprise_pagecache>
+                </observers>
+            </sales_order_place_after>
+            <catalog_category_save_before>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>registerCategorySave</method>
+                    </enterprise_pagecache>
+                </observers>
+            </catalog_category_save_before>
+
+            <!-- FULL REINDEX -->
+            <cataloginventory_stock_full_reindex>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer_index</class>
+                        <method>invalidateCacheAfterFullReindex</method>
+                    </enterprise_pagecache>
+                </observers>
+            </cataloginventory_stock_full_reindex>
+            <catalog_product_price_full_reindex>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer_index</class>
+                        <method>invalidateCacheAfterFullReindex</method>
+                    </enterprise_pagecache>
+                </observers>
+            </catalog_product_price_full_reindex>
+            <catalog_product_flat_full_reindex>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer_index</class>
+                        <method>invalidateCacheAfterFullReindex</method>
+                    </enterprise_pagecache>
+                </observers>
+            </catalog_product_flat_full_reindex>
+            <catalog_category_flat_full_reindex>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer_index</class>
+                        <method>invalidateCacheAfterFullReindex</method>
+                    </enterprise_pagecache>
+                </observers>
+            </catalog_category_flat_full_reindex>
+            <catalog_category_product_full_reindex>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer_index</class>
+                        <method>invalidateCacheAfterFullReindex</method>
+                    </enterprise_pagecache>
+                </observers>
+            </catalog_category_product_full_reindex>
+
+            <!-- PARTIAL PRODUCT REINDEX -->
+            <cataloginventory_stock_partial_reindex>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer_index</class>
+                        <method>cleanProductsCacheAfterPartialReindex</method>
+                    </enterprise_pagecache>
+                </observers>
+            </cataloginventory_stock_partial_reindex>
+            <catalog_product_price_partial_reindex>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer_index</class>
+                        <method>cleanProductsCacheAfterPartialReindex</method>
+                    </enterprise_pagecache>
+                </observers>
+            </catalog_product_price_partial_reindex>
+            <catalog_product_flat_partial_reindex>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer_index</class>
+                        <method>cleanProductsCacheAfterPartialReindex</method>
+                    </enterprise_pagecache>
+                </observers>
+            </catalog_product_flat_partial_reindex>
+            <catalog_category_product_partial_reindex>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer_index</class>
+                        <method>cleanProductsCacheAfterPartialReindex</method>
+                    </enterprise_pagecache>
+                </observers>
+            </catalog_category_product_partial_reindex>
+            <catalog_url_product_partial_reindex>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer_index</class>
+                        <method>cleanProductsCacheAfterPartialReindex</method>
+                    </enterprise_pagecache>
+                </observers>
+            </catalog_url_product_partial_reindex>
+
+            <!-- PARTIAL CATEGORY REINDEX -->
+            <catalog_category_flat_partial_reindex>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer_index</class>
+                        <method>cleanCategoriesCacheAfterPartialReindex</method>
+                    </enterprise_pagecache>
+                </observers>
+            </catalog_category_flat_partial_reindex>
+            <catalog_url_category_partial_reindex>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer_index</class>
+                        <method>cleanCategoriesCacheAfterPartialReindex</method>
+                    </enterprise_pagecache>
+                </observers>
+            </catalog_url_category_partial_reindex>
+            <catalog_url_category_reindex>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer_index</class>
+                        <method>cleanCacheByTags</method>
+                    </enterprise_pagecache>
+                </observers>
+            </catalog_url_category_reindex>
+            <rewrite_url_partial_reindex>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer_index</class>
+                        <method>clearRequestCacheByTag</method>
+                    </enterprise_pagecache>
+                </observers>
+            </rewrite_url_partial_reindex>
+            <catalog_category_product_cat_partial_reindex>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer_index</class>
+                        <method>cleanCategoriesCacheAfterPartialReindex</method>
+                    </enterprise_pagecache>
+                </observers>
+            </catalog_category_product_cat_partial_reindex>
         </events>
     </global>
     <adminhtml>
         <events>
+            <redirect_save_commit_after>
+                <observers>
+                    <invalidate_full_page_cache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>clearRequestCacheByTag</method>
+                    </invalidate_full_page_cache>
+                </observers>
+            </redirect_save_commit_after>
+            <redirect_delete_commit_after>
+                <observers>
+                    <invalidate_full_page_cache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>clearRequestCacheByTag</method>
+                    </invalidate_full_page_cache>
+                </observers>
+            </redirect_delete_commit_after>
             <clean_media_cache_after>
                 <observers>
                     <enterprise_pagecache>
@@ -121,6 +303,30 @@
                     </enterprise_pagecache>
                 </observers>
             </model_delete_commit_after>
+            <tag_save_before>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>cleanCachedProductTagsForTags</method>
+                    </enterprise_pagecache>
+                </observers>
+            </tag_save_before>
+            <tag_save_after>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>cleanCachedProductTagsForTags</method>
+                    </enterprise_pagecache>
+                </observers>
+            </tag_save_after>
+            <tag_delete_before>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>cleanCachedProductTagsForTags</method>
+                    </enterprise_pagecache>
+                </observers>
+            </tag_delete_before>
             <controller_action_postdispatch_adminhtml_system_currency_saveRates>
                 <observers>
                     <enterprise_pagecache>
@@ -137,22 +343,6 @@
                     </enterprise_pagecache>
                 </observers>
             </controller_action_postdispatch_adminhtml_system_config_save>
-            <controller_action_postdispatch_adminhtml_catalog_product_action_attribute_save>
-                <observers>
-                    <enterprise_pagecache>
-                        <class>enterprise_pagecache/observer</class>
-                        <method>invalidateCache</method>
-                    </enterprise_pagecache>
-                </observers>
-            </controller_action_postdispatch_adminhtml_catalog_product_action_attribute_save>
-            <controller_action_postdispatch_adminhtml_catalog_product_massStatus>
-                <observers>
-                    <enterprise_pagecache>
-                        <class>enterprise_pagecache/observer</class>
-                        <method>invalidateCache</method>
-                    </enterprise_pagecache>
-                </observers>
-            </controller_action_postdispatch_adminhtml_catalog_product_massStatus>
             <controller_action_postdispatch_adminhtml_system_currencysymbol_save>
                 <observers>
                     <enterprise_pagecache>
@@ -177,6 +367,14 @@
                     </enterprise_pagecache>
                 </observers>
             </core_config_backend_design_exception_save_after>
+            <core_config_matcher_priority_save_after>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>invalidateCache</method>
+                    </enterprise_pagecache>
+                </observers>
+            </core_config_matcher_priority_save_after>
             <adminhtml_system_config_backend_cookie_save_after>
                 <observers>
                     <enterprise_pagecache>
@@ -209,7 +407,25 @@
                     </enterprise_pagecache>
                 </observers>
             </adminhtml_cache_flush_all>
+            <wishlist_item_add_after>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>registerAdminWishlistChange</method>
+                    </enterprise_pagecache>
+                </observers>
+            </wishlist_item_add_after>
         </events>
+        <cache>
+            <dependency>
+                <change>
+                    <widget>Mage_Widget_Model_Widget_Instance</widget>
+                </change>
+                <delete>
+                    <widget>Mage_Widget_Model_Widget_Instance</widget>
+                </delete>
+            </dependency>
+        </cache>
     </adminhtml>
     <frontend>
         <routers>
@@ -230,20 +446,16 @@
                     </enterprise_pagecache>
                 </observers>
             </controller_response_redirect>
-            <model_load_after>
-                <observers>
-                    <enterprise_pagecache>
-                        <class>enterprise_pagecache/observer</class>
-                        <method>registerModelTag</method>
-                    </enterprise_pagecache>
-                </observers>
-            </model_load_after>
             <controller_action_predispatch>
                 <observers>
                     <enterprise_pagecache>
                         <class>enterprise_pagecache/observer</class>
                         <method>processPreDispatch</method>
                     </enterprise_pagecache>
+                    <enterprise_pagecache_form_key>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>registerCachedFormKey</method>
+                    </enterprise_pagecache_form_key>
                 </observers>
             </controller_action_predispatch>
             <controller_action_postdispatch_catalog_product_view>
@@ -271,6 +483,12 @@
                 </observers>
             </controller_front_send_response_before>
             <core_block_abstract_to_html_after>
+                <observers>
+                    <enterprise_pagecache_register_block_tags>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>registerBlockTags</method>
+                    </enterprise_pagecache_register_block_tags>
+                </observers>
                 <observers>
                     <enterprise_pagecache>
                         <class>enterprise_pagecache/observer</class>
@@ -370,14 +588,6 @@
                     </enterprise_pagecache>
                 </observers>
             </wishlist_item_delete_commit_after>
-            <sales_order_place_after>
-                <observers>
-                    <enterprise_pagecache>
-                        <class>enterprise_pagecache/observer</class>
-                        <method>registerNewOrder</method>
-                    </enterprise_pagecache>
-                </observers>
-            </sales_order_place_after>
             <poll_vote_add>
                 <observers>
                     <enterprise_pagecache>
@@ -405,6 +615,7 @@
         </events>
         <cache>
             <requests>
+                <_no_route>enterprise_pagecache/processor_noroute</_no_route>
                 <cms>enterprise_pagecache/processor_default</cms>
                 <catalog>
                     <category>

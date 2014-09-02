@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pci
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -87,9 +87,13 @@ class Enterprise_Pci_Adminhtml_Crypt_KeyController extends Mage_Adminhtml_Contro
                 Mage::helper('core')->validateKey($key);
             }
             $newKey = Mage::getResourceSingleton('enterprise_pci/key_change')->changeEncryptionKey($key);
-            Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('enterprise_pci')->__('Encryption key has been changed.'));
+            Mage::getSingleton('adminhtml/session')->addSuccess(
+                Mage::helper('enterprise_pci')->__('Encryption key has been changed.')
+            );
             if (!$key) {
-                Mage::getSingleton('adminhtml/session')->addNotice(Mage::helper('enterprise_pci')->__('Your new encryption key: <span style="font-family:monospace;">%s</span>. Please make a note of it and make sure you keep it in a safe place.', $newKey));
+                Mage::getSingleton('adminhtml/session')->addNotice(
+                    Mage::helper('enterprise_pci')->__('Your new encryption key: <span style="font-family:monospace;">%s</span>. Please make a note of it and make sure you keep it in a safe place.', $newKey)
+                );
             }
             Mage::app()->cleanCache();
         }

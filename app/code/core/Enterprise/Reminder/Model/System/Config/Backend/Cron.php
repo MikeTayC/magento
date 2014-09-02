@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -58,7 +58,9 @@ class Enterprise_Reminder_Model_System_Config_Backend_Cron extends Mage_Core_Mod
                     $cronExprString = "{$minutes} * * * *";
                 }
                 else {
-                    Mage::throwException(Mage::helper('enterprise_reminder')->__('Please, specify correct minutes of hour.'));
+                    Mage::throwException(
+                        Mage::helper('enterprise_reminder')->__('Please, specify correct minutes of hour.')
+                    );
                 }
             }
             elseif ($frequency == $daily) {

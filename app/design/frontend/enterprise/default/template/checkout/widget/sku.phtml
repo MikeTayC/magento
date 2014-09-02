@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -43,6 +43,7 @@ $qtyValidationClasses = 'required-entry validate-number validate-greater-than-ze
         </div>
         <?php endif ?>
         <form id="<?php echo $skuFormId; ?>" action="<?php echo $this->getFormAction(); ?>" method="post" <?php if ($this->getIsMultipart()): ?> enctype="multipart/form-data"<?php endif; ?>>
+            <?php echo $this->getBlockHtml('formkey'); ?>
             <div class="block-content">
                 <table id="items-table<?php echo $uniqueSuffix; ?>" class="sku-table data-table" cellspacing="0" cellpadding="0">
                     <colgroup>

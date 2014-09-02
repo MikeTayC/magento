@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -184,4 +184,9 @@
             <block type="enterprise_giftwrapping/adminhtml_sales_order_view_items" name="giftwrapping_extra_info" template="enterprise/giftwrapping/sales/creditmemo/view/renderer.phtml" before="-" />
         </reference>
     </adminhtml_sales_order_creditmemo_view>
+    <default>
+        <reference name="tax_notifications">
+            <block type="enterprise_giftwrapping/adminhtml_notifications" name="tax_notifications" template="tax/notifications.phtml"></block>
+        </reference>
+    </default>
 </layout>

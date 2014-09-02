@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -95,7 +95,9 @@ class Enterprise_Staging_Adminhtml_Staging_BackupController
         }
 
         if ($staging && $staging->isStatusProcessing()) {
-            $this->_getSession()->addNotice($this->__('This backup is read-only, because a merge or a rollback is in progress.'));
+            $this->_getSession()->addNotice(
+                $this->__('This backup is read-only, because a merge or a rollback is in progress.')
+            );
         }
 
         $this->_title($this->__('System'))
@@ -191,7 +193,9 @@ class Enterprise_Staging_Adminhtml_Staging_BackupController
         $mapData = array('staging_items' => array_flip((array)$mapDataRaw));
 
         if (!$staging->checkCoreFlag()) {
-            $this->_getSession()->addError($this->__('Cannot perform rollback operation because reindexing process or another staging operation is running.'));
+            $this->_getSession()->addError(
+                $this->__('Cannot perform rollback operation because reindexing process or another staging operation is running.')
+            );
             $this->_redirect('*/*/edit', array(
                 '_current'  => true
             ));
@@ -212,7 +216,10 @@ class Enterprise_Staging_Adminhtml_Staging_BackupController
             $staging->releaseCoreFlag();
             $redirectBack = true;
         } catch (Exception $e) {
-            $this->_getSession()->addException($e, Mage::helper('enterprise_staging')->__('An error occurred while performing rollback. Please review the log and try again.'));
+            $this->_getSession()->addException(
+                $e,
+                Mage::helper('enterprise_staging')->__('An error occurred while performing rollback. Please review the log and try again.')
+            );
             $staging->releaseCoreFlag();
             $redirectBack = true;
         }

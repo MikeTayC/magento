@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -66,7 +66,9 @@ class Enterprise_Staging_Model_Entry
     public function getBaseFolder()
     {
         if (empty($this->_baseFolderName)) {
-            Mage::throwException(Mage::helper('enterprise_staging')->__('There is wrong value in configuration for entry points folder name.'));
+            Mage::throwException(
+                Mage::helper('enterprise_staging')->__('There is wrong value in configuration for entry points folder name.')
+            );
         }
         return BP . DS . $this->_baseFolderName;
     }

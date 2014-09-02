@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 /* @var $this Enterprise_CatalogPermissions_Block_Adminhtml_Catalog_Category_Tab_Permissions_Row */
@@ -64,7 +64,7 @@
                     <option value=""><?php echo $this->helper('enterprise_catalogpermissions')->__('-- Please Select --');?></option>
                     <option value="-1"><?php echo $this->helper('enterprise_catalogpermissions')->__('All Websites');?></option>
                     <?php foreach ($this->getWebsiteCollection() as $_website): ?>
-                        <option value="<?php echo $_website->getId() ?>"><?php echo $this->htmlEscape($_website->getName()) ?></option>
+                        <option value="<?php echo $_website->getId() ?>"><?php echo $this->escapeHtml($_website->getName()) ?></option>
                     <?php endforeach; ?>
                  </select></td>
                  <?php endif; ?>
@@ -73,7 +73,7 @@
                         <option value=""><?php echo $this->helper('enterprise_catalogpermissions')->__('-- Please Select --');?></option>
                         <option value="-1"><?php echo $this->helper('enterprise_catalogpermissions')->__('All Customer Groups');?></option>
                         <?php foreach ($this->getCustomerGroupCollection() as $_customerGroup): ?>
-                            <option value="<?php echo $_customerGroup->getId() ?>"><?php echo $this->htmlEscape($_customerGroup->getCode()) ?></option>
+                            <option value="<?php echo $_customerGroup->getId() ?>"><?php echo $this->escapeHtml($_customerGroup->getCode()) ?></option>
                         <?php endforeach; ?>
                      </select>
                  </td>

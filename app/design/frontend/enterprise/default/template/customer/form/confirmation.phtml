@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -35,7 +35,7 @@
             <li>
                 <label for="email_address" class="required"><em>*</em><?php echo $this->__('Email Address') ?></label>
                 <div class="input-box">
-                    <input type="text" name="email" id="email_address" class="input-text required-entry validate-email" value="<?php echo $this->htmlEscape($this->getEmail()) ?>" />
+                    <input type="text" name="email" id="email_address" class="input-text required-entry validate-email" value="<?php echo $this->escapeHtml($this->getEmail()) ?>" />
                 </div>
             </li>
         </ul>

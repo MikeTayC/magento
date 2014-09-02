@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Ogone
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -286,6 +286,8 @@ class Mage_Ogone_ApiController extends Mage_Core_Controller_Front_Action
                     );
                 }
 
+                $order->getPayment()->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);
+
                 if (!$order->getInvoiceCollection()->getSize()) {
                     $invoice = $order->prepareInvoice();
                     $invoice->register();
@@ -335,6 +337,7 @@ class Mage_Ogone_ApiController extends Mage_Core_Controller_Front_Action
                     Mage_Ogone_Model_Api::PROCESSED_OGONE_STATUS,
                     Mage::helper('ogone')->__('Processed by Ogone')
                 );
+                $order->getPayment()->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH);
             }
             $order->save();
             $this->_redirect('checkout/onepage/success');

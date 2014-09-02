@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Tag
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -99,7 +99,7 @@ class Mage_Tag_Block_Product_List extends Mage_Core_Block_Template
         $out = array();
         foreach ($this->getTags() as $tag) {
             $out[] = sprintf($pattern,
-                $tag->getTaggedProductsUrl(), $this->htmlEscape($tag->getName()), $tag->getProducts()
+                $tag->getTaggedProductsUrl(), $this->escapeHtml($tag->getName()), $tag->getProducts()
             );
         }
         return implode($out, $glue);

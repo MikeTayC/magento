@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -36,16 +36,22 @@ class Enterprise_TargetRule_Model_Actions_Condition_Product_Attributes
     extends Enterprise_TargetRule_Model_Rule_Condition_Product_Attributes
 {
     /**
-     * Value type values constants
-     *
+     * Value type values: constant
      */
-    const VALUE_TYPE_CONSTANT       = 'constant';
-    const VALUE_TYPE_SAME_AS        = 'same_as';
+    const VALUE_TYPE_CONSTANT = 'constant';
+
+    /**
+     * Value type values: same_as
+     */
+    const VALUE_TYPE_SAME_AS  = 'same_as';
+
+    /**
+     * Value type values: child_of
+     */
     const VALUE_TYPE_CHILD_OF       = 'child_of';
 
     /**
      * Define action type and default value
-     *
      */
     public function __construct()
     {
@@ -135,7 +141,10 @@ class Enterprise_TargetRule_Model_Actions_Condition_Product_Attributes
      */
     public function asHtml()
     {
-        return Mage::helper('enterprise_targetrule')->__('Product %s%s%s%s%s%s%s', $this->getTypeElementHtml(), $this->getAttributeElementHtml(), $this->getOperatorElementHtml(), $this->getValueTypeElementHtml(), $this->getValueElementHtml(), $this->getRemoveLinkHtml(), $this->getChooserContainerHtml());
+        return Mage::helper('enterprise_targetrule')->__('Product') . ' '
+            . $this->getTypeElementHtml() . $this->getAttributeElementHtml()
+            . $this->getOperatorElementHtml() . $this->getValueTypeElementHtml() . $this->getValueElementHtml()
+            . $this->getRemoveLinkHtml() . $this->getChooserContainerHtml();
     }
 
     /**
@@ -301,9 +310,8 @@ class Enterprise_TargetRule_Model_Actions_Condition_Product_Attributes
                         array('bindArrayOfIds')));
                 $select->where('category_id IN(?)', $subSelect);
             } else { //self::VALUE_TYPE_CONSTANT
-                $operator = ($operator == '==') ? '' : 'NOT';
                 $value = $resource->bindArrayOfIds($this->getValue());
-                $where = "category_id {$operator} IN(" . implode(',', $value) . ")";
+                $where = $resource->getOperatorCondition('category_id', $operator, $value);
                 $select->where($where);
             }
 

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -102,8 +102,10 @@ class Enterprise_GiftRegistry_Model_Item_Option extends Mage_Core_Model_Abstract
      */
     public function setProduct($product)
     {
-        $this->setProductId($product->getId());
-        $this->_product = $product;
+        if (!empty($product) && !is_null($product->getId())) {
+            $this->setProductId($product->getId());
+            $this->_product = $product;
+        }
         return $this;
     }
 

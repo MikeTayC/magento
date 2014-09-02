@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -35,8 +35,8 @@
         <?php for($_j=0;$_j<$this->getColumnCount();$_j++): ?>
             <?php if($_bundle=$this->getIterableItem()): ?>
             <td>
-                <p class="product-image"><a href="<?php echo $_bundle->getProductUrl() ?>"><img src="<?php echo $this->helper('catalog/image')->init($_bundle, 'small_image')->resize(125) ?>" width="125" height="125" alt="<?php echo $this->htmlEscape($_bundle->getName()) ?>" title="<?php echo $this->htmlEscape($_bundle->getName()) ?>" /></a></p>
-                <h3><a href="<?php echo $_bundle->getProductUrl() ?>"><?php echo $this->htmlEscape($_bundle->getName()) ?></a></h3>
+                <p class="product-image"><a href="<?php echo $_bundle->getProductUrl() ?>"><img src="<?php echo $this->helper('catalog/image')->init($_bundle, 'small_image')->resize(125) ?>" width="125" height="125" alt="<?php echo $this->escapeHtml($_bundle->getName()) ?>" title="<?php echo $this->escapeHtml($_bundle->getName()) ?>" /></a></p>
+                <h3><a href="<?php echo $_bundle->getProductUrl() ?>"><?php echo $this->escapeHtml($_bundle->getName()) ?></a></h3>
                 <?php echo $this->getPriceHtml($_bundle, true) ?>
                 <?php echo $this->getReviewsSummaryHtml($_bundle) ?>
             </td>

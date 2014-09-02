@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -73,6 +73,19 @@ function switchFilterSelect(id, vals, dict)
             }.bind(this));
         } else {
             $(id).up(1).hide();
+        }
+    }
+}
+
+function switchInputOutputFilterSelect(id, vals, dict)
+{
+    switchFilterSelect(id, vals, dict);
+    if ($(id)) {
+        if (typeof(vals[0]) != 'undefined' && vals[0] == 'date' && $(id).options.length > 1) {
+            $(id).options[0].hide();
+            $(id).options[1].selected = true;
+        } else {
+            $(id).options[0].show();
         }
     }
 }
@@ -131,7 +144,7 @@ function switchDefaultValueField()
     }
 
     switchFilterSelect('input_validation', select_validate_filters, attribute_validate_filters);
-    switchFilterSelect('input_filter', select_filter_types, attribute_filter_types);
+    switchInputOutputFilterSelect('input_filter', select_filter_types, attribute_filter_types);
 
     setRowVisibility('default_value_text', show_default_value_text);
     setRowVisibility('default_value_textarea', show_default_value_textarea);

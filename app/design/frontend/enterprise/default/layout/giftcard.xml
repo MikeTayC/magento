@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -31,6 +31,7 @@
         <reference name="product.info">
             <block type="enterprise_giftcard/catalog_product_view_type_giftcard" name="product.info.giftcard" as="product_type_data" template="giftcard/catalog/product/view/type/giftcard.phtml">
                 <action method="addPriceBlockType"><type>giftcard</type><block>enterprise_giftcard/catalog_product_price</block><template>giftcard/catalog/product/price.phtml</template></action>
+                <block type="enterprise_giftcard/catalog_product_view_type_giftcard_form" name="product.info.giftcard.form" as="product.info.giftcard.form" template="giftcard/catalog/product/view/type/giftcard/form.phtml"/>
                 <block type="cataloginventory/stockqty_default" name="product.info.giftcard.extra" as="product_type_data_extra" template="cataloginventory/stockqty/default.phtml"/>
             </block>
         </reference>

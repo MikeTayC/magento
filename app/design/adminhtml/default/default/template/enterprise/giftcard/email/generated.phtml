@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -32,7 +32,7 @@
     <?php if (!$_code) continue; ?>
 
     <?php if ($_isRedeemable): ?>
-        <a href="<?php echo $this->getStore()->getUrl('enterprise_giftcardaccount/customer', array('giftcard'=>$_code)); ?>"><?php echo $this->htmlEscape($_code); ?></a>
+        <a href="<?php echo $this->getStore()->getUrl('enterprise_giftcardaccount/customer', array('giftcard'=>$_code)); ?>"><?php echo $this->escapeHtml($_code); ?></a>
     <?php else: ?>
         <?php echo $_code; ?>
     <?php endif; ?>

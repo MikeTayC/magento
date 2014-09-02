@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -185,7 +185,9 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge_Ipn
                 $receiverEmail = $this->getIpnFormData('receiver_email');
             }
             if ($merchantEmail != $receiverEmail) {
-                Mage::throwException(Mage::helper('paypal')->__('Requested %s and configured %s merchant emails do not match.', $receiverEmail, $merchantEmail));
+                Mage::throwException(
+                    Mage::helper('paypal')->__('Requested %s and configured %s merchant emails do not match.', $receiverEmail, $merchantEmail)
+                );
             }
         }
     }
@@ -256,7 +258,9 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge_Ipn
                         break;
                     // void by merchant on PayPal side
                     case self::STATUS_VOIDED:
-                        $this->_registerPaymentVoid(Mage::helper('paypal')->__('Authorization was voided by merchant.'));
+                        $this->_registerPaymentVoid(
+                            Mage::helper('paypal')->__('Authorization was voided by merchant.')
+                        );
                         break;
                 }
             }
@@ -366,7 +370,9 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge_Ipn
                 $message = Mage::helper('paypal')->__('Multi-currency issue. Merchant must manually accept or deny this payment from PayPal Account Overview.');
                 break;
             case 'order':
-                Mage::throwException('"Order" authorizations are not implemented. Please use "simple" authorization.');
+                Mage::throwException(
+                    Mage::helper('enterprise_pbridge')->__('"Order" authorizations are not implemented. Please use "simple" authorization.')
+                );
             case 'authorization':
                 $this->_registerPaymentAuthorization();
                 break;
@@ -438,6 +444,9 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge_Ipn
     {
         $paymentStatus = $this->getIpnFormData('payment_status');
         $message = Mage::helper('paypal')->__('IPN verification "%s".', $paymentStatus);
+        if ($this->getIpnFormData('txn_id')) {
+            $message .= ' ' . Mage::helper('enterprise_pbridge')->__('Original gateway transaction id: #%s.', $this->getIpnFormData('txn_id'));
+        }
         if ($comment) {
             $message .= ' ' . $comment;
         }

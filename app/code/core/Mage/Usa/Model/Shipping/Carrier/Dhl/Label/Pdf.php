@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Usa
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -62,8 +62,6 @@ class Mage_Usa_Model_Shipping_Carrier_Dhl_Label_Pdf
      * Create Label
      *
      * @return string
-     * @throws Zend_Pdf_Exception
-     * @throws InvalidArgumentException
      */
     public function render()
     {

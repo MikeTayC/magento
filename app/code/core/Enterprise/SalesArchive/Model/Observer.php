@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_SalesArchive
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -160,5 +160,34 @@ class Enterprise_SalesArchive_Model_Observer
         $collectionSelect->union($unionParts, Zend_Db_Select::SQL_UNION_ALL);
 
         return $this;
+    }
+
+    /**
+     * Replaces redirects to orders list page onto archive orders list page redirects when mass action performed from
+     * archive orders list page
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_SalesArchive_Model_Observer
+     */
+    public function replaceSalesOrderRedirect(Varien_Event_Observer $observer)
+    {
+        /**
+         * @var Mage_Adminhtml_Controller_Action $controller
+         */
+        $controller = $observer->getControllerAction();
+        /**
+         * @var Mage_Core_Controller_Response_Http $response
+         */
+        $response = $controller->getResponse();
+        /**
+         * @var Mage_Core_Controller_Request_Http $request
+         */
+        $request = $controller->getRequest();
+
+        if (!$response->isRedirect() || $request->getParam('origin') != 'archive') {
+            return $this;
+        }
+
+        $response->setRedirect($controller->getUrl('*/sales_archive/orders'));
     }
 }

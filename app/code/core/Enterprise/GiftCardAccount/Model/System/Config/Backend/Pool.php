@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -73,7 +73,9 @@ class Enterprise_GiftCardAccount_Model_System_Config_Backend_Pool extends Mage_C
         }
 
         if ($len > 255) {
-            Mage::throwException(Mage::helper('enterprise_giftcardaccount')->__('Maximum generated code length is 255. Please correct your settings.'));
+            Mage::throwException(
+                Mage::helper('enterprise_giftcardaccount')->__('Maximum generated code length is 255. Please correct your settings.')
+            );
         }
     }
 }

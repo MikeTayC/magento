@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -75,7 +75,9 @@ class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
             'path'
         );
         if (!sizeof(array_intersect($_optionsNames, array_keys($options)))) {
-            Mage::throwException(Mage::helper('enterprise_search')->__('Unable to perform search because of search engine missed configuration.'));
+            Mage::throwException(
+                Mage::helper('enterprise_search')->__('Unable to perform search because of search engine missed configuration.')
+            );
         }
 
         $this->setUserLogin($options['login']);
@@ -168,7 +170,10 @@ class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
      */
     protected function _sendRawGet($url, $timeout = FALSE)
     {
-        stream_context_set_option($this->_getContext, 'http', 'header', "Authorization: Basic " . base64_encode($this->getUserLogin() . ':' . $this->getPassword()));
+        stream_context_set_option(
+            $this->_getContext, 'http', 'header',
+            "Authorization: Basic " . base64_encode($this->getUserLogin() . ':' . $this->getPassword())
+        );
         return parent::_sendRawGet($url, $timeout);
     }
 
@@ -185,7 +190,10 @@ class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
      */
     protected function _sendRawPost($url, $rawPost, $timeout = FALSE, $contentType = 'text/xml; charset=UTF-8')
     {
-        stream_context_set_option($this->_postContext, 'http', 'header', "Authorization: Basic " . base64_encode($this->getUserLogin() . ':' . $this->getPassword()));
+        stream_context_set_option(
+            $this->_postContext, 'http', 'header',
+            "Authorization: Basic " . base64_encode($this->getUserLogin() . ':' . $this->getPassword())
+        );
         return parent::_sendRawPost($url, $rawPost, $timeout, $contentType);
     }
 
@@ -268,7 +276,9 @@ class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
         }
         else if ($method == self::METHOD_POST)
         {
-            return $this->_sendRawPost($this->_suggestionsUrl, $queryString, FALSE, 'application/x-www-form-urlencoded');
+            return $this->_sendRawPost(
+                $this->_suggestionsUrl, $queryString, FALSE, 'application/x-www-form-urlencoded'
+            );
         }
         else
         {

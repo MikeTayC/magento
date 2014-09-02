@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -77,15 +77,13 @@ abstract class Enterprise_PageCache_Model_Container_Advanced_Abstract
         }
 
         $tags[] = Enterprise_PageCache_Model_Processor::CACHE_TAG;
+        $tags = array_merge($tags, $this->_getPlaceHolderBlock()->getCacheTags());
         if (is_null($lifetime)) {
             $lifetime = $this->_placeholder->getAttribute('cache_lifetime') ?
                 $this->_placeholder->getAttribute('cache_lifetime') : false;
         }
 
-        /**
-         * Replace all occurrences of session_id with unique marker
-         */
-        Enterprise_PageCache_Helper_Url::replaceSid($data);
+        Enterprise_PageCache_Helper_Data::prepareContentPlaceholders($data);
 
         $result = array();
 

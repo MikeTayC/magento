@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -50,7 +50,7 @@ class Mage_Adminhtml_Block_Poll_Edit extends Mage_Adminhtml_Block_Widget_Form_Co
     public function getHeaderText()
     {
         if( Mage::registry('poll_data') && Mage::registry('poll_data')->getId() ) {
-            return Mage::helper('poll')->__("Edit Poll '%s'", $this->htmlEscape(Mage::registry('poll_data')->getPollTitle()));
+            return Mage::helper('poll')->__("Edit Poll '%s'", $this->escapeHtml(Mage::registry('poll_data')->getPollTitle()));
         } else {
             return Mage::helper('poll')->__('New Poll');
         }

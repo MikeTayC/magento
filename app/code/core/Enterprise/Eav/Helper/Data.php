@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -486,7 +486,9 @@ class Enterprise_Eav_Helper_Data extends Mage_Core_Helper_Abstract
             if (isset($data['attribute_code'])) {
                 $validatorAttrCode = new Zend_Validate_Regex(array('pattern' => '/^[a-z_0-9]{1,255}$/'));
                 if (!$validatorAttrCode->isValid($data['attribute_code'])) {
-                    Mage::throwException(Mage::helper('enterprise_eav')->__('Attribute code is invalid. Please use only letters (a-z), numbers (0-9) or underscore(_) in this field, first character should be a letter.'));
+                    Mage::throwException(
+                        Mage::helper('enterprise_eav')->__('Attribute code is invalid. Please use only letters (a-z), numbers (0-9) or underscore(_) in this field, first character should be a letter.')
+                    );
                 }
             }
         }

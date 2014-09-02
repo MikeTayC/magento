@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -227,7 +227,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Paybox_Direct extends Mage_Payment
      */
     public function refund(Varien_Object $payment, $amount)
     {
-        Mage::throwException($this->_getHelper()->__('Refund action is not available.'));
+        Mage::throwException(Mage::helper('payment')->__('Refund action is not available.'));
     }
 
     /**

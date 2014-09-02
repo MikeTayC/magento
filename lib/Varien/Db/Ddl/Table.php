@@ -20,7 +20,7 @@
  *
  * @category    Varien
  * @package     Varien_Db
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -219,6 +219,7 @@ class Varien_Db_Ddl_Table
      * Set comment for table
      *
      * @param string $comment
+     * @return Varien_Db_Ddl_Table
      */
     public function setComment($comment)
     {

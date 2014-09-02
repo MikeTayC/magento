@@ -21,14 +21,14 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_TargetRule>
-            <version>1.11.0.0.3</version>
+            <version>1.11.0.0.5</version>
         </Enterprise_TargetRule>
     </modules>
     <global>
@@ -65,6 +65,15 @@
                     <index_upsell>
                         <table>enterprise_targetrule_index_upsell</table>
                     </index_upsell>
+                    <index_related_product>
+                        <table>enterprise_targetrule_index_related_product</table>
+                    </index_related_product>
+                    <index_upsell_product>
+                        <table>enterprise_targetrule_index_upsell_product</table>
+                    </index_upsell_product>
+                    <index_crosssell_product>
+                        <table>enterprise_targetrule_index_crosssell_product</table>
+                    </index_crosssell_product>
                 </entities>
             </enterprise_targetrule_resource>
         </models>

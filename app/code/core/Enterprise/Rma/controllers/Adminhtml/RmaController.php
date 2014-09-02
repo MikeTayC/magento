@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -220,7 +220,9 @@ class Enterprise_Rma_Adminhtml_RmaController extends Mage_Adminhtml_Controller_A
                     if (isset($data['rma_confirmation']) && !empty($data['rma_confirmation'])) {
                         $model->sendNewRmaEmail();
                     }
-                    Mage::getSingleton('adminhtml/session')->addSuccess($this->__('The RMA request has been submitted.'));
+                    Mage::getSingleton('adminhtml/session')->addSuccess(
+                        $this->__('The RMA request has been submitted.')
+                    );
                 } else {
                     Mage::throwException($this->__('Failed to save RMA.'));
                 }
@@ -983,7 +985,9 @@ class Enterprise_Rma_Adminhtml_RmaController extends Mage_Adminhtml_Controller_A
         } catch (Exception $e) {
                 Mage::logException($e);
                 $responseAjax->setError(true);
-                $responseAjax->setMessage(Mage::helper('enterprise_rma')->__('An error occurred while creating shipping label.'));
+                $responseAjax->setMessage(
+                    Mage::helper('enterprise_rma')->__('An error occurred while creating shipping label.')
+                );
         }
         $this->getResponse()->setBody($responseAjax->toJson());
     }
@@ -1000,7 +1004,9 @@ class Enterprise_Rma_Adminhtml_RmaController extends Mage_Adminhtml_Controller_A
             $shipment = $this->_initShipment();
             if ($this->_createShippingLabel($shipment)) {
                 $shipment->save();
-                $this->_getSession()->addSuccess(Mage::helper('enterprise_rma')->__('The shipping label has been created.'));
+                $this->_getSession()->addSuccess(
+                    Mage::helper('enterprise_rma')->__('The shipping label has been created.')
+                );
                 $response->setOk(true);
             }
         } catch (Mage_Core_Exception $e) {
@@ -1009,7 +1015,9 @@ class Enterprise_Rma_Adminhtml_RmaController extends Mage_Adminhtml_Controller_A
         } catch (Exception $e) {
             Mage::logException($e);
             $response->setError(true);
-            $response->setMessage(Mage::helper('enterprise_rma')->__('An error occurred while creating shipping label.'));
+            $response->setMessage(
+                Mage::helper('enterprise_rma')->__('An error occurred while creating shipping label.')
+            );
         }
 
         $this->getResponse()->setBody($response->toJson());
@@ -1115,7 +1123,9 @@ class Enterprise_Rma_Adminhtml_RmaController extends Mage_Adminhtml_Controller_A
                     $pdf = new Zend_Pdf();
                     $page = $this->_createPdfPageFromImageString($labelContent);
                     if (!$page) {
-                        $this->_getSession()->addError(Mage::helper('enterprise_rma')->__('File extension not known or unsupported type in the following shipment: %s', $model->getIncrementId()));
+                        $this->_getSession()->addError(
+                            Mage::helper('enterprise_rma')->__('File extension not known or unsupported type in the following shipment: %s', $model->getIncrementId())
+                        );
                     }
                     $pdf->pages[] = $page;
                     $pdfContent = $pdf->render();

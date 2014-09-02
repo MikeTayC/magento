@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -94,8 +94,8 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Page_Version_Edit
      */
     public function getHeaderText()
     {
-        $versionLabel = $this->htmlEscape(Mage::registry('cms_page_version')->getLabel());
-        $title = $this->htmlEscape(Mage::registry('cms_page')->getTitle());
+        $versionLabel = $this->escapeHtml(Mage::registry('cms_page_version')->getLabel());
+        $title = $this->escapeHtml(Mage::registry('cms_page')->getTitle());
 
         if (!$versionLabel) {
             $versionLabel = Mage::helper('enterprise_cms')->__('N/A');

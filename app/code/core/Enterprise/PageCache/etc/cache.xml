@@ -14,19 +14,12 @@
             <cache_lifetime>86400</cache_lifetime>
         </last_viewed_products_widget>
         <catalog_navigation>
-            <block>catalog/navigation</block>
+            <block>page/html_topmenu</block>
             <name>catalog.topnav</name>
-            <placeholder>CATALOG_NAVIGATION</placeholder>
+            <placeholder>TOPMENU</placeholder>
             <container>Enterprise_PageCache_Model_Container_Catalognavigation</container>
             <cache_lifetime>86400</cache_lifetime>
         </catalog_navigation>
-        <catalog_breadcrumbs>
-            <block>page/html_breadcrumbs</block>
-            <name>breadcrumbs</name>
-            <placeholder>PAGE_BREADCRUMBS</placeholder>
-            <container>Enterprise_PageCache_Model_Container_Breadcrumbs</container>
-            <cache_lifetime>86400</cache_lifetime>
-        </catalog_breadcrumbs>
         <cart_sidebar>
             <block>checkout/cart_sidebar</block>
             <placeholder>CART_SIDEBAR</placeholder>
@@ -116,6 +109,13 @@
             <container>Enterprise_PageCache_Model_Container_CatalogProductItem</container>
             <cache_lifetime>86400</cache_lifetime>
         </catalog_product_item_upsell>
+        <giftcard_form>
+            <block>enterprise_giftcard/catalog_product_view_type_giftcard_form</block>
+            <name>product.info.giftcard.form</name>
+            <placeholder>GIFTCARD</placeholder>
+            <container>Enterprise_PageCache_Model_Container_Giftcard</container>
+            <cache_lifetime>86400</cache_lifetime>
+        </giftcard_form>
         <catalog_product_list_related>
             <block>catalog/product_list_related</block>
             <name>catalog.product.related</name>

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_SalesArchive
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -117,75 +117,27 @@ class Enterprise_SalesArchive_Adminhtml_Sales_ArchiveController extends Mage_Adm
 
 
     /**
-     * Cancel selected orders
+     * Cancel orders mass action
      */
     public function massCancelAction()
     {
-        $orderIds = $this->getRequest()->getPost('order_ids', array());
-        $countCancelOrder = 0;
-        foreach ($orderIds as $orderId) {
-            $order = Mage::getModel('sales/order')->load($orderId);
-            if ($order->canCancel()) {
-                $order->cancel()
-                    ->save();
-                $countCancelOrder++;
-            }
-        }
-        if ($countCancelOrder>0) {
-            $this->_getSession()->addSuccess($this->__('%s order(s) have been canceled.', $countCancelOrder));
-        }
-        else {
-            // selected orders is not available for cancel
-        }
-        $this->_redirect('*/*/orders');
+        $this->_forward('massCancel', 'sales_order', null, array('origin' => 'archive'));
     }
 
     /**
-     * Hold selected orders
+     * Hold orders mass action
      */
     public function massHoldAction()
     {
-        $orderIds = $this->getRequest()->getPost('order_ids', array());
-        $countHoldOrder = 0;
-        foreach ($orderIds as $orderId) {
-            $order = Mage::getModel('sales/order')->load($orderId);
-            if ($order->canHold()) {
-                $order->hold()
-                    ->save();
-                $countHoldOrder++;
-            }
-        }
-        if ($countHoldOrder>0) {
-            $this->_getSession()->addSuccess($this->__('%s order(s) have been put on hold.', $countHoldOrder));
-        }
-        else {
-            // selected orders is not available for hold
-        }
-        $this->_redirect('*/*/orders');
+        $this->_forward('massHold', 'sales_order', null, array('origin' => 'archive'));
     }
 
     /**
-     * Unhold selected orders
+     * Unhold orders mass action
      */
     public function massUnholdAction()
     {
-        $orderIds = $this->getRequest()->getPost('order_ids', array());
-        $countUnholdOrder = 0;
-        foreach ($orderIds as $orderId) {
-            $order = Mage::getModel('sales/order')->load($orderId);
-            if ($order->canUnhold()) {
-                $order->unhold()
-                    ->save();
-                $countUnholdOrder++;
-            }
-        }
-        if ($countUnholdOrder>0) {
-            $this->_getSession()->addSuccess($this->__('%s order(s) have been released from holding status.', $countUnholdOrder));
-        }
-        else {
-            // selected orders is not available for hold
-        }
-        $this->_redirect('*/*/orders');
+        $this->_forward('massUnhold', 'sales_order', null, array('origin' => 'archive'));
     }
 
     /**
@@ -200,7 +152,9 @@ class Enterprise_SalesArchive_Adminhtml_Sales_ArchiveController extends Mage_Adm
 
         $removedFromArchiveCount = count($removedFromArchive);
         if ($removedFromArchiveCount>0) {
-            $this->_getSession()->addSuccess($this->__('%s order(s) have been removed from archive.', $removedFromArchiveCount));
+            $this->_getSession()->addSuccess(
+                $this->__('%s order(s) have been removed from archive.', $removedFromArchiveCount)
+            );
         }
         else {
             // selected orders is not available for removing from archive
@@ -259,6 +213,46 @@ class Enterprise_SalesArchive_Adminhtml_Sales_ArchiveController extends Mage_Adm
             $this->_getSession()->addError($this->__('Please specify order id to be removed from archive.'));
             $this->_redirect('*/sales_order');
         }
+    }
+
+    /**
+     * Print invoices mass action
+     */
+    public function massPrintInvoicesAction()
+    {
+        $this->_forward('pdfinvoices', 'sales_order', null, array('origin' => 'archive'));
+    }
+
+    /**
+     * Print Credit Memos mass action
+     */
+    public function massPrintCreditMemosAction()
+    {
+        $this->_forward('pdfcreditmemos', 'sales_order', null, array('origin' => 'archive'));
+    }
+
+    /**
+     * Print all documents mass action
+     */
+    public function massPrintAllDocumentsAction()
+    {
+        $this->_forward('pdfdocs', 'sales_order', null, array('origin' => 'archive'));
+    }
+
+    /**
+     * Print packing slips mass action
+     */
+    public function massPrintPackingSlipsAction()
+    {
+        $this->_forward('pdfshipments', 'sales_order', null, array('origin' => 'archive'));
+    }
+
+    /**
+     * Print shipping labels mass action
+     */
+    public function massPrintShippingLabelAction()
+    {
+        $this->_forward('massPrintShippingLabel', 'sales_order_shipment', null, array('origin' => 'archive'));
     }
 
     /**

@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -134,10 +134,10 @@
                 <?php $i=0 ?>
                 <?php foreach ($_items as $_item):$i++ ?>
                     <tr class="<?php echo ($i%2)?'even':'odd' ?>">
-                        <td class="first"><h5 class="title"><?php echo $this->htmlEscape($_item->getName()) ?></h5>
+                        <td class="first"><h5 class="title"><?php echo $this->escapeHtml($_item->getName()) ?></h5>
                             <div>
                                 <strong><?php echo $this->helper('enterprise_checkout')->__('SKU') ?>:</strong>
-                                <?php echo implode('<br />', Mage::helper('catalog')->splitSku($this->htmlEscape($_item->getSku()))); ?>
+                                <?php echo implode('<br />', Mage::helper('catalog')->splitSku($this->escapeHtml($_item->getSku()))); ?>
                             </div>
                             <?php if($_item->getMessage(false)): ?>
                             <?php foreach ($_item->getMessage(false) as $message): ?>

@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -43,7 +43,7 @@
                 <li>
                     <label for="code"><?php echo Mage::helper('enterprise_giftcardaccount')->__('Enter Gift Card code'); ?></label>
                     <div class="input-box">
-                        <input type="text" class="input-text required-entry" name="giftcard_code" id="code" value="<?php echo $this->htmlEscape($this->getCode()) ?>" />
+                        <input type="text" class="input-text required-entry" name="giftcard_code" id="code" value="<?php echo $this->escapeHtml($this->getCode()) ?>" />
                     </div>
                 </li>
             </ul>

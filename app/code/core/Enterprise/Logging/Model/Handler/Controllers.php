@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -604,7 +604,8 @@ class Enterprise_Logging_Model_Handler_Controllers
         if ($messages) {
             $success = 'error' != $messages->getType();
         }
-        return $eventModel->setIsSuccess($success)->setInfo(Mage::helper('enterprise_logging')->__('Currency Rates Saved'));
+        return $eventModel->setIsSuccess($success)
+            ->setInfo(Mage::helper('enterprise_logging')->__('Currency Rates Saved'));
     }
 
     /**

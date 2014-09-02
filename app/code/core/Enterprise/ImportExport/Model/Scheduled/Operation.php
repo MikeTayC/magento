@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_ImportExport
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -350,7 +350,9 @@ class Enterprise_ImportExport_Model_Scheduled_Operation extends Mage_Core_Model_
     {
         $fileInfo = $this->getFileInfo();
         if (empty($fileInfo['file_name'])) {
-            Mage::throwException(Mage::helper('enterprise_importexport')->__('Unable to read file source. File name is empty'));
+            Mage::throwException(
+                Mage::helper('enterprise_importexport')->__('Unable to read file source. File name is empty')
+            );
         }
         $operation->addLogComment(Mage::helper('enterprise_importexport')->__('Connecting to server'));
         $fs = $this->getServerIoDriver();
@@ -363,7 +365,9 @@ class Enterprise_ImportExport_Model_Scheduled_Operation extends Mage_Core_Model_
             Mage::throwException(Mage::helper('enterprise_importexport')->__('Unable to read import file'));
         }
         $fs->close();
-        $operation->addLogComment(Mage::helper('enterprise_importexport')->__('Save history file content "%s"', $this->getHistoryFilePath()));
+        $operation->addLogComment(
+            Mage::helper('enterprise_importexport')->__('Save history file content "%s"', $this->getHistoryFilePath())
+        );
         $this->_saveOperationHistory($tmpFilePath);
         return $tmpFilePath;
     }
@@ -380,7 +384,9 @@ class Enterprise_ImportExport_Model_Scheduled_Operation extends Mage_Core_Model_
     {
         $result = false;
 
-        $operation->addLogComment(Mage::helper('enterprise_importexport')->__('Save history file content "%s"', $this->getHistoryFilePath()));
+        $operation->addLogComment(
+            Mage::helper('enterprise_importexport')->__('Save history file content "%s"', $this->getHistoryFilePath())
+        );
         $this->_saveOperationHistory($fileContent);
 
         $fileInfo = $this->getFileInfo();
@@ -437,7 +443,9 @@ class Enterprise_ImportExport_Model_Scheduled_Operation extends Mage_Core_Model_
 
         $class = 'Varien_Io_' . ucfirst(strtolower($fileInfo['server_type']));
         if (!class_exists($class)) {
-            Mage::throwException(Mage::helper('enterprise_importexport')->__('Invalid server comunication class "%s"', $class));
+            Mage::throwException(
+                Mage::helper('enterprise_importexport')->__('Invalid server comunication class "%s"', $class)
+            );
         }
         $driver = new $class;
         $driver->open($this->_prepareIoConfiguration($fileInfo));

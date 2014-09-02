@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Banner
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -67,7 +67,7 @@ class Enterprise_Banner_Block_Adminhtml_Banner_Edit extends Mage_Adminhtml_Block
     public function getHeaderText()
     {
         if (Mage::registry('current_banner')->getId()) {
-            return $this->htmlEscape(Mage::registry('current_banner')->getName());
+            return $this->escapeHtml(Mage::registry('current_banner')->getName());
         } else {
             return Mage::helper('enterprise_banner')->__('New Banner');
         }

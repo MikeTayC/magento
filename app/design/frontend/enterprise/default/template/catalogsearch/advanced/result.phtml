@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -30,8 +30,7 @@
 <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
 <?php if($this->getResultCount()): ?>
     <p>
-        <?php echo $this->helper('catalogsearch')
-            ->__('<strong>%d item(s)</strong> were found using the following search criteria', $this->getResultCount()); ?>
+        <?php echo $this->helper('catalogsearch')->__('<strong>%d item(s)</strong> were found using the following search criteria', $this->getResultCount()); ?>
     </p>
 <?php else: ?>
 <ul class="messages">
@@ -51,7 +50,7 @@
         <?php if(@$searchCriterias[$side]): ?>
             <ul>
                 <?php foreach($searchCriterias[$side] as $criteria): ?>
-                    <li><strong><?php echo $this->htmlEscape($this->helper('catalog')->__($criteria['name'])); ?>:</strong> <?php echo $this->htmlEscape($criteria['value']); ?></li>
+                    <li><strong><?php echo $this->escapeHtml($this->helper('catalog')->__($criteria['name'])); ?>:</strong> <?php echo $this->escapeHtml($criteria['value']); ?></li>
                 <?php endforeach; ?>
             </ul>
         <?php endif; ?>

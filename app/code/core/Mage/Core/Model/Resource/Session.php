@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -161,6 +161,15 @@ class Mage_Core_Model_Resource_Session implements Zend_Session_SaveHandler_Inter
             session_save_path(Mage::getBaseDir('session'));
         }
         return $this;
+    }
+
+    /**
+     * Adds session handler via static call
+     */
+    public static function setStaticSaveHandler()
+    {
+        $handler = new self;
+        $handler->setSaveHandler();
     }
 
     /**

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CatalogPermissions
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -46,10 +46,12 @@
  * @package     Enterprise_CatalogPermissions
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_CatalogPermissions_Model_Permission_Index extends Mage_Index_Model_Indexer_Abstract
+class Enterprise_CatalogPermissions_Model_Permission_Index extends Mage_Core_Model_Abstract
 {
     /**
      * Reindex products permissions event type
+     *
+     * @deprecated after 1.12.0.2
      */
     const EVENT_TYPE_REINDEX_PRODUCTS = 'reindex_permissions';
 
@@ -60,24 +62,17 @@ class Enterprise_CatalogPermissions_Model_Permission_Index extends Mage_Index_Mo
 
     /**
      * Product entity for indexers
+     *
+     * @deprecated after 1.12.0.2
      */
     const ENTITY_PRODUCT = 'catalogpermissions_product';
 
     /**
      * Config entity for indexers
+     *
+     * @deprecated after 1.12.0.2
      */
     const ENTITY_CONFIG = 'catalogpermissions_config';
-
-    /**
-     * Matched entities
-     *
-     * @var array
-     */
-    protected $_matchedEntities = array(
-        self::ENTITY_PRODUCT  => array(self::EVENT_TYPE_REINDEX_PRODUCTS),
-        self::ENTITY_CATEGORY => array(self::EVENT_TYPE_REINDEX_PRODUCTS),
-        self::ENTITY_CONFIG   => array(Mage_Index_Model_Event::TYPE_SAVE),
-    );
 
     /**
      * Disable visibility of the index
@@ -86,6 +81,11 @@ class Enterprise_CatalogPermissions_Model_Permission_Index extends Mage_Index_Mo
      */
     protected $_isVisible = false;
 
+    /**
+     * Initialize resource model
+     *
+     * @return void
+     */
     protected function _construct()
     {
         $this->_init('enterprise_catalogpermissions/permission_index');
@@ -94,10 +94,10 @@ class Enterprise_CatalogPermissions_Model_Permission_Index extends Mage_Index_Mo
     /**
      * Reindex category permissions
      *
-     * @param string $categoryPath
+     * @param string|null $categoryPath
      * @return Enterprise_CatalogPermissions_Model_Permission_Index
      */
-    public function reindex($categoryPath)
+    public function reindex($categoryPath = null)
     {
         $this->getResource()->reindex($categoryPath);
         return $this;
@@ -105,6 +105,8 @@ class Enterprise_CatalogPermissions_Model_Permission_Index extends Mage_Index_Mo
 
     /**
      * Reindex products permissions
+     *
+     * @deprecated after 1.12.0.2
      *
      * @param array|string $productIds
      * @return Enterprise_CatalogPermissions_Model_Permission_Index
@@ -117,6 +119,8 @@ class Enterprise_CatalogPermissions_Model_Permission_Index extends Mage_Index_Mo
 
     /**
      * Reindex products permissions for standalone mode
+     *
+     * @deprecated after 1.12.0.2
      *
      * @param array|string $productIds
      * @return Enterprise_CatalogPermissions_Model_Permission_Index
@@ -138,18 +142,6 @@ class Enterprise_CatalogPermissions_Model_Permission_Index extends Mage_Index_Mo
     public function getIndexForCategory($categoryId, $customerGroupId, $websiteId)
     {
         return $this->getResource()->getIndexForCategory($categoryId, $customerGroupId, $websiteId);
-    }
-
-    /**
-     * Add index to product count select in product collection
-     *
-     * @param Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection $collection
-     * @return Enterprise_CatalogPermissions_Model_Permission_Index
-     */
-    public function addIndexToProductCount($collection, $customerGroupId)
-    {
-        $this->getResource()->addIndexToProductCount($collection, $customerGroupId);
-        return $this;
     }
 
     /**
@@ -191,11 +183,23 @@ class Enterprise_CatalogPermissions_Model_Permission_Index extends Mage_Index_Mo
         return $this->getResource()->getRestrictedCategoryIds($customerGroupId, $websiteId);
     }
 
+    /**
+     * Set collection limitation condition
+     *
+     * @param Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection $collection
+     * @return Enterprise_CatalogPermissions_Model_Permission_Index
+     */
+    public function setCollectionLimitationCondition($collection)
+    {
+        $this->getResource()->setCollectionLimitationCondition($collection);
+        return $this;
+    }
 
     /**
      * Add index select in product collection
      *
      * @param Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection $collection
+     * @param int $customerGroupId
      * @return Enterprise_CatalogPermissions_Model_Permission_Index
      */
     public function addIndexToProductCollection($collection, $customerGroupId)
@@ -241,57 +245,18 @@ class Enterprise_CatalogPermissions_Model_Permission_Index extends Mage_Index_Mo
     }
 
     /**
-     * Register indexer required data inside event object
+     * Add index to product count select in product collection
      *
-     * @param Mage_Index_Model_Event $event
-     */
-    protected function _registerEvent(Mage_Index_Model_Event $event)
-    {
-        switch ($event->getType()) {
-            case self::EVENT_TYPE_REINDEX_PRODUCTS:
-                switch ($event->getEntity()) {
-                    case self::ENTITY_PRODUCT:
-                        $event->addNewData('product_ids', $event->getDataObject()->getId());
-                        break;
-                    case self::ENTITY_CATEGORY:
-                        $event->addNewData('category_path', $event->getDataObject()->getId());
-                        break;
-                }
-                break;
-        }
-    }
-
-    /**
-     * Process event based on event state data
+     * @deprecated after 1.12.0.2
      *
-     * @param Mage_Index_Model_Event $event
+     * @param Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection $collection
+     * @param int $customerGroupId
+     *
+     * @return Enterprise_CatalogPermissions_Model_Permission_Index
      */
-    protected function _processEvent(Mage_Index_Model_Event $event)
+    public function addIndexToProductCount($collection, $customerGroupId)
     {
-        switch ($event->getType()) {
-            case self::EVENT_TYPE_REINDEX_PRODUCTS:
-                switch ($event->getEntity()) {
-                    case self::ENTITY_PRODUCT:
-                        $data = $event->getNewData();
-                        if ($data['product_ids']) {
-                            $this->reindexProducts($data['product_ids']);
-                        }
-                        break;
-                    case self::ENTITY_CATEGORY:
-                        $data = $event->getNewData();
-                        if ($data['category_path']) {
-                            $this->reindex($data['category_path']);
-                        }
-                        break;
-                }
-                break;
-            case Mage_Index_Model_Event::TYPE_SAVE:
-                switch ($event->getEntity()) {
-                    case self::ENTITY_CONFIG:
-                        $this->reindexProductsStandalone();
-                        break;
-                }
-                break;
-        }
+        $this->getResource()->addIndexToProductCount($collection, $customerGroupId);
+        return $this;
     }
 }

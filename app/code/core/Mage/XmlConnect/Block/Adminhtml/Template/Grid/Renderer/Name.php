@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_XmlConnect
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -44,5 +44,5 @@ class Mage_XmlConnect_Block_Adminhtml_Template_Grid_Renderer_Name
     {
         $str = $this->escapeHtml($row->getName());
         return $str;
-     }
+    }
 }

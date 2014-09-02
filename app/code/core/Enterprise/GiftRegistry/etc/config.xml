@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -122,6 +122,14 @@
                     </enterprise_giftregistry>
                 </observers>
             </sales_order_place_after>
+            <catalog_product_delete_after>
+                <observers>
+                    <enterprise_giftregistry>
+                        <class>Enterprise_GiftRegistry_Model_Observer</class>
+                        <method>deleteProduct</method>
+                    </enterprise_giftregistry>
+                </observers>
+            </catalog_product_delete_after>
         </events>
         <fieldsets>
             <customer_address>

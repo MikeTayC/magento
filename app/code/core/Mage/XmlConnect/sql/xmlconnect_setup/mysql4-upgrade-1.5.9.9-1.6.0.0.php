@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_XmlConnect
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -110,8 +110,6 @@ $installer->getConnection()->addColumn($templateTableName, 'application_id', arr
         'comment'   => 'Application Id'
     )
 );
-
-$installer->getConnection()->dropColumn($templateTableName, 'app_code');
 
 /**
  * Modify fields for 'xmlconnect_queue'

@@ -20,11 +20,16 @@
  *
  * @category    Varien
  * @package     Varien_Cache
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
-class Varien_Cache_Backend_Memcached 
+/**
+ * Class Varien_Cache_Backend_Memcached
+ *
+ * @deprecated after 1.7.0.2
+ */
+class Varien_Cache_Backend_Memcached
     extends Zend_Cache_Backend_Memcached
     implements Zend_Cache_Backend_ExtendedInterface
 {

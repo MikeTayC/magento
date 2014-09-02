@@ -20,41 +20,90 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
-
+/**
+ *  Enterprise_GiftCardAccount_Model_Pool_Abstract  model object definition.
+ *
+ * @category    Enterprise
+ * @package     Enterprise_GiftCardAccount
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
 abstract class Enterprise_GiftCardAccount_Model_Pool_Abstract extends Mage_Core_Model_Abstract
 {
+    /**
+     * Status Constant for Gift Card Code: FREE
+     *
+     * @var integer
+     */
     const STATUS_FREE = 0;
+
+    /**
+     * Status Constant for Gift Card Code: USED
+     *
+     * @var integer
+     */
     const STATUS_USED = 1;
 
+    /**
+     * Percentage of the codes in the pool already used
+     *
+     * @var string
+     */
     protected $_pool_percent_used = null;
+
+    /**
+     * Total Pool Size
+     *
+     * @var integer
+     */
     protected $_pool_size = 0;
+
+    /**
+     * Total number of gift codes that are still free
+     *
+     * @var integer
+     */
     protected $_pool_free_size = 0;
 
     /**
-     * Return first free code
-     * 
+     * Select an unused unique gift card code from the gift card code pool
+     *
      * @return string
      */
     public function shift()
     {
-        $notInArray = $this->getExcludedIds();
         $collection = $this->getCollection()
             ->addFieldToFilter('status', self::STATUS_FREE)
             ->setPageSize(1);
+        // Lock the giftcard code collection
+        $collection->getSelect()->forUpdate(true);
+
+        $notInArray = $this->getExcludedIds();
         if (is_array($notInArray) && !empty($notInArray)) {
             $collection->addFieldToFilter('code', array('nin' => $notInArray));
         }
-        $collection->load();
-        if (!$items = $collection->getItems()) {
-            Mage::throwException(Mage::helper('enterprise_giftcardaccount')->__('No codes left in the pool.'));
+        $items = $collection->getItems();
+        if (!$items) {
+            Mage::throwException(
+                $this->helper('enterprise_giftcardaccount')->__('No codes left in the pool.')
+            );
         }
-
         $item = array_shift($items);
         return $item->getId();
+    }
+
+    /**
+     * Retrieves helper class based on its name
+     *
+     * @param string $name
+     * @return Mage_Core_Helper_Abstract
+     */
+    public function helper($name)
+    {
+        return Mage::helper($name);
     }
 
     /**
@@ -72,7 +121,7 @@ abstract class Enterprise_GiftCardAccount_Model_Pool_Abstract extends Mage_Core_
             if (!$this->_pool_size) {
                 $this->_pool_percent_used = 100;
             } else {
-                $this->_pool_percent_used = 100-round($this->_pool_free_size/($this->_pool_size/100), 2);
+                $this->_pool_percent_used = 100 - round($this->_pool_free_size / ($this->_pool_size / 100), 2);
             }
         }
 
@@ -92,11 +141,6 @@ abstract class Enterprise_GiftCardAccount_Model_Pool_Abstract extends Mage_Core_
     public function cleanupFree()
     {
         $this->getResource()->cleanupByStatus(self::STATUS_FREE);
-        /*
-        $this->getCollection()
-            ->addFieldToFilter('status', self::STATUS_FREE)
-            ->walk('delete');
-        */
         return $this;
     }
 }

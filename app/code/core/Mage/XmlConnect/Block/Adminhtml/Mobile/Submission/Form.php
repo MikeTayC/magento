@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_XmlConnect
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -31,8 +31,7 @@
  * @package     Mage_XmlConnect
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Mage_XmlConnect_Block_Adminhtml_Mobile_Submission_Form
-    extends Mage_Adminhtml_Block_Widget_Form
+class Mage_XmlConnect_Block_Adminhtml_Mobile_Submission_Form extends Mage_Adminhtml_Block_Widget_Form
 {
     /**
      * Prepare form before rendering HTML

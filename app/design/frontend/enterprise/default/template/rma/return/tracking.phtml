@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 /** @var $this Enterprise_Rma_Block_Return_Tracking */
@@ -54,7 +54,8 @@
         <?php endif ?>
     </td>
 </tr>
-<?php endforeach ?>
+<?php endforeach; ?>
+<?php if ($this->isPrintShippingLabelAllowed()): ?>
 <script type="text/javascript">
 //<![CDATA[
     function deleteTrackNumber(number) {
@@ -65,10 +66,11 @@
                     $('rma-please-wait').hide();
                     decorateTable('track-info-table');
                 },
-                parameters : {number: number}
+                parameters: {number: number}
             });
         }
         return false;
     }
 //]]>
 </script>
+<?php endif; ?>

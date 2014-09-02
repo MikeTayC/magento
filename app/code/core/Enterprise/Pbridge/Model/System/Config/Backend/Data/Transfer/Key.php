@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -46,7 +46,9 @@ class Enterprise_Pbridge_Model_System_Config_Backend_Data_Transfer_Key extends M
          * @see Enterprise_Pci_Model_Encryption::_getCrypt
          */
         if (strlen($this->getValue()) > 32) { // strlen() intentionally, to count bytes rather than characters
-            Mage::throwException(Mage::helper('enterprise_pbridge')->__('Maximum data transfer key length is 32. Please correct your settings.'));
+            Mage::throwException(
+                Mage::helper('enterprise_pbridge')->__('Maximum data transfer key length is 32. Please correct your settings.')
+            );
         }
 
         return $this;

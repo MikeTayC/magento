@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -28,10 +28,12 @@
 <?php $_product = $this->getProduct(); ?>
 <?php $_id = $_product->getId(); ?>
 <div class="giftcard-form">
-<?php if ($_product->isAvailable()): ?>
-    <p class="availability in-stock"><?php echo $this->helper('catalog')->__('Availability:') ?> <span><?php echo $this->helper('catalog')->__('In stock') ?></span></p>
-<?php else: ?>
-    <p class="availability out-of-stock"><?php echo $this->helper('catalog')->__('Availability:') ?> <span><?php echo $this->helper('catalog')->__('Out of stock') ?></span></p>
+<?php if ($this->displayProductStockStatus()): ?>
+    <?php if ($_product->isAvailable()): ?>
+        <p class="availability in-stock"><?php echo $this->helper('catalog')->__('Availability:') ?> <span><?php echo $this->helper('catalog')->__('In stock') ?></span></p>
+    <?php else: ?>
+        <p class="availability out-of-stock"><?php echo $this->helper('catalog')->__('Availability:') ?> <span><?php echo $this->helper('catalog')->__('Out of stock') ?></span></p>
+    <?php endif; ?>
 <?php endif; ?>
 
 <?php echo $this->getChildHtml('product_type_data_extra') ?>
@@ -46,6 +48,12 @@
                 </span>
             </span>
         </div>
+        <script type="text/javascript">
+        //<![CDATA[
+            //add gift card amount as product price
+            optionsPrice.productPrice = "<?php echo $_amount ?>";
+        //]]>
+        </script>
 
     <?php else: ?>
         <div class="fieldset giftcard-amount-form">
@@ -164,22 +172,7 @@
     <?php endif; ?>
     <div class="fieldset giftcard-send-form">
         <ul class="form-list">
-            <li class="fields">
-                <div class="field">
-                    <label for="giftcard_sender_name" class="required"><em>*</em><?php echo Mage::helper('enterprise_giftcard')->__('Sender Name'); ?></label>
-                    <div class="input-box">
-                        <input type="text" id="giftcard_sender_name" name="giftcard_sender_name" class="required-entry input-text" value="<?php echo $this->escapeHtml($this->getDefaultSenderName()) ?>" />
-                    </div>
-                </div>
-                <?php if ($this->isEmailAvailable($_product)): ?>
-                <div class="field">
-                    <label for="giftcard_sender_email" class="required"><em>*</em><?php echo Mage::helper('enterprise_giftcard')->__('Sender Email'); ?></label>
-                    <div class="input-box">
-                        <input type="text" id="giftcard_sender_email" name="giftcard_sender_email" class="validate-email required-entry input-text" value="<?php echo $this->escapeHtml($this->getDefaultSenderEmail()) ?>"/>
-                    </div>
-                </div>
-                <?php endif; ?>
-            </li>
+            <?php echo $this->getChildHtml('product.info.giftcard.form') ?>
             <li class="fields">
                 <div class="field">
                     <label for="giftcard_recipient_name" class="required"><em>*</em><?php echo Mage::helper('enterprise_giftcard')->__('Recipient Name'); ?></label>

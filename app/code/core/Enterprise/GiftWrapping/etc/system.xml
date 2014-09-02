@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -100,6 +100,7 @@
                             <label>Display Gift Wrapping Prices</label>
                             <frontend_type>select</frontend_type>
                             <source_model>tax/system_config_source_tax_display_type</source_model>
+                            <backend_model>tax/config_notification</backend_model>
                             <sort_order>35</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -109,6 +110,7 @@
                             <label>Display Printed Card Prices</label>
                             <frontend_type>select</frontend_type>
                             <source_model>tax/system_config_source_tax_display_type</source_model>
+                            <backend_model>tax/config_notification</backend_model>
                             <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -122,6 +124,7 @@
                             <label>Display Gift Wrapping Prices</label>
                             <frontend_type>select</frontend_type>
                             <source_model>tax/system_config_source_tax_display_type</source_model>
+                            <backend_model>tax/config_notification</backend_model>
                             <sort_order>35</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -131,6 +134,7 @@
                             <label>Display Printed Card Prices</label>
                             <frontend_type>select</frontend_type>
                             <source_model>tax/system_config_source_tax_display_type</source_model>
+                            <backend_model>tax/config_notification</backend_model>
                             <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>

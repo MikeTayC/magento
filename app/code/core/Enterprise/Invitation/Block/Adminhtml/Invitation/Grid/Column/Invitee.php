@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Invitation
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -43,6 +43,6 @@ class Enterprise_Invitation_Block_Adminhtml_Invitation_Grid_Column_Invitee
             return '';
         }
         return '<a href="' . Mage::getSingleton('adminhtml/url')->getUrl('*/customer/edit', array('id' => $row->getReferralId())) . '">'
-            . $this->htmlEscape($row->getData($this->getColumn()->getIndex())) . '</a>';
+            . $this->escapeHtml($row->getData($this->getColumn()->getIndex())) . '</a>';
     }
 }

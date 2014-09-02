@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -39,6 +39,13 @@ class Enterprise_PageCache_Model_Processor_Default
     protected $_noCacheGetParams = array('___store', '___from_store');
 
     /**
+     * Is cache allowed
+     *
+     * @var null|boll
+     */
+    protected $_allowCache = null;
+
+    /**
      * Check if request can be cached
      *
      * @param Zend_Controller_Request_Http $request
@@ -46,15 +53,21 @@ class Enterprise_PageCache_Model_Processor_Default
      */
     public function allowCache(Zend_Controller_Request_Http $request)
     {
-        foreach ($this->_noCacheGetParams as $param) {
-            if (!is_null($request->getParam($param, null))) {
-                return false;
+        if (is_null($this->_allowCache)) {
+            foreach ($this->_noCacheGetParams as $param) {
+                if (!is_null($request->getParam($param, null))) {
+                    $this->_allowCache = false;
+                    return $this->_allowCache;
+                }
             }
+            if (Mage::getSingleton('core/session')->getNoCacheFlag()) {
+                $this->_allowCache = false;
+                return $this->_allowCache;
+            }
+            $this->_allowCache = true;
+            return $this->_allowCache;
         }
-        if (Mage::getSingleton('core/session')->getNoCacheFlag()) {
-            return false;
-        }
-        return true;
+        return $this->_allowCache;
     }
 
 
@@ -107,17 +120,6 @@ class Enterprise_PageCache_Model_Processor_Default
      */
     protected function _getPlaceholderReplacer($matches)
     {
-        $container = $this->_placeholder->getContainerClass();
-        /**
-         * In developer mode blocks will be rendered separately
-         * This should simplify debugging _renderBlock()
-         */
-        if ($container && !Mage::getIsDeveloperMode()) {
-            $container = new $container($this->_placeholder);
-            $container->setProcessor(Mage::getSingleton('enterprise_pagecache/processor'));
-            $blockContent = $matches[1];
-            $container->saveCache($blockContent);
-        }
         return $this->_placeholder->getReplacer();
     }
 

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -229,7 +229,7 @@ class Enterprise_Cms_Block_Hierarchy_Menu extends Mage_Core_Block_Template
             foreach ($this->_allowedListAttributes as $attribute) {
                 $value = $this->getData('list_' . $attribute);
                 if (!empty($value)) {
-                    $template .= ' '.$attribute.'="'.$this->htmlEscape($value).'"';
+                    $template .= ' '.$attribute.'="'.$this->escapeHtml($value).'"';
                 }
             }
             if ($this->getData('list_props')) {
@@ -272,7 +272,7 @@ class Enterprise_Cms_Block_Hierarchy_Menu extends Mage_Core_Block_Template
             foreach ($this->_allowedListAttributes as $attribute) {
                 $value = $this->getData('item_' . $attribute);
                 if (!empty($value)) {
-                    $template .= ' '.$attribute.'="'.$this->htmlEscape($value).'"';
+                    $template .= ' '.$attribute.'="'.$this->escapeHtml($value).'"';
                 }
             }
             if ($this->getData('item_props')) {
@@ -324,7 +324,7 @@ class Enterprise_Cms_Block_Hierarchy_Menu extends Mage_Core_Block_Template
             foreach ($this->_allowedLinkAttributes as $attribute) {
                 $value = $this->getData('link_' . $attribute);
                 if (!empty($value)) {
-                    $template .= ' '.$attribute.'="'.$this->htmlEscape($value).'"';
+                    $template .= ' '.$attribute.'="'.$this->escapeHtml($value).'"';
                 }
             }
             $template .= '><span>__LABEL__</span></a>';
@@ -348,7 +348,7 @@ class Enterprise_Cms_Block_Hierarchy_Menu extends Mage_Core_Block_Template
             foreach ($this->_allowedSpanAttributes as $attribute) {
                 $value = $this->getData('span_' . $attribute);
                 if (!empty($value)) {
-                    $template .= ' '.$attribute.'="'.$this->htmlEscape($value).'"';
+                    $template .= ' '.$attribute.'="'.$this->escapeHtml($value).'"';
                 }
             }
             $template .= '>__LABEL__</strong>';

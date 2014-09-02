@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -49,6 +49,16 @@ class Enterprise_PageCache_Model_Container_Orders extends Enterprise_PageCache_M
     protected function _getCacheId()
     {
         return md5($this->_getIdentifier());
+    }
+
+    /**
+     * Retrieve cache identifier
+     *
+     * @return string
+     */
+    public function getCacheId()
+    {
+        return $this->_getCacheId();
     }
 
     /**

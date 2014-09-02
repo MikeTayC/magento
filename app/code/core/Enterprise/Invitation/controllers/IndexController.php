@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Invitation
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -80,7 +80,9 @@ class Enterprise_Invitation_IndexController extends Mage_Core_Controller_Front_A
                         'message'  => (isset($data['message']) ? $data['message'] : ''),
                     ))->save();
                     if ($invitation->sendInvitationEmail()) {
-                        Mage::getSingleton('customer/session')->addSuccess(Mage::helper('enterprise_invitation')->__('Invitation for %s has been sent.', $email));
+                        Mage::getSingleton('customer/session')->addSuccess(
+                            Mage::helper('enterprise_invitation')->__('Invitation for %s has been sent.', $email)
+                        );
                         $sent++;
                     }
                     else {
@@ -97,7 +99,9 @@ class Enterprise_Invitation_IndexController extends Mage_Core_Controller_Front_A
                     }
                 }
                 catch (Exception $e) {
-                    Mage::getSingleton('customer/session')->addError(Mage::helper('enterprise_invitation')->__('Failed to send email to %s.', $email));
+                    Mage::getSingleton('customer/session')->addError(
+                        Mage::helper('enterprise_invitation')->__('Failed to send email to %s.', $email)
+                    );
                 }
             }
             if ($customerExists) {

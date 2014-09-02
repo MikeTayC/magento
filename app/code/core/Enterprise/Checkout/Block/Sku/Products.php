@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -74,6 +74,8 @@ class Enterprise_Checkout_Block_Sku_Products extends Mage_Checkout_Block_Cart
 
     /**
      * Prepare cart items URLs
+     *
+     * @deprecated after 1.12.0.2
      */
     public function prepareItemUrls()
     {

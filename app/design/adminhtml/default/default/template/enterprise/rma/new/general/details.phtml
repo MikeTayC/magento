@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
@@ -62,7 +62,7 @@ $customerLink = $this->getCustomerLink();
                 </tr>
                 <tr>
                     <td class="label"><label><?php echo Mage::helper('enterprise_rma')->__('Contact Email Address') ?></label></td>
-                    <td class="value"><input type="text" class="input-text" name="contact_email" id="contact_email"></td>
+                    <td class="value"><input type="text" class="input-text validate-email" name="contact_email" id="contact_email"/></td>
                 </tr>
             </table>
         </div>

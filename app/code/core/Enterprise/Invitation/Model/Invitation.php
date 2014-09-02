@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Invitation
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -144,7 +144,10 @@ class Enterprise_Invitation_Model_Invitation extends Mage_Core_Model_Abstract
                     $this->setGroupId($inviter->getGroupId());
                 }
                 if (!$this->hasGroupId()) {
-                    throw new Mage_Core_Exception(Mage::helper('enterprise_invitation')->__('No customer group id specified.'), self::ERROR_INVALID_DATA);
+                    throw new Mage_Core_Exception(
+                        Mage::helper('enterprise_invitation')->__('No customer group id specified.'),
+                        self::ERROR_INVALID_DATA
+                    );
                 }
             }
             else {
@@ -152,13 +155,19 @@ class Enterprise_Invitation_Model_Invitation extends Mage_Core_Model_Abstract
             }
 
             if (!(int)$this->getStoreId()) {
-                throw new Mage_Core_Exception(Mage::helper('enterprise_invitation')->__('Wrong store specified.'), self::ERROR_INVALID_DATA);
+                throw new Mage_Core_Exception(
+                    Mage::helper('enterprise_invitation')->__('Wrong store specified.'),
+                    self::ERROR_INVALID_DATA
+                );
             }
             $this->makeSureCustomerNotExists();
         }
         else {
             if ($this->dataHasChangedFor('message') && !$this->canMessageBeUpdated()) {
-                throw new Mage_Core_Exception(Mage::helper('enterprise_invitation')->__('Message cannot be updated.', self::ERROR_STATUS));
+                throw new Mage_Core_Exception(
+                    Mage::helper('enterprise_invitation')->__('Message cannot be updated.'),
+                    self::ERROR_STATUS
+                );
             }
         }
         return parent::_beforeSave();
@@ -245,15 +254,22 @@ class Enterprise_Invitation_Model_Invitation extends Mage_Core_Model_Abstract
     public function makeSureCanBeSent()
     {
         if (!$this->getId()) {
-            throw new Mage_Core_Exception(Mage::helper('enterprise_invitation')->__('Invitation has no ID.'), self::ERROR_INVALID_DATA);
+            throw new Mage_Core_Exception(
+                Mage::helper('enterprise_invitation')->__('Invitation has no ID.'),
+                self::ERROR_INVALID_DATA
+            );
         }
         if ($this->getStatus() !== self::STATUS_NEW) {
             throw new Mage_Core_Exception(
-                Mage::helper('enterprise_invitation')->__('Invitation with status "%s" cannot be sent.', $this->getStatus()), self::ERROR_STATUS
+                Mage::helper('enterprise_invitation')->__('Invitation with status "%s" cannot be sent.', $this->getStatus()),
+                self::ERROR_STATUS
             );
         }
         if (!$this->getEmail() || !Zend_Validate::is($this->getEmail(), 'EmailAddress')) {
-            throw new Mage_Core_Exception(Mage::helper('enterprise_invitation')->__('Invalid or empty invitation email.'), self::ERROR_INVALID_DATA);
+            throw new Mage_Core_Exception(
+                Mage::helper('enterprise_invitation')->__('Invalid or empty invitation email.'),
+                self::ERROR_INVALID_DATA
+            );
         }
         $this->makeSureCustomerNotExists();
     }
@@ -271,13 +287,19 @@ class Enterprise_Invitation_Model_Invitation extends Mage_Core_Model_Abstract
             $websiteId = Mage::app()->getStore($this->getStoreId())->getWebsiteId();
         }
         if (!$websiteId) {
-            throw new Mage_Core_Exception(Mage::helper('enterprise_invitation')->__('Unable to determine proper website.'), self::ERROR_INVALID_DATA);
+            throw new Mage_Core_Exception(
+                Mage::helper('enterprise_invitation')->__('Unable to determine proper website.'),
+                self::ERROR_INVALID_DATA
+            );
         }
         if (null === $email) {
             $email = $this->getEmail();
         }
         if (!$email) {
-            throw new Mage_Core_Exception(Mage::helper('enterprise_invitation')->__('Email is not specified.'), self::ERROR_INVALID_DATA);
+            throw new Mage_Core_Exception(
+                Mage::helper('enterprise_invitation')->__('Email is not specified.'),
+                self::ERROR_INVALID_DATA
+            );
         }
 
         // lookup customer by specified email/website id
@@ -289,7 +311,8 @@ class Enterprise_Invitation_Model_Invitation extends Mage_Core_Model_Abstract
             return;
         }
         throw new Mage_Core_Exception(
-            Mage::helper('enterprise_invitation')->__('Customer with email "%s" already exists.', $email), self::ERROR_CUSTOMER_EXISTS
+            Mage::helper('enterprise_invitation')->__('Customer with email "%s" already exists.', $email),
+            self::ERROR_CUSTOMER_EXISTS
         );
     }
 
@@ -333,7 +356,8 @@ class Enterprise_Invitation_Model_Invitation extends Mage_Core_Model_Abstract
      */
     public function canBeCanceled()
     {
-        return (bool)(int)$this->getId() && !in_array($this->getStatus(), array(self::STATUS_CANCELED, self::STATUS_ACCEPTED));
+        return (bool)(int)$this->getId()
+            && !in_array($this->getStatus(), array(self::STATUS_CANCELED, self::STATUS_ACCEPTED));
     }
 
     /**

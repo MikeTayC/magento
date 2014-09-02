@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 /* @var $this Mage_Adminhtml_Block_Sales_Order_Create_Sidebar_Abstract */
@@ -68,7 +68,7 @@
                 </tr>
                 <?php foreach ($this->getItems() as $_item): ?>
                 <tr class="row wishlist-<?php echo $_item->getWishlistId();?>">
-                    <td><?php echo $this->htmlEscape($_item->getName()) ?></td>
+                    <td><?php echo $this->escapeHtml($_item->getName()) ?></td>
                     <?php if ($this->canDisplayItemQty()): ?>
                     <td class="a-center">
                         <?php if ($_item->getProduct()->getTypeId() != Mage_Catalog_Model_Product_Type_Grouped::TYPE_CODE): ?>

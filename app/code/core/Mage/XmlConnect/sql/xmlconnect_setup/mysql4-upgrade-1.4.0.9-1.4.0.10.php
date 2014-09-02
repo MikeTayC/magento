@@ -20,13 +20,18 @@
  *
  * @category    Mage
  * @package     Mage_XmlConnect
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
 $installer = $this;
 $installer->startSetup();
 
-$installer->getConnection()->changeColumn($installer->getTable('xmlconnect/queue'), 'exec_time', 'exec_time', 'TIMESTAMP NULL DEFAULT NULL');
+$installer->getConnection()->changeColumn(
+    $installer->getTable('xmlconnect/queue'),
+    'exec_time',
+    'exec_time',
+    'TIMESTAMP NULL DEFAULT NULL'
+);
 
 $installer->endSetup();

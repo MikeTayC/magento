@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -352,7 +352,12 @@ One page checkout main layout
                 <block type="cms/block" name="checkout.callout" as="checkoutCallout">
                     <action method="setBlockId"><block_id>checkout_callout</block_id></action>
                 </block>
-                <block type="checkout/onepage_progress" as="checkoutProgress" name="checkout.progress" template="checkout/onepage/progress.phtml"/>
+                <block type="checkout/onepage_progress" as="checkoutProgress" name="checkout.progress" template="checkout/onepage/progress.phtml">
+                    <block type="checkout/onepage_progress" name="billing.progress" template="checkout/onepage/progress/billing.phtml"></block>
+                    <block type="checkout/onepage_progress" name="shipping.progress" template="checkout/onepage/progress/shipping.phtml"></block>
+                    <block type="checkout/onepage_progress" name="shippingmethod.progress" template="checkout/onepage/progress/shipping_method.phtml"></block>
+                    <block type="checkout/onepage_progress" name="payment.progress" template="checkout/onepage/progress/payment.phtml"></block>
+                </block>
                 <block type="checkout/onepage_login" name="checkout.onepage.login" as="login" template="checkout/onepage/login.phtml">
                     <block type="page/html_wrapper" name="checkout.onepage.login.before" as="login_before" translate="label">
                         <label>Login/Registration Before</label>
@@ -377,7 +382,7 @@ One page checkout main layout
                     <block type="checkout/onepage_shipping_method_additional" name="checkout.onepage.shipping_method.additional" as="additional" template="checkout/onepage/shipping_method/additional.phtml"/>
                 </block>
                 <block type="checkout/onepage_payment" name="checkout.onepage.payment" as="payment" template="checkout/onepage/payment.phtml">
-                    <block type="checkout/onepage_payment_methods" name="checkout.payment.methods" as="methods" template="checkout/onepage/payment/methods.phtml">
+                    <block type="checkout/onepage_payment_methods" name="checkout.payment.methods" as="methods" template="checkout/onepage/payment/info.phtml">
                         <action method="setMethodFormTemplate"><method>purchaseorder</method><template>payment/form/purchaseorder.phtml</template></action>
                     </block>
                     <block type="core/template" name="checkout.onepage.payment.additional" as="additional" />
@@ -399,11 +404,63 @@ One page checkout progress block
         <remove name="left"/>
 
         <block type="checkout/onepage_progress" name="root" output="toHtml" template="checkout/onepage/progress.phtml">
+            <action method="setInfoTemplate"><method></method><template></template></action>
+            <block type="checkout/onepage_progress" name="billing.progress" template="checkout/onepage/progress/billing.phtml"></block>
+            <block type="checkout/onepage_progress" name="shipping.progress" template="checkout/onepage/progress/shipping.phtml"></block>
+            <block type="checkout/onepage_progress" name="shippingmethod.progress" template="checkout/onepage/progress/shipping_method.phtml"></block>
+            <block type="checkout/onepage_progress" name="payment.progress" template="checkout/onepage/progress/payment.phtml"></block>
+        </block>
+    </checkout_onepage_progress>
+
+<!-- Individual blocks for Progress steps begins -->
+    <checkout_onepage_progress_billing>
+        <!-- Mage_Checkout -->
+        <remove name="right"/>
+        <remove name="left"/>
+
+        <block type="checkout/onepage_progress" name="root" output="toHtml" template="checkout/onepage/progress/billing.phtml">
+            <action method="setInfoTemplate"><method></method><template></template></action>
+        </block>
+    </checkout_onepage_progress_billing>
+
+
+    <checkout_onepage_progress_shipping>
+        <!-- Mage_Checkout -->
+        <remove name="right"/>
+        <remove name="left"/>
+
+        <block type="checkout/onepage_progress" name="root" output="toHtml" template="checkout/onepage/progress/shipping.phtml">
+            <action method="setInfoTemplate"><method></method><template></template></action>
+        </block>
+    </checkout_onepage_progress_shipping>
+
+
+    <checkout_onepage_progress_shipping_method>
+        <!-- Mage_Checkout -->
+        <remove name="right"/>
+        <remove name="left"/>
+
+        <block type="checkout/onepage_progress" name="root" output="toHtml" template="checkout/onepage/progress/shipping_method.phtml">
+            <action method="setInfoTemplate"><method></method><template></template></action>
+        </block>
+    </checkout_onepage_progress_shipping_method>
+
+    <checkout_onepage_progress_payment>
+        <!-- Mage_Checkout -->
+        <remove name="right"/>
+        <remove name="left"/>
+
+        <block type="checkout/onepage_progress" name="root" output="toHtml" template="checkout/onepage/progress/payment.phtml">
             <block type="checkout/onepage_payment_info" name="payment_info">
                 <action method="setInfoTemplate"><method></method><template></template></action>
             </block>
+            <action method="setInfoTemplate"><method></method><template></template></action>
         </block>
-    </checkout_onepage_progress>
+
+
+    </checkout_onepage_progress_payment>
+
+<!-- end checkout progress steps -->
 
 <!--
 One page checkout payment methods block

@@ -20,7 +20,7 @@
  *
  * @category    Varien
  * @package     Varien_Convert
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -133,7 +133,8 @@ class Varien_Convert_Parser_Xml_Excel extends Varien_Convert_Parser_Abstract
                     $xml .= '<ss:Row>';
                     foreach ($fields as $fieldName) {
                         $data = isset($row[$fieldName]) ? $row[$fieldName] : '';
-                        $xml .= '<ss:Cell><Data ss:Type="String">'.$data.'</Data></ss:Cell>';
+                        $fieldType = is_numeric($data) ? 'Number' : 'String';
+                        $xml .= '<ss:Cell><Data ss:Type="' . $fieldType . '">' . $data . '</Data></ss:Cell>';
                     }
                     $xml .= '</ss:Row>';
                 }

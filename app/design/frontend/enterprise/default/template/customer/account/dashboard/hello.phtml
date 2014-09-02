@@ -20,11 +20,11 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
 <div class="welcome-msg">
-    <h2 class="sub-title"><?php echo $this->__('Hello, %s!', $this->htmlEscape($this->getCustomerName())) ?></h2>
+    <h2 class="sub-title"><?php echo $this->__('Hello, %s!', $this->escapeHtml($this->getCustomerName())) ?></h2>
     <p><?php echo $this->__('From your My Account Dashboard you have the ability to view a snapshot of your recent account activity and update your account information. Select a link below to view or edit information.') ?></p>
 </div>

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -243,7 +243,9 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
     {
         parent::validate();
         if (!$this->getPbridgeResponse('token')) {
-            Mage::throwException(Mage::helper('enterprise_pbridge')->__('Payment Bridge authentication data is not present'));
+            Mage::throwException(
+                Mage::helper('enterprise_pbridge')->__('Payment Bridge authentication data is not present')
+            );
         }
         return $this;
     }
@@ -280,6 +282,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
             $request->setData('customer_id',
                 Mage::helper('enterprise_pbridge')->getCustomerIdentifierByEmail($id, $order->getStore()->getId())
             );
+            $request->setData('numeric_customer_id', $id);
         }
 
         if (!$order->getIsVirtual()) {
@@ -340,7 +343,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
             ->setData('amount', $amount)
             ->setData('currency_code', $payment->getOrder()->getBaseCurrencyCode())
             ->setData('order_id', $payment->getOrder()->getIncrementId())
-        ;
+            ->setData('is_first_capture', $payment->hasFirstCaptureFlag() ? $payment->getFirstCaptureFlag() : true);
 
         $api = $this->_getApi()->doCapture($request);
         $this->_importResultToPayment($payment, $api->getResponse());
@@ -398,7 +401,9 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
             return $api->getResponse();
 
         } else {
-            Mage::throwException(Mage::helper('enterprise_pbridge')->__('Impossible to issue a refund transaction, because capture transaction does not exist.'));
+            Mage::throwException(
+                Mage::helper('enterprise_pbridge')->__('Impossible to issue a refund transaction, because capture transaction does not exist.')
+            );
         }
     }
 
@@ -476,7 +481,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
      */
     protected function _getCart(Mage_Core_Model_Abstract $order)
     {
-        list($items, $totals) = Mage::helper('enterprise_pbridge')->prepareCart($order);
+        list($items, $totals, $areItemsValid) = Mage::helper('enterprise_pbridge')->prepareCart($order);
         //Getting cart items
         $result = array();
 
@@ -484,7 +489,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
             $result['items'][] = $item->getData();
         }
 
-        return array_merge($result, $totals);
+        return array_merge($result, $totals, array('items_valid' => $areItemsValid));
     }
 
     /**

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -73,7 +73,9 @@ class Enterprise_GiftCardAccount_Model_Pool extends Enterprise_GiftCardAccount_M
             $attempt = 0;
             do {
                 if ($attempt>=self::CODE_GENERATION_ATTEMPTS) {
-                    Mage::throwException(Mage::helper('enterprise_giftcardaccount')->__('Unable to create full code pool size. Please check settings and try again.'));
+                    Mage::throwException(
+                        Mage::helper('enterprise_giftcardaccount')->__('Unable to create full code pool size. Please check settings and try again.')
+                    );
                 }
                 $code = $this->_generateCode();
                 $attempt++;
@@ -83,10 +85,10 @@ class Enterprise_GiftCardAccount_Model_Pool extends Enterprise_GiftCardAccount_M
         }
         return $this;
     }
-    
+
     /**
      * Checks pool threshold and call codes generation in case if free codes count is less than threshold value
-     * 
+     *
      * @return Enterprise_GiftCardAccount_Model_Pool
      */
     public function applyCodesGeneration()

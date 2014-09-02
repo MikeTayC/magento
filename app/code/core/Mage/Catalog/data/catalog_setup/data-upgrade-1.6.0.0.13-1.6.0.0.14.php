@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 /** @var $installer Mage_Catalog_Model_Resource_Setup */
@@ -62,7 +62,7 @@ if ($attributeTableOld != $attributeTableNew) {
 }
 
 Mage::getModel('index/indexer')
-    ->getProcessByCode('catalog_category_flat')
+    ->getProcessByCode(Mage_Catalog_Helper_Category_Flat::CATALOG_CATEGORY_FLAT_PROCESS_CODE)
     ->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
 
 $installer->endSetup();
