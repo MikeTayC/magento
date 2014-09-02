@@ -28,7 +28,7 @@
 <config>
     <modules>
         <Enterprise_GiftRegistry>
-            <version>1.11.0.0</version>
+            <version>1.11.0.0.1</version>
         </Enterprise_GiftRegistry>
     </modules>
     <global>

@@ -32,7 +32,7 @@
  * @package     Enterprise_TargetRule
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_TargetRule_Model_Resource_Index extends Mage_Core_Model_Resource_Db_Abstract
+class Enterprise_TargetRule_Model_Resource_Index extends Mage_Index_Model_Resource_Abstract
 {
     /**
      * Increment value for generate unique bind names
@@ -452,8 +452,8 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Core_Model_Resourc
     /**
      * Remove index data from index tables
      *
-     * @param int $typeId
-     * @param Mage_Core_Model_Store|int|array $store
+     * @param int|null $typeId
+     * @param Mage_Core_Model_Store|int|array|null $store
      * @return Enterprise_TargetRule_Model_Resource_Index
      */
     public function cleanIndex($typeId = null, $store = null)
@@ -468,12 +468,9 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Core_Model_Resourc
             foreach ($this->getTypeIds() as $typeId) {
                 $this->getTypeIndex($typeId)->cleanIndex($store);
             }
-            if (is_null($store)) {
-                $adapter->truncateTable($this->getMainTable());
-            } else {
-                $where = array('store_id IN(?)' => $store);
-                $adapter->delete($this->getMainTable(), $where);
-            }
+
+            $where = (is_null($store)) ? '' : array('store_id IN(?)' => $store);
+            $adapter->delete($this->getMainTable(), $where);
         } else {
             $where = array('type_id=?' => $typeId);
             if (!is_null($store)) {

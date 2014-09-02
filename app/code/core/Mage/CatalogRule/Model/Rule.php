@@ -316,6 +316,7 @@ class Mage_CatalogRule_Model_Rule extends Mage_Rule_Model_Rule
      */
     public function applyAll()
     {
+        $this->getResourceCollection()->walk(array($this->_getResource(), 'updateRuleProductData'));
         $this->_getResource()->applyAllRulesForDateRange();
         $this->_invalidateCache();
         $indexProcess = Mage::getSingleton('index/indexer')->getProcessByCode('catalog_product_price');
@@ -342,7 +343,11 @@ class Mage_CatalogRule_Model_Rule extends Mage_Rule_Model_Rule
         }
 
         if ($productId) {
-            Mage::getResourceSingleton('catalog/product_indexer_price')->reindexProductIds(array($productId));
+            Mage::getSingleton('index/indexer')->processEntityAction(
+                new Varien_Object(array('id' => $productId)),
+                Mage_Catalog_Model_Product::ENTITY,
+                Mage_Catalog_Model_Product_Indexer_Price::EVENT_TYPE_REINDEX_PRICE
+            );
         }
     }
 

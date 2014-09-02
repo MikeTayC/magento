@@ -78,12 +78,9 @@ class Enterprise_Search_Model_Indexer_Indexer
         if ($helper->isThirdPartSearchEngine() && $helper->isActiveEngine()) {
             /* Change index status to running */
             $indexProcess = Mage::getSingleton('index/indexer')->getProcessByCode('catalogsearch_fulltext');
-            $indexProcess->changeStatus(Mage_Index_Model_Process::STATUS_RUNNING);
-
-            Mage::getSingleton('catalogsearch/indexer_fulltext')->reindexAll();
-
-            /* Refresh index status after reindex process is completed */
-            $indexProcess->changeStatus(Mage_Index_Model_Process::STATUS_PENDING);
+            if ($indexProcess) {
+                $indexProcess->reindexAll();
+            }
         }
 
         return $this;

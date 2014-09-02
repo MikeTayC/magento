@@ -53,7 +53,7 @@
                     var qtyElement = element.up('tr').down('input[type="text"]');
                     Event.observe(qtyElement, 'change', function(){
                         qtyElement.value = qtyElement.defaultValue;
-                        alert('<?php echo $this->__('Changing quantity for gift registry items is not allowed during checkout. You can change item quantity on the Gift Registry Info page or directly in your shopping cart.') ?>')
+                        alert('<?php echo $this->jsQuoteEscape($this->__('Changing quantity for gift registry items is not allowed during checkout. You can change item quantity on the Gift Registry Info page or directly in your shopping cart.')) ?>')
                     });
                 }
             }

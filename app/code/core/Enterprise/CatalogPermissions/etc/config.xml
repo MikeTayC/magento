@@ -71,6 +71,13 @@
                 </setup>
             </enterprise_catalogpermissions_setup>
         </resources>
+        <index>
+            <indexer>
+                <catalogpermissions>
+                    <model>enterprise_catalogpermissions/permission_index</model>
+                </catalogpermissions>
+            </indexer>
+        </index>
     </global>
     <adminhtml>
         <events>
@@ -162,6 +169,14 @@
                     </enterprise_catalogpermissions>
                 </observers>
             </admin_system_config_changed_section_enterprise_catalogpermissions>
+            <after_reindex_process_catalog_category_product>
+                <observers>
+                    <enterprise_catalogpermissions>
+                        <class>enterprise_catalogpermissions/adminhtml_observer</class>
+                        <method>applyPermissionsAfterReindex</method>
+                    </enterprise_catalogpermissions>
+                </observers>
+            </after_reindex_process_catalog_category_product>
         </events>
         <translate>
             <modules>

@@ -134,10 +134,14 @@ class Enterprise_GiftRegistry_Adminhtml_GiftregistryController extends Mage_Admi
     protected function _filterPostData($data)
     {
         $helper = $this->_getHelper();
-        $data['type']['label'] = $helper->stripTags($data['type']['label']);
+        if (!empty($data['type']['label'])) {
+            $data['type']['label'] = $helper->stripTags($data['type']['label']);
+        }
         if (!empty($data['attributes']['registry'])) {
             foreach ($data['attributes']['registry'] as &$regItem) {
-                $regItem['label'] = $helper->stripTags($regItem['label']);
+                if (!empty($regItem['label'])) {
+                    $regItem['label'] = $helper->stripTags($regItem['label']);
+                }
                 if (!empty($regItem['options'])) {
                     foreach ($regItem['options'] as &$option) {
                         $option['label'] = $helper->stripTags($option['label']);

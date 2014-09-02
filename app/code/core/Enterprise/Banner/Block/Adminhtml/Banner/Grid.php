@@ -69,6 +69,7 @@ class Enterprise_Banner_Block_Adminhtml_Banner_Grid extends Mage_Adminhtml_Block
             'header' => Mage::helper('enterprise_banner')->__('Banner Name'),
             'type'   => 'text',
             'index'  => 'name',
+            'escape' => true
         ));
 
         $this->addColumn('banner_types', array(

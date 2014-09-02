@@ -56,7 +56,7 @@ function addStagingStore(id)
 
     var value = selector.value;
     if (!value) {
-        alert('Please, select a store view');
+        alert('<?php echo $this->jsQuoteEscape($this->__('Please, select a store view'));?>');
         return false;
     }
 

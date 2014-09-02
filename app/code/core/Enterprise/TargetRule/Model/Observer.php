@@ -60,26 +60,33 @@ class Enterprise_TargetRule_Model_Observer
      */
     public function catalogProductAfterSave(Varien_Event_Observer $observer)
     {
-        /* @var $product Mage_Catalog_Model_Product */
+        /** @var $product Mage_Catalog_Model_Product */
         $product = $observer->getEvent()->getProduct();
 
-        /* @var $indexResource Enterprise_TargetRule_Model_Resource_Index */
-        $indexResource = Mage::getResourceSingleton('enterprise_targetrule/index');
+        Mage::getSingleton('index/indexer')->logEvent(
+            new Varien_Object(array(
+                'id' => $product->getId(),
+                'store_id' => $product->getStoreId(),
+                'rule' => $product->getData('rule'),
+                'from_date' => $product->getData('from_date'),
+                'to_date' => $product->getData('to_date')
+            )),
+            Enterprise_TargetRule_Model_Index::ENTITY_PRODUCT,
+            Enterprise_TargetRule_Model_Index::EVENT_TYPE_REINDEX_PRODUCTS
+        );
+        return $this;
+    }
 
-        // remove old cache index data
-        $indexResource->removeIndexByProductIds($product->getId());
-
-        // remove old matched product index
-        $indexResource->removeProductIndex($product->getId());
-
-        $ruleCollection = Mage::getResourceModel('enterprise_targetrule/rule_collection')
-            ->addProductFilter($product->getId())
-        ;
-        foreach ($ruleCollection as $rule) {
-            /* @var $rule Enterprise_TargetRule_Model_Rule */
-            if ($rule->validate($product)) {
-                $indexResource->saveProductIndex($rule->getId(), $product->getId(), $product->getStoreId());
-            }
-        }
+    /**
+     * Process event on 'save_commit_after' event
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function catalogProductSaveCommitAfter(Varien_Event_Observer $observer)
+    {
+        Mage::getSingleton('index/indexer')->indexEvents(
+            Enterprise_TargetRule_Model_Index::ENTITY_PRODUCT,
+            Enterprise_TargetRule_Model_Index::EVENT_TYPE_REINDEX_PRODUCTS
+        );
     }
 }

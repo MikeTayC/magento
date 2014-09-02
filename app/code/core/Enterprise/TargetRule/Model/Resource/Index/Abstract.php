@@ -154,7 +154,7 @@ abstract class Enterprise_TargetRule_Model_Resource_Index_Abstract extends Mage_
     public function cleanIndex($store = null)
     {
         if (is_null($store)) {
-            $this->_getWriteAdapter()->truncateTable($this->getMainTable());
+            $this->_getWriteAdapter()->delete($this->getMainTable());
             return $this;
         }
         if ($store instanceof Mage_Core_Model_Store) {

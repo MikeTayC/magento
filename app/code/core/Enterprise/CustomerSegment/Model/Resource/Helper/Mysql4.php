@@ -68,7 +68,7 @@ class Enterprise_CustomerSegment_Model_Resource_Helper_Mysql4 extends Mage_Core_
             case '![]':
                 return 'FIND_IN_SET(%s, %s) IS NULL';
             case 'between':
-                return "BETWEEN '%s' AND '%s'";
+                return 'BETWEEN %s AND %s';
             case '>':
             case '<':
             case '>=':

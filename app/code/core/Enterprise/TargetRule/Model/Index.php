@@ -40,8 +40,45 @@
  * @package     Enterprise_TargetRule
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_TargetRule_Model_Index extends Mage_Core_Model_Abstract
+class Enterprise_TargetRule_Model_Index extends Mage_Index_Model_Indexer_Abstract
 {
+    /**
+     * Reindex products target-rules event type
+     */
+    const EVENT_TYPE_REINDEX_PRODUCTS = 'reindex_targetrules';
+
+    /**
+     * Clean target-rules event type
+     */
+    const EVENT_TYPE_CLEAN_TARGETRULES = 'clean_targetrule_index';
+
+    /**
+     * Product entity for indexers
+     */
+    const ENTITY_PRODUCT = 'targetrule_product';
+
+    /**
+     * Target-rule entity for indexers
+     */
+    const ENTITY_TARGETRULE = 'targetrule_entity';
+
+    /**
+     * Matched entities
+     *
+     * @var array
+     */
+    protected $_matchedEntities = array(
+        self::ENTITY_PRODUCT => array(self::EVENT_TYPE_REINDEX_PRODUCTS),
+        self::ENTITY_TARGETRULE => array(self::EVENT_TYPE_CLEAN_TARGETRULES)
+    );
+
+    /**
+     * Whether the indexer should be displayed on process/list page
+     *
+     * @var bool
+     */
+    protected $_isVisible = false;
+
     /**
      * Initialize resource model
      *
@@ -264,13 +301,133 @@ class Enterprise_TargetRule_Model_Index extends Mage_Core_Model_Abstract
     public function cron()
     {
         $websites = Mage::app()->getWebsites();
+
+        /** @var $indexer Mage_Index_Model_Indexer */
+        $indexer = Mage::getSingleton('index/indexer');
+
         foreach ($websites as $website) {
             /* @var $website Mage_Core_Model_Website */
             $store = $website->getDefaultStore();
             $date  = Mage::app()->getLocale()->storeDate($store);
             if ($date->equals(0, Zend_Date::HOUR)) {
-                $this->_getResource()->cleanIndex(null, $website->getStoreIds());
+                $indexer->logEvent(
+                    new Varien_Object(array('type_id' => null, 'store' => $website->getStoreIds())),
+                    self::ENTITY_TARGETRULE,
+                    self::EVENT_TYPE_CLEAN_TARGETRULES
+                );
             }
         }
+        $indexer->indexEvents(
+            self::ENTITY_TARGETRULE,
+            self::EVENT_TYPE_CLEAN_TARGETRULES
+        );
+    }
+
+    /**
+     * Get Indexer name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return Mage::helper('enterprise_targetrule')->__('Target Rules');
+    }
+
+    /**
+     * Register indexer required data inside event object
+     *
+     * @param Mage_Index_Model_Event $event
+     */
+    protected function _registerEvent(Mage_Index_Model_Event $event)
+    {
+        switch ($event->getType()) {
+            case self::EVENT_TYPE_REINDEX_PRODUCTS:
+                switch ($event->getEntity()) {
+                    case self::ENTITY_PRODUCT:
+                        $event->addNewData('product', $event->getDataObject());
+                        break;
+                }
+                break;
+            case self::EVENT_TYPE_CLEAN_TARGETRULES:
+                switch ($event->getEntity()) {
+                    case self::ENTITY_TARGETRULE:
+                        $event->addNewData('params', $event->getDataObject());
+                        break;
+                }
+                break;
+        }
+    }
+
+    /**
+     * Process event based on event state data
+     *
+     * @param Mage_Index_Model_Event $event
+     */
+    protected function _processEvent(Mage_Index_Model_Event $event)
+    {
+        switch ($event->getType()) {
+            case self::EVENT_TYPE_REINDEX_PRODUCTS:
+                switch ($event->getEntity()) {
+                    case self::ENTITY_PRODUCT:
+                        $data = $event->getNewData();
+                        if (!empty($data['product'])) {
+                            $this->_reindex($data['product']);
+                        }
+                        break;
+                }
+                break;
+            case self::EVENT_TYPE_CLEAN_TARGETRULES:
+                switch ($event->getEntity()) {
+                    case self::ENTITY_TARGETRULE:
+                        $data = $event->getNewData();
+                        if (!empty($data['params'])) {
+                            $params = $data['params'];
+                            $this->_cleanIndex($params->getTypeId(), $params->getStore());
+                        }
+                        break;
+                }
+                break;
+        }
+    }
+
+    /**
+     * Reindex targetrules
+     *
+     * @param Varien_Object $product
+     * @return Enterprise_TargetRule_Model_Index
+     */
+    protected function _reindex($product)
+    {
+        $indexResource = $this->_getResource();
+
+        // remove old cache index data
+        $indexResource->removeIndexByProductIds($product->getId());
+
+        // remove old matched product index
+        $indexResource->removeProductIndex($product->getId());
+
+        $ruleCollection = Mage::getResourceModel('enterprise_targetrule/rule_collection')
+            ->addProductFilter($product->getId());
+
+        foreach ($ruleCollection as $rule) {
+            /** @var $rule Enterprise_TargetRule_Model_Rule */
+            if ($rule->validate($product)) {
+                $indexResource->saveProductIndex($rule->getId(), $product->getId(), $product->getStoreId());
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Remove targetrule's index
+     *
+     * @param int|null $typeId
+     * @param Mage_Core_Model_Store|int|array|null $store
+     * @return Enterprise_TargetRule_Model_Index
+     */
+    protected function _cleanIndex($typeId = null, $store = null)
+    {
+        $this->_getResource()->cleanIndex($typeId, $store);
+        return $this;
     }
 }

@@ -1,3 +1,37 @@
+==== 1.11.2.0 ====
+
+=== Improvements ===
+Indexers refactoring:
+- reindexing logic performs in scope of transactions that prevents conflicts between partial reindex and full reindex actions
+- excluded situations when any amount of duplicate reindex process run at the same time and replace data of each other
+
+=== Changes ===
+Implemented localized PayPal settings for Japan
+Added PayPal Payments Advanced
+
+=== Fixes ===
+Fixed Automatic reindexing based on matched events doesn't change "Status" and "Last Run" columns at process list grid
+Fixed Dependency checking error when install community extension on Magento EE
+Fixed Bundle product totals are incorrect in Customization block
+Fixed Product option title is absent in backend order page
+Fixed Several probable vulnerabilities
+Fixed SQL error on category view with enabled and configured FPT
+Fixed "Apply Rules" button works incorrect in some cases
+Fixed Special price isn't considered for bundle dynamic products in "Your Customization" block
+Fixed "Enable Search Recommendations" drop down is empty
+Fixed Default "Gift Registy" events are absent in backend grid
+Fixed Cannot place order with downloadable product and discount code using Paypal Express payment method
+Fixed Payflow Link Express Checkout ("Pay with PayPal" button) payment
+Fixed Char set encoding is out-of-date in Settlement reports
+Fixed Settlement reports can not be downloaded if in merchant's account "Settlement file" is set to 6.0 version
+Fixed Updates for Payflow Link texts
+Fixed Impossible to place Order using "Pay with PayPal" button from Payflow Link iframe, when Payment Action is Sale
+Fixed Remove hint about $1 authorization amount from informational message text (Payflow Link configuration)
+Fixed Missing column "position" at table catalog_category_anc_products_index_tmp
+Fixed Translation with single quotes breaks JS
+
+
+
 ==== 1.11.1.0 ====
 
 === Major Highlights ===
