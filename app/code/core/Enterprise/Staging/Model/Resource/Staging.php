@@ -218,6 +218,20 @@ class Enterprise_Staging_Model_Resource_Staging extends Mage_Core_Model_Resource
     }
 
     /**
+     * Collect all backup tables
+     *
+     * @param  Enterprise_Staging_Model_Staging $staging
+     * @param  Enterprise_Staging_Model_Staging_Event|null $event
+     * @return Enterprise_Staging_Model_Resource_Staging
+     */
+    public function collectBackupTables($staging, $event = null)
+    {
+        $this->_processStagingItemsCallback('getBackupTablesRun', $staging, $event);
+
+        return $this;
+    }
+
+    /**
      * Run Staging Website Merge
      *
      * @param object Enterprise_Staging_Model_Staging $staging

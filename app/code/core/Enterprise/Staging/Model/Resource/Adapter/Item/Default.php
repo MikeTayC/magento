@@ -119,6 +119,20 @@ class Enterprise_Staging_Model_Resource_Adapter_Item_Default extends Enterprise_
     }
 
     /**
+     * Get all backup tables
+     *
+     * @param  Enterprise_Staging_Model_Staging $staging
+     * @param  Enterprise_Staging_Model_Staging_Event|null $event
+     * @return Enterprise_Staging_Model_Resource_Adapter_Item_Default
+     */
+    public function getBackupTablesRun(Enterprise_Staging_Model_Staging $staging, $event = null)
+    {
+        parent::getBackupTablesRun($staging, $event);
+        $this->_processItemMethodCallback('_getBackupTables');
+        return $this;
+    }
+
+    /**
      * Validate and run callback method for flat item
      *
      * @param string $entityName
@@ -166,13 +180,14 @@ class Enterprise_Staging_Model_Resource_Adapter_Item_Default extends Enterprise_
     protected function _checkBackendTables($entityName)
     {
         $stagingTablePrefix = Mage::getSingleton('enterprise_staging/staging_config')->getTablePrefix();
-        $targetTable        = $this->_getWriteAdapter()->getTableName($stagingTablePrefix . $this->getTable($entityName));
+        $targetTable = $this->_getWriteAdapter()->getTableName($stagingTablePrefix . $this->getTable($entityName));
 
         if (!$this->tableExists($targetTable)) {
             $this->createTable($targetTable, $entityName);
         }
 
         $this->_processedTables[$entityName] = $targetTable;
+
         return $this;
     }
 
@@ -790,6 +805,23 @@ class Enterprise_Staging_Model_Resource_Adapter_Item_Default extends Enterprise_
     }
 
     /**
+     * Get all backup tables
+     *
+     * @param  $entityName
+     * @return Enterprise_Staging_Model_Resource_Adapter_Item_Default
+     */
+    protected function _getBackupTables($entityName)
+    {
+        $staging = $this->getStaging();
+
+        $backupPrefix = $staging->getMapperInstance()->getBackupTablePrefix();
+        $backupTable  = $this->_getWriteAdapter()->getTableName($backupPrefix . $this->getTable($entityName));
+        $staging->addBackupTable($backupTable);
+
+        return $this;
+    }
+
+    /**
      * process website rollback
      *
      * @param string $srcTable
@@ -1061,6 +1093,16 @@ class Enterprise_Staging_Model_Resource_Adapter_Item_Default extends Enterprise_
             $this->{$callbackMethod}($entityName);
         }
 
+        return $this;
+    }
+
+    /**
+     * Stub method
+     *
+     * @return Enterprise_Staging_Model_Resource_Adapter_Item_Default
+     */
+    protected function _getBackupTablesFlat()
+    {
         return $this;
     }
 }

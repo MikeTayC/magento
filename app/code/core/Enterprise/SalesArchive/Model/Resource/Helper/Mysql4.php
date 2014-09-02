@@ -61,9 +61,10 @@ class Enterprise_SalesArchive_Model_Resource_Helper_Mysql4 extends Mage_Core_Mod
         }
 
         $columns = array();
-        $description = $this->_getWriteAdapter()->describeTable($table);
-        foreach ($description as $column) {
-            $columns[$column['COLUMN_NAME']] = $column['DATA_TYPE'];
+        $adapter = $this->_getWriteAdapter();
+        $description = $adapter->describeTable($table);
+        foreach ($description as $columnDescription) {
+            $columns[$columnDescription['COLUMN_NAME']] = $adapter->getColumnDefinitionFromDescribe($columnDescription);
         }
 
         if (!isset($columns[$column])) {
@@ -75,21 +76,22 @@ class Enterprise_SalesArchive_Model_Resource_Helper_Mysql4 extends Mage_Core_Mod
         if ($after) {
             $sql = sprintf(
                 'ALTER TABLE %s MODIFY COLUMN %s %s AFTER %s',
-                $this->getConnection()->quoteIdentifier($table),
-                $this->getConnection()->quoteIdentifier($column),
+                $adapter->quoteIdentifier($table),
+                $adapter->quoteIdentifier($column),
                 $columns[$column],
-                $this->getConnection()->quoteIdentifier($after)
+                $adapter->quoteIdentifier($after)
             );
         } else {
             $sql = sprintf(
                 'ALTER TABLE %s MODIFY COLUMN %s %s FIRST',
-                $this->getConnection()->quoteIdentifier($table),
-                $this->getConnection()->quoteIdentifier($column),
+                $adapter->quoteIdentifier($table),
+                $adapter->quoteIdentifier($column),
                 $columns[$column]
             );
         }
 
-        $this->getConnection()->query($sql);
+        $adapter->query($sql);
+
         return $this;
     }
 }

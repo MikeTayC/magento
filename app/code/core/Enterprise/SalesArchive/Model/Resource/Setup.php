@@ -39,7 +39,7 @@ class Enterprise_SalesArchive_Model_Resource_Setup extends Mage_Core_Model_Resou
      *
      * @var boolean
      */
-    protected $_callAfterApplyAllUpdates     = true;
+    protected $_callAfterApplyAllUpdates = true;
 
     /**
      * Map of tables aliases to archive tables
@@ -131,7 +131,8 @@ class Enterprise_SalesArchive_Model_Resource_Setup extends Mage_Core_Model_Resou
                         $adapter->modifyColumnByDdl($targetTable, $field, $definition);
                     }
                 } else {
-                    $adapter->addColumn($targetTable, $field, $definition);
+                    $columnInfo = $adapter->getColumnCreateByDescribe($definition);
+                    $adapter->addColumn($targetTable, $field, $columnInfo);
                     $targetFields[$field] = $definition;
                 }
             }
@@ -180,8 +181,8 @@ class Enterprise_SalesArchive_Model_Resource_Setup extends Mage_Core_Model_Resou
                     $this->_tableContraintMap[$sourceTable][1]
                 );
             }
-
         }
+
         return $this;
     }
 
@@ -196,8 +197,9 @@ class Enterprise_SalesArchive_Model_Resource_Setup extends Mage_Core_Model_Resou
      */
     public function changeColumnPosition($table, $column, $after = false, $first = false)
     {
-        $helper = Mage::getResorceHelper('enterprise_salesarchive');
+        $helper = Mage::getResourceHelper('enterprise_salesarchive');
         $helper->changeColumnPosition($table, $column, $after, $first);
+
         return $this;
     }
 
@@ -229,6 +231,7 @@ class Enterprise_SalesArchive_Model_Resource_Setup extends Mage_Core_Model_Resou
                 );
             }
         }
+
         return $this;
     }
 
@@ -243,6 +246,7 @@ class Enterprise_SalesArchive_Model_Resource_Setup extends Mage_Core_Model_Resou
     {
         unset($sourceColumn['TABLE_NAME']);
         unset($targetColumn['TABLE_NAME']);
+
         return $sourceColumn !== $targetColumn;
     }
 
@@ -255,8 +259,8 @@ class Enterprise_SalesArchive_Model_Resource_Setup extends Mage_Core_Model_Resou
      */
     protected function _checkIndexDifference($sourceIndex, $targetIndex)
     {
-        return (strtoupper($sourceIndex['INDEX_TYPE']) != strtoupper($targetIndex['INDEX_TYPE']) ||
-                count(array_diff($sourceIndex['COLUMNS_LIST'], $targetIndex['COLUMNS_LIST'])) > 0);
+        return (strtoupper($sourceIndex['INDEX_TYPE']) != strtoupper($targetIndex['INDEX_TYPE'])
+                || count(array_diff($sourceIndex['COLUMNS_LIST'], $targetIndex['COLUMNS_LIST'])) > 0);
     }
 
     /**
@@ -293,8 +297,8 @@ class Enterprise_SalesArchive_Model_Resource_Setup extends Mage_Core_Model_Resou
         foreach ($sourceConstraints as $sourceConstraint => $constraintInfo) {
             $targetConstraint = str_replace($sourceKey, $targetKey, $sourceConstraint);
             if ($sourceConstraint == $targetConstraint) {
-                // Constraint have invalid prefix,
-                continue; // we will have conflict in synchoronizing
+                // Constraint have invalid prefix, we will have conflict in synchronizing
+                continue;
             }
 
             if (!isset($targetConstraints[$targetConstraint]) ||

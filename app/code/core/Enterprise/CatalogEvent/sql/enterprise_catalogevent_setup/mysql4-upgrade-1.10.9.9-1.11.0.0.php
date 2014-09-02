@@ -33,7 +33,7 @@ $installer->startSetup();
  */
 $installer->getConnection()->dropForeignKey(
     $installer->getTable('enterprise_catalogevent/event'),
-    'FK_ENTERPRISE_CATALOGEVENT_EVENT_CATEGORY'
+    sprintf('FK_%s_CATEGORY', $installer->getTable('enterprise_catalogevent/event'))
 );
 
 $installer->getConnection()->dropForeignKey(

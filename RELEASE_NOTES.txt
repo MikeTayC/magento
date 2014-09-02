@@ -1,3 +1,22 @@
+==== 1.11.0.2 ====
+
+=== Fixes ===
+Fixed several probable vulnerabilities
+
+
+
+==== 1.11.0.1 ====
+
+=== Fixes ===
+Fixed Database errors while upgrading CustomerSegment module
+Fixed After upgrading backend dashboard "Top 5 Search Terms" grid doesn't show search terms
+Fixed Errors in Enterprise_SalesArchive_Model_Resource_Helper_Mysql4
+Fixed Errors with using SalesArchive sync after upgrade process
+Fixed Error with FK length for staging table on upgrade to 1.11
+Fixed Unable to upgrade EE when database table prefix is used
+
+
+
 ==== 1.11.0.0 ====
 
 === Major Highlights ===

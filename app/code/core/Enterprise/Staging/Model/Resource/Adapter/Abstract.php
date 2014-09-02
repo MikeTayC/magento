@@ -207,6 +207,20 @@ abstract class Enterprise_Staging_Model_Resource_Adapter_Abstract extends Mage_C
     }
 
     /**
+     * Get all backup tables
+     *
+     * @param  Enterprise_Staging_Model_Staging $staging
+     * @param  Enterprise_Staging_Model_Staging_Event|null $event
+     * @return Enterprise_Staging_Model_Resource_Adapter_Abstract
+     */
+    public function getBackupTablesRun(Enterprise_Staging_Model_Staging $staging, $event = null)
+    {
+        $this->setStaging($staging);
+        $this->setEvent($event);
+        return $this;
+    }
+
+    /**
      * Specify event instance
      *
      * @param unknown_type $event
@@ -697,7 +711,7 @@ abstract class Enterprise_Staging_Model_Resource_Adapter_Abstract extends Mage_C
      * @param mixed $slaveIds
      * @param mixed $keys
      * @param string $additionalWhereCondition
-     * @return value
+     * @return string
      */
     protected function _deleteDataByKeys($type, $scope, $srcTable, $targetTable, $masterIds, $slaveIds, $keys,
         $additionalWhereCondition = null)
@@ -742,13 +756,16 @@ abstract class Enterprise_Staging_Model_Resource_Adapter_Abstract extends Mage_C
                 );
 
                 if (!empty($additionalWhereCondition)) {
-                    $additionalWhereCondition = str_replace(array($srcTable, $targetTable), array('T2', 'T1') , $additionalWhereCondition);
+                    $additionalWhereCondition = str_replace(array($srcTable, $targetTable), array('T2', 'T1'),
+                        $additionalWhereCondition);
                     $sql .= ' AND ' . $additionalWhereCondition;
                 }
                 $adapter->deleteFromSelect($select, $targetTable);
+
                 return $sql;
             }
         }
+
         return '';
     }
 

@@ -25,6 +25,5 @@
  */
 
 /**
- * Resave all segments for segment conditions regeneration
+ * Skipped upgrade
  */
-require_once 'mysql4-data-upgrade-0.0.8-1.6.0.0.php';

@@ -124,7 +124,7 @@ class Enterprise_Staging_Model_Staging extends Mage_Core_Model_Abstract
     }
 
     /**
-     * Retrieve Stagimg Website model
+     * Retrieve Staging Website model
      *
      * @return Mage_Core_Model_Website
      */
@@ -300,7 +300,10 @@ class Enterprise_Staging_Model_Staging extends Mage_Core_Model_Abstract
     {
         $this->setCoreFlag();
 
-        Mage::dispatchEvent($this->_eventPrefix.'_'.$process.'_process_run_before', array($this->_eventObject => $this, 'event' => $log));
+        Mage::dispatchEvent(
+            $this->_eventPrefix . '_' . $process . '_process_run_before',
+            array($this->_eventObject => $this, 'event' => $log)
+        );
 
         return $this;
     }
@@ -315,7 +318,10 @@ class Enterprise_Staging_Model_Staging extends Mage_Core_Model_Abstract
      */
     protected function _afterStagingProcessRun($process, $log)
     {
-        Mage::dispatchEvent($this->_eventPrefix.'_'.$process.'_process_run_after', array($this->_eventObject => $this, 'event' => $log));
+        Mage::dispatchEvent(
+            $this->_eventPrefix . '_' . $process . '_process_run_after',
+            array($this->_eventObject => $this, 'event' => $log)
+        );
 
         Mage::getConfig()->reinit();
         Mage::app()->reinitStores();
@@ -639,6 +645,38 @@ class Enterprise_Staging_Model_Staging extends Mage_Core_Model_Abstract
     public function loadByStagingWebsiteId($stagingWebsiteId)
     {
         $this->load($stagingWebsiteId, 'staging_website_id');
+        return $this;
+    }
+
+    /**
+     * Collect all backup tables
+     *
+     * @param  Enterprise_Staging_Model_Staging_Event $log
+     * @return Enterprise_Staging_Model_Staging
+     */
+    public function collectBackupTables($log)
+    {
+        $this->_getResource()->collectBackupTables($this, $log);
+        return $this;
+    }
+
+    /**
+     * Store found backup tables in staging
+     *
+     * @param  string $tableName
+     * @return Enterprise_Staging_Model_Staging
+     */
+    public function addBackupTable($tableName)
+    {
+        $tables = $this->getData('backup_tables');
+        if (!is_array($tables)) {
+            $tables = array();
+        }
+
+        $tables[] = $tableName;
+
+        $this->setData('backup_tables', $tables);
+
         return $this;
     }
 }
