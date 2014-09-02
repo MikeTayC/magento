@@ -62,4 +62,20 @@
         </reference>
     </customer_account>
 
+    <checkout_onepage_review>
+        <reference name="checkout.onepage.review.button">
+            <action method="setTemplate"><template helper="enterprise_pbridge/data/getReviewButtonTemplate"><name>pbridge/checkout/review/button.phtml</name><block>checkout.onepage.review.button</block></template></action>
+        </reference>
+        <reference name="checkout.onepage.review.info.items.after">
+            <block type="enterprise_pbridge/checkout_payment_review_container" name="pbridge.checkout.payment.review.iframe" template="pbridge/checkout/review/iframe.phtml" />
+        </reference>
+    </checkout_onepage_review>
+
+    <enterprise_pbridge_pbridge_success>
+        <block type="core/template" name="pbridge.checkout.review.success" template="pbridge/checkout/review/success.phtml" output="toHtml" />
+    </enterprise_pbridge_pbridge_success>
+
+    <enterprise_pbridge_pbridge_error>
+        <block type="core/template" name="pbridge.checkout.review.error" template="pbridge/checkout/review/error.phtml" output="toHtml" />
+    </enterprise_pbridge_pbridge_error>
 </layout>

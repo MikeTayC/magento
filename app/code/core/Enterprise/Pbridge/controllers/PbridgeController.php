@@ -73,6 +73,9 @@ class Enterprise_Pbridge_PbridgeController extends Mage_Core_Controller_Front_Ac
             if ($methodInstance) {
                 $block = $this->getLayout()->createBlock($methodInstance->getFormBlockType());
                 $block->setMethod($methodInstance);
+                if($this->getRequest()->getParam('data')) {
+                    $block->setFormParams($this->getRequest()->getParam('data', null));
+                }
                 if ($block) {
                     $this->getResponse()->setBody($block->getIframeBlock()->toHtml());
                 }
@@ -80,6 +83,50 @@ class Enterprise_Pbridge_PbridgeController extends Mage_Core_Controller_Front_Ac
         } else {
             Mage::throwException(Mage::helper('enterprise_pbridge')->__('Payment Method Code is not passed.'));
         }
+    }
+
+    /**
+     * Iframe Ajax Action for review page
+     *
+     *  @return void
+     */
+    public function reviewAction()
+    {
+        $methodCode = $this->getRequest()->getParam('method_code', null);
+        if ($methodCode) {
+            $methodInstance = Mage::helper('payment')->getMethodInstance($methodCode);
+            if ($methodInstance) {
+                $block = $this->getLayout()->createBlock('enterprise_pbridge/checkout_payment_review_iframe');
+                $block->setMethod($methodInstance);
+                if ($block) {
+                    $this->getResponse()->setBody($block->getIframeBlock()->toHtml());
+                }
+            }
+        } else {
+            Mage::throwException(Mage::helper('enterprise_pbridge')->__('Payment Method Code is not passed.'));
+        }
+    }
+
+    /**
+     * Review success action
+     *
+     *  @return void
+     */
+    public function successAction()
+    {
+        $this->_initActionLayout();
+        $this->renderLayout();
+    }
+
+    /**
+     * Review error action
+     *
+     *  @return void
+     */
+    public function errorAction()
+    {
+        $this->_initActionLayout();
+        $this->renderLayout();
     }
 
     /**
@@ -91,5 +138,26 @@ class Enterprise_Pbridge_PbridgeController extends Mage_Core_Controller_Front_Ac
     {
         $this->_initActionLayout();
         $this->renderLayout();
+    }
+
+    /**
+     * Validate all agreements
+     * (terms and conditions are agreed)
+     */
+    public function validateAgreementAction()
+    {
+        $result = array();
+        $result['success'] = true;
+        $requiredAgreements = Mage::helper('checkout')->getRequiredAgreementIds();
+        if ($requiredAgreements) {
+            $postedAgreements = array_keys($this->getRequest()->getPost('agreement', array()));
+            $diff = array_diff($requiredAgreements, $postedAgreements);
+            if ($diff) {
+                $result['success'] = false;
+                $result['error'] = true;
+                $result['error_messages'] = $this->__('Please agree to all the terms and conditions before placing the order.');
+            }
+        }
+        $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
     }
 }

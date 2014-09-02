@@ -34,31 +34,6 @@
 class Enterprise_GiftCardAccount_Model_Api_V2 extends Enterprise_GiftCardAccount_Model_Api
 {
     /**
-     * Retrieve data
-     * Convert filters object to array and call parent method
-     *
-     * @param  stdClass $filters
-     * @return array
-     */
-    public function items($filters)
-    {
-        $preparedFilters = array();
-        if (isset($filters->filter)) {
-            foreach ($filters->filter as $_filter) {
-                $preparedFilters[$_filter->key] = $_filter->value;
-            }
-        }
-        if (isset($filters->complex_filter)) {
-            foreach ($filters->complex_filter as $_filter) {
-                $_value = $_filter->value;
-                $preparedFilters[$_filter->key] =  $_value->value;
-            }
-        }
-
-        return parent::items($preparedFilters);
-    }
-
-    /**
      * Checks giftcard account data
      *
      * @throws Mage_Api_Exception

@@ -67,5 +67,69 @@
             continueButton.setStyle({display:'block'});
         }
     }
+
+    function loadReviewIframe(method) {
+        var iframeContainer = $('review_iframe_container');
+        var methodCode = method || payment.currentMethod;
+        new Ajax.Updater(
+            iframeContainer,
+            "<?php echo $this->getUrl('enterprise_pbridge/pbridge/review', array('_current' => true, '_secure' => true)); ?>",
+            {parameters : {method_code : methodCode, data: {is_review_iframe: 1}}}
+        );
+        $('iframe-warning').show();
+        $('btn-pay-now').hide();
+    }
+
+    /**
+    * Hold validation actions before loading review iframe
+    */
+    function preLoadReviewIframe() {
+        if (review.agreementsForm) {
+            checkout.setLoadWaiting('review');
+            var params = Form.serialize(payment.form) + '&' + Form.serialize(review.agreementsForm);
+            var request = new Ajax.Request(
+                getAgreementValidationUrl(),
+                {
+                    method: 'post',
+                    parameters: params,
+                    onComplete: review.onComplete,
+                    onSuccess: validateAgreements,
+                    onFailure: checkout.ajaxFailure.bind(checkout)
+                }
+            );
+        } else {
+            loadReviewIframe();
+        }
+    }
+
+    /**
+    * Validate agreemnets
+    */
+    function validateAgreements(transport) {
+        if (transport && transport.responseText) {
+            try{
+                response = eval('(' + transport.responseText + ')');
+            }
+            catch (e) {
+                response = {};
+            }
+            if (response.success) {
+                /* Accepted terms and conditions are no longer available to decline */
+                review.agreementsForm.hide();
+                loadReviewIframe();
+            } else {
+                review.nextStep(transport);
+            }
+        }
+    }
+
+    /**
+    * Get url for server agreements validation
+    *
+    * @return string
+    */
+    function getAgreementValidationUrl() {
+        return "<?php echo $this->getUrl('enterprise_pbridge/pbridge/validateAgreement', array('_current' => true)); ?>";
+    }
 //]]>
 </script>

@@ -152,7 +152,8 @@ class Enterprise_Pbridge_Model_Payment_Method_Paypal extends Mage_Paypal_Model_D
      */
     public function isAvailable($quote = null)
     {
-        return $this->getPbridgeMethodInstance()->isDummyMethodAvailable($quote);
+        return $this->getPbridgeMethodInstance()->isDummyMethodAvailable($quote)
+            && $this->_pro->getConfig()->isMethodAvailable(Mage_Paypal_Model_Config::METHOD_WPP_DIRECT);
     }
 
     /**

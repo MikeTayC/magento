@@ -73,6 +73,9 @@ class Enterprise_Pbridge_Adminhtml_PbridgeController extends Mage_Adminhtml_Cont
             if ($methodInstance) {
                 $block = $this->getLayout()->createBlock($methodInstance->getFormBlockType());
                 $block->setMethod($methodInstance);
+                if($this->getRequest()->getParam('data')) {
+                    $block->setFormParams($this->getRequest()->getParam('data', null));
+                }
                 if ($block) {
                     $this->getResponse()->setBody($block->getIframeBlock()->toHtml());
                 }

@@ -32,7 +32,7 @@
                 <pbridge translate="label" module="enterprise_pbridge">
                     <label>Payment Bridge</label>
                     <frontend_type>text</frontend_type>
-                    <sort_order>1</sort_order>
+                    <sort_order>21</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
@@ -190,6 +190,70 @@
                         </email_customer>
                     </fields>
                 </cybersource_soap>
+
+                <dibs translate="label" module="enterprise_pbridge">
+                    <label>DIBS Payment Services</label>
+                    <sort_order>1000</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <active translate="label comment">
+                            <label>Enabled</label>
+                            <comment>This payment method will work only if the Payment Bridge is enabled and configured correctly.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </active>
+                        <title translate="label">
+                            <label>Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </title>
+                        <payment_action translate="label">
+                            <label>Payment Action</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>enterprise_pbridge/source_paymentAction</source_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </payment_action>
+                        <allowspecific translate="label">
+                            <label>Payment from Applicable Countries</label>
+                            <frontend_type>allowspecific</frontend_type>
+                            <sort_order>40</sort_order>
+                            <source_model>adminhtml/system_config_source_payment_allspecificcountries</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </allowspecific>
+                        <specificcountry translate="label">
+                            <label>Payment from Specific Countries</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>41</sort_order>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </specificcountry>
+                        <sort_order translate="label">
+                            <label>Sort Order</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </sort_order>
+                    </fields>
+                </dibs>
+
                 <eway_direct translate="label" module="enterprise_pbridge">
                     <label>eWAY Direct</label>
                     <frontend_type>text</frontend_type>
@@ -301,13 +365,14 @@
                 <pbridge_ogone_direct translate="label" module="enterprise_pbridge">
                     <label>Ogone Direct Link</label>
                     <frontend_type>text</frontend_type>
-                    <sort_order>2</sort_order>
+                    <sort_order>22</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <fields>
-                        <active translate="label" module="enterprise_pbridge">
+                        <active translate="label comment" module="enterprise_pbridge">
                             <label>Enabled</label>
+                            <comment>This payment method will work only if the Payment Bridge is enabled and configured correctly.</comment>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>10</sort_order>
@@ -427,7 +492,7 @@
                 <braintree_basic translate="label" module="enterprise_pbridge">
                     <label>Braintree</label>
                     <frontend_type>text</frontend_type>
-                    <sort_order>30</sort_order>
+                    <sort_order>35</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
@@ -611,170 +676,465 @@
                          </sort_order>
                      </fields>
                 </payone_gate>
+
+                <psigate_basic translate="label" module="enterprise_pbridge">
+                    <label>PSi Gate</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>25</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <active translate="label comment">
+                            <label>Enabled</label>
+                            <comment>This payment method will work only if the Payment Bridge is enabled and configured correctly.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </active>
+                        <title translate="label">
+                            <label>Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </title>
+                        <payment_action translate="label">
+                            <label>Payment Action</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>enterprise_pbridge/source_paymentAction</source_model>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </payment_action>
+                        <sort_order translate="label">
+                            <label>Sort Order</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </sort_order>
+                    </fields>
+                </psigate_basic>
+
+                <sagepay_direct translate="label" module="enterprise_pbridge">
+                    <label>Sage Pay Direct</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>25</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <active translate="label comment">
+                            <label>Enabled</label>
+                            <comment>This payment method will work only if the Payment Bridge is enabled and configured correctly.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </active>
+                        <payment_action translate="label">
+                            <label>Payment Action</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>enterprise_pbridge/source_paymentAction</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </payment_action>
+                        <title translate="label">
+                            <label>Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>25</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </title>
+                        <enable3ds translate="label">
+                            <label>3D Secure Card Validation</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>46</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </enable3ds>
+                        <allowspecific translate="label">
+                            <label>Payment from Applicable Countries</label>
+                            <frontend_type>allowspecific</frontend_type>
+                            <sort_order>50</sort_order>
+                            <source_model>adminhtml/system_config_source_payment_allspecificcountries</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </allowspecific>
+                        <specificcountry translate="label">
+                            <label>Payment from Specific Countries</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>51</sort_order>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </specificcountry>
+                        <sort_order translate="label">
+                            <label>Sort Order</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </sort_order>
+                    </fields>
+                </sagepay_direct>
+
+                <worldpay_direct translate="label" module="enterprise_pbridge">
+                    <label>Worldpay</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>35</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <active translate="label comment">
+                            <label>Enabled</label>
+                            <comment>This payment method will work only if the Payment Bridge is enabled and configured correctly.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </active>
+                        <title translate="label">
+                            <label>Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </title>
+                        <payment_action translate="label">
+                            <label>Payment Action</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>enterprise_pbridge/source_paymentAction</source_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </payment_action>
+                        <sort_order translate="label">
+                            <label>Sort Order</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </sort_order>
+                    </fields>
+                </worldpay_direct>
+
+                <paypal_payments>
+                    <wpp>
+                        <fields>
+                            <wpp_required_settings>
+                                <fields>
+                                    <wpp_and_express_checkout>
+                                        <fields>
+                                            <using_pbridge translate="label comment" module="enterprise_pbridge">
+                                                <label>Use via Payment Bridge</label>
+                                                <comment>Gives effect only when payment bridge is active.</comment>
+                                                <frontend_type>select</frontend_type>
+                                                <config_path>payment/paypal_direct/using_pbridge</config_path>
+                                                <source_model>adminhtml/system_config_source_yesno</source_model>
+                                                <sort_order>5</sort_order>
+                                                <show_in_default>1</show_in_default>
+                                                <show_in_website>1</show_in_website>
+                                            </using_pbridge>
+                                        </fields>
+                                    </wpp_and_express_checkout>
+                                </fields>
+                            </wpp_required_settings>
+                            <wpp_settings>
+                                <fields>
+                                    <heading_cc>
+                                        <depends>
+                                            <using_pbridge>
+                                                <fieldset>wpp_and_express_checkout</fieldset>
+                                                <value>0</value>
+                                            </using_pbridge>
+                                        </depends>
+                                    </heading_cc>
+                                    <cctypes>
+                                        <depends>
+                                            <using_pbridge>
+                                                <fieldset>wpp_and_express_checkout</fieldset>
+                                                <value>0</value>
+                                            </using_pbridge>
+                                        </depends>
+                                    </cctypes>
+                                    <wpp_settings_advanced>
+                                        <fields>
+                                            <verify_peer>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>wpp_and_express_checkout</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </verify_peer>
+                                            <centinel>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>wpp_and_express_checkout</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </centinel>
+                                            <heading_3dsecure>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>wpp_and_express_checkout</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </heading_3dsecure>
+                                            <centinel_is_mode_strict>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>wpp_and_express_checkout</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </centinel_is_mode_strict>
+                                            <centinel_api_url>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>wpp_and_express_checkout</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </centinel_api_url>
+                                            <line_items_enabled>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>wpp_and_express_checkout</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </line_items_enabled>
+                                            <useccv>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>wpp_and_express_checkout</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </useccv>
+                                        </fields>
+                                    </wpp_settings_advanced>
+                                </fields>
+                            </wpp_settings>
+                        </fields>
+                    </wpp>
+                    <payments_pro_payflow_edition>
+                        <fields>
+                            <pp_pe_required_settings>
+                                <fields>
+                                    <pp_pe_api_settings>
+                                        <fields>
+                                            <using_pbridge translate="label comment" module="enterprise_pbridge">
+                                                <label>Use via Payment Bridge</label>
+                                                <comment>Gives effect only when payment bridge is active.</comment>
+                                                <frontend_type>select</frontend_type>
+                                                <config_path>payment/paypaluk_direct/using_pbridge</config_path>
+                                                <source_model>adminhtml/system_config_source_yesno</source_model>
+                                                <sort_order>5</sort_order>
+                                                <show_in_default>1</show_in_default>
+                                                <show_in_website>1</show_in_website>
+                                            </using_pbridge>
+                                        </fields>
+                                    </pp_pe_api_settings>
+                                </fields>
+                            </pp_pe_required_settings>
+                            <settings_pp_pe>
+                                <fields>
+                                    <cctypes>
+                                        <depends>
+                                            <using_pbridge>
+                                                <fieldset>pp_pe_api_settings</fieldset>
+                                                <value>0</value>
+                                            </using_pbridge>
+                                        </depends>
+                                    </cctypes>
+                                    <heading_cc>
+                                        <depends>
+                                            <using_pbridge>
+                                                <fieldset>pp_pe_api_settings</fieldset>
+                                                <value>0</value>
+                                            </using_pbridge>
+                                        </depends>
+                                    </heading_cc>
+                                    <settings_pp_pe_advanced>
+                                        <fields>
+                                            <verify_peer>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>pp_pe_api_settings</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </verify_peer>
+                                            <useccv>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>pp_pe_api_settings</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </useccv>
+                                            <heading_3dsecure>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>pp_pe_api_settings</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </heading_3dsecure>
+                                            <centinel>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>pp_pe_api_settings</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </centinel>
+                                            <centinel_is_mode_strict>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>pp_pe_api_settings</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </centinel_is_mode_strict>
+                                            <centinel_api_url>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>pp_pe_api_settings</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </centinel_api_url>
+                                        </fields>
+                                    </settings_pp_pe_advanced>
+                                </fields>
+                            </settings_pp_pe>
+                        </fields>
+                    </payments_pro_payflow_edition>
+                    <paypal_verisign>
+                        <fields>
+                            <paypal_payflow_required>
+                                <fields>
+                                    <paypal_payflow_api_settings>
+                                        <fields>
+                                            <using_pbridge translate="label comment" module="enterprise_pbridge">
+                                                <label>Use via Payment Bridge</label>
+                                                <comment>Gives effect only when payment bridge is active.</comment>
+                                                <frontend_type>select</frontend_type>
+                                                <config_path>payment/verisign/using_pbridge</config_path>
+                                                <source_model>adminhtml/system_config_source_yesno</source_model>
+                                                <sort_order>5</sort_order>
+                                                <show_in_default>1</show_in_default>
+                                                <show_in_website>1</show_in_website>
+                                                <show_in_store>0</show_in_store>
+                                            </using_pbridge>
+                                        </fields>
+                                    </paypal_payflow_api_settings>
+                                </fields>
+                            </paypal_payflow_required>
+                            <settings_paypal_payflow>
+                                <fields>
+                                    <cctypes>
+                                        <depends>
+                                            <using_pbridge>
+                                                <fieldset>paypal_payflow_api_settings</fieldset>
+                                                <value>0</value>
+                                            </using_pbridge>
+                                        </depends>
+                                    </cctypes>
+                                    <heading_cc>
+                                        <depends>
+                                            <using_pbridge>
+                                                <fieldset>paypal_payflow_api_settings</fieldset>
+                                                <value>0</value>
+                                            </using_pbridge>
+                                        </depends>
+                                    </heading_cc>
+                                    <settings_paypal_payflow_advanced>
+                                        <fields>
+                                            <verify_peer>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>paypal_payflow_api_settings</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </verify_peer>
+                                            <useccv translate="label">
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>paypal_payflow_api_settings</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </useccv>
+                                            <heading_3dsecure>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>paypal_payflow_api_settings</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </heading_3dsecure>
+                                            <centinel>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>paypal_payflow_api_settings</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </centinel>
+                                            <centinel_is_mode_strict>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>paypal_payflow_api_settings</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </centinel_is_mode_strict>
+                                            <centinel_api_url>
+                                                <depends>
+                                                    <using_pbridge>
+                                                        <fieldset>paypal_payflow_api_settings</fieldset>
+                                                        <value>0</value>
+                                                    </using_pbridge>
+                                                </depends>
+                                            </centinel_api_url>
+                                        </fields>
+                                    </settings_paypal_payflow_advanced>
+                                </fields>
+                            </settings_paypal_payflow>
+                        </fields>
+                    </paypal_verisign>
+                </paypal_payments>
             </groups>
         </payment>
-        <paypal>
-            <groups>
-                <wpp>
-                    <fields>
-                        <using_pbridge translate="label comment" module="enterprise_pbridge">
-                            <label>Use via Payment Bridge</label>
-                            <comment>Gives effect only when payment bridge is active.</comment>
-                            <frontend_type>select</frontend_type>
-                            <config_path>payment/paypal_direct/using_pbridge</config_path>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>37</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </using_pbridge>
-                        <cctypes>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </cctypes>
-                        <heading_3dsecure>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </heading_3dsecure>
-                        <centinel>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </centinel>
-                        <centinel_is_mode_strict>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </centinel_is_mode_strict>
-                        <centinel_api_url>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </centinel_api_url>
-                        <line_items_enabled>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </line_items_enabled>
-                        <useccv>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </useccv>
-                        <heading_cc>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </heading_cc>
-                    </fields>
-                </wpp>
-                <wpp_pe>
-                    <fields>
-                        <using_pbridge translate="label comment" module="enterprise_pbridge">
-                            <label>Use via Payment Bridge</label>
-                            <comment>Gives effect only when payment bridge is active.</comment>
-                            <frontend_type>select</frontend_type>
-                            <config_path>payment/paypaluk_direct/using_pbridge</config_path>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>37</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </using_pbridge>
-                        <cctypes>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </cctypes>
-                        <heading_3dsecure>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </heading_3dsecure>
-                        <centinel>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </centinel>
-                        <centinel_is_mode_strict>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </centinel_is_mode_strict>
-                        <centinel_api_url>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </centinel_api_url>
-                        <line_items_enabled>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </line_items_enabled>
-                        <useccv>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </useccv>
-                        <heading_cc>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </heading_cc>
-                        <heading_api>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </heading_api>
-                        <partner>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </partner>
-                        <user>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </user>
-                        <vendor>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </vendor>
-                        <pwd>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </pwd>
-                        <sandbox_flag>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </sandbox_flag>
-                        <use_proxy>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </use_proxy>
-                    </fields>
-                </wpp_pe>
-                <verisign>
-                    <fields>
-                        <using_pbridge translate="label comment" module="enterprise_pbridge">
-                            <label>Use via Payment Bridge</label>
-                            <comment>Gives effect only when payment bridge is active.</comment>
-                            <frontend_type>select</frontend_type>
-                            <config_path>payment/verisign/using_pbridge</config_path>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>33</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </using_pbridge>
-                        <cctypes>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </cctypes>
-                        <heading_3dsecure>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </heading_3dsecure>
-                        <centinel>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </centinel>
-                        <centinel_is_mode_strict>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </centinel_is_mode_strict>
-                        <centinel_api_url>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </centinel_api_url>
-                        <line_items_enabled>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </line_items_enabled>
-                        <useccv>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </useccv>
-                        <heading_cc>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </heading_cc>
-                        <heading_payflow>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </heading_payflow>
-                        <partner>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </partner>
-                        <user>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </user>
-                        <vendor>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </vendor>
-                        <pwd>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </pwd>
-                        <sandbox_flag>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </sandbox_flag>
-                        <use_proxy>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </use_proxy>
-                    </fields>
-                </verisign>
-            </groups>
-        </paypal>
     </sections>
 </config>

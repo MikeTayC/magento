@@ -51,11 +51,12 @@ class Enterprise_PageCache_Model_Cache
     {
         if (is_null(self::$_cache)) {
             $options = Mage::app()->getConfig()->getNode('global/full_page_cache');
-            if ($options) {
-                $options = $options->asArray();
-            } else {
-                $options = array();
+            if (!$options) {
+                self::$_cache = Mage::app()->getCacheInstance();
+                return self::$_cache;
             }
+
+            $options = $options->asArray();
 
             foreach (array('backend_options', 'slow_backend_options') as $tag) {
                 if (!empty($options[$tag]['cache_dir'])) {
