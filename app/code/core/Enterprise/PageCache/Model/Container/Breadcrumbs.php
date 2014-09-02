@@ -87,8 +87,17 @@ class Enterprise_PageCache_Model_Container_Breadcrumbs extends Enterprise_PageCa
         if (!$productId && !$categoryId) {
             return '';
         }
+
+        /** @var $breadcrumbsBlock Mage_Page_Block_Html_Breadcrumbs */
         $breadcrumbsBlock = $this->_getPlaceHolderBlock();
         $breadcrumbsBlock->setNameInLayout('breadcrumbs');
+        $crumbs = $this->_placeholder->getAttribute('crumbs');
+        if ($crumbs) {
+            $crumbs = unserialize(base64_decode($crumbs));
+            foreach ($crumbs as $crumbName => $crumbInfo) {
+                $breadcrumbsBlock->addCrumb($crumbName, $crumbInfo);
+            }
+        }
         Mage::dispatchEvent('render_block', array('block' => $breadcrumbsBlock, 'placeholder' => $this->_placeholder));
         return $breadcrumbsBlock->toHtml();
     }

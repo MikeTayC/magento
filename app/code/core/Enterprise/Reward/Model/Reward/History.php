@@ -46,6 +46,8 @@
  * @method Enterprise_Reward_Model_Reward_History setPointsDelta(int $value)
  * @method int getPointsUsed()
  * @method Enterprise_Reward_Model_Reward_History setPointsUsed(int $value)
+ * @method int getPointsVoided()
+ * @method Enterprise_Reward_Model_Reward_History setPointsVoided(int $value)
  * @method float getCurrencyAmount()
  * @method Enterprise_Reward_Model_Reward_History setCurrencyAmount(float $value)
  * @method float getCurrencyDelta()

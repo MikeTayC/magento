@@ -54,7 +54,7 @@ class Enterprise_Pbridge_Payment_ProfileController extends Mage_Core_Controller_
      */
     public function indexAction()
     {
-        if(!Mage::getSingleton('customer/session')->getCustomerId()) {
+        if (!Mage::getSingleton('customer/session')->getCustomerId()) {
             Mage::getSingleton('customer/session')->authenticate($this);
             return;
         }

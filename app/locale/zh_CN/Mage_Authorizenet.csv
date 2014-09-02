@@ -1,6 +1,7 @@
 "--Please Select--","-- 请选择 --"
 "API Login ID","API 登录 ID"
 "Accepted Currency","接受的汇率"
+"Amount of %s approved by payment gateway. Transaction ID: ""%s"".","%s 的金额已由支付网关批准。交易 ID：""%s""。"
 "Authorize.net Direct Post","Authorize.net 直接发表"
 "Card Verification Number","卡片验证号码"
 "Card Verification Number Visual Reference","信用卡验证号码 视觉参考"

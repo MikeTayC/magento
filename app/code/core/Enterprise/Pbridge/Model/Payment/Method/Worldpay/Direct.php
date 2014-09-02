@@ -32,7 +32,7 @@
  * @package     Enterprise_Pbridge
  * @author      Magento
  */
-class Enterprise_Pbridge_Model_Payment_Method_Worldpay_Direct extends Mage_Payment_Model_Method_Cc
+class Enterprise_Pbridge_Model_Payment_Method_Worldpay_Direct extends Enterprise_Pbridge_Model_Payment_Method_Abstract
 {
     /**
      * Payment method code
@@ -57,68 +57,6 @@ class Enterprise_Pbridge_Model_Payment_Method_Worldpay_Direct extends Mage_Payme
     protected $_canSaveCc               = false;
 
     /**
-     * Form block type for the frontend
-     *
-     * @var string
-     */
-    protected $_formBlockType = 'enterprise_pbridge/checkout_payment_worldpay_direct';
-
-    /**
-     * Form block type for the backend
-     *
-     * @var string
-     */
-    protected $_backendFormBlockType = 'enterprise_pbridge/adminhtml_sales_order_create_worldpay_direct';
-
-    /**
-     * Payment Bridge Payment Method Instance
-     *
-     * @var Enterprise_Pbridge_Model_Payment_Method_Pbridge
-     */
-    protected $_pbridgeMethodInstance = null;
-    /**
-     * Return that current payment method is dummy
-     * @return boolean
-     */
-    public function getIsDummy()
-    {
-        return true;
-    }
-    /**
-     * Return Payment Bridge method instance
-     *
-     * @return Enterprise_Pbridge_Model_Payment_Method_Pbridge
-     */
-    public function getPbridgeMethodInstance()
-    {
-        if ($this->_pbridgeMethodInstance === null) {
-            $this->_pbridgeMethodInstance = Mage::helper('payment')->getMethodInstance('pbridge');
-            if ($this->_pbridgeMethodInstance) {
-                $this->_pbridgeMethodInstance->setOriginalMethodInstance($this);
-            }
-        }
-        return $this->_pbridgeMethodInstance;
-    }
-     /**
-     * Retrieve dummy payment method code
-     *
-     * @return string
-     */
-    public function getCode()
-    {
-        return 'pbridge_' . parent::getCode();
-    }
-    /**
-     * Retrieve original payment method code
-     *
-     * @return string
-     */
-    public function getOriginalCode()
-    {
-        return parent::getCode();
-    }
-
-    /**
      * Check whether payment method can be used
      *
      * @param Mage_Sales_Model_Quote $quote
@@ -126,63 +64,17 @@ class Enterprise_Pbridge_Model_Payment_Method_Worldpay_Direct extends Mage_Payme
      */
     public function isAvailable($quote = null)
     {
-        if(!$this->getPbridgeMethodInstance() || !$this->getPbridgeMethodInstance()->isDummyMethodAvailable($quote)) {
+        if (!parent::isAvailable($quote)){
+            return false;
+        }
+
+        if ($this->is3dSecureEnabled() && Mage::app()->getStore()->isAdmin()) {
             return false;
         }
 
         return true;
     }
-    /**
-     * Retrieve information from payment configuration
-     *
-     * @param   string $field
-     * @return  mixed
-     */
-    public function getConfigData($field, $storeId = null)
-    {
-        if (null === $storeId) {
-            $storeId = $this->getStore();
-        }
-        $path = 'payment/'.$this->getOriginalCode().'/'.$field;
-        return Mage::getStoreConfig($path, $storeId);
-    }
 
-    /**
-     * Assign data to info model instance
-     *
-     * @param  mixed $data
-     * @return Mage_Payment_Model_Info
-     */
-    public function assignData($data)
-    {
-        $this->getPbridgeMethodInstance()->assignData($data);
-        return $this;
-    }
-
-    /**
-     * Validate payment method information object
-     *
-     * @return Enterprise_Pbridge_Model_Payment_Method_Worldpay_Direct
-     */
-    public function validate()
-    {
-        $this->getPbridgeMethodInstance()->validate();
-        return $this;
-    }
-
-    /**
-     * PSi Gate method being executed via Payment Bridge
-     *
-     * @param Varien_Object $payment
-     * @param float $amount
-     * @return Enterprise_Pbridge_Model_Payment_Method_Worldpay_Direct
-     */
-    public function authorize(Varien_Object $payment, $amount)
-    {
-        $response = $this->getPbridgeMethodInstance()->authorize($payment, $amount);
-        $payment->addData((array)$response);
-        return $this;
-    }
     /**
      * Capturing method being executed via Payment Bridge
      *
@@ -201,21 +93,6 @@ class Enterprise_Pbridge_Model_Payment_Method_Worldpay_Direct extends Mage_Payme
     }
 
     /**
-     * Refunding method being executed via Payment Bridge
-     *
-     * @param Varien_Object $payment
-     * @param float $amount
-     * @return Enterprise_Pbridge_Model_Payment_Method_Worldpay_Direct
-     */
-    public function refund(Varien_Object $payment, $amount)
-    {
-        $response = $this->getPbridgeMethodInstance()->refund($payment, $amount);
-        $payment->addData((array)$response);
-        $payment->setIsTransactionClosed(1);
-        return $this;
-    }
-
-    /**
      * Voiding method being executed via Payment Bridge
      *
      * @param Varien_Object $payment
@@ -228,6 +105,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Worldpay_Direct extends Mage_Payme
         $payment->setIsTransactionClosed(1);
         return $this;
     }
+
     /**
      * Cancel method being executed via Payment Bridge
      *
@@ -238,47 +116,14 @@ class Enterprise_Pbridge_Model_Payment_Method_Worldpay_Direct extends Mage_Payme
     {
         return $this->void($payment);
     }
+
     /**
-     * Check refund availability
+     * Return true if 3D Secure checks performed on the last checkout step (Order review page)
      *
      * @return bool
      */
-    public function canRefund()
+    public function getIsDeferred3dCheck()
     {
-         return $this->_canRefund;
-    }
-    /**
-     * Retrieve block type for method form generation
-     *
-     * @return string
-     */
-    public function getFormBlockType()
-    {
-        return Mage::app()->getStore()->isAdmin() ?
-            $this->_backendFormBlockType :
-            $this->_formBlockType;
-    }
-
-    /**
-     * Store id setter, also set storeId to helper
-     * @param int $store
-     * @return Enterprise_Pbridge_Model_Payment_Method_Worldpay_Direct
-     */
-    public function setStore($store)
-    {
-        $this->setData('store', $store);
-        Mage::helper('enterprise_pbridge')->setStoreId(is_object($store) ? $store->getId() : $store);
-        return $this;
-    }
-    /**
-     * Set capture transaction ID to invoice for informational purposes
-     * @param Mage_Sales_Model_Order_Invoice $invoice
-     * @param Mage_Sales_Model_Order_Payment $payment
-     * @return Mage_Payment_Model_Method_Abstract
-     */
-    public function processInvoice($invoice, $payment)
-    {
-        $invoice->setTransactionId($payment->getLastTransId());
-        return $this;
+        return $this->is3dSecureEnabled();
     }
 }

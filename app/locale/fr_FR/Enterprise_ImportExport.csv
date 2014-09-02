@@ -56,6 +56,7 @@
 "Invalid cron job task","Tâche cron invalide"
 "Invalid scheduled operation","Opération planifiée invalide"
 "Invalid scheduled operation type","Type d'opération planifiée invalide"
+"Invalid server communication class ""%s""","Invalid server communication class ""%s"""
 "Invalid server comunication class ""%s""","Classe de communication invalide au serveur ""%s"""
 "Invalid server type","Type de serveur invalide"
 "Last Outcome","Dernier résultat"

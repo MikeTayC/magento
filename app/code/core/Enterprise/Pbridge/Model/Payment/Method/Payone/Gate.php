@@ -32,7 +32,7 @@
  * @package     Enterprise_Pbridge
  * @author      Magento
  */
-class Enterprise_Pbridge_Model_Payment_Method_Payone_Gate extends Mage_Payment_Model_Method_Cc
+class Enterprise_Pbridge_Model_Payment_Method_Payone_Gate extends Enterprise_Pbridge_Model_Payment_Method_Abstract
 {
     /**
      * Payone payment method code
@@ -58,117 +58,83 @@ class Enterprise_Pbridge_Model_Payment_Method_Payone_Gate extends Mage_Payment_M
     protected $_allowCurrencyCode = array('EUR');
 
     /**
-     * Form block type for the frontend
+     * Do not validate payment form using server methods
      *
-     * @var string
+     * @return  bool
      */
-    protected $_formBlockType = 'enterprise_pbridge/checkout_payment_payone_gate';
-
-    /**
-     * Form block type for the backend
-     *
-     * @var string
-     */
-    protected $_backendFormBlockType = 'enterprise_pbridge/adminhtml_sales_order_create_payone_gate';
-
-    /**
-     * Payment Bridge Payment Method Instance
-     *
-     * @var Enterprise_Pbridge_Model_Payment_Method_Pbridge
-     */
-    protected $_pbridgeMethodInstance = null;
-
-    /**
-     * Check method for processing with base currency
-     *
-     * @param string $currencyCode
-     * @return boolean
-     */
-    public function canUseForCurrency($currencyCode)
-    {
-        if (!in_array($currencyCode, $this->getAcceptedCurrencyCodes())) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Return array of currency codes supplied by Payment Gateway
-     *
-     * @return array
-     */
-    public function getAcceptedCurrencyCodes()
-    {
-        if (!$this->hasData('_accepted_currency')) {
-            $acceptedCurrencyCodes = $this->_allowCurrencyCode;
-            $acceptedCurrencyCodes[] = $this->getConfigData('currency');
-            $this->setData('_accepted_currency', $acceptedCurrencyCodes);
-        }
-        return $this->_getData('_accepted_currency');
-    }
-
-    /**
-     * Return that current payment method is dummy
-     *
-     * @return boolean
-     */
-    public function getIsDummy()
+    public function validate()
     {
         return true;
     }
 
     /**
-     * Return Payment Bridge method instance
-     *
-     * @return Enterprise_Pbridge_Model_Payment_Method_Pbridge
+     * Set order status to Pending until IPN
+     * @return bool
      */
-    public function getPbridgeMethodInstance()
+    public function isInitializeNeeded()
     {
-        if ($this->_pbridgeMethodInstance === null) {
-            $this->_pbridgeMethodInstance = Mage::helper('payment')->getMethodInstance('pbridge');
-            if ($this->_pbridgeMethodInstance) {
-                $this->_pbridgeMethodInstance->setOriginalMethodInstance($this);
-            }
+        if ($this->is3dSecureEnabled()) {
+            return true;
         }
-        return $this->_pbridgeMethodInstance;
+        return parent::isInitializeNeeded();
     }
 
     /**
-     * Retrieve original payment method code
+     * Instantiate state and set it to state object
+     *
+     * @param string $paymentAction
+     * @param Varien_Object $stateObject
+     */
+    public function initialize($paymentAction, $stateObject)
+    {
+        switch ($paymentAction) {
+            case Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE:
+            case Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE_CAPTURE:
+                $payment = $this->getInfoInstance();
+                $order = $payment->getOrder();
+                $order->setCanSendNewEmailFlag(false);
+                $payment->setAmountAuthorized($order->getTotalDue());
+                $payment->setBaseAmountAuthorized($order->getBaseTotalDue());
+
+                $stateObject->setState(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT);
+                $stateObject->setStatus('pending_payment');
+                $stateObject->setIsNotified(false);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Whether order created required on Order Review page or not
+     * @return bool
+     */
+    public function getIsPendingOrderRequired()
+    {
+        if ($this->is3dSecureEnabled()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Return URL after order placed successfully. Redirect parent to checkout/success
      *
      * @return string
      */
-    public function getOriginalCode()
+    public function getRedirectUrlSuccess()
     {
-        return parent::getCode();
+        return Mage::getUrl('enterprise_pbridge/pbridge/onepagesuccess', array('_secure' => true));
     }
 
     /**
-     * Assign data to info model instance
+     * Return URL after order placed with errors. Redirect parent to checkout/failure
      *
-     * @param  mixed $data
-     * @return Mage_Payment_Model_Info
+     * @return string
      */
-    public function assignData($data)
+    public function getRedirectUrlError()
     {
-        $this->getPbridgeMethodInstance()->assignData($data);
-        return $this;
-    }
-
-    /**
-     * Retrieve information from payment configuration
-     *
-     * @param   string $field
-     * @param null $storeId
-     * @return  mixed
-     */
-    public function getConfigData($field, $storeId = null)
-    {
-        if (null === $storeId) {
-            $storeId = $this->getStore();
-        }
-        $path = 'payment/'.$this->getOriginalCode().'/'.$field;
-        return Mage::getStoreConfig($path, $storeId);
+        return Mage::getUrl('enterprise_pbridge/pbridge/cancel', array('_secure' => true));
     }
 
     /**
@@ -179,45 +145,11 @@ class Enterprise_Pbridge_Model_Payment_Method_Payone_Gate extends Mage_Payment_M
      */
     public function isAvailable($quote = null)
     {
+        if ($this->is3dSecureEnabled() && Mage::app()->getStore()->isAdmin()) {
+            return false;
+        }
         return Mage::helper('enterprise_pbridge')->isEnabled($quote ? $quote->getStoreId() : null)
             && Mage_Payment_Model_Method_Abstract::isAvailable($quote);
-    }
-
-    /**
-     * Retrieve block type for method form generation
-     *
-     * @return string
-     */
-    public function getFormBlockType()
-    {
-        return Mage::app()->getStore()->isAdmin() ?
-            $this->_backendFormBlockType :
-            $this->_formBlockType;
-    }
-
-    /**
-     * Validate payment method information object
-     *
-     * @return Enterprise_Pbridge_Model_Payment_Method_Authorizenet
-     */
-    public function validate()
-    {
-        $this->getPbridgeMethodInstance()->validate();
-        return $this;
-    }
-
-    /**
-     * Authorization method being executed via Payment Bridge
-     *
-     * @param Varien_Object $payment
-     * @param float $amount
-     * @return Enterprise_Pbridge_Model_Payment_Method_Authorizenet
-     */
-    public function authorize(Varien_Object $payment, $amount)
-    {
-        $response = $this->getPbridgeMethodInstance()->authorize($payment, $amount);
-        $payment->addData((array)$response);
-        return $this;
     }
 
     /**
@@ -252,18 +184,6 @@ class Enterprise_Pbridge_Model_Payment_Method_Payone_Gate extends Mage_Payment_M
     }
 
     /**
-     * Voiding method being executed via Payment Bridge
-     *
-     * @param Varien_Object $payment
-     * @return Enterprise_Pbridge_Model_Payment_Method_Authorizenet
-     */
-    public function void(Varien_Object $payment)
-    {
-        $response = $this->getPbridgeMethodInstance()->void($payment);
-        $payment->addData((array)$response);
-        return $this;
-    }
-    /**
      * Return payment method Centinel validation status
      *
      * @return bool
@@ -271,40 +191,5 @@ class Enterprise_Pbridge_Model_Payment_Method_Payone_Gate extends Mage_Payment_M
     public function getIsCentinelValidationEnabled()
     {
         return false;
-    }
-
-    /**
-     * Store id setter, also set storeId to helper
-     *
-     * @param int $store
-     * @return \Enterprise_Pbridge_Model_Payment_Method_Payone_Gate
-     */
-    public function setStore($store)
-    {
-        $this->setData('store', $store);
-        Mage::helper('enterprise_pbridge')->setStoreId(is_object($store) ? $store->getId() : $store);
-        return $this;
-    }
-
-    /**
-     * Check refund availability
-     *
-     * @return bool
-     */
-    public function canRefund()
-    {
-        return $this->_canRefund;
-    }
-
-    /**
-     * Set capture transaction ID to invoice for informational purposes
-     * @param Mage_Sales_Model_Order_Invoice $invoice
-     * @param Mage_Sales_Model_Order_Payment $payment
-     * @return Mage_Payment_Model_Method_Abstract
-     */
-    public function processInvoice($invoice, $payment)
-    {
-        $invoice->setTransactionId($payment->getLastTransId());
-        return $this;
     }
 }

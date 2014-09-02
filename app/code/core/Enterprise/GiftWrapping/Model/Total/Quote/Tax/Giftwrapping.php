@@ -207,8 +207,8 @@ class Enterprise_GiftWrapping_Model_Total_Quote_Tax_Giftwrapping extends Mage_Sa
             $item->setGwBaseTaxAmount($wrappingBaseTaxAmount);
             $item->setGwTaxAmount($wrappingTaxAmount);
 
-            $wrappingForItemsBaseTaxAmount += $wrappingBaseTaxAmount;
-            $wrappingForItemsTaxAmount += $wrappingTaxAmount;
+            $wrappingForItemsBaseTaxAmount += $wrappingBaseTaxAmount * $item->getQty();
+            $wrappingForItemsTaxAmount += $wrappingTaxAmount * $item->getQty();
         }
         $address->setGwItemsBaseTaxAmount($wrappingForItemsBaseTaxAmount);
         $address->setGwItemsTaxAmount($wrappingForItemsTaxAmount);

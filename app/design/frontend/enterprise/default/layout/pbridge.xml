@@ -64,6 +64,7 @@
 
     <checkout_onepage_review>
         <reference name="checkout.onepage.review.button">
+            <action method="setTemplate"><template helper="enterprise_pbridge/data/getContiueButtonTemplate"><name>pbridge/checkout/review/button.continue.phtml</name><block>checkout.onepage.review.button</block></template></action>
             <action method="setTemplate"><template helper="enterprise_pbridge/data/getReviewButtonTemplate"><name>pbridge/checkout/review/button.phtml</name><block>checkout.onepage.review.button</block></template></action>
         </reference>
         <reference name="checkout.onepage.review.info.items.after">
@@ -78,4 +79,11 @@
     <enterprise_pbridge_pbridge_error>
         <block type="core/template" name="pbridge.checkout.review.error" template="pbridge/checkout/review/error.phtml" output="toHtml" />
     </enterprise_pbridge_pbridge_error>
+
+    <enterprise_pbridge_pbridge_onepagesuccess>
+        <block type="core/template" name="pbridge.checkout.review.onepagesuccess" template="pbridge/checkout/review/onepage.success.phtml" output="toHtml" />
+    </enterprise_pbridge_pbridge_onepagesuccess>
+    <enterprise_pbridge_pbridge_cancel>
+        <block type="core/template" name="pbridge.checkout.review.cancel" template="pbridge/checkout/review/cancel.phtml" output="toHtml" />
+    </enterprise_pbridge_pbridge_cancel>
 </layout>

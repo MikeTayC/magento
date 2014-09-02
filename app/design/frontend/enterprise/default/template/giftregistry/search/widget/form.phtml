@@ -27,7 +27,7 @@
 
 <?php if ($this->getEnabled() && $this->getTypesCollection()->getSize()) : ?>
 <div class="widget">
-<div class="block block-gr-search">
+<div class="block block-gr-search" id="gr-quick-search-widget">
     <div class="block-title">
         <strong><span><?php echo Mage::helper('enterprise_giftregistry')->__('Gift Registry Search') ?></span></strong>
     </div>
@@ -47,7 +47,7 @@
         //<![CDATA[
             var searchType = $('search_by');
             function showForm(){
-                $$('.search-form').each(function(form){
+                $$('#gr-quick-search-widget .search-form').each(function(form){
                     form.hide();
                 });
                 formId = 'gr-quick-search-widget-' + searchType.value + '-form';

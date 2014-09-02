@@ -32,30 +32,18 @@
  * @package     Enterprise_Pbridge
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Payment_Model_Method_Cc
+class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Enterprise_Pbridge_Model_Payment_Method_Abstract
 {
     protected $_code  = 'authorizenet';
 
-    /**
-     * Form block type for the frontend
-     *
-     * @var string
+    /**#@+
+     * Authorize.net transaction status
      */
-    protected $_formBlockType = 'enterprise_pbridge/checkout_payment_authorizenet';
-
-    /**
-     * Form block type for the backend
-     *
-     * @var string
-     */
-    protected $_backendFormBlockType = 'enterprise_pbridge/adminhtml_sales_order_create_authorizenet';
-
-    /**
-     * Payment Bridge Payment Method Instance
-     *
-     * @var Enterprise_Pbridge_Model_Payment_Method_Pbridge
-     */
-    protected $_pbridgeMethodInstance = null;
+    const TRANSACTION_STATUS_AUTHORIZED_PENDING_PAYMENT = 'authorizedPendingCapture';
+    const TRANSACTION_STATUS_CAPTURED_PENDING_SETTLEMENT = 'capturedPendingSettlement';
+    const TRANSACTION_STATUS_VOIDED = 'voided';
+    const TRANSACTION_STATUS_DECLINED = 'declined';
+    /**#@-*/
 
     /**
      * Availability options
@@ -70,161 +58,60 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Payment_
     protected $_canUseInternal          = true;
     protected $_canUseCheckout          = true;
     protected $_canUseForMultishipping  = true;
-    protected $_canSaveCc = false;
+    protected $_canSaveCc               = false;
+    protected $_canFetchTransactionInfo = true;
 
+    /**
+     * List of default accepted currency codes supported by payment gateway
+     *
+     * @var array
+     */
     protected $_allowCurrencyCode = array('USD');
 
     /**
-     * Return that current payment method is dummy
+     * Flag for separate switcher 3D Secure for backend
      *
-     * @return boolean
+     * @var bool
      */
-    public function getIsDummy()
+    protected $_isAdmin3dSecureSeparate = true;
+
+    /**
+     * Centinel validation enabling should be done on PB side
+     *
+     * @return bool
+     */
+    public function getIsCentinelValidationEnabled()
     {
         return true;
     }
 
     /**
-     * Return Payment Bridge method instance
+     * Return 3D validation flag
      *
-     * @return Enterprise_Pbridge_Model_Payment_Method_Pbridge
+     * @return bool
      */
-    public function getPbridgeMethodInstance()
+    public function is3dSecureEnabled()
     {
-        if ($this->_pbridgeMethodInstance === null) {
-            $this->_pbridgeMethodInstance = Mage::helper('payment')->getMethodInstance('pbridge');
-            $this->_pbridgeMethodInstance->setOriginalMethodInstance($this);
+        if($this->_isAdmin3dSecureSeparate && Mage::app()->getStore()->isAdmin()) {
+            return $this->getConfigData('centinel') && $this->getConfigData('centinel_backend');
         }
-        return $this->_pbridgeMethodInstance;
+        return (bool)$this->getConfigData('centinel');
     }
 
     /**
-     * Retrieve dummy payment method code
+     * Fetch transaction info
      *
-     * @return string
-     */
-    public function getCode()
-    {
-        return 'pbridge_' . parent::getCode();
-    }
-
-    /**
-     * Retrieve original payment method code
-     *
-     * @return string
-     */
-    public function getOriginalCode()
-    {
-        return parent::getCode();
-    }
-
-    public function getTitle()
-    {
-        return parent::getTitle();
-    }
-
-    /**
-     * Check method for processing with base currency
-     *
-     * @param string $currencyCode
-     * @return boolean
-     */
-    public function canUseForCurrency($currencyCode)
-    {
-        if (!in_array($currencyCode, $this->getAcceptedCurrencyCodes())) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Return array of currency codes supplied by Payment Gateway
-     *
+     * @param Mage_Payment_Model_Info $payment
+     * @param string $transactionId
      * @return array
      */
-    public function getAcceptedCurrencyCodes()
+    public function fetchTransactionInfo(Mage_Payment_Model_Info $payment, $transactionId)
     {
-        if (!$this->hasData('_accepted_currency')) {
-            $acceptedCurrencyCodes = $this->_allowCurrencyCode;
-            $acceptedCurrencyCodes[] = $this->getConfigData('currency');
-            $this->setData('_accepted_currency', $acceptedCurrencyCodes);
-        }
-        return $this->_getData('_accepted_currency');
-    }
-
-    /**
-     * Assign data to info model instance
-     *
-     * @param  mixed $data
-     * @return Mage_Payment_Model_Info
-     */
-    public function assignData($data)
-    {
-        $this->getPbridgeMethodInstance()->assignData($data);
-        return $this;
-    }
-
-    /**
-     * Retrieve information from payment configuration
-     *
-     * @param   string $field
-     * @return  mixed
-     */
-    public function getConfigData($field, $storeId = null)
-    {
-        if (null === $storeId) {
-            $storeId = $this->getStore();
-        }
-        $path = 'payment/'.$this->getOriginalCode().'/'.$field;
-        return Mage::getStoreConfig($path, $storeId);
-    }
-
-    /**
-     * Check whether payment method can be used
-     *
-     * @param Mage_Sales_Model_Quote $quote
-     * @return boolean
-     */
-    public function isAvailable($quote = null)
-    {
-        return $this->getPbridgeMethodInstance()->isDummyMethodAvailable($quote);
-    }
-
-    /**
-     * Retrieve block type for method form generation
-     *
-     * @return string
-     */
-    public function getFormBlockType()
-    {
-        return Mage::app()->getStore()->isAdmin() ?
-            $this->_backendFormBlockType :
-            $this->_formBlockType;
-    }
-
-    /**
-     * Validate payment method information object
-     *
-     * @return Enterprise_Pbridge_Model_Payment_Method_Authorizenet
-     */
-    public function validate()
-    {
-        $this->getPbridgeMethodInstance()->validate();
-        return $this;
-    }
-
-    /**
-     * Authorization method being executed via Payment Bridge
-     *
-     * @param Varien_Object $payment
-     * @param float $amount
-     * @return Enterprise_Pbridge_Model_Payment_Method_Authorizenet
-     */
-    public function authorize(Varien_Object $payment, $amount)
-    {
-        $response = $this->getPbridgeMethodInstance()->authorize($payment, $amount);
-        $payment->addData((array)$response);
-        return $this;
+        $result = $this->getPbridgeMethodInstance()->fetchTransactionInfo($payment, $transactionId);
+        $result = new Varien_Object($result);
+        $this->importPaymentInfo($result, $payment);
+        $data = $result->getRawSuccessResponseData();
+        return ($data) ? $data : array();
     }
 
     /**
@@ -261,47 +148,29 @@ class Enterprise_Pbridge_Model_Payment_Method_Authorizenet extends Mage_Payment_
     }
 
     /**
-     * Voiding method being executed via Payment Bridge
+     * Get transaction status from gateway response array and change payment status to appropriate
      *
-     * @param Varien_Object $payment
+     * @param Varien_Object $from
+     * @param Mage_Payment_Model_Info $to
      * @return Enterprise_Pbridge_Model_Payment_Method_Authorizenet
      */
-    public function void(Varien_Object $payment)
+    public function importPaymentInfo(Varien_Object $from, Mage_Payment_Model_Info $to)
     {
-        $response = $this->getPbridgeMethodInstance()->void($payment);
-        $payment->addData((array)$response);
-        return $this;
-    }
+        $approvedTransactionStatuses = array(
+            self::TRANSACTION_STATUS_AUTHORIZED_PENDING_PAYMENT,
+            self::TRANSACTION_STATUS_CAPTURED_PENDING_SETTLEMENT
+        );
 
-    /**
-     * Cancel payment
-     *
-     * @param Varien_Object $payment
-     * @return Enterprise_Pbridge_Model_Payment_Method_Authorizenet
-     */
-    public function cancel(Varien_Object $payment)
-    {
-        if (!$payment->getOrder()->getInvoiceCollection()->count()) {
-            $response = $this->getPbridgeMethodInstance()->void($payment);
-            $payment->addData((array)$response);
+        $transactionStatus = $from->getTransactionStatus();
+
+        if (in_array($transactionStatus, $approvedTransactionStatuses)) {
+            $to->setIsTransactionApproved(true);
+        } elseif (in_array($transactionStatus,
+            array(self::TRANSACTION_STATUS_VOIDED, self::TRANSACTION_STATUS_DECLINED))
+        ) {
+            $to->setIsTransactionDenied(true);
         }
-        return $this;
-    }
 
-    public function getIsCentinelValidationEnabled()
-    {
-        return true;
-    }
-
-    /**
-     * Store id setter, also set storeId to helper
-     *
-     * @param int $store
-     */
-    public function setStore($store)
-    {
-        $this->setData('store', $store);
-        Mage::helper('enterprise_pbridge')->setStoreId(is_object($store) ? $store->getId() : $store);
         return $this;
     }
 }

@@ -25,10 +25,14 @@
 "Invalid amount for partial authorization.","Ungültiger Betrag für die teilweise Autorisierung."
 "Invalid amount for refund.","Ungültiger Betrag für eine Rückerstattung."
 "Invalid split tenderId ID.","Ungültige gespaltene Angebotsidentität"
+"Invalid transaction ID.","Ungültige Transaktions-ID"
 "Maximum Order Total","Höchstsumme der Bestellung"
 "Merchant's Email","E-Mail des Händlers"
 "Minimum Order Total","Mindestsumme der Bestellung"
 "New Order Status","Stand der neuen Bestellung"
+"Parent Authorize.Net transaction (ID %s) expired","Parent Authorize.Net-Transaktion (ID %s) abgelaufen 
+
+"
 "Payment Action","Zahlungsvorgang"
 "Payment authorization error.","Fehler bei der Zahlungsermächtigung."
 "Payment canceling error.","Fehler bei Zahlungsabbruch."

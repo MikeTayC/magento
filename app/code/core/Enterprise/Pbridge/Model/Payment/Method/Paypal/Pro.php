@@ -132,4 +132,47 @@ class Enterprise_Pbridge_Model_Payment_Method_Paypal_Pro extends Mage_Paypal_Mod
             Mage::getModel('paypal/info')->importToPayment(new Varien_Object($result), $payment);
         }
     }
+
+    /**
+     * Perform the payment review
+     *
+     * @param Mage_Payment_Model_Info $payment
+     * @param string $action
+     * @return bool
+     */
+    public function reviewPayment(Mage_Payment_Model_Info $payment, $action)
+    {
+        $result = array();
+        switch ($action) {
+            case Mage_Paypal_Model_Pro::PAYMENT_REVIEW_ACCEPT:
+                $result = $this->getPbridgeMethodInstance()->acceptPayment($payment);
+                break;
+
+            case Mage_Paypal_Model_Pro::PAYMENT_REVIEW_DENY:
+                $result = $this->getPbridgeMethodInstance()->denyPayment($payment);
+                break;
+        }
+        if (!empty($result)) {
+            $result = new Varien_Object($result);
+            $this->importPaymentInfo($result, $payment);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Fetch transaction details info
+     *
+     * @param Mage_Payment_Model_Info $payment
+     * @param string $transactionId
+     * @return array
+     */
+    public function fetchTransactionInfo(Mage_Payment_Model_Info $payment, $transactionId)
+    {
+        $result = $this->getPbridgeMethodInstance()->fetchTransactionInfo($payment, $transactionId);
+        $result = new Varien_Object($result);
+        $this->importPaymentInfo($result, $payment);
+        $data = $result->getRawSuccessResponseData();
+        return ($data) ? $data : array();
+    }
 }

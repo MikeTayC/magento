@@ -307,6 +307,7 @@ class Enterprise_Pbridge_Helper_Data extends Mage_Core_Helper_Abstract
             'token'                   => isset($data['token']) ? $data['token'] : null,
             'cc_last4'                => isset($data['cc_last4']) ? $data['cc_last4'] : null,
             'cc_type'                 => isset($data['cc_type']) ? $data['cc_type'] : null,
+            'x_params'                => isset($data['x_params']) ? serialize($data['x_params']) : null,
         );
 
         return $data;
@@ -363,6 +364,32 @@ class Enterprise_Pbridge_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         if ($blockObject = Mage::getSingleton('core/layout')->getBlock($block)) {
+            return $blockObject->getTemplate();
+        }
+
+        return '';
+    }
+
+    /**
+     * Get template for Continue button to save order and load iframe
+     *
+     * @param string $name template name
+     * @param string $block buttons block name
+     * @return string
+     */
+    public function getContiueButtonTemplate($name, $block)
+    {
+        /** @var Mage_Sales_Model_Quote $quote */
+        $quote = Mage::getSingleton('checkout/session')->getQuote();
+        if ($quote) {
+            $payment = $quote->getPayment();
+            if ($payment && $payment->getMethodInstance()->getIsPendingOrderRequired()) {
+                return $name;
+            }
+        }
+
+        $blockObject = Mage::getSingleton('core/layout')->getBlock($block);
+        if ($blockObject) {
             return $blockObject->getTemplate();
         }
 

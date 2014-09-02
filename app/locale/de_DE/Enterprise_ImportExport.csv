@@ -56,6 +56,7 @@
 "Invalid cron job task","Ungültige Cron-Job-Aufgabe"
 "Invalid scheduled operation","Ungültige geplante Aktion"
 "Invalid scheduled operation type","Ungültiger geplanter Aktionstyp"
+"Invalid server communication class ""%s""","Invalid server communication class ""%s"""
 "Invalid server comunication class ""%s""","Ungültige Serverkomunikationsklasse ""%s"""
 "Invalid server type","Ungültiger Servertyp"
 "Last Outcome","Letztes Ergebnis"

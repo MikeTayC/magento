@@ -24,6 +24,7 @@
 "Unable to proceed. Please, try again.","Vorgang konnte nicht ausgeführt werden. Bitte versuchen Sie es später noch einmal."
 "Update Frequency","Aktualisierungshäufigkeit"
 "Use HTTPS to Get Feed","Benutzen Sie HTTPS um Nachrichten abzurufen"
+"Wrong message type","Falscher Mitteilungstyp"
 "critical","kritisch"
 "major","wichtig"
 "minor","unwichtig"

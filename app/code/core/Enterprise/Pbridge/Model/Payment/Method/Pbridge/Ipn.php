@@ -133,8 +133,12 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge_Ipn
 
         if ($error = $http->getError()) {
             $this->_notifyAdmin(Mage::helper('enterprise_pbridge')->__('IPN postback HTTP error: %s', $error));
+            $http->close();
             return;
         }
+
+        // cUrl resource must be closed after checking it for errors
+        $http->close();
 
         if (false !== preg_match('~VERIFIED~si', $response)) {
             $this->processIpnVerified();

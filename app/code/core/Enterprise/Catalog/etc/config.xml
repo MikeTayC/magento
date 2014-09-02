@@ -389,6 +389,14 @@
                     </add_sufix_to_url_alias>
                 </observers>
             </enterprise_url_rewrite_load_after>
+            <product_duplicate_attributes>
+                <observers>
+                    <remove_url_key>
+                        <class>enterprise_catalog/observer</class>
+                        <method>removeUrlKey</method>
+                    </remove_url_key>
+                </observers>
+            </product_duplicate_attributes>
         </events>
         <redirect_type_block>
             <category>Enterprise_Catalog_Block_Adminhtml_Redirect_Edit</category>

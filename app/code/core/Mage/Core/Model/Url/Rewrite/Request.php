@@ -188,7 +188,7 @@ class Mage_Core_Model_Url_Rewrite_Request
     /**
      * Process redirect (R) and permanent redirect (RP)
      *
-     * @return Enterprise_UrlRewrite_Model_Resource_Url_Rewrite
+     * @return Mage_Core_Model_Url_Rewrite_Request
      */
     protected function _processRedirectOptions()
     {

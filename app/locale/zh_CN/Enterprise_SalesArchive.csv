@@ -1,7 +1,4 @@
 "%s order(s) have been archived.","%s个订单已取消。"
-"%s order(s) have been canceled.","%s个订单已取消。"
-"%s order(s) have been put on hold.","%s个订单已挂起。"
-"%s order(s) have been released from holding status.","%s个订单已从挂起状态恢复。"
 "%s order(s) have been removed from archive.","%s个订单已从存档中删除。"
 "Add","添加"
 "Archive","存档"

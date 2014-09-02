@@ -130,5 +130,11 @@
             <container>Enterprise_PageCache_Model_Container_CatalogProductList</container>
             <cache_lifetime>86400</cache_lifetime>
         </catalog_product_list_upsell>
+        <widget_recently_compared>
+            <block>reports/product_widget_compared</block>
+            <placeholder>WIDGET_RECENTLY_COMPARED_GG</placeholder>
+            <container>Enterprise_PageCache_Model_Container_Sidebar_Recentlycompared</container>
+            <cache_lifetime>86400</cache_lifetime>
+        </widget_recently_compared>
     </placeholders>
 </config>

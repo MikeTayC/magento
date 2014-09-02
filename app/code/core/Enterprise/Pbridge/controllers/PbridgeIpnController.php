@@ -49,4 +49,15 @@ class Enterprise_Pbridge_PbridgeIpnController extends Mage_Core_Controller_Front
         exit;
     }
 
+    /**
+     * Payone IPN action
+     */
+    public function payoneAction()
+    {
+        /** @var Enterprise_Pbridge_Model_Payment_Method_Payone_Ipn $ipn */
+        $ipn = Mage::getModel('enterprise_pbridge/payment_method_payone_ipn');
+        $ipn->setIpnFormData($this->getRequest()->getPost())
+            ->processIpnRequest();
+        exit;
+    }
 }

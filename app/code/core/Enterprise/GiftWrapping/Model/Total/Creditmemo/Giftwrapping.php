@@ -24,12 +24,12 @@
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
-
 /**
  * GiftWrapping total calculator for creditmemo
  *
  */
-class Enterprise_GiftWrapping_Model_Total_Creditmemo_Giftwrapping extends Mage_Sales_Model_Order_Creditmemo_Total_Abstract
+class Enterprise_GiftWrapping_Model_Total_Creditmemo_Giftwrapping
+extends Mage_Sales_Model_Order_Creditmemo_Total_Abstract
 {
     /**
      * Collect gift wrapping totals
@@ -55,8 +55,8 @@ class Enterprise_GiftWrapping_Model_Total_Creditmemo_Giftwrapping extends Mage_S
                 && $orderItem->getGwBasePriceInvoiced() != $orderItem->getGwBasePriceRefunded()) {
                 $orderItem->setGwBasePriceRefunded($orderItem->getGwBasePriceInvoiced());
                 $orderItem->setGwPriceRefunded($orderItem->getGwPriceInvoiced());
-                $baseRefunded += $orderItem->getGwBasePriceInvoiced();
-                $refunded += $orderItem->getGwPriceInvoiced();
+                $baseRefunded += $orderItem->getGwBasePriceInvoiced() * $creditmemoItem->getQty();
+                $refunded += $orderItem->getGwPriceInvoiced() * $creditmemoItem->getQty();
             }
         }
         if ($refunded > 0 || $baseRefunded > 0) {

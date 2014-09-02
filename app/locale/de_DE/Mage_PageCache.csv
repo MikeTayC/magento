@@ -3,6 +3,7 @@
 "Enable External Cache","Externes Cache aktivieren"
 "External Cache Control","Externe Cache-Steuerung"
 "External Full Page Cache Settings","Externe ganzseitige Cache Einstellungen"
+"External Page Cache","Externer Seiten-Cache"
 "External full page cache.","Externes ganzseitiges Cache."
 "Failed to load external cache control","Fehler beim Laden des externen Cache-Steuerelements"
 "Flush External Page Cache","Externes Seiten Cache spülen (Flush externes Seiten Cache)"

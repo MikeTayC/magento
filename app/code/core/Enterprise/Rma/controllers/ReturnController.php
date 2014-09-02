@@ -81,8 +81,8 @@ class Enterprise_Rma_ReturnController extends Mage_Core_Controller_Front_Action
         }
 
         if ($this->_canViewOrder($order)) {
-            $post = $this->getRequest()->getPost();
-            if (($post) && !empty($post['items'])) {
+            $postData = $this->getRequest()->getPost();
+            if (($postData) && !empty($postData['items'])) {
                 try {
                     $rmaModel = Mage::getModel('enterprise_rma/rma');
                     $rmaData = array(
@@ -94,18 +94,18 @@ class Enterprise_Rma_ReturnController extends Mage_Core_Controller_Front_Action
                         'customer_id'           => $order->getCustomerId(),
                         'order_date'            => $order->getCreatedAt(),
                         'customer_name'         => $order->getCustomerName(),
-                        'customer_custom_email' => $post['customer_custom_email']
+                        'customer_custom_email' => $postData['customer_custom_email']
                     );
-                    $result = $rmaModel->setData($rmaData)->saveRma();
+                    $result = $rmaModel->setData($rmaData)->saveRmaData($postData);
                     if (!$result) {
                         $this->_redirectError(Mage::getUrl('*/*/create', array('order_id'  => $orderId)));
                         return;
                     }
                     $result->sendNewRmaEmail();
-                    if (isset($post['rma_comment']) && !empty($post['rma_comment'])) {
+                    if (isset($postData['rma_comment']) && !empty($postData['rma_comment'])) {
                         Mage::getModel('enterprise_rma/rma_status_history')
                             ->setRmaEntityId($rmaModel->getId())
-                            ->setComment($post['rma_comment'])
+                            ->setComment($postData['rma_comment'])
                             ->setIsVisibleOnFront(true)
                             ->setStatus($rmaModel->getStatus())
                             ->setCreatedAt(Mage::getSingleton('core/date')->gmtDate())

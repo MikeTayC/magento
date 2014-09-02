@@ -56,6 +56,7 @@
 "Invalid cron job task","无效的 cron 作业任务"
 "Invalid scheduled operation","无效的计划操作"
 "Invalid scheduled operation type","无效的计划操作类型"
+"Invalid server communication class ""%s""","Invalid server communication class ""%s"""
 "Invalid server comunication class ""%s""","无效的服务器通信类“%s”"
 "Invalid server type","无效的服务器类型"
 "Last Outcome","最近的结果"

@@ -76,14 +76,48 @@ class Enterprise_AdminGws_Block_Adminhtml_Permissions_Tab_Rolesedit_Gws extends 
     public function getDisallowedStoreGroupsJson()
     {
         $result = array();
-        foreach (Mage::app()->getWebsites() as $website) {
+        foreach ($this->_getWebsites() as $website) {
             foreach ($website->getGroups() as $group) {
                 $groupId = $group->getId();
-                if (!Mage::getSingleton('enterprise_admingws/role')->hasStoreGroupAccess($groupId)) {
+                if (!$this->canAssignGwsAll() && !$this->_hasStoreGroupAccess($groupId))
+                {
                     $result[$groupId] = $groupId;
                 }
             }
         }
+        return $this->_jsonEncode($result);
+    }
+
+    /**
+     * Returns the websites
+     *
+     * @return array
+     */
+    protected function _getWebsites()
+    {
+        return Mage::app()->getWebsites();
+    }
+
+
+    /**
+     * Checks whether the specified store group ID is allowed
+     *
+     * @param string|int $groupId
+     * @return bool
+     */
+    protected function _hasStoreGroupAccess($groupId)
+    {
+        return Mage::getSingleton('enterprise_admingws/role')->hasStoreGroupAccess($groupId);
+    }
+
+    /**
+     * Encodes the $result into the JSON format
+     *
+     * @param array $result
+     * @return string
+     */
+    protected function _jsonEncode($result)
+    {
         return Mage::helper('core')->jsonEncode($result);
     }
 }

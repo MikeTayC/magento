@@ -42,18 +42,11 @@ abstract class Enterprise_Pbridge_Block_Payment_Form_Abstract extends Enterprise
     protected $_template = 'pbridge/checkout/payment/pbridge.phtml';
 
     /**
-     * Whether to include billing parameters in Payment Bridge source URL
+     * Whether to include shopping cart items parameters in Payment Bridge source URL
      *
      * @var bool
      */
-    protected $_sendBilling = false;
-
-    /**
-     * Whether to include shipping parameters in Payment Bridge source URL
-     *
-     * @var bool
-     */
-    protected $_sendShipping = false;
+    protected $_sendCart = false;
 
     /**
      * Return original payment method code
@@ -63,16 +56,6 @@ abstract class Enterprise_Pbridge_Block_Payment_Form_Abstract extends Enterprise
     public function getOriginalCode()
     {
         return $this->getMethod()->getOriginalCode();
-    }
-
-    /**
-     * Getter
-     *
-     * @return Mage_Sales_Model_Quote
-     */
-    public function getQuote()
-    {
-        return Mage::getSingleton('checkout/session')->getQuote();
     }
 
     /**
@@ -89,15 +72,17 @@ abstract class Enterprise_Pbridge_Block_Payment_Form_Abstract extends Enterprise
             'request_gateway_code' => $this->getOriginalCode(),
             'magento_payment_action' => $this->getMethod()->getConfigPaymentAction(),
             'css_url' => $this->getCssUrl(),
-            'customer_id' => $this->getCustomerIdentifier()
+            'customer_id' => $this->getCustomerIdentifier(),
+            'customer_name' => $this->getCustomerName(),
+            'customer_email' => $this->getCustomerEmail()
         );
-        if ($this->_sendBilling) {
-            $billing = $this->getQuote()->getBillingAddress();
-            $requestParams['billing'] = $this->getMethod()->getPbridgeMethodInstance()->getAddressInfo($billing);
-        }
-        if ($this->_sendShipping) {
-            $shipping = $this->getQuote()->getShippingAddress();
-            $requestParams['shipping'] = $this->getMethod()->getPbridgeMethodInstance()->getAddressInfo($shipping);
+
+        $billing = $this->getQuote()->getBillingAddress();
+        $requestParams['billing'] = $this->getMethod()->getPbridgeMethodInstance()->getAddressInfo($billing);
+        $shipping = $this->getQuote()->getShippingAddress();
+        $requestParams['shipping'] = $this->getMethod()->getPbridgeMethodInstance()->getAddressInfo($shipping);
+        if ($this->_sendCart) {
+            $requestParams['cart'] = $this->getMethod()->getPbridgeMethodInstance()->getCart($this->getQuote());
         }
         $sourceUrl = Mage::helper('enterprise_pbridge')->getGatewayFormUrl($requestParams, $this->getQuote());
         return $sourceUrl;
@@ -110,7 +95,27 @@ abstract class Enterprise_Pbridge_Block_Payment_Form_Abstract extends Enterprise
      */
     protected function _toHtml()
     {
-        $this->setReloadAllowed($this->_allowReload);
         return parent::_toHtml();
+    }
+
+    /**
+     * Whether 3D Secure validation enabled for payment
+     * @return bool
+     */
+    public function is3dSecureEnabled()
+    {
+        return false;
+    }
+
+    /**
+     * Overwtite iframe element height if 3D validation enabled
+     * @return string
+     */
+    public function getIframeHeight()
+    {
+        if ($this->is3dSecureEnabled()) {
+            return $this->_iframeHeight3dSecure;
+        }
+        return $this->_iframeHeight;
     }
 }

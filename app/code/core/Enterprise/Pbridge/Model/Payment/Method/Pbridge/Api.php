@@ -110,4 +110,43 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge_Api extends Enterprise_Pbr
         $this->_call($request->getData());
         return $this;
     }
+
+    /**
+     * Accept payment transaction
+     *
+     * @param Varien_Object $request
+     * @return Enterprise_Pbridge_Model_Payment_Method_Pbridge_Api
+     */
+    public function doAccept($request)
+    {
+        $request->setData('payment_action', 'accept');
+        $this->_call($request->getData());
+        return $this;
+    }
+
+    /**
+     * Deny payment transaction
+     *
+     * @param Varien_Object $request
+     * @return Enterprise_Pbridge_Model_Payment_Method_Pbridge_Api
+     */
+    public function doDeny($request)
+    {
+        $request->setData('payment_action', 'deny');
+        $this->_call($request->getData());
+        return $this;
+    }
+
+    /**
+     * Fetch transaction info
+     *
+     * @param Varien_Object $request
+     * @return Enterprise_Pbridge_Model_Payment_Method_Pbridge_Api
+     */
+    public function doFetchTransactionInfo($request)
+    {
+        $request->setData('payment_action', 'fetch');
+        $this->_call($request->getData());
+        return $this;
+    }
 }

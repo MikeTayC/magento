@@ -24,6 +24,7 @@
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
+<body style="background:transparent">
 <script type="text/javascript">
 //<![CDATA[
     var paymentObj = parent.payment;
@@ -81,8 +82,12 @@
                 if (containerElement.down('span.pbridge-reload') && containerElement.down('span.pbridge-reload').down('a')) {
                     containerElement.down('span.pbridge-reload').down('a').hide();
                 }
+
                 var message = document.getElementById('payment-method-message');
                 message.innerHTML = '<?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('enterprise_pbridge')->__('Your payment information has been submitted to the server. If you need to make changes, please click <a style="color: #1E75B4" href="#" onclick="parent.reloadIframe(paymentObj.currentMethod); return false;">here</a> .')) ?>';
+
+                parent.submittedPayments[paymentObj.currentMethod] = 1;
+
             } catch (e) {}
         }
     }
@@ -91,3 +96,4 @@
 </script>
 
 <div id="payment-method-message" style="font: normal normal normal 11px/1.35 Arial, Helvetica, sans-serif;color: #444;float: left;font-size: 12px;font-weight: bold;padding: 2px 15px 0px 0px;text-align: left;"></div>
+</body>

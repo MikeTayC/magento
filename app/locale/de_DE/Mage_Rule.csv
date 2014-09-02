@@ -14,6 +14,9 @@
 "Please choose an action to add...","Bitte wählen Sie eine Aktion, die hinzugefügt werden soll..."
 "Remove","Entfernen"
 "TRUE","WAHR"
+"There is no information about associated entity type ""%s"".","Es gibt keine Informationen über den zugehörigen Entitätstyp ""%s"". 
+
+"
 "Websites must be specified.","Die Webseiten müssen angegeben werden."
 "by","von"
 "contains","enthält"

@@ -239,6 +239,12 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
         return $this->getOriginalMethodInstance()->canUseForCountry($country);
     }
 
+    /**
+     * Validate payment data
+     *
+     * @throws Mage_Core_Exception
+     * @return Enterprise_Pbridge_Model_Payment_Method_Pbridge
+     */
     public function validate()
     {
         parent::validate();
@@ -297,6 +303,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
         $this->_importResultToPayment($payment, $apiResponse);
 
         if (isset($apiResponse['fraud']) && (bool)$apiResponse['fraud']) {
+            $payment->setIsTransactionPending(true);
             $message = Mage::helper('enterprise_pbridge')->__('Merchant review is required for further processing.');
             $payment->getOrder()->setState(
                   Mage_Sales_Model_Order::STATE_PROCESSING,
@@ -381,7 +388,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
                 ->setData('amount', $amount)
                 ->setData('currency_code', $order->getBaseCurrencyCode())
                 ->setData('cc_number', $payment->getCcLast4())
-            ;
+                ->setData('order_id', $payment->getOrder()->getIncrementId());
 
             $canRefundMore = $order->canCreditmemo();
             $allRefunds = (float)$amount
@@ -419,8 +426,10 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
 
         if ($authTransactionId = $payment->getParentTransactionId()) {
             $request = $this->_getApiRequest();
-            $request
-                ->setData('transaction_id', $authTransactionId);
+            $request->addData(array(
+                'transaction_id' => $authTransactionId,
+                'amount' => $payment->getOrder()->getBaseTotalDue()
+            ));
 
             $this->_getApi()->doVoid($request);
 
@@ -428,6 +437,80 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
             Mage::throwException(Mage::helper('enterprise_pbridge')->__('Authorization transaction is required to void.'));
         }
         return $this->_getApi()->getResponse();
+    }
+
+    /**
+     * Accept payment
+     * @param Mage_Payment_Model_Info $payment
+     * @return mixed
+     */
+    public function acceptPayment(Mage_Payment_Model_Info $payment)
+    {
+        $transactionId = $payment->getLastTransId();
+
+        if (!$transactionId) {
+            return false;
+        }
+
+        $request = $this->_getApiRequest();
+        $request
+            ->setData('transaction_id', $transactionId)
+            ->setData('order_id', $payment->getOrder()->getIncrementId());
+
+        $api = $this->_getApi()->doAccept($request);
+        $this->_importResultToPayment($payment, $api->getResponse());
+        $apiResponse = $api->getResponse();
+
+        return $apiResponse;
+    }
+
+    /**
+     * Deny payment
+     * @param Mage_Payment_Model_Info $payment
+     * @return mixed
+     */
+    public function denyPayment(Mage_Payment_Model_Info $payment)
+    {
+        $transactionId = $payment->getLastTransId();
+
+        if (!$transactionId) {
+            return false;
+        }
+
+        $request = $this->_getApiRequest();
+        $request
+            ->setData('transaction_id', $transactionId)
+            ->setData('order_id', $payment->getOrder()->getIncrementId());
+
+        $api = $this->_getApi()->doDeny($request);
+        $this->_importResultToPayment($payment, $api->getResponse());
+        $apiResponse = $api->getResponse();
+
+        return $apiResponse;
+    }
+
+    /**
+     * Retrieve transaction info details
+     * @param Mage_Payment_Model_Info $payment
+     * @param int $transactionId
+     * @return bool
+     */
+    public function fetchTransactionInfo(Mage_Payment_Model_Info $payment, $transactionId)
+    {
+        if (!$transactionId) {
+            return false;
+        }
+
+        $request = $this->_getApiRequest();
+        $request
+            ->setData('transaction_id', $transactionId)
+            ->setData('order_id', $payment->getOrder()->getIncrementId());
+
+        $api = $this->_getApi()->doFetchTransactionInfo($request);
+        $this->_importResultToPayment($payment, $api->getResponse());
+        $apiResponse = $api->getResponse();
+
+        return $apiResponse;
     }
 
     /**
@@ -490,6 +573,16 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge extends Mage_Payment_Model
         }
 
         return array_merge($result, $totals, array('items_valid' => $areItemsValid));
+    }
+
+    /**
+     * Public wrapper for _getCart
+     * @param Mage_Core_Model_Abstract $order
+     * @return array
+     */
+    public function getCart($order)
+    {
+        return $this->_getCart($order);
     }
 
     /**

@@ -142,11 +142,11 @@
     <frontend>
         <translate>
             <modules>
-                <Enterprise_Catalog>
+                <Enterprise_UrlRewrite>
                     <files>
-                        <default>Enterprise_Catalog.csv</default>
+                        <default>Enterprise_UrlRewrite.csv</default>
                     </files>
-                </Enterprise_Catalog>
+                </Enterprise_UrlRewrite>
             </modules>
         </translate>
     </frontend>

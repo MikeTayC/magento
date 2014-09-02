@@ -34,4 +34,12 @@
  */
 class Enterprise_Pbridge_Block_Checkout_Payment_Paypal extends Enterprise_Pbridge_Block_Payment_Form_Abstract
 {
+    /**
+     * Return 3D validation flag
+     * @return bool
+     */
+    public function is3dSecureEnabled()
+    {
+        return (bool)$this->getMethod()->getConfigData('centinel');
+    }
 }

@@ -189,7 +189,9 @@ class Enterprise_AdminGws_Model_Observer extends Enterprise_AdminGws_Model_Obser
                     Mage::throwException(Mage::helper('enterprise_admingws')->__('Wrong store ID: %d', $storeGroupId));
                 }
                 // prevent granting disallowed store group
-                if (count(array_diff($storeGroupIds, $this->_role->getStoreGroupIds()))) {
+                if (count(array_diff($storeGroupIds, $this->_role->getStoreGroupIds()))
+                    && (!($this->_role->getIsAll()))
+                ) {
                     Mage::throwException(
                         Mage::helper('enterprise_admingws')->__('Not enough permissions to save specified Combination of Store Scopes.')
                     );

@@ -23,14 +23,6 @@
  * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
-/**
- * {license_notice}
- *
- * @category    Enterprise
- * @package     Enterprise_Index
- * @copyright   {copyright}
- * @license     {license_link}
- */
 
 /**
  * Enterprise indexer model

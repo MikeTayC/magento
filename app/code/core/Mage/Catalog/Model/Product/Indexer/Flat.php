@@ -113,7 +113,7 @@ class Mage_Catalog_Model_Product_Indexer_Flat extends Mage_Index_Model_Indexer_A
     {
         /** @var $productFlatHelper Mage_Catalog_Helper_Product_Flat */
         $productFlatHelper = Mage::helper('catalog/product_flat');
-        if (!$productFlatHelper->isAvailable() || !$productFlatHelper->isBuilt()) {
+        if (!$productFlatHelper->isEnabled() || !$productFlatHelper->isBuilt()) {
             return false;
         }
 

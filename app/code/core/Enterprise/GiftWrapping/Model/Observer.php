@@ -226,21 +226,6 @@ class Enterprise_GiftWrapping_Model_Observer
     }
 
     /**
-     * Clear gift wrapping and printed card if customer uses GoogleCheckout payment method
-     *
-     * @param Varien_Event_Observer $observer
-     */
-    public function googlecheckoutCheckoutBefore(Varien_Event_Observer $observer)
-    {
-        $quote = $observer->getEvent()->getQuote();
-        foreach ($quote->getAllItems() as $item) {
-            $item->setGwId(false);
-        }
-        $quote->setGwAddCard(false);
-        $quote->setGwId(false);
-    }
-
-    /**
      * Import giftwrapping data from order to quote
      *
      * @param Varien_Event_Observer $observer

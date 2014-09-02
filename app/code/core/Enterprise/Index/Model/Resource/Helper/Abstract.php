@@ -31,28 +31,19 @@
  * @package     Enterprise_Index
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-abstract class Enterprise_Index_Model_Resource_Helper_Abstract extends Mage_Core_Model_Resource_Helper_Abstract
+abstract class Enterprise_Index_Model_Resource_Helper_Abstract
 {
+    /**
+     * Write adapter instance
+     *
+     * @var Varien_Db_Adapter_Interface
+     */
+    protected $_writeAdapter;
+
     /**
      * Timeout for lock get proc.
      */
     const LOCK_GET_TIMEOUT = 5;
-
-    /**
-     * Escapes, quotes and adds escape symbol to LIKE expression.
-     * For options and escaping see escapeLikeValue().
-     *
-     * @param string $value
-     * @param array $options
-     * @return Zend_Db_Expr
-     *
-     * @see escapeLikeValue()
-     */
-    public function addLikeEscape($value, $options = array())
-    {
-        // workaround on core abstraction
-        return Mage::getResourceHelper('core')->addLikeEscape($value, $options);
-    }
 
     /**
      * Set lock
@@ -79,16 +70,28 @@ abstract class Enterprise_Index_Model_Resource_Helper_Abstract extends Mage_Core
     abstract public function isLocked($name);
 
     /**
-     * Retrieves connection to the resource
+     * @param Varien_Db_Adapter_Interface $adapter
+     * @return $this
+     */
+    public function setWriteAdapter(Varien_Db_Adapter_Interface $adapter)
+    {
+        $this->_writeAdapter = $adapter;
+
+        return $this;
+    }
+
+    /**
+     * Returns write adapter instance
      *
-     * @param string $name
+     * @throws Enterprise_Index_Exception
      * @return Varien_Db_Adapter_Interface
      */
-    protected function _getConnection($name)
+    protected function _getWriteAdapter()
     {
-        $connection = sprintf('%s_%s', $this->_modulePrefix, $name);
-        /** @var $resource Mage_Core_Model_Resource */
-        $resource   = Mage::getSingleton('enterprise_index/resource_lock_resource');
-        return $resource->getConnection($connection, 'default_lock');
+        if (null === $this->_writeAdapter) {
+            throw new Enterprise_Index_Exception('Write adapter has to be previously set.');
+        }
+
+        return $this->_writeAdapter;
     }
 }

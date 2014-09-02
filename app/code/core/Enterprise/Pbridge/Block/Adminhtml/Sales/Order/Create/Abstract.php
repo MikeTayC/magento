@@ -46,13 +46,6 @@ class Enterprise_Pbridge_Block_Adminhtml_Sales_Order_Create_Abstract
     }
 
     /**
-     * Paypal payment code
-     *
-     * @var string
-     */
-    protected $_code = Mage_Paypal_Model_Config::METHOD_WPP_DIRECT;
-
-    /**
      * Adminhtml template for payment form block
      *
      * @var string
@@ -72,6 +65,19 @@ class Enterprise_Pbridge_Block_Adminhtml_Sales_Order_Create_Abstract
      * @var string
      */
     protected $_iframeTemplate = 'enterprise/pbridge/iframe.phtml';
+
+    /**
+     * Return 3D validation flag
+     *
+     * @return bool
+     */
+    public function is3dSecureEnabled()
+    {
+        if ($this->hasMethod() && $this->getMethod()->is3dSecureEnabled()) {
+            return true;
+        }
+        return parent::is3dSecureEnabled();
+    }
 
     /**
      * Return redirect url for Payment Bridge application

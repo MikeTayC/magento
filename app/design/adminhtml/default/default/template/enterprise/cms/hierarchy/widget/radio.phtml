@@ -97,7 +97,8 @@ $parameters = $this->getParameters();
     var changeHierarchyArray = [];
     function changeHierarchy()
     {
-        changeHierarchyArray = $('store_ids') ? $F('store_ids') : storesArray;
+        var selector = $('page_store_id') ? 'page_store_id' : 'store_ids';
+        changeHierarchyArray = 'object' == typeof $F(selector) ? $F(selector) : storesArray;
         showHierarchy();
     }
 
@@ -172,7 +173,7 @@ $parameters = $this->getParameters();
         $('<?php echo $uniqueId; ?>value').remove();
     }
 
-    document.observe('dom:loaded', function() {
+    var onLoadCallback = function() {
         $('<?php echo $uniqueHash; ?>_0').insert({after:$('individual_<?php echo $uniqueHash; ?>').up()});
         hideOldHierarchy();
 
@@ -191,6 +192,12 @@ $parameters = $this->getParameters();
         $('general_<?php echo $uniqueHash; ?>').observe('click', showHierarchy);
         $('individual_<?php echo $uniqueHash; ?>').observe('click', showHierarchy);
         showHierarchy();
-    });
+    };
+
+    if (document.loaded) {
+        onLoadCallback();
+    } else {
+        document.observe('dom:loaded', onLoadCallback);
+    }
 //]]>
 </script>

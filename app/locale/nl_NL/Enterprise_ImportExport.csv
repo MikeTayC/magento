@@ -56,6 +56,7 @@
 "Invalid cron job task","Ongeldige cron werk taak"
 "Invalid scheduled operation","Ongeldige geplande operatie"
 "Invalid scheduled operation type","ongeldige geplande bewerkings soort"
+"Invalid server communication class ""%s""","Invalid server communication class ""%s"""
 "Invalid server comunication class ""%s""","Ongeldige server communicatie klasse ""%s"""
 "Invalid server type","ongeldig type server"
 "Last Outcome","Laatste Resultaat"

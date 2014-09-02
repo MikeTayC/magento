@@ -382,8 +382,6 @@ class Enterprise_ImportExport_Model_Scheduled_Operation extends Mage_Core_Model_
      */
     public function saveFileSource(Enterprise_ImportExport_Model_Scheduled_Operation_Interface $operation, $fileContent)
     {
-        $result = false;
-
         $operation->addLogComment(
             Mage::helper('enterprise_importexport')->__('Save history file content "%s"', $this->getHistoryFilePath())
         );
@@ -392,6 +390,7 @@ class Enterprise_ImportExport_Model_Scheduled_Operation extends Mage_Core_Model_
         $fileInfo = $this->getFileInfo();
         $fs       = $this->getServerIoDriver();
         $fileName = $operation->getScheduledFileName() . '.' . $fileInfo['file_format'];
+
         $result   = $fs->write($fileName, $fileContent);
         if (!$result) {
             Mage::throwException(
@@ -434,20 +433,21 @@ class Enterprise_ImportExport_Model_Scheduled_Operation extends Mage_Core_Model_
         $fileInfo = $this->getFileInfo();
         $availableTypes = Mage::getModel('enterprise_importexport/scheduled_operation_data')
             ->getServerTypesOptionArray();
-        if (!isset($fileInfo['server_type'])
-            || !$fileInfo['server_type']
-            || !isset($availableTypes[$fileInfo['server_type']])
-        ) {
+
+        if (empty($fileInfo['server_type']) || !isset($availableTypes[$fileInfo['server_type']])) {
             Mage::throwException(Mage::helper('enterprise_importexport')->__('Invalid server type'));
         }
 
         $class = 'Varien_Io_' . ucfirst(strtolower($fileInfo['server_type']));
         if (!class_exists($class)) {
             Mage::throwException(
-                Mage::helper('enterprise_importexport')->__('Invalid server comunication class "%s"', $class)
+                Mage::helper('enterprise_importexport')->__('Invalid server communication class "%s"', $class)
             );
         }
+
         $driver = new $class;
+
+        $driver->setAllowCreateFolders(true);
         $driver->open($this->_prepareIoConfiguration($fileInfo));
         return $driver;
     }

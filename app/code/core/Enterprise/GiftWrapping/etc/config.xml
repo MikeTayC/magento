@@ -201,14 +201,6 @@
                     </enterprise_giftwrapping>
                 </observers>
             </sales_quote_collect_totals_before>
-            <googlecheckout_checkout_before>
-                <observers>
-                    <enterprise_giftwrapping>
-                        <class>enterprise_giftwrapping/observer</class>
-                        <method>googlecheckoutCheckoutBefore</method>
-                    </enterprise_giftwrapping>
-                </observers>
-            </googlecheckout_checkout_before>
             <paypal_prepare_line_items>
                 <observers>
                     <enterprise_giftwrapping>

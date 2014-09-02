@@ -36,6 +36,7 @@
                     if (elm) elm.remove();
                 });
             }
+
             new Ajax.Updater(
                 iframeContainer,
                 "<?php echo $this->getUrl('enterprise_pbridge/pbridge/iframe', array('_current' => true, '_secure' => true)); ?>",
@@ -48,28 +49,49 @@
                      }
                 }
             );
+            if (isPaymentSubmitted(method)) {
+                delete submittedPayments[method];
+            }
         }
     }
     function toggleContinueButton(target) {
         var buttonsContainer = $('payment-buttons-container');
         if (buttonsContainer && buttonsContainer.down('button.button')) {
             var continueButton = buttonsContainer.down('button.button');
-            if (target.type != 'checkbox' || ! target.checked) {
-                var checkedRadio = $$('#co-payment-form input[type="radio"][name="payment[method]"]:checked');
-                if (checkedRadio.length) {
-                    var iframeContainer = $('payment_form_' + checkedRadio[0].value + '_container');
-                    // check whether it is Bridge payment method
-                    if (iframeContainer && iframeContainer.previous('span.pbridge-reload')) {
-                        return continueButton.setStyle({display:'none'});
-                    }
-                }
+            var checkedRadio = $$('#co-payment-form input[type="radio"][name="payment[method]"]:checked');
+            var isPbridgeMethod = checkedRadio.length && checkedRadio[0].match('[value^="pbridge"]');
+            if ((target.type != 'checkbox' || !target.checked) && isPbridgeMethod) {
+                return continueButton.setStyle({display:'none'});
             }
-            continueButton.setStyle({display:'block'});
+            if (!isPbridgeMethod || isPaymentSubmitted(checkedRadio[0].value)) {
+                continueButton.setStyle({display:'block'});
+            }
         }
     }
 
+    function isPaymentSubmitted(method)
+    {
+        return submittedPayments.hasOwnProperty(method);
+    }
+
+    function validateAgreementOnIframe()
+    {
+        checkout.setLoadWaiting('review');
+        var params = Form.serialize(payment.form) + '&' + Form.serialize(review.agreementsForm);
+        var request = new Ajax.Request(
+            getAgreementValidationUrl(),
+            {
+                method: 'post',
+                parameters: params,
+                onComplete: review.onComplete,
+                onSuccess: validateAgreements,
+                onFailure: checkout.ajaxFailure.bind(checkout)
+            }
+        );
+    }
+
     function loadReviewIframe(method) {
-        var iframeContainer = $('review_iframe_container');
+        var iframeContainer = $('checkout-pbridgeiframe-load');
         var methodCode = method || payment.currentMethod;
         new Ajax.Updater(
             iframeContainer,
@@ -85,20 +107,24 @@
     */
     function preLoadReviewIframe() {
         if (review.agreementsForm) {
-            checkout.setLoadWaiting('review');
-            var params = Form.serialize(payment.form) + '&' + Form.serialize(review.agreementsForm);
-            var request = new Ajax.Request(
-                getAgreementValidationUrl(),
-                {
-                    method: 'post',
-                    parameters: params,
-                    onComplete: review.onComplete,
-                    onSuccess: validateAgreements,
-                    onFailure: checkout.ajaxFailure.bind(checkout)
-                }
-            );
+            validateAgreementOnIframe();
         } else {
             loadReviewIframe();
+        }
+    }
+
+    function saveOrderAndLoadReviewIframe()
+    {
+        if (review.agreementsForm) {
+            validateAgreementOnIframe();
+        } else {
+            var headers = $$('#' + checkout.accordion.container.readAttribute('id') + ' .section');
+            headers.each(function(header) {
+                header.removeClassName('allow');
+            });
+            review.save();
+            $('iframe-warning').show();
+            $('btn-pay-now').hide();
         }
     }
 

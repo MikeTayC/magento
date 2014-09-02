@@ -118,6 +118,19 @@ class Enterprise_Cms_Model_Page_Revision extends Mage_Core_Model_Abstract
     }
 
     /**
+     * Processing object after save data
+     *
+     * @return Enterprise_Cms_Model_Page_Revision
+     */
+    protected function _afterSave()
+    {
+        //Mark layout cache as invalidated
+        Mage::app()->getCacheInstance()->invalidateType('layout');
+
+        return parent::_afterSave();
+    }
+
+    /**
      * Preparing data before save
      *
      * @return Enterprise_Cms_Model_Page_Revision

@@ -566,6 +566,7 @@
                     <adminhtml__customer_attribute__>validateCustomerAttributeActions</adminhtml__customer_attribute__>
                     <adminhtml__customer_address_attribute__>validateCustomerAttributeActions</adminhtml__customer_address_attribute__>
                     <adminhtml__rma__new>validateSalesOrderViewAction</adminhtml__rma__new>
+                    <adminhtml__rma__edit>validateRmaEditAction</adminhtml__rma__edit>
                     <adminhtml__rma_item_attribute__save>validateRmaAttributeSaveAction</adminhtml__rma_item_attribute__save>
                     <adminhtml__rma_item_attribute__edit>validateRmaAttributeEditAction</adminhtml__rma_item_attribute__edit>
                     <adminhtml__rma_item_attribute__delete>validateRmaAttributeDeleteAction</adminhtml__rma_item_attribute__delete>

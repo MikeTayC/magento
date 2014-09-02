@@ -24,6 +24,7 @@
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
+submittedPayments = {};
 Event.observe(this.document, 'payment-method:switched', function(event){
   if (event.stopped == null) {
       toggleContinueButton(event.target);
@@ -33,6 +34,9 @@ Event.observe(this.document, 'payment-method:switched', function(event){
 if (typeof eventsObserved == 'undefined' && $('use_customer_balance')) {
     Event.observe($('use_customer_balance'), 'click', function(event){
         toggleContinueButton(event.target);
+        if (isPaymentSubmitted(payment.currentMethod)) {
+            reloadIframe(payment.currentMethod);
+        }
     });
     eventsObserved = true;
 }

@@ -39,6 +39,11 @@
                 <source_model>enterprise_giftregistry/source_search</source_model>
             </types>
             <template>
+                <required>1</required>
+                <visible>1</visible>
+                <label>Template</label>
+                <type>select</type>
+                <value>giftregistry/search/widget/form.phtml</value>
                 <values>
                     <default_template translate="label">
                         <label>Default Template</label>

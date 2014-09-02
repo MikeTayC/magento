@@ -73,7 +73,6 @@
                         <transferkey translate="label" module="enterprise_pbridge">
                             <label>Data Transfer Key</label>
                             <frontend_type>text</frontend_type>
-                            <backend_model>enterprise_pbridge/system_config_backend_data_transfer_key</backend_model>
                             <sort_order>60</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -127,7 +126,7 @@
                         <payment_action translate="label">
                             <label>Payment Action</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>enterprise_pbridge/source_cybersource_paymentAction</source_model>
+                            <source_model>enterprise_pbridge/system_config_source_paymentAction</source_model>
                             <sort_order>5</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -170,21 +169,6 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </using_pbridge>
-                        <merchant_id>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </merchant_id>
-                        <test>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </test>
-                        <security_key>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </security_key>
-                        <cctypes>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </cctypes>
-                        <useccv>
-                            <depends><using_pbridge>0</using_pbridge></depends>
-                        </useccv>
                         <email_customer>
                             <depends><using_pbridge>0</using_pbridge></depends>
                         </email_customer>
@@ -219,12 +203,21 @@
                         <payment_action translate="label">
                             <label>Payment Action</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>enterprise_pbridge/source_paymentAction</source_model>
+                            <source_model>enterprise_pbridge/system_config_source_paymentAction</source_model>
                             <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </payment_action>
+                        <currency translate="label">
+                            <label>Accepted Currency</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_currency</source_model>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </currency>
                         <allowspecific translate="label">
                             <label>Payment from Applicable Countries</label>
                             <frontend_type>allowspecific</frontend_type>
@@ -280,6 +273,15 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </title>
+                        <payment_action translate="label">
+                            <label>Payment Action</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>enterprise_pbridge/system_config_source_paymentAction</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </payment_action>
                         <allowspecific translate="label">
                             <label>Payment from Applicable Countries</label>
                             <frontend_type>allowspecific</frontend_type>
@@ -333,6 +335,18 @@
                             <show_in_store>0</show_in_store>
                             <depends><using_pbridge>1</using_pbridge></depends>
                         </payment_profiles_enabled>
+                        <centinel translate="label">
+                            <label>Enable 3D Secure Card Validation on Frontend</label>
+                        </centinel>
+                        <centinel_backend translate="label">
+                            <label>Enable 3D Secure Card Validation in Admin</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>73</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <depends><centinel>1</centinel></depends>
+                        </centinel_backend>
                         <cctypes>
                             <depends><using_pbridge>0</using_pbridge></depends>
                         </cctypes>
@@ -365,64 +379,156 @@
                 <pbridge_ogone_direct translate="label" module="enterprise_pbridge">
                     <label>Ogone Direct Link</label>
                     <frontend_type>text</frontend_type>
+                    <frontend_class>complex</frontend_class>
                     <sort_order>22</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <fields>
-                        <active translate="label comment" module="enterprise_pbridge">
-                            <label>Enabled</label>
-                            <comment>This payment method will work only if the Payment Bridge is enabled and configured correctly.</comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>10</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </active>
-                        <sandbox_flag translate="label">
-                            <label>Test Mode</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>20</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                        </sandbox_flag>
-                        <title translate="label">
-                            <label>Title</label>
+                        <cc_settings type="group" translate="label">
+                            <label>Ogone Credit Card</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>25</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </title>
-                        <payment_action translate="label">
-                            <label>Payment Action</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>enterprise_pbridge/source_ogone_paymentAction</source_model>
-                            <sort_order>45</sort_order>
+                            <sort_order>2</sort_order>
+                            <fields>
+                                <active translate="label">
+                                    <label>Enabled</label>
+                                    <comment>This payment method will work only if the Payment Bridge is enabled and configured correctly.</comment>
+                                    <config_path>payment/pbridge_ogone_direct/active</config_path>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>10</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </active>
+                                <title translate="label">
+                                    <label>Title</label>
+                                    <config_path>payment/pbridge_ogone_direct/title</config_path>
+                                    <frontend_type>text</frontend_type>
+                                    <sort_order>25</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </title>
+                                <payment_action translate="label">
+                                    <label>Payment Action</label>
+                                    <config_path>payment/pbridge_ogone_direct/payment_action</config_path>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>enterprise_pbridge/system_config_source_paymentAction</source_model>
+                                    <sort_order>30</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </payment_action>
+                                <enable3ds translate="label">
+                                    <label>Enable 3D Secure Card Validation on Frontend</label>
+                                    <config_path>payment/pbridge_ogone_direct/enable3ds</config_path>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>45</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                </enable3ds>
+                                <allowspecific translate="label">
+                                    <label>Payment from Applicable Countries</label>
+                                    <config_path>payment/pbridge_ogone_direct/allowspecific</config_path>
+                                    <frontend_type>allowspecific</frontend_type>
+                                    <sort_order>160</sort_order>
+                                    <source_model>adminhtml/system_config_source_payment_allspecificcountries</source_model>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </allowspecific>
+                                <specificcountry translate="label">
+                                    <label>Payment from Specific Countries</label>
+                                    <config_path>payment/pbridge_ogone_direct/specificcountry</config_path>
+                                    <frontend_type>multiselect</frontend_type>
+                                    <sort_order>165</sort_order>
+                                    <source_model>adminhtml/system_config_source_country</source_model>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </specificcountry>
+                                <sort_order translate="label">
+                                    <label>Sort Order</label>
+                                    <config_path>payment/pbridge_ogone_direct/sort_order</config_path>
+                                    <frontend_type>text</frontend_type>
+                                    <sort_order>200</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </sort_order>
+                            </fields>
+                        </cc_settings>
+                        <dd_settings type="group" translate="label">
+                            <label>Ogone Direct Debit</label>
+                            <frontend_type>text</frontend_type>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </payment_action>
-                        <allowspecific translate="label">
-                            <label>Payment from Applicable Countries</label>
-                            <frontend_type>allowspecific</frontend_type>
-                            <sort_order>160</sort_order>
-                            <source_model>adminhtml/system_config_source_payment_allspecificcountries</source_model>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </allowspecific>
-                        <specificcountry translate="label">
-                            <label>Payment from Specific Countries</label>
-                            <frontend_type>multiselect</frontend_type>
-                            <sort_order>165</sort_order>
-                            <source_model>adminhtml/system_config_source_country</source_model>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </specificcountry>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>3</sort_order>
+                            <fields>
+                                <active translate="label comment" module="enterprise_pbridge">
+                                    <label>Enabled</label>
+                                    <comment>This payment method will work only if the Payment Bridge is enabled and configured correctly.</comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>10</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </active>
+                                <title translate="label">
+                                    <label>Title</label>
+                                    <frontend_type>text</frontend_type>
+                                    <sort_order>25</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </title>
+                                <payment_action translate="label">
+                                    <label>Payment Action</label>
+                                    <comment>Authorization is available for Germany and Austria only. For Netherlands, please select Sale.</comment>
+                                    <config_path>payment/pbridge_ogone_direct_debit/payment_action</config_path>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>enterprise_pbridge/system_config_source_ogone_paymentAction</source_model>
+                                    <sort_order>45</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </payment_action>
+                                <allowspecific translate="label">
+                                    <label>Payment from Applicable Countries</label>
+                                    <frontend_type>allowspecific</frontend_type>
+                                    <sort_order>160</sort_order>
+                                    <source_model>adminhtml/system_config_source_payment_allspecificcountries</source_model>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </allowspecific>
+                                <specificcountry translate="label">
+                                    <label>Payment from Specific Countries</label>
+                                    <frontend_type>multiselect</frontend_type>
+                                    <sort_order>165</sort_order>
+                                    <source_model>enterprise_pbridge/system_config_source_ogone_country</source_model>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </specificcountry>
+                                <sort_order translate="label">
+                                    <label>Sort Order</label>
+                                    <config_path>payment/pbridge_ogone_direct_debit/sort_order</config_path>
+                                    <frontend_type>text</frontend_type>
+                                    <sort_order>200</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </sort_order>
+                            </fields>
+                        </dd_settings>
                     </fields>
                 </pbridge_ogone_direct>
                 <paybox_direct translate="label" module="enterprise_pbridge">
@@ -454,7 +560,7 @@
                         <payment_action translate="label">
                             <label>Payment Action</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>enterprise_pbridge/source_braintree_paymentAction</source_model>
+                            <source_model>enterprise_pbridge/system_config_source_paymentAction</source_model>
                             <sort_order>95</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -489,6 +595,77 @@
                         </sort_order>
                    </fields>
                 </paybox_direct>
+                <pbridge_payone_debit translate="label" module="enterprise_pbridge">
+                    <label>Payone Direct Debit</label>
+                    <sort_order>850</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <active translate="label">
+                            <label>Enabled</label>
+                            <comment>This payment method will work only if the Payment Bridge is enabled and configured correctly.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </active>
+                        <title translate="label">
+                            <label>Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </title>
+                        <currency translate="label">
+                            <label>Accepted Currency</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_currency</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </currency>
+                        <allowspecific translate="label">
+                            <label>Payment from Applicable Countries</label>
+                            <frontend_type>allowspecific</frontend_type>
+                            <sort_order>30</sort_order>
+                            <source_model>adminhtml/system_config_source_payment_allspecificcountries</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </allowspecific>
+                        <specificcountry translate="label">
+                            <label>Payment from Specific Countries</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>31</sort_order>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </specificcountry>
+                        <payment_action translate="label">
+                            <label>Payment Action</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>enterprise_pbridge/system_config_source_payone_paymentAction</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </payment_action>
+                        <sort_order translate="label">
+                            <label>Sort Order</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>70</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </sort_order>
+                    </fields>
+                </pbridge_payone_debit>
                 <braintree_basic translate="label" module="enterprise_pbridge">
                     <label>Braintree</label>
                     <frontend_type>text</frontend_type>
@@ -518,7 +695,7 @@
                         <payment_action translate="label">
                             <label>Payment Action</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>enterprise_pbridge/source_braintree_paymentAction</source_model>
+                            <source_model>enterprise_pbridge/system_config_source_paymentAction</source_model>
                             <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -589,7 +766,7 @@
                          <payment_action translate="label">
                              <label>Payment Action</label>
                              <frontend_type>select</frontend_type>
-                             <source_model>enterprise_pbridge/source_firstdata_paymentAction</source_model>
+                             <source_model>enterprise_pbridge/system_config_source_paymentAction</source_model>
                              <sort_order>20</sort_order>
                              <show_in_default>1</show_in_default>
                              <show_in_website>1</show_in_website>
@@ -651,7 +828,7 @@
                          <payment_action translate="label">
                              <label>Payment Action</label>
                              <frontend_type>select</frontend_type>
-                             <source_model>enterprise_pbridge/source_payone_paymentAction</source_model>
+                             <source_model>enterprise_pbridge/system_config_source_payone_paymentAction</source_model>
                              <sort_order>20</sort_order>
                              <show_in_default>1</show_in_default>
                              <show_in_website>1</show_in_website>
@@ -666,6 +843,16 @@
                              <show_in_website>1</show_in_website>
                              <show_in_store>0</show_in_store>
                          </currency>
+                         <enable3ds translate="label comment">
+                             <label>3D Secure Card Validation</label>
+                             <comment>If enabled, the Payone payment method will not be available for placing the orders from the backend.</comment>
+                             <frontend_type>select</frontend_type>
+                             <source_model>adminhtml/system_config_source_yesno</source_model>
+                             <sort_order>36</sort_order>
+                             <show_in_default>1</show_in_default>
+                             <show_in_website>1</show_in_website>
+                             <show_in_store>0</show_in_store>
+                         </enable3ds>
                          <allowspecific translate="label">
                              <label>Payment from Applicable Countries</label>
                              <frontend_type>allowspecific</frontend_type>
@@ -724,7 +911,7 @@
                         <payment_action translate="label">
                             <label>Payment Action</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>enterprise_pbridge/source_paymentAction</source_model>
+                            <source_model>enterprise_pbridge/system_config_source_paymentAction</source_model>
                             <sort_order>4</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -762,7 +949,7 @@
                         <payment_action translate="label">
                             <label>Payment Action</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>enterprise_pbridge/source_paymentAction</source_model>
+                            <source_model>enterprise_pbridge/system_config_source_paymentAction</source_model>
                             <sort_order>20</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -842,12 +1029,39 @@
                         <payment_action translate="label">
                             <label>Payment Action</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>enterprise_pbridge/source_paymentAction</source_model>
+                            <source_model>enterprise_pbridge/system_config_source_paymentAction</source_model>
                             <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </payment_action>
+                        <allowspecific translate="label">
+                            <label>Payment from Applicable Countries</label>
+                            <frontend_type>allowspecific</frontend_type>
+                            <sort_order>17</sort_order>
+                            <source_model>adminhtml/system_config_source_payment_allspecificcountries</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </allowspecific>
+                        <specificcountry translate="label">
+                            <label>Payment from Specific Countries</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>18</sort_order>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </specificcountry>
+                        <enable3ds translate="label comment">
+                            <label>3D Secure Card Validation</label>
+                            <comment>If enabled, the WorldPay payment method will not be available for placing the orders  from the backend.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </enable3ds>
                         <sort_order translate="label">
                             <label>Sort Order</label>
                             <frontend_type>text</frontend_type>

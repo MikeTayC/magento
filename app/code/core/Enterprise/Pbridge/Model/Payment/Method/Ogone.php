@@ -32,7 +32,7 @@
  * @package     Enterprise_Pbridge
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Pbridge_Model_Payment_Method_Ogone extends Mage_Payment_Model_Method_Cc
+class Enterprise_Pbridge_Model_Payment_Method_Ogone extends Enterprise_Pbridge_Model_Payment_Method_Abstract
 {
     /**
      * Payment method code
@@ -53,35 +53,35 @@ class Enterprise_Pbridge_Model_Payment_Method_Ogone extends Mage_Payment_Model_M
     protected $_canUseInternal          = true;
     protected $_canUseCheckout          = true;
     protected $_canUseForMultishipping  = true;
-    protected $_canSaveCc = false;
+    protected $_canSaveCc               = false;
     protected $_canFetchTransactionInfo = true;
     protected $_canReviewPayment        = true;
 
     /**
-     * Form block type for the frontend
-     * @var string
+     * Flag for separate switcher 3D Secure for backend
+     *
+     * @var bool
      */
-    protected $_formBlockType = 'enterprise_pbridge/checkout_payment_ogone';
+    protected $_isAdmin3dSecureSeparate = true;
 
     /**
-     * Form block type for the backend
-     * @var string
+     * Retrieve dummy payment method code
+     *
+     * @return string
      */
-    protected $_backendFormBlockType = 'enterprise_pbridge/adminhtml_sales_order_create_ogone';
-
-    /**
-     * Payment Bridge Payment Method Instance
-     * @var Enterprise_Pbridge_Model_Payment_Method_Pbridge
-     */
-    protected $_pbridgeMethodInstance = null;
-
-    /**
-     * Return that current payment method is dummy
-     * @return boolean
-     */
-    public function getIsDummy()
+    public function getCode()
     {
-        return true;
+        return $this->_code;
+    }
+
+    /**
+     * Return true if 3D Secure checks performed on the last checkout step (Order review page)
+     *
+     * @return bool
+     */
+    public function getIsDeferred3dCheck()
+    {
+        return $this->is3dSecureEnabled();
     }
 
     /**
@@ -103,67 +103,6 @@ class Enterprise_Pbridge_Model_Payment_Method_Ogone extends Mage_Payment_Model_M
     public function getOriginalCode()
     {
         return $this->getCode();
-    }
-
-    /**
-     * Retrieve block type for method form generation
-     *
-     * @return string
-     */
-    public function getFormBlockType()
-    {
-        return Mage::app()->getStore()->isAdmin() ?
-            $this->_backendFormBlockType :
-            $this->_formBlockType;
-    }
-
-    /**
-     * Return Payment Bridge method instance
-     * @return Enterprise_Pbridge_Model_Payment_Method_Pbridge
-     */
-    public function getPbridgeMethodInstance()
-    {
-        if ($this->_pbridgeMethodInstance === null) {
-            $this->_pbridgeMethodInstance = Mage::helper('payment')->getMethodInstance('pbridge');
-            $this->_pbridgeMethodInstance->setOriginalMethodInstance($this);
-        }
-        return $this->_pbridgeMethodInstance;
-    }
-
-    /**
-     * Assign data to info model instance
-     *
-     * @param  mixed $data
-     * @return Mage_Payment_Model_Info
-     */
-    public function assignData($data)
-    {
-        $this->getPbridgeMethodInstance()->assignData($data);
-        return $this;
-    }
-
-    /**
-     * Validate payment method information object
-     * @return Enterprise_Pbridge_Model_Payment_Method_Ogone
-     */
-    public function validate()
-    {
-        $this->getPbridgeMethodInstance()->validate();
-        return $this;
-    }
-
-    /**
-     * Authorization method being executed via Payment Bridge
-     *
-     * @param Varien_Object $payment
-     * @param float $amount
-     * @return Enterprise_Pbridge_Model_Payment_Method_Ogone
-     */
-    public function authorize(Varien_Object $payment, $amount)
-    {
-        $response = $this->getPbridgeMethodInstance()->authorize($payment, $amount);
-        $payment->addData((array)$response);
-        return $this;
     }
 
     /**
@@ -196,55 +135,6 @@ class Enterprise_Pbridge_Model_Payment_Method_Ogone extends Mage_Payment_Model_M
         $response = $this->getPbridgeMethodInstance()->refund($payment, $amount);
         $payment->addData((array)$response);
         $payment->setShouldCloseParentTransaction(false);
-        return $this;
-    }
-
-    /**
-     * Voiding method being executed via Payment Bridge
-     *
-     * @param Varien_Object $payment
-     * @return Enterprise_Pbridge_Model_Payment_Method_Ogone
-     */
-    public function void(Varien_Object $payment)
-    {
-        $response = $this->getPbridgeMethodInstance()->void($payment);
-        $payment->addData((array)$response);
-        return $this;
-    }
-
-    /**
-     * Cancel payment
-     *
-     * @param Varien_Object $payment
-     * @return Enterprise_Pbridge_Model_Payment_Method_Ogone
-     */
-    public function cancel(Varien_Object $payment)
-    {
-        if (!$payment->getOrder()->getInvoiceCollection()->count()) {
-            $response = $this->getPbridgeMethodInstance()->void($payment);
-            $payment->addData((array)$response);
-        }
-        return $this;
-    }
-
-    /**
-     * Getter for Centinel validation availability
-     * @return bool
-     */
-    public function getIsCentinelValidationEnabled()
-    {
-        return false;
-    }
-
-    /**
-     * Store id setter, also set storeId to helper
-     * @param int $store
-     * @return Enterprise_Pbridge_Model_Payment_Method_Ogone
-     */
-    public function setStore($store)
-    {
-        $this->setData('store', $store);
-        Mage::helper('enterprise_pbridge')->setStoreId(is_object($store) ? $store->getId() : $store);
         return $this;
     }
 }

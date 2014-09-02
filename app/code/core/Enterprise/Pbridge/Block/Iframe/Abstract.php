@@ -35,18 +35,18 @@
 abstract class Enterprise_Pbridge_Block_Iframe_Abstract extends Mage_Payment_Block_Form
 {
     /**
-     * Default iframe width
-     *
-     * @var string
-     */
-    protected $_iframeWidth = '100%';
-
-    /**
      * Default iframe height
      *
      * @var string
      */
-    protected $_iframeHeight = '350';
+    protected $_iframeHeight = '360';
+
+    /**
+     * Default iframe height for 3D Secure authorization
+     *
+     * @var string
+     */
+    protected $_iframeHeight3dSecure = '425';
 
     /**
      * Default iframe block type
@@ -63,20 +63,6 @@ abstract class Enterprise_Pbridge_Block_Iframe_Abstract extends Mage_Payment_Blo
     protected $_iframeTemplate = 'pbridge/iframe.phtml';
 
     /**
-     * Whether scrolling enabled for iframe element, auto or not
-     *
-     * @var string
-     */
-    protected $_iframeScrolling = 'auto';
-
-    /**
-     * Whether to allow iframe body reloading
-     *
-     * @var bool
-     */
-    protected $_allowReload = true;
-
-    /**
      * Return redirect url for Payment Bridge application
      *
      * @return string
@@ -84,6 +70,25 @@ abstract class Enterprise_Pbridge_Block_Iframe_Abstract extends Mage_Payment_Blo
     public function getRedirectUrl()
     {
         return $this->getUrl('enterprise_pbridge/pbridge/result', array('_current' => true, '_secure' => true));
+    }
+
+    /**
+     * Getter
+     *
+     * @return Mage_Sales_Model_Quote
+     */
+    public function getQuote()
+    {
+        return Mage::getSingleton('checkout/session')->getQuote();
+    }
+
+    /**
+     * Getter for $_iframeHeight
+     * @return string
+     */
+    public function getIframeHeight()
+    {
+        return $this->_iframeHeight;
     }
 
     /**
@@ -139,9 +144,7 @@ abstract class Enterprise_Pbridge_Block_Iframe_Abstract extends Mage_Payment_Blo
     {
         $iframeBlock = $this->getLayout()->createBlock($this->_iframeBlockType)
             ->setTemplate($this->_iframeTemplate)
-            ->setScrolling($this->_iframeScrolling)
-            ->setIframeWidth($this->_iframeWidth)
-            ->setIframeHeight($this->_iframeHeight)
+            ->setIframeHeight($this->getIframeHeight())
             ->setSourceUrl($this->getSourceUrl());
         return $iframeBlock;
     }
@@ -288,8 +291,11 @@ abstract class Enterprise_Pbridge_Block_Iframe_Abstract extends Mage_Payment_Blo
     public function getCustomerEmail()
     {
         $customer = $this->_getCurrentCustomer();
+        $quote = $this->getQuote();
         if ($customer && $customer->getEmail()) {
             return $customer->getEmail();
+        } elseif ($quote && $quote->getCustomerEmail()) {
+            return $quote->getCustomerEmail();
         }
         return null;
     }

@@ -29,6 +29,7 @@
 </div>
 <?php if ($this->getAllowWriteReviewFlag()): ?>
 <form action="<?php echo $this->getAction() ?>" method="post" id="review-form">
+    <?php echo $this->getBlockHtml('formkey'); ?>
     <?php echo $this->getChildHtml('form_fields_before')?>
     <div class="box-content">
         <h3 class="product-name"><?php echo $this->__("You're reviewing:"); ?> <span><?php echo $this->escapeHtml($this->getProductInfo()->getName()) ?></span></h3>

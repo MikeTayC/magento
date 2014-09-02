@@ -48,6 +48,9 @@ class Enterprise_Pbridge_Block_Checkout_Payment_Review_Iframe extends Enterprise
      */
     public function getRedirectUrlSuccess()
     {
+        if ($this->_getData('redirect_url_success')) {
+            return $this->_getData('redirect_url_success');
+        }
         return $this->getUrl('enterprise_pbridge/pbridge/success', array('_current' => true, '_secure' => true));
     }
 
@@ -58,6 +61,9 @@ class Enterprise_Pbridge_Block_Checkout_Payment_Review_Iframe extends Enterprise
      */
     public function getRedirectUrlError()
     {
+        if ($this->_getData('redirect_url_error')) {
+            return $this->_getData('redirect_url_error');
+        }
         return $this->getUrl('enterprise_pbridge/pbridge/error', array('_current' => true, '_secure' => true));
     }
 
@@ -71,16 +77,18 @@ class Enterprise_Pbridge_Block_Checkout_Payment_Review_Iframe extends Enterprise
     public function getSourceUrl()
     {
         $requestParams = array(
-            'redirect_url_success' => $this->getRedirectUrlSuccess(),
-            'redirect_url_error' => $this->getRedirectUrlError(),
-            'request_gateway_code' => $this->getMethod()->getOriginalCode(),
-            'token' => Mage::getSingleton('enterprise_pbridge/session')->getToken(),
-            'already_entered' => '1',
+            'notify_url'             => Mage::getUrl('enterprise_pbridge/PbridgeIpn/'),
+            'redirect_url_success'   => $this->getRedirectUrlSuccess(),
+            'redirect_url_error'     => $this->getRedirectUrlError(),
+            'request_gateway_code'   => $this->getMethod()->getOriginalCode(),
+            'token'                  => Mage::getSingleton('enterprise_pbridge/session')->getToken(),
+            'already_entered'        => '1',
             'magento_payment_action' => $this->getMethod()->getConfigPaymentAction(),
-            'css_url' => $this->getCssUrl(),
-            'customer_id' => $this->getCustomerIdentifier(),
-            'customer_name' => $this->getCustomerName(),
-            'customer_email' => $this->getCustomerEmail()
+            'css_url'                => $this->getCssUrl(),
+            'customer_id'            => $this->getCustomerIdentifier(),
+            'customer_name'          => $this->getCustomerName(),
+            'customer_email'         => $this->getCustomerEmail(),
+            'client_ip'              => Mage::app()->getRequest()->getClientIp(false)
         );
 
         $sourceUrl = Mage::helper('enterprise_pbridge')->getGatewayFormUrl($requestParams, $this->getQuote());

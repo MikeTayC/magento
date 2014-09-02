@@ -78,7 +78,7 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
      *
      * @var integer
      */
-    const STATUS_ENABLED  = 1;
+    const STATUS_ENABLED = 1;
 
     /**
      * State Constant for Gift Card: AVAILABLE
@@ -92,28 +92,28 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
      *
      * @var integer
      */
-    const STATE_USED      = 1;
+    const STATE_USED = 1;
 
     /**
      * State Constant for Gift Card: REDEEMED
      *
      * @var integer
      */
-    const STATE_REDEEMED  = 2;
+    const STATE_REDEEMED = 2;
 
     /**
      * State Constant for Gift Card: EXPIRED
      *
      * @var integer
      */
-    const STATE_EXPIRED   = 3;
+    const STATE_EXPIRED = 3;
 
     /**
      * REDEMABLE gift card constant
      *
      * @var integer
      */
-    const REDEEMABLE     = 1;
+    const REDEEMABLE = 1;
 
     /**
      * NOT REDEMABLE gift card constant
@@ -179,12 +179,22 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
      * This method is the overriden _beforeSave method. It calls the parent's implementation first,
      * then proceeds to perform activities specific to gift card accounts
      *
-     *  @return Mage_Core_Model_Abstract
+     * @return Mage_Core_Model_Abstract
      */
     protected function _beforeSave()
     {
-        parent::_beforeSave();
+        $this->_parentBeforeSave();
         $this->_preSaveProcess();
+    }
+
+    /**
+     * Abstracting away the parent's before save method to make the code more unit testable
+     *
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function _parentBeforeSave()
+    {
+        return parent::_beforeSave();
     }
 
     /**
@@ -194,8 +204,8 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
      * 3. Setting data for the new object/setting state of a used gift card
      * 4. History actions
      *
-     *  @throws Mage_Core_Exception
-     *  @return Mage_Core_Model_Abstract
+     * @throws Mage_Core_Exception
+     * @return Mage_Core_Model_Abstract
      */
     protected function _preSaveProcess()
     {
@@ -221,7 +231,7 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
     /**
      * This function performs all activities needed during pre-processing steps of a new gift card.
      *
-     *  @return Mage_Core_Model_Abstract
+     * @return Mage_Core_Model_Abstract
      */
     protected function _setDataForNewObject()
     {
@@ -245,7 +255,7 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
      * This function's sets the history action of gift cards based on its balance.
      * If the balance of a gift card is not equal to its original value, it's been updated.
      *
-     *  @return Mage_Core_Model_Abstract
+     * @return Mage_Core_Model_Abstract
      */
     protected function _setHistoryActionByBalance()
     {
@@ -259,7 +269,7 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
     /**
      * This function's sets the the correct gift card state in relation to the current balance
      *
-     *  @return Mage_Core_Model_Abstract
+     * @return Mage_Core_Model_Abstract
      */
     protected function _setStateByBalance()
     {
@@ -290,12 +300,12 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
                 $expirationDate = $this->_app
                     ->getLocale()->date($this->getDateExpires(),
                         Varien_Date::DATE_INTERNAL_FORMAT, null, false);
-                $currentDate    = $this->_app
+                $currentDate = $this->_app
                     ->getLocale()->date(null, Varien_Date::DATE_INTERNAL_FORMAT, null, false);
                 if ($expirationDate < $currentDate) {
-                   throw new Mage_Core_Exception(
-                       $this->helper('enterprise_giftcardaccount')->__('Expiration date cannot be in the past.')
-                   );
+                    throw new Mage_Core_Exception(
+                        $this->helper('enterprise_giftcardaccount')->__('Expiration date cannot be in the past.')
+                    );
                 }
             } else {
                 $this->setDateExpires(null);
@@ -320,7 +330,18 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
             self::$_alreadySelectedIds[] = $this->getCode();
         }
 
-        parent::_afterSave();
+
+        $this->_parentAfterSave();
+    }
+
+    /**
+     * Abstracting away the parent's after save method to make the code more unit testable
+     *
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function _parentAfterSave()
+    {
+        return parent::_afterSave();
     }
 
     /**
@@ -542,7 +563,7 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
      */
     public function revert($amount)
     {
-        $amount = (float) $amount;
+        $amount = (float)$amount;
 
         if ($amount > 0 && $this->isValid(true, true, false, false)) {
             $this->setBalanceDelta($amount)
@@ -572,8 +593,19 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
     public function _afterLoad()
     {
         $this->_setStateText();
+        return $this->_parentAfterLoad();
+    }
+
+    /**
+     * Abstracting away the parent's after load method to make the code more unit testable
+     *
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function _parentAfterLoad()
+    {
         return parent::_afterLoad();
     }
+
 
     /**
      * Return Gift Card Account state options
@@ -585,9 +617,9 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
         $result = array();
 
         $result[self::STATE_AVAILABLE] = Mage::helper('enterprise_giftcardaccount')->__('Available');
-        $result[self::STATE_USED]      = Mage::helper('enterprise_giftcardaccount')->__('Used');
-        $result[self::STATE_REDEEMED]  = Mage::helper('enterprise_giftcardaccount')->__('Redeemed');
-        $result[self::STATE_EXPIRED]   = Mage::helper('enterprise_giftcardaccount')->__('Expired');
+        $result[self::STATE_USED] = Mage::helper('enterprise_giftcardaccount')->__('Used');
+        $result[self::STATE_REDEEMED] = Mage::helper('enterprise_giftcardaccount')->__('Redeemed');
+        $result[self::STATE_EXPIRED] = Mage::helper('enterprise_giftcardaccount')->__('Expired');
 
         return $result;
     }
@@ -698,11 +730,11 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
             $recipientEmail,
             $recipientName,
             array(
-                'name'          => $recipientName,
-                'code'          => $code,
-                'balance'       => $balance,
-                'store'         => $recipientStore,
-                'store_name'    => $recipientStore->getName() // @deprecated after 1.4.0.0-beta1
+                'name' => $recipientName,
+                'code' => $code,
+                'balance' => $balance,
+                'store' => $recipientStore,
+                'store_name' => $recipientStore->getName() // @deprecated after 1.4.0.0-beta1
             )
         );
 

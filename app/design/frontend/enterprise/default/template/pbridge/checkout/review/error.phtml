@@ -27,7 +27,7 @@
 <script type="text/javascript">
     //<![CDATA[
     window.onload = function(){
-        parent.checkout.accordion.changeSection('opc-payment');
+        parent.checkout.accordion.openSection('opc-payment');
         parent.reloadIframe(parent.payment.currentMethod);
         var params = decodeURIComponent(location.search.substr(1)).split('=');
         if (params[0] && params[1] && params[0] == 'error_message') {

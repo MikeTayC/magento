@@ -408,7 +408,9 @@ class Enterprise_PageCache_Model_Processor
          */
         $sidCookieName = $this->getMetadata('sid_cookie_name');
         $sidCookieValue = $sidCookieName && isset($_COOKIE[$sidCookieName]) ? $_COOKIE[$sidCookieName] : '';
-        Enterprise_PageCache_Helper_Url::restoreSid($content, $sidCookieValue);
+
+        // XSS vulnerability protection provided by htmlspcialchars call - escape & " ' < > chars
+        Enterprise_PageCache_Helper_Url::restoreSid($content, htmlspecialchars($sidCookieValue, ENT_QUOTES));
 
         if ($isProcessed) {
             return $content;

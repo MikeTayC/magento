@@ -272,6 +272,15 @@
                 </observers>
             </sales_order_creditmemo_refund>
 
+            <rewarded_amount_after_refund_calculation>
+                <observers>
+                    <enterprise_customerbalance>
+                        <class>enterprise_customerbalance/observer</class>
+                        <method>modifyRewardedAmountOnRefund</method>
+                    </enterprise_customerbalance>
+                </observers>
+            </rewarded_amount_after_refund_calculation>
+
             <website_delete_before>
                 <observers>
                     <enterprise_customerbalance>

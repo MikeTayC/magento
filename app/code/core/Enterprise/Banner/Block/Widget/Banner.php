@@ -414,7 +414,7 @@ class Enterprise_Banner_Block_Widget_Banner
      */
     protected function _prepareCacheTags()
     {
-        $banner = $this->_factory->getModel('enterprise_banner/banner');
+        $banner = $this->_getFactory()->getModel('enterprise_banner/banner');
         foreach ($this->getBannerIds() as $bannerId) {
             $bannerCacheTags = $banner->setId($bannerId)->getCacheIdTags();
             $this->addCacheTag($bannerCacheTags);

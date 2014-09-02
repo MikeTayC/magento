@@ -264,7 +264,12 @@ class Enterprise_Rma_Model_Resource_Item extends Mage_Eav_Model_Entity_Abstract
             /* checks enable on product level */
             $product->reset();
             $product->setStoreId($item->getStoreId());
-            $product->load($item->getProductId());
+            try {
+                $product->load($item->getProductId());
+            } catch (Enterprise_AdminGws_Controller_Exception $e) {
+                Mage::logException($e);
+                $allowed = false;
+            }
 
             if (!Mage::helper('enterprise_rma')->canReturnProduct($product, $item->getStoreId())) {
                 $allowed = false;

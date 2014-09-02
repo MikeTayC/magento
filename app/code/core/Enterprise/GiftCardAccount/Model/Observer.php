@@ -301,13 +301,12 @@ class Enterprise_GiftCardAccount_Model_Observer
         if (!$quote->getGiftCardAccountApplied()) {
             return;
         }
-        // disable all payment methods and enable only Zero Subtotal Checkout and Google Checkout
+        // disable all payment methods and enable only Zero Subtotal Checkout
         if ($quote->getBaseGrandTotal() == 0 && (float)$quote->getGiftCardsAmountUsed()) {
             $paymentMethod = $observer->getEvent()->getMethodInstance()->getCode();
             $result = $observer->getEvent()->getResult();
-            // allow customer to place order via google checkout even if grand total is zero
-            $result->isAvailable = ($paymentMethod === 'free' || $paymentMethod === 'googlecheckout')
-                && empty($result->isDeniedInConfig);
+            // allow customer to place order if grand total is zero
+            $result->isAvailable = $paymentMethod === 'free' && empty($result->isDeniedInConfig);
         }
     }
 
@@ -419,22 +418,6 @@ class Enterprise_GiftCardAccount_Model_Observer
         if ($order->getGiftCardsInvoiced() - $order->getGiftCardsRefunded() >= 0.0001) {
             $order->setForcedCanCreditmemo(true);
         }
-
-        return $this;
-    }
-
-    /**
-     * Updating price for Google Checkout internal discount item.
-     *
-     * @param Varien_Event_Observer $observer
-     * @return Enterprise_GiftCardAccount_Model_Observer
-     */
-    public function googleCheckoutDiscoutItem(Varien_Event_Observer $observer)
-    {
-        $quote = $observer->getEvent()->getQuote();
-        $discountItem = $observer->getEvent()->getDiscountItem();
-        // discount price is negative value
-        $discountItem->setPrice($discountItem->getPrice() - $quote->getBaseGiftCardsAmountUsed());
 
         return $this;
     }

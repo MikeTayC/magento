@@ -60,6 +60,7 @@ class Enterprise_Reward_Model_Reward extends Mage_Core_Model_Abstract
     const REWARD_ACTION_CREDITMEMO          = 9;
     const REWARD_ACTION_SALESRULE           = 10;
     const REWARD_ACTION_REVERT              = 11;
+    const REWARD_ACTION_CREDITMEMO_VOID     = 12;
 
     protected $_modelLoadedByCustomer = false;
 
@@ -93,7 +94,8 @@ class Enterprise_Reward_Model_Reward extends Mage_Core_Model_Abstract
             self::REWARD_ACTION_ORDER_EXTRA         => 'enterprise_reward/action_orderExtra',
             self::REWARD_ACTION_CREDITMEMO          => 'enterprise_reward/action_creditmemo',
             self::REWARD_ACTION_SALESRULE           => 'enterprise_reward/action_salesrule',
-            self::REWARD_ACTION_REVERT              => 'enterprise_reward/action_orderRevert'
+            self::REWARD_ACTION_REVERT              => 'enterprise_reward/action_orderRevert',
+            self::REWARD_ACTION_CREDITMEMO_VOID     => 'enterprise_reward/action_creditmemoVoid'
         );
     }
 
@@ -433,9 +435,7 @@ class Enterprise_Reward_Model_Reward extends Mage_Core_Model_Abstract
      */
     public function loadByCustomer()
     {
-        if (!$this->_modelLoadedByCustomer && $this->getCustomerId()
-            && $this->getWebsiteId())
-        {
+        if (!$this->_modelLoadedByCustomer && $this->getCustomerId() && $this->getWebsiteId()) {
             $this->getResource()->loadByCustomerId($this,
                 $this->getCustomerId(), $this->getWebsiteId());
             $this->_modelLoadedByCustomer = true;
@@ -512,7 +512,6 @@ class Enterprise_Reward_Model_Reward extends Mage_Core_Model_Abstract
         if ($this->hasPointsDelta()) {
             $points = $this->getPointsDelta();
         }
-        $pointsBalance = 0;
         $pointsBalance = (int)$this->getPointsBalance() + $points;
         $maxPointsBalance = (int)(Mage::helper('enterprise_reward')
             ->getGeneralConfig('max_points_balance', $this->getWebsiteId()));

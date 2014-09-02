@@ -51,4 +51,26 @@
             </product>
         </catalog>
     </global>
+    <frontend>
+        <translate>
+            <modules>
+                <Enterprise_Bundle>
+                    <files>
+                        <default>Enterprise_Bundle.csv</default>
+                    </files>
+                </Enterprise_Bundle>
+            </modules>
+        </translate>
+    </frontend>
+    <adminhtml>
+        <translate>
+            <modules>
+                <Enterprise_Bundle>
+                    <files>
+                        <default>Enterprise_Bundle.csv</default>
+                    </files>
+                </Enterprise_Bundle>
+            </modules>
+        </translate>
+    </adminhtml>
 </config>

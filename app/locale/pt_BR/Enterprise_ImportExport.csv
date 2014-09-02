@@ -56,6 +56,7 @@
 "Invalid cron job task","Tarefa cronológica inválida"
 "Invalid scheduled operation","Operação agendada inválida"
 "Invalid scheduled operation type","Tipo de operação agendada inválida"
+"Invalid server communication class ""%s""","Invalid server communication class ""%s"""
 "Invalid server comunication class ""%s""","Classe ""%s"" de comunicação com o servidor inválida"
 "Invalid server type","Tipo de servidor inválido"
 "Last Outcome","Último resultado"

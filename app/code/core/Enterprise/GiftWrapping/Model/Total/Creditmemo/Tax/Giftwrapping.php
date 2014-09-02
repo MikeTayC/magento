@@ -29,7 +29,8 @@
  * GiftWrapping total tax calculator for creditmemo
  *
  */
-class Enterprise_GiftWrapping_Model_Total_Creditmemo_Tax_Giftwrapping extends Mage_Sales_Model_Order_Creditmemo_Total_Abstract
+class Enterprise_GiftWrapping_Model_Total_Creditmemo_Tax_Giftwrapping
+extends Mage_Sales_Model_Order_Creditmemo_Total_Abstract
 {
     /**
      * Collect gift wrapping tax totals
@@ -55,8 +56,8 @@ class Enterprise_GiftWrapping_Model_Total_Creditmemo_Tax_Giftwrapping extends Ma
                 && $orderItem->getGwBaseTaxAmountInvoiced() != $orderItem->getGwBaseTaxAmountRefunded()) {
                 $orderItem->setGwBaseTaxAmountRefunded($orderItem->getGwBaseTaxAmountInvoiced());
                 $orderItem->setGwTaxAmountRefunded($orderItem->getGwTaxAmountInvoiced());
-                $baseRefunded += $orderItem->getGwBaseTaxAmountInvoiced();
-                $refunded += $orderItem->getGwTaxAmountInvoiced();
+                $baseRefunded += $orderItem->getGwBaseTaxAmountInvoiced() * $creditmemoItem->getQty();
+                $refunded += $orderItem->getGwTaxAmountInvoiced() * $creditmemoItem->getQty();
             }
         }
         if ($refunded > 0 || $baseRefunded > 0) {

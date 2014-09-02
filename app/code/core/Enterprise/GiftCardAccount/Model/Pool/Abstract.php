@@ -87,12 +87,21 @@ abstract class Enterprise_GiftCardAccount_Model_Pool_Abstract extends Mage_Core_
         }
         $items = $collection->getItems();
         if (!$items) {
-            Mage::throwException(
-                $this->helper('enterprise_giftcardaccount')->__('No codes left in the pool.')
-            );
+            $this->_throwException($this->helper('enterprise_giftcardaccount')->__('No codes left in the pool.'));
         }
         $item = array_shift($items);
         return $item->getId();
+    }
+
+    /**
+     * Throw exception with given message
+     * @param string $message
+     *
+     * @throws Mage_Core_Exception
+     */
+    protected function _throwException($message)
+    {
+        Mage::throwException($message);
     }
 
     /**

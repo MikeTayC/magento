@@ -162,7 +162,11 @@ class Enterprise_Pci_Model_Observer
     {
         $password = $observer->getEvent()->getPassword();
         $model    = $observer->getEvent()->getModel();
-        if (!Mage::helper('core')->getEncryptor()->validateHashByVersion($password, $model->getPassword())) {
+
+        $encryptor = $this->_getCoreHelper()->getEncryptor();
+        $isPasswordUpdateRequired = !$encryptor->validateHashByVersion($password, $model->getPasswordHash());
+
+        if ($isPasswordUpdateRequired) {
             $model->changePassword($password, false);
         }
     }
@@ -312,5 +316,15 @@ class Enterprise_Pci_Model_Observer
     public function logEncryptionKeySave($config, $eventModel)
     {
         return true;
+    }
+
+    /**
+     * Return instance of core helper
+     *
+     * @return Mage_Core_Helper_Data
+     */
+    protected function _getCoreHelper()
+    {
+        return Mage::helper('core');
     }
 }

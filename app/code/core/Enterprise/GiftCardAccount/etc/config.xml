@@ -262,24 +262,6 @@
                 </observers>
             </checkout_type_multishipping_create_orders_single>
 
-            <googlecheckout_save_order_after>
-                <observers>
-                    <enterprise_giftcardaccount>
-                        <class>enterprise_giftcardaccount/observer</class>
-                        <method>processOrderPlace</method>
-                    </enterprise_giftcardaccount>
-                </observers>
-            </googlecheckout_save_order_after>
-
-            <googlecheckout_create_order_before>
-                <observers>
-                    <enterprise_giftcardaccount>
-                        <class>enterprise_giftcardaccount/observer</class>
-                        <method>processOrderCreateBefore</method>
-                    </enterprise_giftcardaccount>
-                </observers>
-            </googlecheckout_create_order_before>
-
             <checkout_multishipping_refund_all>
                 <observers>
                     <enterprise_giftcardaccount>
@@ -351,16 +333,6 @@
                 </enterprise_giftcardaccount>
             </updates>
         </layout>
-        <events>
-            <google_checkout_discount_item_price>
-                <observers>
-                    <enterprise_giftcardaccount>
-                        <class>enterprise_giftcardaccount/observer</class>
-                        <method>googleCheckoutDiscoutItem</method>
-                    </enterprise_giftcardaccount>
-                </observers>
-            </google_checkout_discount_item_price>
-        </events>
     </frontend>
     <admin>
         <routers>

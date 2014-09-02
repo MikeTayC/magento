@@ -145,7 +145,9 @@ class Enterprise_Cms_Model_Page_Version extends Mage_Core_Model_Abstract
             if ($this->getInitialRevisionData()) {
                 $revision->setData($this->getInitialRevisionData());
             } else {
-                $revision->loadWithRestrictions($accessLevel, $userId, $this->getOrigData($this->getIdFieldName()), 'version_id');
+                $revision->loadWithRestrictions(
+                    $accessLevel, $userId, $this->getOrigData($this->getIdFieldName()), 'version_id'
+                );
             }
 
             $revision->setVersionId($this->getId())
@@ -154,6 +156,10 @@ class Enterprise_Cms_Model_Page_Version extends Mage_Core_Model_Abstract
 
             $this->setLastRevision($revision);
         }
+
+        //Mark layout cache as invalidated
+        Mage::app()->getCacheInstance()->invalidateType('layout');
+
         return parent::_afterSave();
     }
 

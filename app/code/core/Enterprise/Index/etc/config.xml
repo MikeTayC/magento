@@ -28,7 +28,7 @@
 <config>
     <modules>
         <Enterprise_Index>
-            <version>1.13.0.0</version>
+            <version>1.13.0.1</version>
         </Enterprise_Index>
     </modules>
     <global>
@@ -121,5 +121,14 @@
                 </index>
             </updates>
         </layout>
+        <translate>
+            <modules>
+                <Enterprise_Index>
+                    <files>
+                        <default>Enterprise_Index.csv</default>
+                    </files>
+                </Enterprise_Index>
+            </modules>
+        </translate>
     </adminhtml>
 </config>

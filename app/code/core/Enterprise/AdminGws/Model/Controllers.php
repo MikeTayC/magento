@@ -1276,4 +1276,43 @@ class Enterprise_AdminGws_Model_Controllers extends Enterprise_AdminGws_Model_Ob
 
         return $this->validateRmaAttributeEditAction($controller);
     }
+
+    /**
+     * Block editing of RMA on disallowed stores
+     *
+     * @param Mage_Adminhtml_Controller_Action $controller
+     * @return bool|void
+     */
+    public function validateRmaEditAction($controller)
+    {
+        $id = $controller->getRequest()->getParam('id');
+        if (!$id) {
+            $this->_forward();
+            return false;
+        }
+
+        $store = $this->_getEnterpriseRMA($id)->getStoreId();
+        try {
+            if (empty($store) || !$this->_role->hasStoreAccess($store)) {
+                $this->_forward();
+                return false;
+            }
+        } catch (Mage_Core_Exception $e) {
+            $this->_forward();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Loads the Enterprise RMA
+     *
+     * @param string $id
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function _getEnterpriseRMA($id)
+    {
+        return Mage::getModel('enterprise_rma/rma')->load($id);
+    }
 }

@@ -39,11 +39,25 @@ class Enterprise_Index_Model_Lock_Storage_Db implements Enterprise_Index_Model_L
     protected $_helper;
 
     /**
+     * @var Varien_Db_Adapter_Interface
+     */
+    protected $_connection;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->_helper = Mage::getResourceHelper('enterprise_index');
+        /** @var $resource Mage_Core_Model_Resource */
+        $resource   = Mage::getSingleton('enterprise_index/resource_lock_resource');
+        $this->_connection = $resource->getConnection('enterprise_index_write', 'default_lock');
+        $this->_helper = Mage::getResourceHelper('enterprise_index')->setWriteAdapter($this->_connection);
+    }
+
+    protected function _prepareLockName($name)
+    {
+        $config = $this->_connection->getConfig();
+        return $config['dbname'] . '.' . $name;
     }
 
     /**
@@ -54,6 +68,7 @@ class Enterprise_Index_Model_Lock_Storage_Db implements Enterprise_Index_Model_L
      */
     public function setLock($lockName)
     {
+        $lockName = $this->_prepareLockName($lockName);
         return $this->_helper->setLock($lockName);
     }
 
@@ -65,6 +80,7 @@ class Enterprise_Index_Model_Lock_Storage_Db implements Enterprise_Index_Model_L
      */
     public function releaseLock($lockName)
     {
+        $lockName = $this->_prepareLockName($lockName);
         return $this->_helper->releaseLock($lockName);
     }
 
@@ -76,6 +92,7 @@ class Enterprise_Index_Model_Lock_Storage_Db implements Enterprise_Index_Model_L
      */
     public function isLockExists($lockName)
     {
+        $lockName = $this->_prepareLockName($lockName);
         return $this->_helper->isLocked($lockName);
     }
 }

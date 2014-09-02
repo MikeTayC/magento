@@ -43,6 +43,17 @@ class Enterprise_PageCache_Model_Resource_Crawler extends Mage_Core_Model_Resour
     }
 
     /**
+     * Initialize application, adapter factory
+     *
+     * @param array $args
+     */
+    public function __construct(array $args = array())
+    {
+        $this->_app = !empty($args['app']) ? $args['app'] : Mage::app();
+        parent::__construct();
+    }
+
+    /**
      * Get statement for iterating store urls
      *
      * @deprecated after 1.11.0.0 - use getUrlsPaths() instead
@@ -78,37 +89,50 @@ class Enterprise_PageCache_Model_Resource_Crawler extends Mage_Core_Model_Resour
     }
 
     /**
-     * Retrieves request_path's that should be visited by crawler
+     * Get store urls
      *
      * @param int $storeId
+     * @param int $batchSize
+     * @param int $offset
      * @return array
      */
-    public function getRequestPaths($storeId)
+    public function getRequestPaths($storeId, $batchSize, $offset)
     {
-        $storeIdExpr = $this->_getReadAdapter()->getIfNullSql('url_category.store_id', 'url_product.store_id');
+        $store = $this->_app->getStore($storeId);
 
-        $select = $this->_getReadAdapter()->select()
+        $rootCategoryId = $store->getRootCategoryId();
+
+        $selectProduct = $this->_getReadAdapter()->select()
+            ->from(array('url_product_default' => $this->getTable('enterprise_catalog/product')),
+                array(''))
+            ->joinInner(array('url_rewrite' => $this->getTable('enterprise_urlrewrite/url_rewrite')),
+                'url_rewrite.url_rewrite_id = url_product_default.url_rewrite_id',
+                array('request_path', 'entity_type')
+            )
+            ->joinInner(array('cp' => $this->getTable('catalog/category_product_index')),
+                'url_product_default.product_id = cp.product_id',
+                array('category_id')
+            )
+            ->where('url_rewrite.entity_type = ?', Enterprise_Catalog_Model_Product::URL_REWRITE_ENTITY_TYPE)
+            ->where('cp.store_id = ?', (int) $storeId)
+            ->where('cp.category_id != ?', (int) $rootCategoryId)
+            ->limit($batchSize, $offset);
+
+        $selectCategory = $this->_getReadAdapter()->select()
             ->from(array('url_rewrite' => $this->getTable('enterprise_urlrewrite/url_rewrite')),
-                array('request_path', 'store_id' => $storeIdExpr))
-            ->joinLeft(array('url_product' => $this->getTable('enterprise_urlrewrite/product')),
-                'url_product.url_rewrite_id = url_rewrite.url_rewrite_id AND ' .
-                $this->_getReadAdapter()->quoteInto('url_product.store_id = ?', $storeId),
-                array()
+                array(
+                    'request_path',
+                    'entity_type',
+                    'category_id' => new Zend_Db_Expr('NULL'),
+                )
             )
-            ->joinLeft(array('url_category' => $this->getTable('enterprise_urlrewrite/category')),
-                'url_category.url_rewrite_id = url_rewrite.url_rewrite_id AND ' .
-                $this->_getReadAdapter()->quoteInto('url_category.store_id = ?', $storeId),
-                array()
-            )
-            ->where('is_system = ?', 1);
+            ->where('url_rewrite.store_id = ?', $storeId)
+            ->where('url_rewrite.entity_type = ?', Enterprise_Catalog_Model_Category::URL_REWRITE_ENTITY_TYPE)
+            ->limit($batchSize, $offset);
 
-        $result = $this->_getReadAdapter()->fetchAll($select);
-        $requestPaths = array();
-        foreach ($result as $item) {
-            if ($storeId == $item['store_id']) {
-                $requestPaths[] = $item['request_path'];
-            }
-        }
-        return $requestPaths;
+        $selectPaths = $this->_getReadAdapter()->select()
+            ->union(array('(' . $selectProduct . ')', '(' . $selectCategory . ')'));
+
+        return $this->_getReadAdapter()->fetchAll($selectPaths);
     }
 }

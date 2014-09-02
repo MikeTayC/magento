@@ -89,6 +89,17 @@
             </enterprise_index_exclude_process_before>
         </events>
     </global>
+    <frontend>
+        <translate>
+            <modules>
+                <Enterprise_CatalogSearch>
+                    <files>
+                        <default>Enterprise_CatalogSearch.csv</default>
+                    </files>
+                </Enterprise_CatalogSearch>
+            </modules>
+        </translate>
+    </frontend>
     <default>
         <index_management>
             <index_options>

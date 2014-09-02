@@ -28,7 +28,7 @@
 <config>
     <modules>
         <Enterprise_Pbridge>
-            <version>1.8.0.0.0</version>
+            <version>1.8.0.0.1</version>
         </Enterprise_Pbridge>
     </modules>
     <global>
@@ -47,6 +47,13 @@
                 <class>Enterprise_Pbridge_Helper</class>
             </enterprise_pbridge>
         </helpers>
+        <resources>
+            <enterprise_pbridge_setup>
+                <setup>
+                    <module>Enterprise_Pbridge</module>
+                </setup>
+            </enterprise_pbridge_setup>
+        </resources>
         <events>
             <controller_action_predispatch>
                 <observers>
@@ -69,6 +76,7 @@
     <frontend>
         <secure_url>
             <enterprise_pbridge_pbridge>/enterprise_pbridge/pbridge/</enterprise_pbridge_pbridge>
+            <enterprise_pbridge_payment_profile>/enterprise_pbridge/payment_profile/</enterprise_pbridge_payment_profile>
         </secure_url>
         <routers>
             <enterprise_pbridge>
@@ -95,6 +103,24 @@
                 </enterprise_pbridge>
             </updates>
         </layout>
+        <events>
+            <checkout_submit_all_after>
+                <observers>
+                    <pbridge_save_order_after_submit>
+                        <class>enterprise_pbridge/observer</class>
+                        <method>saveOrderAfterSubmit</method>
+                    </pbridge_save_order_after_submit>
+                </observers>
+            </checkout_submit_all_after>
+            <controller_action_postdispatch_checkout_onepage_saveOrder>
+                <observers>
+                    <pbridge_save_order_onepage>
+                        <class>enterprise_pbridge/observer</class>
+                        <method>setResponseAfterSaveOrder</method>
+                    </pbridge_save_order_onepage>
+                </observers>
+            </controller_action_postdispatch_checkout_onepage_saveOrder>
+        </events>
     </frontend>
     <adminhtml>
         <layout>
@@ -114,6 +140,15 @@
                 </observers>
             </admin_system_config_changed_section_payment>
         </events>
+        <translate>
+            <modules>
+                <Enterprise_Pbridge>
+                    <files>
+                        <default>Enterprise_Pbridge.csv</default>
+                    </files>
+                </Enterprise_Pbridge>
+            </modules>
+        </translate>
     </adminhtml>
     <admin>
         <routers>
@@ -145,27 +180,22 @@
                 <model>enterprise_pbridge/payment_method_authorizenet</model>
                 <enabled>1</enabled>
             </pbridge_authorizenet>
-            <pbridge_eway_direct>
-                <model>enterprise_pbridge/payment_method_eway_direct</model>
-                <active>1</active>
-            </pbridge_eway_direct>
             <pbridge_verisign>
                 <model>enterprise_pbridge/payment_method_payflow_pro</model>
                 <enabled>1</enabled>
             </pbridge_verisign>
-            <pbridge_ogone_direct>
+            <pbridge_ogone_direct translate="title">
                 <model>enterprise_pbridge/payment_method_ogone</model>
                 <title>Ogone Direct Link</title>
-                <userid backend_model="adminhtml/system_config_backend_encrypted"/>
-                <password backend_model="adminhtml/system_config_backend_encrypted"/>
-                <passphrase backend_model="adminhtml/system_config_backend_encrypted"/>
                 <payment_action>authorize</payment_action>
-                <useccv>1</useccv>
+                <allowspecific>1</allowspecific>
+                <specificcountry>AT,DE,NL</specificcountry>
+                <using_pbridge>1</using_pbridge>
             </pbridge_ogone_direct>
-            <pbridge_paybox_direct>
-                <model>enterprise_pbridge/payment_method_paybox_direct</model>
+            <pbridge_ogone_direct_debit translate="title">
+                <model>enterprise_pbridge/payment_method_ogone_direct_debit</model>
                 <active>1</active>
-            </pbridge_paybox_direct>
+            </pbridge_ogone_direct_debit>
             <worldpay_direct>
                 <title>Worldpay</title>
                 <payment_action>authorize</payment_action>
@@ -178,61 +208,96 @@
             <cybersource_soap>
                 <payment_action>authorize</payment_action>
                 <title>Credit Card (Cybersource)</title>
+                <using_pbridge>1</using_pbridge>
             </cybersource_soap>
             <pbridge_cybersource_soap>
                 <model>enterprise_pbridge/payment_method_cybersource_soap</model>
+                <active>1</active>
             </pbridge_cybersource_soap>
             <dibs>
                 <title>Credit Card (DIBS)</title>
                 <using_pbridge>1</using_pbridge>
+                <currency>USD</currency>
             </dibs>
             <pbridge_dibs>
                 <model>enterprise_pbridge/payment_method_dibs</model>
                 <active>1</active>
             </pbridge_dibs>
             <braintree_basic>
-                <model>enterprise_pbridge/payment_method_braintree_basic</model>
                 <title>Braintree</title>
                 <payment_action>authorize</payment_action>
                 <using_pbridge>1</using_pbridge>
             </braintree_basic>
+            <pbridge_braintree_basic>
+                <model>enterprise_pbridge/payment_method_braintree_basic</model>
+                <active>1</active>
+            </pbridge_braintree_basic>
             <sagepay_direct>
-                <model>enterprise_pbridge/payment_method_sagepay_direct</model>
+                <allowspecific>0</allowspecific>
                 <payment_action>authorize</payment_action>
                 <title>Credit Card (Sage Pay Direct)</title>
                 <using_pbridge>1</using_pbridge>
             </sagepay_direct>
+            <pbridge_sagepay_direct>
+                <model>enterprise_pbridge/payment_method_sagepay_direct</model>
+                <active>1</active>
+            </pbridge_sagepay_direct>
             <firstdata>
                 <title>First Data Global Gateway</title>
                 <currency>USD</currency>
                 <using_pbridge>1</using_pbridge>
-                <model>enterprise_pbridge/payment_method_firstdata</model>
             </firstdata>
+            <pbridge_firstdata>
+                <model>enterprise_pbridge/payment_method_firstdata</model>
+                <active>1</active>
+            </pbridge_firstdata>
             <eway_direct>
-                <title>eWAY Direct</title>
                 <using_pbridge>1</using_pbridge>
+                <currency>AUD</currency>
                 <payment_action>authorize_capture</payment_action>
+                <title>eWAY Direct</title>
+                <allowspecific>0</allowspecific>
             </eway_direct>
+            <pbridge_eway_direct>
+                <model>enterprise_pbridge/payment_method_eway_direct</model>
+                <active>1</active>
+            </pbridge_eway_direct>
             <payone_gate>
                 <title>Credit Card (Payone.de)</title>
-                <model>enterprise_pbridge/payment_method_payone_gate</model>
                 <currency>EUR</currency>
                 <using_pbridge>1</using_pbridge>
             </payone_gate>
+            <pbridge_payone_gate>
+                <model>enterprise_pbridge/payment_method_payone_gate</model>
+                <active>1</active>
+            </pbridge_payone_gate>
             <paybox_direct>
                 <payment_action>authorize</payment_action>
                 <title>Paybox Direct</title>
+                <allowspecific>0</allowspecific>
                 <using_pbridge>1</using_pbridge>
             </paybox_direct>
+            <pbridge_paybox_direct>
+                <model>enterprise_pbridge/payment_method_paybox_direct</model>
+                <active>1</active>
+            </pbridge_paybox_direct>
             <psigate_basic>
                 <title>Psigate</title>
                 <payment_action>authorize</payment_action>
                 <using_pbridge>1</using_pbridge>
+                <allowspecific>0</allowspecific>
             </psigate_basic>
             <pbridge_psigate_basic>
                 <model>enterprise_pbridge/payment_method_psigate_basic</model>
                 <active>1</active>
             </pbridge_psigate_basic>
+            <pbridge_payone_debit>
+                <title>Direct Debit (Payone)</title>
+                <currency>EUR</currency>
+                <using_pbridge>1</using_pbridge>
+                <model>enterprise_pbridge/payment_method_payone_debit</model>
+                <active>0</active>
+            </pbridge_payone_debit>
         </payment>
     </default>
 </config>

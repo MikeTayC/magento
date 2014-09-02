@@ -199,7 +199,7 @@ class Enterprise_Rma_Adminhtml_RmaController extends Mage_Adminhtml_Controller_A
                     'customer_custom_email' => $data['contact_email']
                 );
                 $model->setData($rmaData);
-                $result = $model->saveRma();
+                $result = $model->saveRmaData($data);
 
                 if ($result && $result->getId()) {
                     if (isset($data['comment'])
@@ -291,7 +291,7 @@ class Enterprise_Rma_Adminhtml_RmaController extends Mage_Adminhtml_Controller_A
                         ->getStatusByItems($statuses)
                 );
                 $model->setIsUpdate(1);
-                $result = $model->saveRma();
+                $result = $model->saveRmaData($data);
                 if ($result && $result->getId()) {
                     $model->sendAuthorizeEmail();
                     Mage::getSingleton('adminhtml/session')->addSuccess($this->__('The RMA request has been saved.'));

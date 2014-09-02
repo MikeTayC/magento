@@ -24,6 +24,9 @@
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
+// Change current directory to the directory of current script
+chdir(dirname(__FILE__));
+
 require 'app/Mage.php';
 
 if (!Mage::isInstalled()) {

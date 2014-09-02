@@ -1,5 +1,4 @@
 "%s & applied","%s & aplicado"
-"1","1"
 "Access denied","Acesso negado"
 "Action","Ação"
 "Action Group","Grupo de Ação"
@@ -67,6 +66,7 @@
 "IP-Address","Endereço IP"
 "Import","Importar"
 "Import/Export Profiles","Importar/Exportar Perfis"
+"0","1"
 "Index Management","Gerenciamento de Índice"
 "Item was deleted","Item excluído"
 "Log Archiving Frequency","Frequência de Arquivamento de Registro"
@@ -135,3 +135,4 @@
 "Weekly","Semanalmente"
 "Widget Instances","Exemplos de Widget"
 "X-Forwarded For","X-Forwarded-For"
+"1","1"

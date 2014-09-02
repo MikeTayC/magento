@@ -39,14 +39,14 @@ class Enterprise_Pbridge_Model_Payment_Method_Payflow_Pro extends Mage_Paypal_Mo
      *
      * @var string
      */
-    protected $_formBlockType = 'enterprise_pbridge/checkout_payment_payflow_pro';
+    protected $_formBlockType = 'enterprise_pbridge/checkout_payment_paypal';
 
     /**
      * Form block type for the backend
      *
      * @var string
      */
-    protected $_backendFormBlockType = 'enterprise_pbridge/adminhtml_sales_order_create_payflow_pro';
+    protected $_backendFormBlockType = 'enterprise_pbridge/adminhtml_sales_order_create_paypal';
 
     /**
      * Payment Bridge Payment Method Instance
@@ -54,7 +54,6 @@ class Enterprise_Pbridge_Model_Payment_Method_Payflow_Pro extends Mage_Paypal_Mo
      * @var Enterprise_Pbridge_Model_Payment_Method_Pbridge
      */
     protected $_pbridgeMethodInstance = null;
-    protected $_canFetchTransactionInfo = false;
 
     /**
      * Return that current payment method is dummy
@@ -182,6 +181,15 @@ class Enterprise_Pbridge_Model_Payment_Method_Payflow_Pro extends Mage_Paypal_Mo
         $response = $this->getPbridgeMethodInstance()->authorize($payment, $amount);
         $payment->addData((array)$response);
         $payment->setIsTransactionClosed(0);
+        if (!empty($response['respmsg'])) {
+            $preparedMessage = (string)$payment->getPreparedMessage();
+            $preparedMessage .= ' ' . $response['respmsg'];
+            if (!empty($response['postfpsmsg'])) {
+                $preparedMessage .= ': ' . $response['postfpsmsg'];
+            }
+            $preparedMessage .= '.';
+            $payment->setPreparedMessage($preparedMessage);
+        }
         return $this;
     }
 

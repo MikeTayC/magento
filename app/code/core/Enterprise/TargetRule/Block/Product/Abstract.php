@@ -48,6 +48,13 @@ abstract class Enterprise_TargetRule_Block_Product_Abstract extends Mage_Catalog
     protected $_items = null;
 
     /**
+     * Collection of custom selected items
+     *
+     * @var array
+     */
+    protected $_customItems = array();
+
+    /**
      * Get link collection for specific target
      *
      * @abstract
@@ -181,21 +188,42 @@ abstract class Enterprise_TargetRule_Block_Product_Abstract extends Mage_Catalog
     protected function _orderProductItems()
     {
         if (!is_null($this->_items)) {
-            if ($this->isShuffled()) {
-                // shuffling assoc
-                $ids = array_keys($this->_items);
-                shuffle($ids);
-                $items = $this->_items;
-                $this->_items = array();
-                foreach ($ids as $id) {
-                    $this->_items[$id] = $items[$id];
+
+            foreach ($this->_items as $id => $item) {
+                if (!isset($this->_customItems[$id])) {
+                    continue;
                 }
+                unset($this->_items[$id]);
+            }
+
+            if ($this->isShuffled()) {
+                $targetRuleItems = $this->_shuffleItems($this->_items);
+                $this->_items = $this->_shuffleItems($this->_customItems);
+                $this->_items += $targetRuleItems;
             } else {
+                $this->_items = array_merge($this->_customItems, $this->_items);
                 uasort($this->_items, array($this, 'compareItems'));
             }
             $this->_sliceItems();
         }
         return $this->_items;
+    }
+
+    /**
+     * Return shuffled items
+     *
+     * @param array $items
+     * @return array
+     */
+    protected function _shuffleItems(array $items = array())
+    {
+        $shuffledItems = array();
+        $keys = array_keys($items);
+        shuffle($keys);
+        foreach ($keys as $id) {
+            $shuffledItems[$id] = $items[$id];
+        }
+        return $shuffledItems;
     }
 
     /**
@@ -251,6 +279,7 @@ abstract class Enterprise_TargetRule_Block_Product_Abstract extends Mage_Catalog
         if (is_null($this->_items)) {
             $behavior   = $this->getPositionBehavior();
 
+            $this->_customItems = array();
             $this->_items = array();
 
             if (in_array($behavior, $this->getRuleBasedBehaviorPositions())) {
@@ -259,7 +288,7 @@ abstract class Enterprise_TargetRule_Block_Product_Abstract extends Mage_Catalog
 
             if (in_array($behavior, $this->getSelectedBehaviorPositions())) {
                 foreach ($this->_getLinkProducts() as $id => $item) {
-                    $this->_items[$id] = $item;
+                    $this->_customItems[$id] = $item;
                 }
             }
             $this->_orderProductItems();

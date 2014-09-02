@@ -83,7 +83,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Combine_Root
             // For existing customer
             $select->from($table, new Zend_Db_Expr(1));
         } else {
-            $select->from($table, array('entity_id'));
+            $select->from($table, array('entity_id' , 'website_id'));
             if ($customer === null) {
                 if (Mage::getSingleton('customer/config_share')->isWebsiteScope()) {
                     $select->where('website_id=?', $website);

@@ -135,7 +135,7 @@ class Enterprise_Reward_Model_Resource_Reward extends Mage_Core_Model_Resource_D
      */
     public function saveRewardSalesrule($ruleId, $pointsDelta)
     {
-        $select = $this->_getWriteAdapter()->insertOnDuplicate(
+        $this->_getWriteAdapter()->insertOnDuplicate(
             $this->getTable('enterprise_reward/reward_salesrule'),
             array(
                 'rule_id' => $ruleId,
@@ -143,6 +143,8 @@ class Enterprise_Reward_Model_Resource_Reward extends Mage_Core_Model_Resource_D
             ),
             array('points_delta')
         );
+
+        return $this;
     }
 
     /**

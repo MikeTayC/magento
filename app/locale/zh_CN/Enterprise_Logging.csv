@@ -1,5 +1,4 @@
 "%s & applied","%s 并应用"
-"1","1"
 "Access denied","访问被拒绝"
 "Action","操作"
 "Action Group","操作组"
@@ -67,6 +66,7 @@
 "IP-Address","IP-地址"
 "Import","导入"
 "Import/Export Profiles","导入/导出配置文件"
+"0","1"
 "Index Management","索引管理"
 "Item was deleted","项目被删除"
 "Log Archiving Frequency","日志存档频率"
@@ -135,3 +135,4 @@
 "Weekly","每周"
 "Widget Instances","构件实例"
 "X-Forwarded For","X-转发："
+"1","1"

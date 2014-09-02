@@ -252,9 +252,6 @@ RegionUpdater.prototype = {
                 }
                 this.regionTextEl.value = '';
             }
-            if (this.regionSelectEl && this.regionSelectEl.value && !def) {
-                def = this.regionSelectEl.value;
-            }
 
             this.regionSelectEl.options.length = 1;
             for (regionId in this.regions[this.countryEl.value]) {
@@ -292,6 +289,7 @@ RegionUpdater.prototype = {
             }
             this.setMarkDisplay(this.regionSelectEl, true);
         } else {
+            this.regionSelectEl.options.length = 1;
             if (this.disableAction=='hide') {
                 if (this.regionTextEl) {
                     this.regionTextEl.style.display = '';
@@ -358,6 +356,7 @@ ZipUpdater.prototype = {
 
         // Ajax-request and normal content load compatibility
         if (this.zipElement != undefined) {
+            Validation.reset(this.zipElement)
             this._setPostcodeOptional();
         } else {
             Event.observe(window, "load", this._setPostcodeOptional.bind(this));

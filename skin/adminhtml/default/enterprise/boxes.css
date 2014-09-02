@@ -863,7 +863,7 @@ tr.qty-not-available td input[name="qty"] { background-color: #faebe7; color: #d
 .entry-edit .entry-edit-head.sku-errors h4 { color: #EB5E00; background:url(images/error_msg_icon.gif) no-repeat scroll 0 5px; padding-left:20px; padding-top:4px; }
 .sku-failed-item { position:relative; }
 .sku-failed-item .sku-configure-button { position:absolute; margin:-9px 0 0; top:50%; right:5px; }
-#show-sku-panel-button { margin-right: 5px; } */
+#show-sku-panel-button { margin-right: 5px; }
 
 /* Product Configuration Popup */
 #popup-window-mask,
@@ -1126,7 +1126,8 @@ tr.qty-not-available td input[name="qty"] { background-color: #faebe7; color: #d
 .x-tree-node { margin:0 !important; }
 .x-tree-node .leaf .x-tree-node-icon        { background-image:url(images/fam_leaf.png); }
 .x-tree-node .system-leaf .x-tree-node-icon { background-image:url(images/fam_application_form_delete.png); }
-.x-tree-node-ct { overflow:hidden; }
+
+.adminhtml-catalog-category-edit .x-tree-node-ct { overflow: visible; }
 
 /* Product - Websites */
 .website-name .checkbox                 { vertical-align:top; margin-top:2px; }
@@ -1746,6 +1747,7 @@ ul.super-product-attributes { padding-left:15px; }
 /* Font */
 .bold               { font-weight:bold !important; }
 .normal             { font-weight:normal !important; }
+.strike             { text-decoration: line-through; }
 
 /* Clear */ /* This keeps our HTML free of buncha clearing elements */
 .config-heading:after,

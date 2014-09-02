@@ -26,9 +26,11 @@
 ?>
 <ul class="form-list pbridge" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
     <li>
-        <?php if ($this->getReloadAllowed()): ?>
-            <span class="pbridge-reload"><a href="#" onclick="reloadIframe('<?php echo $this->getMethodCode() ?>');return false;">Reload Form</a></span>
-        <?php endif; ?>
+        <span class="pbridge-reload">
+            <a href="#" onclick="reloadIframe('<?php echo $this->getMethodCode() ?>'); return false;">
+                <?php echo $this->__('Reload Form');?>
+            </a>
+        </span>
         <div id="payment_form_<?php echo $this->getMethodCode() ?>_container">
             <?php echo $this->getChildHtml('pbridge_iframe'); ?>
         </div>

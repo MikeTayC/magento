@@ -149,8 +149,14 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Widget_Radio extends Mage_Adm
     public function getParameters()
     {
         if (empty($this->_params)) {
+            $this->_params = array();
             $widget = Mage::registry('current_widget_instance');
-            $this->_params = $widget ? $widget->getWidgetParameters() : array();
+            $block = $this->getLayout()->getBlock('wysiwyg_widget.options');
+            if ($widget) {
+                $this->_params = $widget->getWidgetParameters();
+            } elseif ($block) {
+                $this->_params = $block->getWidgetValues();
+            }
         }
         return $this->_params;
     }

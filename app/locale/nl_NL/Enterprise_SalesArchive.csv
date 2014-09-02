@@ -1,7 +1,4 @@
 "%s order(s) have been archived.","%s order(s) zijn gearchiveerd."
-"%s order(s) have been canceled.","%s order(s) zijn geannuleerd."
-"%s order(s) have been put on hold.","%s order(s) zijn in de wachtstand gezet."
-"%s order(s) have been released from holding status.","%s order(s) zijn vrijgelaten uit wacht status."
 "%s order(s) have been removed from archive.","%s order(s) zijn uit het archief verwijdert."
 "Add","Toevoegen"
 "Archive","Archief"

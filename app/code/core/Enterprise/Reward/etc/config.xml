@@ -28,7 +28,7 @@
 <config>
     <modules>
         <Enterprise_Reward>
-            <version>1.11.0.1</version>
+            <version>1.11.0.2</version>
         </Enterprise_Reward>
     </modules>
     <global>
@@ -488,6 +488,7 @@
                 <is_enabled_on_front>1</is_enabled_on_front>
                 <publish_history>1</publish_history>
                 <expiry_calculation>static</expiry_calculation>
+                <deduct_automatically>0</deduct_automatically>
                 <landing_page>reward-points</landing_page>
             </general>
             <notification>

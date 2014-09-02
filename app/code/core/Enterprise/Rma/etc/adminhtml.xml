@@ -64,13 +64,13 @@
                             <title>Manage RMA</title>
                             <action>adminhtml/rma</action>
                             <sort_order>10</sort_order>
-                            <resource>sales/enterprise_rma</resource>
+                            <resource>sales/enterprise_rma/rma_manage</resource>
                         </rma>
                         <rma_item_attribute translate="title" module="enterprise_rma">
                             <title>Manage RMA Items Attributes</title>
                             <action>adminhtml/rma_item_attribute</action>
                             <sort_order>20</sort_order>
-                            <resource>sales/enterprise_rma</resource>
+                            <resource>sales/enterprise_rma/rma_attribute</resource>
                         </rma_item_attribute>
                     </children>
                 </enterprise_rma>

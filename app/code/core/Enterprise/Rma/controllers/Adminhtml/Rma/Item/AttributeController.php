@@ -349,6 +349,6 @@ class Enterprise_Rma_Adminhtml_Rma_Item_AttributeController extends Mage_Adminht
      */
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('sales/enterprise_rma');
+        return Mage::getSingleton('admin/session')->isAllowed('sales/enterprise_rma/rma_attribute');
     }
 }

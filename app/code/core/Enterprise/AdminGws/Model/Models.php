@@ -589,7 +589,9 @@ class Enterprise_AdminGws_Model_Models extends Enterprise_AdminGws_Model_Observe
      */
     public function salesOrderLoadAfter($model)
     {
-        if (!in_array($model->getStore()->getWebsiteId(), $this->_role->getWebsiteIds())) {
+        $allProductsAvailable = $this->_ifProductsAvailable($model);
+
+        if (!in_array($model->getStore()->getWebsiteId(), $this->_role->getWebsiteIds()) || !$allProductsAvailable) {
             $model->setActionFlag(Mage_Sales_Model_Order::ACTION_FLAG_CANCEL, false)
                 ->setActionFlag(Mage_Sales_Model_Order::ACTION_FLAG_CREDITMEMO, false)
                 ->setActionFlag(Mage_Sales_Model_Order::ACTION_FLAG_EDIT, false)
@@ -600,6 +602,35 @@ class Enterprise_AdminGws_Model_Models extends Enterprise_AdminGws_Model_Observe
                 ->setActionFlag(Mage_Sales_Model_Order::ACTION_FLAG_UNHOLD, false)
                 ->setActionFlag(Mage_Sales_Model_Order::ACTION_FLAG_COMMENT, false);
         }
+        if (!$allProductsAvailable) {
+            $model->setActionFlag(Mage_Sales_Model_Order::ACTION_FLAG_PRODUCTS_PERMISSION_DENIED, true);
+        }
+
+    }
+
+    /**
+     * Return if products are available for current admin
+     *
+     * @param Mage_Sales_Model_Order $model
+     * @return bool
+     */
+    protected function _ifProductsAvailable($model)
+    {
+        $products = $model->getAllItems();
+        $allProductsAvailable = true;
+
+        foreach ($products as $product) {
+            try {
+                $this->_factory->getModel('catalog/product')
+                    ->load($product->getProductId());
+            } catch (Enterprise_AdminGws_Controller_Exception $e) {
+                $allProductsAvailable = false;
+            }
+            if (!$allProductsAvailable) {
+                break;
+            }
+        }
+        return $allProductsAvailable;
     }
 
     /**

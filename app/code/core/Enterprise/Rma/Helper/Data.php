@@ -230,7 +230,8 @@ class Enterprise_Rma_Helper_Data extends Mage_Core_Helper_Abstract
                 'postcode'  => Mage::getStoreConfig(Enterprise_Rma_Model_Shipping::XML_PATH_ZIP, $store),
                 'region_id' => Mage::getStoreConfig(Enterprise_Rma_Model_Shipping::XML_PATH_REGION_ID, $store),
                 'street2'   => Mage::getStoreConfig(Enterprise_Rma_Model_Shipping::XML_PATH_ADDRESS2, $store),
-                'street1'   => Mage::getStoreConfig(Enterprise_Rma_Model_Shipping::XML_PATH_ADDRESS1, $store)
+                'street1'   => Mage::getStoreConfig(Enterprise_Rma_Model_Shipping::XML_PATH_ADDRESS1, $store),
+                'firstname' => Mage::getStoreConfig(Enterprise_Rma_Model_Shipping::XML_PATH_CONTACT_NAME, $store)
             );
         }
 

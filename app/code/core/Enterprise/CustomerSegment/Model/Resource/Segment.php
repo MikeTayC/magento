@@ -137,10 +137,11 @@ class Enterprise_CustomerSegment_Model_Resource_Segment extends Mage_Rule_Model_
      * Save customer Ids matched by segment SQL select on specific website
      *
      * @param Enterprise_CustomerSegment_Model_Segment $segment
-     * @param int $websiteId
+     * @param int $websiteId (Abandoned) websiteId to use, fixed to $row['website_id']
      * @param string $select
      *
      * @return Enterprise_CustomerSegment_Model_Resource_Segment
+     * @throws Exception
      */
     public function saveCustomersFromSelect($segment, $websiteId, $select)
     {
@@ -158,7 +159,7 @@ class Enterprise_CustomerSegment_Model_Resource_Segment extends Mage_Rule_Model_
                 $data[] = array(
                     'segment_id'    => $segmentId,
                     'customer_id'   => $row['entity_id'],
-                    'website_id'    => $websiteId,
+                    'website_id'    => $row['website_id'],
                     'added_date'    => $now,
                     'updated_date'  => $now,
                 );
@@ -213,9 +214,16 @@ class Enterprise_CustomerSegment_Model_Resource_Segment extends Mage_Rule_Model_
         $adapter->beginTransaction();
         try {
             $this->deleteSegmentCustomers($segment);
-            foreach ($websiteIds as $websiteId) {
-                $query = $segment->getConditions()->getConditionsSql(null, $websiteId);
-                $this->saveCustomersFromSelect($segment, $websiteId, $query);
+            if (!empty($websiteIds)) {
+                if (Mage::getSingleton('customer/config_share')->isGlobalScope()) {
+                    $query = $segment->getConditions()->getConditionsSql(null, $websiteIds);
+                    $this->saveCustomersFromSelect($segment, $websiteIds, $query);
+                } else {
+                    foreach ($websiteIds as $websiteId) {
+                        $query = $segment->getConditions()->getConditionsSql(null, $websiteId);
+                        $this->saveCustomersFromSelect($segment, $websiteId, $query);
+                    }
+                }
             }
         } catch (Exception $e) {
             $adapter->rollback();

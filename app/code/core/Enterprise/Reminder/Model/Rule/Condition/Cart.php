@@ -136,21 +136,16 @@ class Enterprise_Reminder_Model_Rule_Condition_Cart
         $daysDiffSql = Mage::getResourceHelper('enterprise_reminder')
             ->getDateDiff('quote.updated_at', $select->getAdapter()->formatDate($currentTime));
 
-        if ($operator == '=') {
-            $select->where($daysDiffSql . ' < ?', $conditionValue);
-            $select->where($daysDiffSql . ' > ?', $conditionValue - 1);
-        } else {
-            if ($operator == '>=') {
-                if ($conditionValue > 0) {
-                    $conditionValue--;
-                } else {
-                    $currentTime = Mage::getModel('core/date')->gmtDate();
-                    $daysDiffSql = Mage::getResourceHelper('enterprise_reminder')
-                        ->getDateDiff('quote.updated_at', $select->getAdapter()->formatDate($currentTime));
-                }
+        if ($operator == '>=') {
+            if ($conditionValue > 0) {
+                $conditionValue--;
+            } else {
+                $currentTime = Mage::getModel('core/date')->gmtDate();
+                $daysDiffSql = Mage::getResourceHelper('enterprise_reminder')
+                    ->getDateDiff('quote.updated_at', $select->getAdapter()->formatDate($currentTime));
             }
-            $select->where($daysDiffSql . " {$operator} ?", $conditionValue);
         }
+        $select->where($daysDiffSql . " {$operator} ?", $conditionValue);
 
         $select->where('quote.is_active = 1');
         $select->where('quote.items_count > 0');

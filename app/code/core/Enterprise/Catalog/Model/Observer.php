@@ -355,4 +355,13 @@ class Enterprise_Catalog_Model_Observer
         $redirects = $this->_factory->getResourceModel('enterprise_urlrewrite/redirect');
         $redirects->deleteByProductIds(array($product->getId()));
     }
+
+    /**
+     * Listener for product attribute duplication event.
+     * @param Varien_Event_Observer $observer
+     */
+    public function removeUrlKey(Varien_Event_Observer $observer)
+    {
+        $observer->getProduct()->setData('url_key', false);
+    }
 }

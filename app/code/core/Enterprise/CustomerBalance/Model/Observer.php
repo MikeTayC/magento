@@ -557,6 +557,33 @@ class Enterprise_CustomerBalance_Model_Observer
     }
 
     /**
+     * Modify the amount of invoiced funds for which reward points should not be voided after refund.
+     * Prevent voiding of reward points for amount returned to store credit.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function modifyRewardedAmountOnRefund(Varien_Event_Observer $observer)
+    {
+        /* @var $creditmemo Mage_Sales_Model_Order_Creditmemo */
+        $creditmemo = $observer->getEvent()->getCreditmemo();
+        $result = $observer->getEvent()->getResult();
+        $order = $creditmemo->getOrder();
+
+        $rewardedAmountAfterRefund = $result->getRewardedAmountAfterRefund();
+
+        $customerBalanceTotalRefunded = $order->getBaseCustomerBalanceTotalRefunded();
+        $rewardedAmountRefunded = $order->getBaseTotalRefunded() - $order->getBaseTaxRefunded()
+            - $order->getBaseShippingRefunded();
+        if ($customerBalanceTotalRefunded > $rewardedAmountRefunded) {
+            $rewardedAmountAfterRefund += $rewardedAmountRefunded;
+        } else {
+            $rewardedAmountAfterRefund += $customerBalanceTotalRefunded;
+        }
+
+        $result->setRewardedAmountAfterRefund($rewardedAmountAfterRefund);
+    }
+
+    /**
      * Defined in Logging/etc/logging.xml - special handler for setting second action for customerBalance change
      *
      * @param string action

@@ -117,6 +117,28 @@
             </catalog_product_website_update>
         </events>
     </global>
+    <frontend>
+        <translate>
+            <modules>
+                <Enterprise_CatalogInventory>
+                    <files>
+                        <default>Enterprise_CatalogInventory.csv</default>
+                    </files>
+                </Enterprise_CatalogInventory>
+            </modules>
+        </translate>
+    </frontend>
+    <adminhtml>
+        <translate>
+            <modules>
+                <Enterprise_CatalogInventory>
+                    <files>
+                        <default>Enterprise_CatalogInventory.csv</default>
+                    </files>
+                </Enterprise_CatalogInventory>
+            </modules>
+        </translate>
+    </adminhtml>
     <default>
         <index_management>
             <index_options>

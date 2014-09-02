@@ -60,17 +60,16 @@ class Enterprise_PageCache_Model_Crawler extends Mage_Core_Model_Abstract
     const XML_PATH_CRAWLER_ENABLED     = 'system/page_crawl/enable';
     const XML_PATH_CRAWLER_THREADS     = 'system/page_crawl/threads';
     const XML_PATH_CRAWL_MULTICURRENCY = 'system/page_crawl/multicurrency';
+
+    /**
+     * Batch size
+     */
+    const BATCH_SIZE = 500;
+
     /**
      * Crawler user agent name
      */
     const USER_AGENT = 'MagentoCrawler';
-
-    /**
-     * Store visited URLs by crawler
-     *
-     * @var array
-     */
-    protected $_visitedUrls = array();
 
     /**
      * Application instance
@@ -78,6 +77,13 @@ class Enterprise_PageCache_Model_Crawler extends Mage_Core_Model_Abstract
      * @var Mage_Core_Model_App
      */
     protected $_app;
+
+    /**
+     * Factory
+     *
+     * @var Mage_Core_Model_Factory
+     */
+    protected $_factory;
 
     /**
      * Adapter factory.
@@ -95,6 +101,7 @@ class Enterprise_PageCache_Model_Crawler extends Mage_Core_Model_Abstract
     public function __construct(array $args = array())
     {
         $this->_app = !empty($args['app']) ? $args['app'] : Mage::app();
+        $this->_factory = !empty($args['factory']) ? $args['factory'] : Mage::getSingleton('core/factory');
         $this->_adapterFactory = !empty($args['adapter_factory']) ? $args['adapter_factory'] :
             Mage::getSingleton('enterprise_pagecache/adapter_factory');
         parent::__construct($args);
@@ -146,7 +153,7 @@ class Enterprise_PageCache_Model_Crawler extends Mage_Core_Model_Abstract
     public function getStoresInfo()
     {
         $baseUrls = array();
-        foreach ($this->_app->getStores(true) as $store) {
+        foreach ($this->_app->getStores() as $store) {
             /** @var $store Mage_Core_Model_Store */
             $website = $this->_app->getWebsite($store->getWebsiteId());
             if ($website->getIsStaging()
@@ -200,7 +207,6 @@ class Enterprise_PageCache_Model_Crawler extends Mage_Core_Model_Abstract
         $adapter = $this->_adapterFactory->getHttpCurlAdapter();
 
         foreach ($this->getStoresInfo() as $storeInfo) {
-            $this->_visitedUrls = array();
             if (!$this->_isCrawlerEnabled($storeInfo['store_id'])) {
                 continue;
             }
@@ -219,7 +225,10 @@ class Enterprise_PageCache_Model_Crawler extends Mage_Core_Model_Abstract
     protected function _executeRequests(array $info, Varien_Http_Adapter_Curl $adapter)
     {
         $storeId = $info['store_id'];
-        $options = array(CURLOPT_USERAGENT => self::USER_AGENT);
+        $options = array(
+            CURLOPT_USERAGENT      => self::USER_AGENT,
+            CURLOPT_SSL_VERIFYPEER => 0,
+        );
         $threads = $this->_getCrawlerThreads($storeId);
         if (!$threads) {
             $threads = 1;
@@ -228,27 +237,51 @@ class Enterprise_PageCache_Model_Crawler extends Mage_Core_Model_Abstract
             $options[CURLOPT_COOKIE] = $info['cookie'];
         }
         $urls = array();
-        $urlsCount = $totalCount = 0;
 
-        foreach ($this->_getResource()->getRequestPaths($storeId) as $requestPath) {
-            $url = $info['base_url'] . $requestPath;
-            $urlHash = md5($url);
-            if (isset($this->_visitedUrls[$urlHash])) {
-                continue;
+        $offset = 0;
+        while ($rewrites = $this->_getResource()->getRequestPaths($storeId, self::BATCH_SIZE, $offset)) {
+            foreach ($rewrites as $rewriteRow) {
+                $url = $this->_getUrlByRewriteRow($rewriteRow, $info['base_url'], $storeId);
+                $urls[] = $url;
+                if (count($urls) == $threads) {
+                    $adapter->multiRequest($urls, $options);
+                    $urls = array();
+                }
             }
-            $urls[] = $url;
-            $this->_visitedUrls[$urlHash] = true;
-            $urlsCount++;
-            $totalCount++;
-            if ($urlsCount == $threads) {
-                $adapter->multiRequest($urls, $options);
-                $urlsCount = 0;
-                $urls = array();
-            }
+            $offset += self::BATCH_SIZE;
         }
         if (!empty($urls)) {
             $adapter->multiRequest($urls, $options);
         }
+    }
+
+    /**
+     * Get url by rewrite row
+     *
+     * @param array $rewriteRow
+     * @param string $baseUrl
+     * @param int $storeId
+     * @return string
+     * @throws Exception
+     */
+    protected function _getUrlByRewriteRow($rewriteRow, $baseUrl, $storeId)
+    {
+        switch ($rewriteRow['entity_type']) {
+            case Enterprise_Catalog_Model_Product::URL_REWRITE_ENTITY_TYPE:
+                $url = $baseUrl . $this->_factory->getHelper('enterprise_catalog')->getProductRequestPath(
+                    $rewriteRow['request_path'], $storeId, $rewriteRow['category_id']
+                );
+                break;
+            case Enterprise_Catalog_Model_Category::URL_REWRITE_ENTITY_TYPE:
+                $url = $baseUrl . $this->_factory->getHelper('enterprise_catalog')->getCategoryRequestPath(
+                    $rewriteRow['request_path'], $storeId
+                );
+                break;
+            default:
+                throw new Exception('Unknown entity type ' . $rewriteRow['entity_type']);
+                break;
+        }
+        return $url;
     }
 
     /**

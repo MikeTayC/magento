@@ -115,8 +115,6 @@
                         <paypaluk_ipn_direct/>
                         <paypal_payflow_silentPost/>
                         <paypal_payflowadvanced_silentPost/>
-                        <googlecheckout_api_index/>
-                        <googlecheckout_api_beacon/>
                         <amazonpayments_cba_callback/>
                         <amazonpayments_cba_notification/>
                         <amazonpayments_asp_notification/>
