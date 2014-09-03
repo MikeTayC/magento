@@ -1,0 +1,5 @@
+2014-09-03 18:14:45 UTC | SUPEE-3244 | EE_1.13.0.2 | v1 | d96209e71790d9dbbf924d332b09f7818bd81f1d | Thu Apr 3 11:48:41 2014 +0300 | v1.13.0.2..HEAD
+patching file app/code/core/Enterprise/Catalog/etc/config.xml
+patching file app/code/core/Enterprise/Catalog/sql/enterprise_catalog_setup/upgrade-1.13.0.9.1.1-1.13.0.9.1.2.php
+
+
