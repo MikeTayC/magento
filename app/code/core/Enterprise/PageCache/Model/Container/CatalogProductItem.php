@@ -28,7 +28,7 @@
  * Placeholder container for catalog product items
  */
 class Enterprise_PageCache_Model_Container_CatalogProductItem
-    extends Enterprise_PageCache_Model_Container_Advanced_Quote
+    extends Enterprise_PageCache_Model_Container_Advanced_Abstract
 {
     const BLOCK_NAME_RELATED           = 'CATALOG_PRODUCT_ITEM_RELATED';
     const BLOCK_NAME_UPSELL            = 'CATALOG_PRODUCT_ITEM_UPSELL';
@@ -92,6 +92,26 @@ class Enterprise_PageCache_Model_Container_CatalogProductItem
         }
 
         return null;
+    }
+
+    /**
+     * Get container individual cache id
+     *
+     * @return string
+     */
+    protected function _getCacheId()
+    {
+        return md5('CONTAINER_CATALOG_PRODUCT_LIST_' . $this->_getListBlockType());
+    }
+
+    /**
+     * Get container individual additional cache id
+     *
+     * @return string
+     */
+    protected function _getAdditionalCacheId()
+    {
+        return md5('PRODUCT_ITEM_' . $this->_getItemId());
     }
 
     /**
@@ -222,6 +242,8 @@ class Enterprise_PageCache_Model_Container_CatalogProductItem
                         }
                     }
                     $ids = Mage::registry('product') ? $parentBlock->getAllIds() : array();
+                    $items = $parentBlock->getItemCollection();
+                    $this->_setSharedParam('items', $items);
                     $this->_setSharedParam('shuffled', $parentBlock->isShuffled());
                 }
                 if (!$ids) {
@@ -312,14 +334,19 @@ class Enterprise_PageCache_Model_Container_CatalogProductItem
     protected function _renderBlock()
     {
         $itemId = $this->_getItemId();
+        $items = $this->_getSharedParam('items');
         if (!is_numeric($itemId)) {
             return '';
         }
 
         /** @var $item Mage_Catalog_Model_Product */
-        $item = Mage::getModel('catalog/product')
-            ->setStoreId(Mage::app()->getStore()->getId())
-            ->load($itemId);
+        if (!empty($items) && isset($items[$itemId])) {
+            $item = $items[$itemId];
+        } else {
+            $item = Mage::getModel('catalog/product')
+                ->setStoreId(Mage::app()->getStore()->getId())
+                ->load($itemId);
+        }
 
         $block = $this->_getPlaceHolderBlock();
         $block->setItem($item);
@@ -336,15 +363,5 @@ class Enterprise_PageCache_Model_Container_CatalogProductItem
         Mage::dispatchEvent('render_block', array('block' => $block, 'placeholder' => $this->_placeholder));
 
         return $block->toHtml();
-    }
-
-    /**
-     * Retrieve cache id
-     *
-     * @return string
-     */
-    protected function _getCacheId()
-    {
-        return parent::_getCacheId() . $this->_getProductId();
     }
 }

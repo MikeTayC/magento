@@ -245,7 +245,6 @@ abstract class Enterprise_TargetRule_Block_Catalog_Product_List_Abstract
         }
         $indexModel = $this->_getTargetRuleIndex()
             ->setType($this->getProductListType())
-            ->setLimit($limit)
             ->setProduct($this->getProduct())
             ->setExcludeProductIds($excludeProductIds);
         if (!is_null($limit)) {
@@ -262,9 +261,7 @@ abstract class Enterprise_TargetRule_Block_Catalog_Product_List_Abstract
      */
     protected function _getTargetRuleProducts()
     {
-        $limit = $this->getPositionLimit();
-
-        $productIds = $this->_getTargetRuleProductIds($limit);
+        $productIds = $this->_getTargetRuleProductIds();
 
         $items = array();
         if ($productIds) {
@@ -275,8 +272,9 @@ abstract class Enterprise_TargetRule_Block_Catalog_Product_List_Abstract
 
             $collection->setFlag('is_link_collection', true);
             Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($collection);
-            $collection->setPageSize($limit)->setFlag('do_not_use_category_id', true);
+            $collection->setFlag('do_not_use_category_id', true);
             foreach ($collection as $item) {
+                $item->setPosition(array_search($item->getEntityId(), $productIds));
                 $items[$item->getEntityId()] = $item;
             }
         }
@@ -313,18 +311,12 @@ abstract class Enterprise_TargetRule_Block_Catalog_Product_List_Abstract
     {
         if (is_null($this->_allProductIds)) {
             if (!$this->isShuffled()) {
+                foreach ($this->getItemCollection() as $item) {
+                    $this->_allProductIds[] = $item->getId();
+                }
+            } else {
                 $this->_allProductIds = array_keys($this->getItemCollection());
-                return $this->_allProductIds;
             }
-
-            $targetRuleProductIds = $this->_getTargetRuleProductIds();
-            $linkProductCollection = $this->_getPreparedTargetLinkCollection();
-            $linkProductIds = array();
-            foreach ($linkProductCollection as $item) {
-                $linkProductIds[] = $item->getEntityId();
-            }
-            $this->_allProductIds = array_unique(array_merge($targetRuleProductIds, $linkProductIds));
-            shuffle($this->_allProductIds);
         }
 
         return $this->_allProductIds;

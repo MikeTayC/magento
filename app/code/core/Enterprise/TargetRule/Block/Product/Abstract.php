@@ -270,11 +270,24 @@ abstract class Enterprise_TargetRule_Block_Product_Abstract extends Mage_Catalog
     }
 
     /**
-     * Retrieve Catalog Product List Items
+     * Retrieve Catalog Product List Items with applied limitations
      *
      * @return array
      */
     public function getItemCollection()
+    {
+        $this->_items = $this->getUnslicedItemCollection();
+        $this->_orderProductItems();
+
+        return $this->_items;
+    }
+
+    /**
+     * Retrieve Catalog Product List Items w/o applying limitations
+     *
+     * @return array
+     */
+    public function getUnslicedItemCollection()
     {
         if (is_null($this->_items)) {
             $behavior   = $this->getPositionBehavior();
@@ -291,7 +304,6 @@ abstract class Enterprise_TargetRule_Block_Product_Abstract extends Mage_Catalog
                     $this->_customItems[$id] = $item;
                 }
             }
-            $this->_orderProductItems();
         }
 
         return $this->_items;

@@ -32,7 +32,7 @@
     </div>
     <p class="note block-subtitle"><?php echo $this->__('Check items to add to the cart or') ?>&nbsp;<a href="#" onclick="selectAllRelated(this); return false;"><strong><?php echo $this->__('select all') ?></strong></a></p>
     <ol class="box-content mini-products-list">
-    <?php $i=0; foreach($this->getItemCollection() as $_item): ?>
+    <?php $i=0; foreach($this->getItemCollection() as $_item): $i++; ?>
         <?php /*if ($i++ % $this->getColumnCount() == 0): ?>
         <ul class="box-content mini-products-list">
         <?php endif*/ ?>

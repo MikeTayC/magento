@@ -32,7 +32,7 @@
         <h2><?php echo $this->__('You may also be interested in the following product(s)') ?></h2>
     </div>
     <ul class="products-grid products-grid--max-<?php echo $_columnCount; ?>-col" id="upsell-product-table">
-    <?php $i=0; foreach ($this->getItemCollection() as $_item): ?>
+    <?php $i=0; foreach ($this->getItemCollection() as $_item): $i++; ?>
         <?php /*if ($i++ % $this->getColumnCount() == 0): ?>
             <ul class="products-grid">
         <?php endif */?>

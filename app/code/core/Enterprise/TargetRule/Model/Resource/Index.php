@@ -137,8 +137,6 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Index_Model_Resour
             ->where('store_id = :store_id')
             ->where('customer_group_id = :customer_group_id');
 
-        $rotationMode = $this->_factory->getHelper('enterprise_targetrule')->getRotationMode($object->getType());
-
         $segmentsIds = array_merge(array(0), $this->_getSegmentsIdsFromCurrentCustomer());
         $bind = array(
             ':type_id'              => $object->getType(),
@@ -169,10 +167,7 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Index_Model_Resour
         }
         $productIds = array_diff(array_unique($productIds), $object->getExcludeProductIds());
 
-        if ($rotationMode == Enterprise_TargetRule_Model_Rule::ROTATION_SHUFFLE) {
-             shuffle($productIds);
-        }
-        return array_slice($productIds, 0, $object->getLimit());
+        return $productIds;
     }
 
     /**

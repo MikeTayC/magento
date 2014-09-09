@@ -112,7 +112,8 @@ abstract class Enterprise_TargetRule_Model_Resource_Index_Abstract extends Mage_
             ->where('i.entity_id = ?', $object->getProduct()->getEntityId())
             ->where('i.store_id = ?', $object->getStoreId())
             ->where('i.customer_group_id = ?', $object->getCustomerGroupId())
-            ->where('i.customer_segment_id = ?', $segmentId);
+            ->where('i.customer_segment_id = ?', $segmentId)
+            ->order('p.position ASC');
 
         return $this->_getReadAdapter()->fetchCol($select);
     }
@@ -174,10 +175,11 @@ abstract class Enterprise_TargetRule_Model_Resource_Index_Abstract extends Mage_
 
         if (count($productIds) > 0) {
             $data = array();
-            foreach ($productIds as $productId) {
+            foreach ($productIds as $position => $productId) {
                 $data[] = array(
                     'targetrule_id' => $targetruleId,
                     'product_id'    => $productId,
+                    'position'      => $position
                 );
             }
             $this->_getWriteAdapter()->insertMultiple($this->getProductTable(), $data);
