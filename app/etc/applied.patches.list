@@ -25,3 +25,8 @@ patching file lib/Zend/Xml/Exception.php
 patching file lib/Zend/Xml/Security.php
 
 
+2014-10-01 18:31:31 UTC | SUPEE-3784 | EE_1.14.0.1 | v2 | 068ac179627a5a80aa97de296bfd33656803ff05 | Tue Sep 9 12:50:19 2014 -0700 | v1.14.0.1..HEAD
+patching file app/code/core/Enterprise/Catalog/Model/Observer.php
+patching file app/code/core/Enterprise/Catalog/etc/config.xml
+
+
