@@ -3,3 +3,9 @@ patching file app/code/core/Enterprise/Catalog/etc/config.xml
 patching file app/code/core/Enterprise/Catalog/sql/enterprise_catalog_setup/upgrade-1.13.0.9.1.1-1.13.0.9.1.2.php
 
 
+2014-10-09 17:30:46 UTC | SUPEE-2162 | EE_1.13.0.2 | v2 | 53e71b1c85eb444787296ef84198ec143588260d | Fri Oct 4 14:12:27 2013 +0300 | v1.13.0.2..HEAD
+patching file app/code/core/Mage/Checkout/Model/Cart.php
+patching file app/code/core/Mage/Checkout/controllers/CartController.php
+patching file app/code/core/Mage/Sales/Model/Quote.php
+
+
