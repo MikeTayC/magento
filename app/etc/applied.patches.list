@@ -30,3 +30,27 @@ patching file app/code/core/Enterprise/Catalog/Model/Observer.php
 patching file app/code/core/Enterprise/Catalog/etc/config.xml
 
 
+-e 2014-10-30 12:35:03 UTC | SUPEE-4092 | EE_1.14.0.1 | v1 | e5b7a6aaf89fb7dfbd50a30e5d68ffb99b16cbad | Wed Aug 27 11:55:46 2014 +0300 | v1.14.0.1..HEAD | REVERTED
+patching file app/code/core/Enterprise/PageCache/Model/Container/CatalogProductItem.php
+patching file app/code/core/Enterprise/TargetRule/Block/Catalog/Product/List/Abstract.php
+patching file app/code/core/Enterprise/TargetRule/Block/Product/Abstract.php
+patching file app/code/core/Enterprise/TargetRule/Model/Resource/Index.php
+patching file app/code/core/Enterprise/TargetRule/Model/Resource/Index/Abstract.php
+patching file app/code/core/Enterprise/TargetRule/etc/config.xml
+patching file app/code/core/Enterprise/TargetRule/sql/enterprise_targetrule_setup/upgrade-1.11.0.0.5.1.1-1.11.0.0.5.1.2.php
+patching file app/design/frontend/rwd/enterprise/template/targetrule/catalog/product/list/related.phtml
+patching file app/design/frontend/rwd/enterprise/template/targetrule/catalog/product/list/upsell.phtml
+
+
+2014-10-30 12:35:47 UTC | SUPEE-4092 | EE_1.14.0.1 | v2 | 18e66fce4f9490c3807b94c50339774fc0aebe88 | Mon Oct 13 12:24:13 2014 +0300 | v1.14.0.1..HEAD
+patching file app/code/core/Enterprise/PageCache/Model/Container/CatalogProductItem.php
+patching file app/code/core/Enterprise/TargetRule/Block/Catalog/Product/List/Abstract.php
+patching file app/code/core/Enterprise/TargetRule/Block/Product/Abstract.php
+patching file app/code/core/Enterprise/TargetRule/Model/Resource/Index.php
+patching file app/code/core/Enterprise/TargetRule/Model/Resource/Index/Abstract.php
+patching file app/code/core/Enterprise/TargetRule/etc/config.xml
+patching file app/code/core/Enterprise/TargetRule/sql/enterprise_targetrule_setup/upgrade-1.11.0.0.5.1.1-1.11.0.0.5.1.2.php
+patching file app/design/frontend/rwd/enterprise/template/targetrule/catalog/product/list/related.phtml
+patching file app/design/frontend/rwd/enterprise/template/targetrule/catalog/product/list/upsell.phtml
+
+

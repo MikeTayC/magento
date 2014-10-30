@@ -340,7 +340,7 @@ class Enterprise_PageCache_Model_Container_CatalogProductItem
         }
 
         /** @var $item Mage_Catalog_Model_Product */
-        if (!empty($items) && isset($items[$itemId])) {
+        if (!empty($items) && !empty($items[$itemId])) {
             $item = $items[$itemId];
         } else {
             $item = Mage::getModel('catalog/product')
