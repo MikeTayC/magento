@@ -39,7 +39,7 @@ $entityValues = $this->getEntityValues();
         <?php endif; ?>
         <h1><?php echo $this->__('My Wishlist') ?></h1>
     </div>
-    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <?php echo $this->getMessagesBlock()->toHtml() ?>
 
     <?php if ($this->hasWishlistItems()): ?>
     <form id="wishlist-view-form" action="<?php echo $this->getUrl('*/*/update') ?>" method="post">

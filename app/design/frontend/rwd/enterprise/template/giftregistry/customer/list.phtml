@@ -4,24 +4,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
 
@@ -29,11 +29,11 @@
     <h1><?php echo Mage::helper('enterprise_giftregistry')->__('Gift Registry'); ?></h1>
 </div>
 <?php $entityCollection = $this->getEntityCollection(); ?>
-<?php echo $this->getMessagesBlock()->getGroupedHtml();?>
+<?php echo $this->getMessagesBlock()->toHtml();?>
 
 <?php if ($entityCollection->getSize()):?>
     <?php echo $this->getChildHtml('pager') ?>
-    <table class="data-table" id="giftregistry-table">
+    <table class="data-table giftregistry-table" id="giftregistry-table">
         <col />
         <col width="1" />
         <col />
@@ -52,7 +52,7 @@
                     <td title="<?php echo $this->getEscapedTitle($item)?>"><?php echo $this->helper('core/string')->truncate($this->getEscapedTitle($item), 70)?></td>
                     <td><span class="nobr"><?php echo $this->getFormattedDate($item) ?></span></td>
                     <td><?php echo $this->getEscapedMessage($item)?></td>
-                    <td>
+                    <td class="gift-registry-actions">
                         <span class="nobr">
                             <a href="<?php echo $this->getItemsUrl($item)?>"><?php echo $this->__('Manage Items') ?></a> <span class="separator">|</span>
                             <a href="<?php echo $this->getShareUrl($item)?>"><?php echo $this->__('Share') ?></a> <span class="separator">|</span>

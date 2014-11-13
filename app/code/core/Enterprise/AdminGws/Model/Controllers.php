@@ -4,24 +4,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Enterprise
  * @package     Enterprise_AdminGws
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 
 /**
@@ -1314,5 +1314,66 @@ class Enterprise_AdminGws_Model_Controllers extends Enterprise_AdminGws_Model_Ob
     protected function _getEnterpriseRMA($id)
     {
         return Mage::getModel('enterprise_rma/rma')->load($id);
+    }
+
+    /**
+     * Block editing of Hierarchy if GWS permissions are applicable
+     *
+     * @param Mage_Adminhtml_Controller_Action $controller
+     * @return bool|void
+     */
+    public function validateCmsHierarchyAction($controller)
+    {
+        if (!$this->_role->getIsAll()) {
+            $requestAction = $this->_request->getActionName();
+            if ($requestAction == 'delete' || $requestAction == 'copy') {
+                $scopesParam = $this->_request->getParam('scopes');
+                $scopesParamIsArray = true;
+                if (!is_array($scopesParam)) {
+                    $scopesParam = array($scopesParam);
+                    $scopesParamIsArray = false;
+                }
+                $validatedScopes = array();
+                foreach (array_unique($scopesParam) as $value) {
+                    if (0 === strpos($value, Enterprise_Cms_Helper_Hierarchy::SCOPE_PREFIX_WEBSITE)) {
+                        $scopeId = (int)str_replace(Enterprise_Cms_Helper_Hierarchy::SCOPE_PREFIX_WEBSITE, '', $value);
+                        if ($this->_role->hasExclusiveAccess((array)$scopeId)) {
+                            $validatedScopes[] = $value;
+                        }
+                    } elseif (0 === strpos($value, Enterprise_Cms_Helper_Hierarchy::SCOPE_PREFIX_STORE)) {
+                        $scopeId = (int)str_replace(Enterprise_Cms_Helper_Hierarchy::SCOPE_PREFIX_STORE, '', $value);
+                        if ($this->_role->hasExclusiveStoreAccess((array)$scopeId)) {
+                            $validatedScopes[] = $value;
+                        }
+                    }
+                }
+
+                if (count($validatedScopes) > 0) {
+                    if ($requestAction == 'delete' && !$scopesParamIsArray
+                        && count($validatedScopes) == 1 && isset($validatedScopes[0])) {
+                        $validatedScopes = $validatedScopes[0];
+                    }
+                    $this->_request->setParam('scopes', $validatedScopes);
+                } else {
+                    $this->_forward();
+                    return false;
+                }
+            } else {
+                $websiteCode = $controller->getRequest()->getParam('website');
+                $website = Mage::app()->getWebsite($websiteCode);
+                $websiteId = $website->getId();
+                if (!$this->_role->hasExclusiveAccess((array)$websiteId)) {
+                    $storeCode = $controller->getRequest()->getParam('store');
+                    $store = Mage::app()->getStore($storeCode);
+                    $storeId = $store->getId();
+                    if (!$this->_role->hasExclusiveStoreAccess((array)$storeId)) {
+                        $this->_forward();
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 }

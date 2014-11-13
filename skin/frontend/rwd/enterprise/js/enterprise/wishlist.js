@@ -3,24 +3,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    design
- * @package     enterprise_default
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @package     rwd_enterprise
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 
 if (!window.Enterprise) {
@@ -42,9 +42,9 @@ Enterprise.Wishlist.Widget.Form = Class.create(Enterprise.Widget, {
     initialize: function($super, action) {
         var _templateString = '<ul class="form-list">' +
                 '<li><label for="wishlist-name">' + Translator.translate('Wishlist Name') + '</label><div class="input-box"><input type="text" id="wishlist-name" maxlength="255" class="input-text required-entry validate-length maximum-length-255" name="name"/></div>' +
-                '<li class="control"><div class="input-box"><input type="checkbox" id="wishlist-public" name="visibility"></div><label for="wishlist-public">' + Translator.translate('Make This Wishlist Public') + '</label></li>' +
+                '<li class="control"><div class="input-box"><input type="checkbox" id="wishlist-public" name="visibility" class="radio"></div><label for="wishlist-public">' + Translator.translate('Make This Wishlist Public') + '</label></li>' +
             '</ul>' +
-            '<div class="buttons-set form-buttons"><button type="submit" class="button btn-save"><span><span>' + Translator.translate('Save') + '</span></span></button><button type="button" class="button btn-cancel"><span><span>' + Translator.translate('Cancel') + '</span></span></button></div>';
+            '<div class="buttons-set form-buttons"><button type="submit" class="button btn-save"><span><span>' + Translator.translate('Save') + '</span></span></button><button type="button" class="button btn-cancel button-secondary"><span><span>' + Translator.translate('Cancel') + '</span></span></button></div>';
 
         this.action = action;
         $super(new Element('form', {'method': 'post', 'action': action}));
@@ -300,7 +300,7 @@ Event.observe(document, 'dom:loaded', function() {
                 setLocation(this.href);
             }
 
-            var wishlistSplitButton = new Enterprise.Widget.SplitButton(link.innerHTML, Translator.translate('Add to:'), 'light clickable');
+            var wishlistSplitButton = new Enterprise.Widget.SplitButton(link.innerHTML, Translator.translate('Add to Wishlist'), 'light clickable wishlist-selector');
             wishlistSplitButton.onClick = onclick.bind({href: url});
 
             Enterprise.Wishlist.list.each(function(wishlist) {

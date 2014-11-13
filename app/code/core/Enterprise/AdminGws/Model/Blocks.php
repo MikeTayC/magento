@@ -4,24 +4,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Enterprise
  * @package     Enterprise_AdminGws
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 
 /**
@@ -984,10 +984,54 @@ class Enterprise_AdminGws_Model_Blocks extends Enterprise_AdminGws_Model_Observe
      */
     public function removeCmsHierarchyFormButtons($observer)
     {
+        $block = $observer->getEvent()->getBlock();
+
         if (!$this->_role->getIsAll()) {
-            $observer->getEvent()->getBlock()->removeButton('save');
+            $websiteCode = $block->getRequest()->getParam('website');
+            $website = Mage::app()->getWebsite($websiteCode);
+            $websiteId = $website->getId();
+            if (!$this->_role->hasExclusiveAccess((array)$websiteId)) {
+                $storeCode = $block->getRequest()->getParam('store');
+                $store = Mage::app()->getStore($storeCode);
+                $storeId = $store->getId();
+                if (!$this->_role->hasExclusiveStoreAccess((array)$storeId)) {
+                    $block->removeButton('save');
+                    $block->removeButton('delete');
+                }
+            }
         }
 
+        return $this;
+    }
+
+    /**
+     * Validate permissions to scopes for GWS user
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_AdminGws_Model_Blocks
+     */
+    public function validateCmsHierarchyFormOptions($observer)
+    {
+        $cmsHierarchyScopes = $observer->getEvent()->getScopes();
+        $storeStructure = $cmsHierarchyScopes->getStoreStructure();
+        $excludeScopes = $cmsHierarchyScopes->getExclude();
+
+        foreach ($storeStructure as $website) {
+            if (isset($website['children'])) {
+                $excludeScopes[] = Enterprise_Cms_Helper_Hierarchy::SCOPE_PREFIX_WEBSITE . $website['value'];
+                foreach ($website['children'] as $store) {
+                    if (!$this->_role->hasExclusiveStoreAccess((array)$store['value'])) {
+                        $excludeScopes[] = Enterprise_Cms_Helper_Hierarchy::SCOPE_PREFIX_STORE . $store['value'];
+                    }
+                }
+            } elseif ($website['value'] == Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID) {
+                if (!$this->_role->hasExclusiveStoreAccess((array)Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID)) {
+                    $excludeScopes[] = Enterprise_Cms_Helper_Hierarchy::SCOPE_PREFIX_STORE
+                        . Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID;
+                }
+            }
+        }
+        $cmsHierarchyScopes->setExclude($excludeScopes);
         return $this;
     }
 

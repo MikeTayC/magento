@@ -28,7 +28,7 @@
     <h1><?php echo $this->__('Gift Registry Items') ?></h1>
 </div>
 <div class="giftregistry giftregistry-items">
-<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php echo $this->getMessagesBlock()->toHtml() ?>
 
 <?php if (count($this->getItems()) > 0): ?>
 <form action="<?php echo $this->getActionUpdateUrl() ?>" method="post">

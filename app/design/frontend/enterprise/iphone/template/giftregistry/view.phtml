@@ -27,7 +27,7 @@
 
 <?php $entity = $this->getEntity() ?>
 <?php if ($entity): ?>
-<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php echo $this->getMessagesBlock()->toHtml() ?>
 <div class="page-title">
     <h1><?php echo $this->__('Gift Registry Info') ?></h1>
 </div>

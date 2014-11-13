@@ -4,24 +4,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 
 /**
@@ -187,16 +187,37 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Price extends Mage_Catalog_Mo
     }
 
     /**
+     * Prepare unique cache key
+     *
+     * @param string $cachePrefix
+     * @param array  $additionalParams
+     *
+     * @return string
+     */
+    protected function _getUniqueCacheKey($cachePrefix, array $additionalParams = array())
+    {
+        $uniqueParams = $this->getLayer()->getProductCollection()->getExtendedSearchParams();
+        $uniqueParams['currency_rate'] = $this->getCurrencyRate();
+        if (!empty($additionalParams)) {
+            $additionalParams = array_filter($additionalParams, 'strlen');
+            sort($additionalParams);
+            $uniqueParams = array_merge($uniqueParams, $additionalParams);
+        }
+        $uniqueParams = strtoupper(md5(serialize($uniqueParams)));
+
+        $cacheKey = $cachePrefix . '_' . $this->getLayer()->getStateKey() . '_' . $uniqueParams;
+
+        return $cacheKey;
+    }
+
+    /**
      * Get maximum price from layer products set using cache
      *
      * @return float
      */
     public function getMaxPriceInt()
     {
-        $searchParams = $this->getLayer()->getProductCollection()->getExtendedSearchParams();
-        $spSerialized = serialize($searchParams);
-        $uniquePart = strtoupper(md5(serialize($spSerialized . '_' . $this->getCurrencyRate())));
-        $cacheKey = 'MAXPRICE_' . $this->getLayer()->getStateKey() . '_' . $uniquePart;
+        $cacheKey = $this->_getUniqueCacheKey('MAXPRICE');
 
         $cachedData = Mage::app()->loadCache($cacheKey);
         if (!$cachedData) {
@@ -225,12 +246,9 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Price extends Mage_Catalog_Mo
      */
     protected function _getSeparators()
     {
-        $searchParams = $this->getLayer()->getProductCollection()->getExtendedSearchParams();
         $intervalParams = $this->getInterval();
-        $intervalParams = $intervalParams ? ($intervalParams[0] . '-' . $intervalParams[1]) : '';
-        $uniquePart = strtoupper(md5(serialize($searchParams . '_'
-            . $this->getCurrencyRate() . '_' . $intervalParams)));
-        $cacheKey = 'PRICE_SEPARATORS_' . $this->getLayer()->getStateKey() . '_' . $uniquePart;
+        $additionalParams = ($intervalParams) ? array($intervalParams[0] . '-' . $intervalParams[1]) : array();
+        $cacheKey = $this->_getUniqueCacheKey('PRICE_SEPARATORS', $additionalParams);
 
         $cachedData = Mage::app()->loadCache($cacheKey);
         if (!$cachedData) {
@@ -240,11 +258,11 @@ class Enterprise_Search_Model_Catalog_Layer_Filter_Price extends Mage_Catalog_Mo
             $statistics = $statistics[$this->_getFilterField()];
 
             $appliedInterval = $this->getInterval();
-            if (
-                $appliedInterval
+            if ($appliedInterval
                 && ($statistics['count'] <= $this->getIntervalDivisionLimit()
-                || $appliedInterval[0] == $appliedInterval[1]
-                || $appliedInterval[1] === '0')
+                    || $appliedInterval[0] == $appliedInterval[1]
+                    || $appliedInterval[1] === '0'
+                )
             ) {
                 $algorithmModel->setPricesModel($this)->setStatistics(0, 0, 0, 0);
                 $this->_divisible = false;

@@ -29,7 +29,7 @@
     <h1><?php echo $this->__('My Orders') ?></h1>
 </div>
 <div class="recent-orders">
-    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <?php echo $this->getMessagesBlock()->toHtml() ?>
     <?php echo $this->getChildHtml('info');?>
     <?php echo $this->getPagerHtml(); ?>
     <?php if($_orders->getSize()): ?>

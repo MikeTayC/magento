@@ -4,24 +4,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Paypal
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 
 /**
@@ -34,6 +34,16 @@
 
 class Mage_Paypal_Model_Hostedpro extends Mage_Paypal_Model_Direct
 {
+    /**
+     * Default layout template
+     */
+    const LAYOUT_TEMPLATE = 'templateD';
+
+    /**
+     * Mobile layout template
+     */
+    const MOBILE_LAYOUT_TEMPLATE = 'mobile-iframe';
+
     /**
      * Button code
      *
@@ -91,6 +101,20 @@ class Mage_Paypal_Model_Hostedpro extends Mage_Paypal_Model_Direct
     public function getMerchantCountry()
     {
         return $this->_pro->getConfig()->getMerchantCountry();
+    }
+
+    /**
+     * Return iframe template value depending on config
+     *
+     * @return string
+     */
+    public function getTemplate()
+    {
+        if ($this->getConfigData('mobile_optimized')) {
+            return self::MOBILE_LAYOUT_TEMPLATE;
+        } else {
+            return self::LAYOUT_TEMPLATE;
+        }
     }
 
     /**
@@ -214,7 +238,7 @@ class Mage_Paypal_Model_Hostedpro extends Mage_Paypal_Model_Direct
      */
     public function getNotifyUrl($storeId = null)
     {
-        return $this->_getUrl('paypal/ipn', $storeId, false);
+        return $this->_getUrl('paypal/ipn', $storeId);
     }
 
     /**

@@ -5,24 +5,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 -->
 <config>
@@ -303,6 +303,14 @@
                     </enterprise_pagecache>
                 </observers>
             </clean_catalog_images_cache_after>
+            <clean_configurable_swatches_cache_after>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>cleanCache</method>
+                    </enterprise_pagecache>
+                </observers>
+            </clean_configurable_swatches_cache_after>
             <model_save_commit_after>
                 <observers>
                     <enterprise_pagecache>
@@ -383,6 +391,14 @@
                     </enterprise_pagecache>
                 </observers>
             </core_config_backend_design_exception_save_after>
+            <core_config_backend_web_secure_offloaderheader_save_after>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>registerSslOffloaderChange</method>
+                    </enterprise_pagecache>
+                </observers>
+            </core_config_backend_web_secure_offloaderheader_save_after>
             <core_config_matcher_priority_save_after>
                 <observers>
                     <enterprise_pagecache>
@@ -419,7 +435,7 @@
                 <observers>
                     <enterprise_pagecache>
                         <class>enterprise_pagecache/observer</class>
-                        <method>cleanCache</method>
+                        <method>flushCache</method>
                     </enterprise_pagecache>
                 </observers>
             </adminhtml_cache_flush_all>
@@ -524,6 +540,14 @@
                     </enterprise_pagecache_compare_list_change>
                 </observers>
             </customer_login>
+            <customer_address_save_after>
+                <observers>
+                    <enterprise_pagecache>
+                        <class>enterprise_pagecache/observer</class>
+                        <method>customerAddressUpdate</method>
+                    </enterprise_pagecache>
+                </observers>
+            </customer_address_save_after>
             <controller_action_postdispatch_customer_account_logoutSuccess>
                 <observers>
                     <enterprise_pagecache>

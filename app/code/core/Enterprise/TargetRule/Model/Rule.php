@@ -4,24 +4,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 
 
@@ -383,5 +383,47 @@ class Enterprise_TargetRule_Model_Rule extends Mage_Rule_Model_Abstract
     public function setCustomerSegmentRelations($relations)
     {
         return $this;
+    }
+
+    /**
+     * Callback function which called after transaction commit in resource model
+     *
+     * @return Enterprise_TargetRule_Model_Rule
+     */
+    public function afterCommitCallback()
+    {
+        parent::afterCommitCallback();
+
+        /** @var \Mage_Index_Model_Indexer $indexer */
+        $indexer = Mage::getSingleton('index/indexer');
+
+        $typeId = (!$this->isObjectNew() && $this->getOrigData('apply_to') != $this->getData('apply_to'))
+            ? null
+            : $this->getData('apply_to');
+
+        $indexer->processEntityAction(
+            new Varien_Object(array('type_id' => $typeId)),
+            Enterprise_TargetRule_Model_Index::ENTITY_TARGETRULE,
+            Enterprise_TargetRule_Model_Index::EVENT_TYPE_CLEAN_TARGETRULES
+        );
+        return $this;
+    }
+
+    /**
+     * Callback function which called after transaction commit in resource model
+     *
+     * @return Enterprise_TargetRule_Model_Rule
+     */
+    public function _afterDeleteCommit()
+    {
+        parent::_afterDeleteCommit();
+
+        /** @var \Mage_Index_Model_Indexer $indexer */
+        $indexer = Mage::getSingleton('index/indexer');
+        $indexer->processEntityAction(
+            new Varien_Object(array('type_id' => $this->getData('apply_to'))),
+            Enterprise_TargetRule_Model_Index::ENTITY_TARGETRULE,
+            Enterprise_TargetRule_Model_Index::EVENT_TYPE_CLEAN_TARGETRULES
+        );
     }
 }

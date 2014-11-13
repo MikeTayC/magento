@@ -33,7 +33,7 @@
 ?>
 <div class="cart">
     <?php echo $this->getChildHtml('form_before') ?>
-    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <?php echo $this->getMessagesBlock()->toHtml() ?>
     <?php if(!$this->hasError() && count($this->getItems()) > 1): ?>
         <ul class="checkout-types">
         <?php foreach ($this->getMethods('methods') as $method): ?>

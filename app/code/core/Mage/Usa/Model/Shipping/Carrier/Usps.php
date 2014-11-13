@@ -4,24 +4,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Usa
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 
 
@@ -340,6 +340,10 @@ class Mage_Usa_Model_Shipping_Carrier_Usps
             if ($r->getService() == 'FIRST CLASS' || $r->getService() == 'FIRST CLASS HFP COMMERCIAL') {
                 $package->addChild('FirstClassMailType', 'PARCEL');
             }
+            if ($r->getService() == 'FIRST CLASS COMMERCIAL') {
+                $package->addChild('FirstClassMailType', 'PACKAGE SERVICE');
+            }
+
             $package->addChild('ZipOrigination', $r->getOrigPostal());
             //only 5 chars available
             $package->addChild('ZipDestination', substr($r->getDestPostal(), 0, 5));
@@ -535,8 +539,8 @@ class Mage_Usa_Model_Shipping_Carrier_Usps
                  '2'      => Mage::helper('usa')->__('Priority Mail Express Hold For Pickup'),
                  '3'      => Mage::helper('usa')->__('Priority Mail Express'),
                  '4'      => Mage::helper('usa')->__('Standard Post'),
-                 '6'      => Mage::helper('usa')->__('Media Mail'),
-                 '7'      => Mage::helper('usa')->__('Library Mail'),
+                 '6'      => Mage::helper('usa')->__('Media Mail Parcel'),
+                 '7'      => Mage::helper('usa')->__('Library Mail Parcel'),
                  '13'     => Mage::helper('usa')->__('Priority Mail Express Flat Rate Envelope'),
                  '15'     => Mage::helper('usa')->__('First-Class Mail Large Postcards'),
                  '16'     => Mage::helper('usa')->__('Priority Mail Flat Rate Envelope'),
@@ -1395,9 +1399,9 @@ class Mage_Usa_Model_Shipping_Carrier_Usps
      *
      * @param Varien_Object $request
      * @param string $serviceType
-     * 
+     *
      * @throws Exception
-     * 
+     *
      * @return string
      */
     protected function _formUsSignatureConfirmationShipmentRequest(Varien_Object $request, $serviceType)
@@ -1947,7 +1951,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps
     {
         return $this->_methodsMapper($label, false);
     }
-    
+
     /**
       * @deprecated
       */

@@ -30,7 +30,7 @@
 </div>
 <div class="giftregistry">
 <?php $entityCollection = $this->getEntityCollection(); ?>
-<?php echo $this->getMessagesBlock()->getGroupedHtml();?>
+<?php echo $this->getMessagesBlock()->toHtml();?>
 
 <?php if ($entityCollection->getSize()):?>
     <?php echo $this->getChildHtml('pager') ?>

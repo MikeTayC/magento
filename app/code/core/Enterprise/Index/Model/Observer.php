@@ -4,24 +4,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Enterprise
  * @package     Enterprise_Index
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 
 /**
@@ -64,7 +64,7 @@ class Enterprise_Index_Model_Observer
      */
     public function lockFullReindexProcess(Varien_Event_Observer $observer)
     {
-        if (!Enterprise_Index_Model_Lock::getInstance()->setLock(self::REINDEX_FULL_LOCK)) {
+        if (!Mage_Index_Model_Lock::getInstance()->setLock(self::REINDEX_FULL_LOCK, true)) {
             throw new Enterprise_Index_Exception('Full reindex process is already running.');
         }
     }
@@ -76,7 +76,7 @@ class Enterprise_Index_Model_Observer
      */
     public function unlockFullReindexProcess(Varien_Event_Observer $observer)
     {
-        Enterprise_Index_Model_Lock::getInstance()->releaseLock(self::REINDEX_FULL_LOCK);
+        Mage_Index_Model_Lock::getInstance()->releaseLock(self::REINDEX_FULL_LOCK, true);
     }
 
     /**
@@ -92,10 +92,10 @@ class Enterprise_Index_Model_Observer
         /** @var $helper Enterprise_Index_Helper_Data */
         $helper = Mage::helper('enterprise_index');
 
-        /** @var $lock Enterprise_Index_Model_Lock */
-        $lock   = Enterprise_Index_Model_Lock::getInstance();
+        /** @var $lock Mage_Index_Model_Lock */
+        $lock   = Mage_Index_Model_Lock::getInstance();
 
-        if ($lock->setLock(self::REINDEX_FULL_LOCK)) {
+        if ($lock->setLock(self::REINDEX_FULL_LOCK, true)) {
 
             /**
              * Workaround for fatals and memory crashes: Invalidating indexers that are in progress
@@ -131,11 +131,11 @@ class Enterprise_Index_Model_Observer
                 }
 
             } catch (Exception $e) {
-                $lock->releaseLock(self::REINDEX_FULL_LOCK);
+                $lock->releaseLock(self::REINDEX_FULL_LOCK, true);
                 throw $e;
             }
 
-            $lock->releaseLock(self::REINDEX_FULL_LOCK);
+            $lock->releaseLock(self::REINDEX_FULL_LOCK, true);
         } else {
             throw new Enterprise_Index_Exception("Can't lock indexer process.");
         }

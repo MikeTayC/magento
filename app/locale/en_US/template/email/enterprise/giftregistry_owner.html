@@ -12,43 +12,32 @@
 "var url|escape":"Registry Url"}
 @-->
 <!--@styles
-body,td { color:#2f2f2f; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif; }
 @-->
-<body style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
-<div style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
-<table cellspacing="0" cellpadding="0" border="0" height="100%" width="100%">
+{{template config_path="design/email/header"}}
+{{inlinecss file="email-inline.css"}}
+
+<table cellpadding="0" cellspacing="0" border="0">
     <tr>
-        <td align="center" valign="top" style="padding:20px 0 20px 0">
-            <table bgcolor="FFFFFF" cellspacing="0" cellpadding="10" border="0" width="650" style="border:1px solid #E0E0E0;">
+        <td class="action-content">
+            <h1>{{var owner.getName()|escape}},</h1>
+            <p>You have successfully created the following gift registry:<br/><br/>
+                Gift registry: {{var entity.getTitle()|escape}}<br/>
+            </p>
+            {{if entity.getMessage()}}
+            <table cellspacing="0" cellpadding="0" class="message-container">
                 <tr>
-                    <td valign="top">
-                        <a href="{{store url=""}}" style="color:#1E7EC8;"><img src="{{var logo_url}}" alt="{{var logo_alt}}" border="0"/></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td valign="top">
-                        <h1 style="font-size:22px; font-weight:normal; line-height:22px; margin:0 0 11px 0;"">Hello, {{var owner.getName()|escape}}</h1>
-
-                        <p style="font-size:12px; line-height:16px; margin:0 0 16px 0;">You have successfully created the following gift registry:<br/><br/>
-                            Gift registry: {{var entity.getTitle()|escape}}<br/>
-                            {{if entity.getMessage()}}Message: {{var entity.getMessage()|escape}}</br>{{/if}}
-                        </p>
-
-                        <p style="font-size:12px; line-height:16px; margin:0 0 16px 0;">Now you can add products to your gift registry. Simply browse <a href="{{store url=""}}" style="color:#1E7EC8;">{{var store.getFrontendName()}}</a> and add the products you want to your shopping cart or wishlist. You can then add the products to your registry from your shopping cart or wishlist page.</p>
-                        <p style="font-size:12px; line-height:16px; margin:0 0 16px 0;">You can also share it with your friends and family by logging into your account and visiting the Gift Registry tab. Or, you can email the following link and gift registry ID to them:</p>
-
-                        <p style="font-size:12px; line-height:16px; margin:0 0 16px 0;">
-                            Gift registry location: <a href="{{var url|escape}}" style="color:#1E7EC8;">{{var url|escape}}</a><br/>
-                            Gift registry ID: {{var entity.getUrlKey()|escape}}
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td bgcolor="#EAEAEA" align="center" style="background:#EAEAEA; text-align:center;"><center><p style="font-size:12px; margin:0;">Thank you again, <strong>{{var store.getFrontendName()}}</strong></p></center></td>
+                    <td>Message: {{var entity.getMessage()|escape}}</td>
                 </tr>
             </table>
+            {{/if}}
+            <p>Now you can add products to your gift registry. Simply browse <a href="{{store url=""}}">{{var store.getFrontendName()}}</a> and add the products you want to your shopping cart or wishlist. You can then add the products to your registry from your shopping cart or wishlist page.</p>
+            <p>You can also share it with your friends and family by logging into your account and visiting the Gift Registry tab. Or, you can email the following link and gift registry ID to them:</p>
+            <p>
+                Gift registry location: <a href="{{var url|escape}}">{{var url|escape}}</a><br/>
+                Gift registry ID: {{var entity.getUrlKey()|escape}}
+            </p>
         </td>
     </tr>
 </table>
-</div>
-</body>
+
+{{template config_path="design/email/footer"}}

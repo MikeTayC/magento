@@ -4,24 +4,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 
 /**
@@ -304,7 +304,7 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge_Ipn
 
         // notify customer
         if ($invoice = $payment->getCreatedInvoice()) {
-            $comment = $order->sendNewOrderEmail()->addStatusHistoryComment(
+            $order->queueNewOrderEmail()->addStatusHistoryComment(
                     Mage::helper('paypal')->__('Notified customer about invoice #%s.', $invoice->getIncrementId())
                 )
                 ->setIsCustomerNotified(true)
@@ -332,12 +332,15 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge_Ipn
         $isRefundFinal = (int)(self::STATUS_REVERSED !== $this->getIpnFormData('payment_status'));
 
         $order = $this->_getOrder();
-        $payment = $order->getPayment()
-            ->setPreparedMessage($this->_explainRefundReason(false))
+        /** @var Mage_Sales_Model_Order_Payment $payment */
+        $payment = $order->getPayment();
+
+        $payment->setPreparedMessage($this->_explainRefundReason(false))
             ->setTransactionId($this->getIpnFormData('transaction_id'))
             ->setParentTransactionId($this->getIpnFormData('parent_txn_id'))
             ->setIsTransactionClosed($isRefundFinal)
             ->registerRefundNotification(-1 * $this->getIpnFormData('mc_gross'));
+        $order->addStatusHistoryComment($this->_explainRefundReason(false), false);
         $order->save();
 
         // TODO: there is no way to close a capture right now
@@ -448,8 +451,11 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge_Ipn
     {
         $paymentStatus = $this->getIpnFormData('payment_status');
         $message = Mage::helper('paypal')->__('IPN verification "%s".', $paymentStatus);
-        if ($this->getIpnFormData('txn_id')) {
-            $message .= ' ' . Mage::helper('enterprise_pbridge')->__('Original gateway transaction id: #%s.', $this->getIpnFormData('txn_id'));
+        $txnId = $this->getIpnFormData('txn_id');
+        if ($txnId) {
+            $payment = $this->_getOrder()->getPayment();
+            $htmlTransactionId = Mage::helper('enterprise_pbridge')->getHtmlTransactionId($payment, $txnId);
+            $message .= ' ' . Mage::helper('enterprise_pbridge')->__('Original gateway transaction id: #%s.', $htmlTransactionId);
         }
         if ($comment) {
             $message .= ' ' . $comment;

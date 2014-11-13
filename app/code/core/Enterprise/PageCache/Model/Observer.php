@@ -4,24 +4,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 
 /**
@@ -37,6 +37,16 @@ class Enterprise_PageCache_Model_Observer
      * Design exception key
      */
     const XML_PATH_DESIGN_EXCEPTION = 'design/package/ua_regexp';
+
+    /*
+     * Theme types exceptions involved into cache key
+     */
+    protected $_themeExceptionTypes = array(
+        'template',
+        'skin',
+        'layout',
+        'default'
+    );
 
     /**
      * Page Cache Processor
@@ -106,6 +116,7 @@ class Enterprise_PageCache_Model_Observer
         $request = $frontController->getRequest();
         $response = $frontController->getResponse();
         $this->_saveDesignException();
+        $this->_checkAndSaveSslOffloaderHeaderToCache();
         $this->_processor->processRequestResponse($request, $response);
         return $this;
     }
@@ -143,6 +154,32 @@ class Enterprise_PageCache_Model_Observer
     }
 
     /**
+     * @return array
+     */
+    protected function _loadDesignExceptions()
+    {
+        $exceptions = $this->_cacheInstance
+            ->load(Enterprise_PageCache_Model_Processor::DESIGN_EXCEPTION_KEY)
+        ;
+        $exceptions = @unserialize($exceptions);
+        return is_array($exceptions) ? $exceptions : array();
+    }
+
+    /**
+     * @param array $exceptions
+     * @return Enterprise_PageCache_Model_Observer
+     */
+    protected function _saveDesignExceptions(array $exceptions)
+    {
+        $this->_cacheInstance->save(
+            serialize($exceptions),
+            Enterprise_PageCache_Model_Processor::DESIGN_EXCEPTION_KEY,
+            array(Enterprise_PageCache_Model_Processor::CACHE_TAG)
+        );
+        return $this;
+    }
+
+    /**
      * Checks whether exists design exception value in cache.
      * If not, gets it from config and puts into cache
      *
@@ -153,15 +190,64 @@ class Enterprise_PageCache_Model_Observer
         if (!$this->isCacheEnabled()) {
             return $this;
         }
-        $cacheId = Enterprise_PageCache_Model_Processor::DESIGN_EXCEPTION_KEY;
 
-        if (!$this->_cacheInstance->getFrontend()->test($cacheId)) {
-            $exception = Mage::getStoreConfig(self::XML_PATH_DESIGN_EXCEPTION);
-            $this->_cacheInstance
-                ->save($exception, $cacheId, array(Enterprise_PageCache_Model_Processor::CACHE_TAG));
+        if (isset($_COOKIE[Mage_Core_Model_Store::COOKIE_NAME])) {
+            $storeIdentifier = $_COOKIE[Mage_Core_Model_Store::COOKIE_NAME];
+        } else {
+            $storeIdentifier = Mage::app()->getRequest()->getHttpHost() . Mage::app()->getRequest()->getBaseUrl();
+        }
+        $exceptions = $this->_loadDesignExceptions();
+        if (!isset($exceptions[$storeIdentifier])) {
+            $exceptions[$storeIdentifier][self::XML_PATH_DESIGN_EXCEPTION] = Mage::getStoreConfig(
+                self::XML_PATH_DESIGN_EXCEPTION
+            );
+            foreach ($this->_themeExceptionTypes as $type) {
+                $configPath = sprintf('design/theme/%s_ua_regexp', $type);
+                $exceptions[$storeIdentifier][$configPath] = Mage::getStoreConfig($configPath);
+            }
+            $this->_saveDesignExceptions($exceptions);
             $this->_processor->refreshRequestIds();
         }
         return $this;
+    }
+
+    /**
+     * Saves 'web/secure/offloader_header' config to cache, only when value was updated
+     *
+     * @return Enterprise_PageCache_Model_Observer
+     */
+    protected function _checkAndSaveSslOffloaderHeaderToCache()
+    {
+        if (!$this->isCacheEnabled()) {
+            return $this;
+        }
+        $sslOffloaderHeader = trim((string) Mage::getConfig()->getNode(
+            Mage_Core_Model_Store::XML_PATH_OFFLOADER_HEADER,
+            'default'
+        ));
+
+        $cachedSslOffloaderHeader = $this->_cacheInstance
+            ->load(Enterprise_PageCache_Model_Processor::SSL_OFFLOADER_HEADER_KEY);
+        $cachedSslOffloaderHeader = trim(@unserialize($cachedSslOffloaderHeader));
+
+        if ($cachedSslOffloaderHeader != $sslOffloaderHeader) {
+            $this->_saveSslOffloaderHeaderToCache($sslOffloaderHeader);
+        }
+        return $this;
+    }
+
+    /**
+     * Save 'web/secure/offloader_header' config to cache
+     *
+     * @param $value
+     */
+    protected function _saveSslOffloaderHeaderToCache($value)
+    {
+        $this->_cacheInstance->save(
+            serialize($value),
+            Enterprise_PageCache_Model_Processor::SSL_OFFLOADER_HEADER_KEY,
+            array(Enterprise_PageCache_Model_Processor::CACHE_TAG)
+        );
     }
 
     /**
@@ -320,6 +406,17 @@ class Enterprise_PageCache_Model_Observer
     public function cleanCache()
     {
         $this->_cacheInstance->clean(Enterprise_PageCache_Model_Processor::CACHE_TAG);
+        return $this;
+    }
+
+    /**
+     * Flush full page cache
+     *
+     * @return Enterprise_PageCache_Model_Observer
+     */
+    public function flushCache()
+    {
+        $this->_cacheInstance->flush();
         return $this;
     }
 
@@ -535,6 +632,23 @@ class Enterprise_PageCache_Model_Observer
     }
 
     /**
+     * Update customer rates cookie after address update
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
+     */
+    public function customerAddressUpdate(Varien_Event_Observer $observer)
+    {
+        if (!$this->isCacheEnabled()) {
+            return $this;
+        }
+        $cookie = $this->_getCookie();
+        $cookie->updateCustomerCookies();
+        $cookie->updateCustomerRatesCookie();
+        return $this;
+    }
+
+    /**
      * Set cookie for logged in customer
      *
      * @param Varien_Event_Observer $observer
@@ -699,10 +813,27 @@ class Enterprise_PageCache_Model_Observer
      */
     public function registerDesignExceptionsChange(Varien_Event_Observer $observer)
     {
-        $object = $observer->getDataObject();
         $this->_cacheInstance
-            ->save($object->getValue(), Enterprise_PageCache_Model_Processor::DESIGN_EXCEPTION_KEY,
-                array(Enterprise_PageCache_Model_Processor::CACHE_TAG));
+            ->remove(Enterprise_PageCache_Model_Processor::DESIGN_EXCEPTION_KEY);
+        return $this;
+    }
+
+    /**
+     * Re-save exception rules to cache storage
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Enterprise_PageCache_Model_Observer
+     */
+    public function registerSslOffloaderChange(Varien_Event_Observer $observer)
+    {
+        if (!$this->isCacheEnabled()) {
+            return $this;
+        }
+
+        $object = $observer->getEvent()->getDataObject();
+        if ($object) {
+            $this->_saveSslOffloaderHeaderToCache($object->getValue());
+        }
         return $this;
     }
 

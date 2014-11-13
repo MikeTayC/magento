@@ -4,24 +4,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 
 class Enterprise_PageCache_Model_Processor
@@ -40,6 +40,7 @@ class Enterprise_PageCache_Model_Processor
     const DESIGN_EXCEPTION_KEY          = 'FPC_DESIGN_EXCEPTION_CACHE';
     const DESIGN_CHANGE_CACHE_SUFFIX    = 'FPC_DESIGN_CHANGE_CACHE';
     const CACHE_SIZE_KEY                = 'FPC_CACHE_SIZE_CAHCE_KEY';
+    const SSL_OFFLOADER_HEADER_KEY      = 'FPC_SSL_OFFLOADER_HEADER_CACHE';
     const XML_PATH_CACHE_MAX_SIZE       = 'system/page_cache/max_cache_size';
     const REQUEST_PATH_PREFIX           = 'REQUEST_PATH_';
 
@@ -125,8 +126,8 @@ class Enterprise_PageCache_Model_Processor
          * Define COOKIE state
          */
         if ($uri) {
-            if (isset($_COOKIE['store'])) {
-                $uri = $uri.'_'.$_COOKIE['store'];
+            if (isset($_COOKIE[Mage_Core_Model_Store::COOKIE_NAME])) {
+                $uri = $uri.'_'.$_COOKIE[Mage_Core_Model_Store::COOKIE_NAME];
             }
             if (isset($_COOKIE['currency'])) {
                 $uri = $uri.'_'.$_COOKIE['currency'];
@@ -142,6 +143,9 @@ class Enterprise_PageCache_Model_Processor
             }
             if (isset($_COOKIE[Enterprise_PageCache_Model_Cookie::IS_USER_ALLOWED_SAVE_COOKIE])) {
                 $uri .= '_' . $_COOKIE[Enterprise_PageCache_Model_Cookie::IS_USER_ALLOWED_SAVE_COOKIE];
+            }
+            if (Enterprise_PageCache_Helper_Data::isSSL()) {
+                $uri .= '_ssl';
             }
             $designPackage = $this->_getDesignPackage();
 
@@ -184,16 +188,34 @@ class Enterprise_PageCache_Model_Processor
         $cacheInstance = Enterprise_PageCache_Model_Cache::getCacheInstance();
         $exceptions = $cacheInstance->load(self::DESIGN_EXCEPTION_KEY);
         $this->_designExceptionExistsInCache = $cacheInstance->getFrontend()->test(self::DESIGN_EXCEPTION_KEY);
-
         if (!$exceptions) {
             return false;
         }
 
-        $rules = @unserialize($exceptions);
-        if (empty($rules)) {
+        $exceptions = @unserialize($exceptions);
+        if (!is_array($exceptions)) {
             return false;
         }
-        return Mage_Core_Model_Design_Package::getPackageByUserAgent($rules);
+
+        if (isset($_COOKIE[Mage_Core_Model_Store::COOKIE_NAME])) {
+            $storeIdentifier = $_COOKIE[Mage_Core_Model_Store::COOKIE_NAME];
+        } else {
+            $storeIdentifier = Mage::app()->getRequest()->getHttpHost() . Mage::app()->getRequest()->getBaseUrl();
+        }
+        if (!isset($exceptions[$storeIdentifier])) {
+            return false;
+        }
+
+        $keys = array();
+        foreach ($exceptions[$storeIdentifier] as $type => $exception) {
+            $rule = @unserialize($exception);
+            if (is_array($rule)) {
+                $keys[] = Mage_Core_Model_Design_Package::getPackageByUserAgent($rule, $type);
+            } else {
+                $keys[] = '';
+            }
+        }
+        return implode($keys, "|");
     }
 
     /**
@@ -251,9 +273,6 @@ class Enterprise_PageCache_Model_Processor
     public function isAllowed()
     {
         if (!$this->_requestId) {
-            return false;
-        }
-        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
             return false;
         }
         if (isset($_COOKIE['NO_CACHE'])) {

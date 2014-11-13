@@ -3,24 +3,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    design
- * @package     enterprise_default
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @package     rwd_enterprise
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 
 // Add validation hints
@@ -790,8 +790,7 @@ Enterprise.Widget.Dialog = Class.create(Enterprise.Widget, {
     },
 
     place: function() {
-        $(document.body).insert(this._windowOverlay);
-        $(document.body).insert(this._node);
+        $('wishlist_edit_action_container').insert(this._node);
         this._isPlaced = true;
     },
 
@@ -816,6 +815,7 @@ Enterprise.Widget.Dialog = Class.create(Enterprise.Widget, {
         this._windowOverlay.style.height=$$('body')[0].getHeight()+'px';
         //$(this._node).setStyle({'display': 'block'});
         $(this._node).addClassName('active');
+        $(this._node).show();
     },
 
     hide: function() {
@@ -823,6 +823,7 @@ Enterprise.Widget.Dialog = Class.create(Enterprise.Widget, {
         $(this._windowOverlay).removeClassName('active');
         //$(this._node).setStyle({'display':'none'});
         $(this._node).removeClassName('active');
+        $(this._node).hide();
     },
 
     setBusy: function(state) {
@@ -840,7 +841,7 @@ Enterprise.Widget.Dialog = Class.create(Enterprise.Widget, {
 
 Enterprise.Widget.SplitButton = Class.create(Enterprise.Widget, {
     _list: null,
-    _templateString: '<strong><span></span></strong>' +
+    _templateString: '<strong class="split-button-title"><span></span></strong>' +
         '<a href="#" class="change"></a>' +
         '<div class="list-container">' +
             '<ul>' +

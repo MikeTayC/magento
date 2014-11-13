@@ -29,7 +29,7 @@
     <h1><?php echo $this->__('Billing Agreements') ?></h1>
 </div>
 
-<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php echo $this->getMessagesBlock()->toHtml() ?>
 
 <div class="billing-agreements">
     <?php $billingAgreements = $this->getBillingAgreements(); ?>

@@ -4,24 +4,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 
 /**
@@ -372,9 +372,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
 
 
         $fulltextData = array();
-        $aggregatedPartData = array();
         foreach ($productIndexData as $attributeCode => $value) {
-
             if ($attributeCode == 'visibility') {
                 $productIndexData[$attributeCode] = $value[$productId];
                 continue;
@@ -500,11 +498,6 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
             if ($attribute->getIsSearchable() && !empty($preparedValue)) {
                 $searchWeight = $attribute->getSearchWeight();
                 if ($searchWeight) {
-                    if ($attributeCode == 'sku') {
-                        $aggregatedPartData[$searchWeight][] = is_array($preparedValue)
-                            ? implode(' ', $preparedValue)
-                            : $preparedValue;
-                    }
                     $fulltextData[$searchWeight][] = is_array($preparedValue)
                         ? implode(' ', $preparedValue)
                         : $preparedValue;
@@ -522,14 +515,6 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
             $fulltextSpell = array_merge($fulltextSpell, $data);
         }
         unset($fulltextData);
-
-        // Preparing fields with aggregated data searchable by parts
-        foreach($aggregatedPartData as $searchWeight => $data) {
-            $fieldName = $this->getAdvancedTextFieldName('aggregate', $searchWeight . '_partial');
-            $productIndexData[$fieldName] = $this->_implodeIndexData($data);
-            $fulltextSpell = array_merge($fulltextSpell, $data);
-        }
-        unset($aggregatedPartData);
 
         // Preparing field with spell info
         $fulltextSpell = array_unique($fulltextSpell);
@@ -1011,7 +996,7 @@ abstract class Enterprise_Search_Model_Adapter_Abstract
      */
     public function _escape($value)
     {
-        $pattern = '/(\+|-|&&|\|\||!|\(|\)|\{|}|\[|]|\^|"|~|\*|\?|:|\\\)/';
+        $pattern = '/(\+|&&|\|\||!|\(|\)|\{|}|\[|]|\^|"|~|\*|\?|:|\\\)/';
         $replace = '\\\$1';
 
         return preg_replace($pattern, $replace, $value);

@@ -28,7 +28,7 @@
     <h1><?php echo $this->__('My Product Reviews') ?></h1>
 </div>
 <div class="review-history">
-    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <?php echo $this->getMessagesBlock()->toHtml() ?>
     <?php if( $this->getCollection() && $this->count()): ?>
         <?php echo $this->getToolbarHtml() ?>
             <ol class="list">

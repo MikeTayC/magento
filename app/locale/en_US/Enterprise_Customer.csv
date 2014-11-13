@@ -164,6 +164,8 @@
 "To use this attribute in address template you should edit it here.","To use this attribute in address template you should edit it here."
 "Use Store Credit (%s available)","Use Store Credit (%s available)"
 "Use as My Default %s Address","Use as My Default %s Address"
+"Use as My Default Billing Address","Use as My Default Billing Address"
+"Use as My Default Shipping Address","Use as My Default Shipping Address"
 "Use as my default billing address","Use as my default billing address"
 "Use as my default shipping address","Use as my default shipping address"
 "Use helper with defined EAV entity","Use helper with defined EAV entity"

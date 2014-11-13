@@ -4,24 +4,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 
 
@@ -112,8 +112,7 @@ abstract class Enterprise_TargetRule_Model_Resource_Index_Abstract extends Mage_
             ->where('i.entity_id = ?', $object->getProduct()->getEntityId())
             ->where('i.store_id = ?', $object->getStoreId())
             ->where('i.customer_group_id = ?', $object->getCustomerGroupId())
-            ->where('i.customer_segment_id = ?', $segmentId)
-            ->order('p.position ASC');
+            ->where('i.customer_segment_id = ?', $segmentId);
 
         return $this->_getReadAdapter()->fetchCol($select);
     }
@@ -175,11 +174,10 @@ abstract class Enterprise_TargetRule_Model_Resource_Index_Abstract extends Mage_
 
         if (count($productIds) > 0) {
             $data = array();
-            foreach ($productIds as $position => $productId) {
+            foreach ($productIds as $productId) {
                 $data[] = array(
                     'targetrule_id' => $targetruleId,
                     'product_id'    => $productId,
-                    'position'      => $position
                 );
             }
             $this->_getWriteAdapter()->insertMultiple($this->getProductTable(), $data);

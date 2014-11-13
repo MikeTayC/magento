@@ -5,30 +5,30 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Enterprise
  * @package     Enterprise_Catalog
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_Catalog>
-            <version>1.13.0.9.1.2</version>
+            <version>1.13.0.9</version>
         </Enterprise_Catalog>
     </modules>
     <global>
@@ -365,22 +365,6 @@
                     </reindex_url_redirect>
                 </observers>
             </catalog_url_product_shell_reindex_after>
-            <cataloginventory_stock_partial_reindex>
-                <observers>
-                    <invalidate_attribute_indexer>
-                        <class>enterprise_catalog/observer</class>
-                        <method>invalidateAttributeIndexer</method>
-                    </invalidate_attribute_indexer>
-                </observers>
-            </cataloginventory_stock_partial_reindex>
-            <cataloginventory_stock_full_reindex>
-                <observers>
-                    <invalidate_attribute_indexer>
-                        <class>enterprise_catalog/observer</class>
-                        <method>invalidateAttributeIndexer</method>
-                    </invalidate_attribute_indexer>
-                </observers>
-            </cataloginventory_stock_full_reindex>
             <product_duplicate_attributes>
                 <observers>
                     <remove_url_key>
@@ -389,22 +373,6 @@
                     </remove_url_key>
                 </observers>
             </product_duplicate_attributes>
-            <sitemap_categories_generating_before>
-                <observers>
-                    <set_category_url_suffix>
-                        <class>enterprise_catalog/observer</class>
-                        <method>addSeoSuffixToCategoryUrl</method>
-                    </set_category_url_suffix>
-                </observers>
-            </sitemap_categories_generating_before>
-            <sitemap_products_generating_before>
-                <observers>
-                    <set_product_url_suffix>
-                        <class>enterprise_catalog/observer</class>
-                        <method>addSeoSuffixToProductUrl</method>
-                    </set_product_url_suffix>
-                </observers>
-            </sitemap_products_generating_before>
         </events>
         <redirect_type_block>
             <category>Enterprise_Catalog_Block_Adminhtml_Redirect_Edit</category>
@@ -450,6 +418,22 @@
                     </enterprise_product_flat>
                 </observers>
             </controller_action_postdispatch_adminhtml_catalog_product_action_attribute_save>
+            <sitemap_categories_generating_before>
+                <observers>
+                    <set_category_url_suffix>
+                        <class>enterprise_catalog/observer</class>
+                        <method>addSeoSuffixToCategoryUrl</method>
+                    </set_category_url_suffix>
+                </observers>
+            </sitemap_categories_generating_before>
+            <sitemap_products_generating_before>
+                <observers>
+                    <set_product_url_suffix>
+                        <class>enterprise_catalog/observer</class>
+                        <method>addSeoSuffixToProductUrl</method>
+                    </set_product_url_suffix>
+                </observers>
+            </sitemap_products_generating_before>
         </events>
     </adminhtml>
     <frontend>
@@ -518,5 +502,23 @@
                 </run>
             </enterprise_catalog_index_refresh_price>
         </jobs>
+        <events>
+            <sitemap_categories_generating_before>
+                <observers>
+                    <set_category_url_suffix>
+                        <class>enterprise_catalog/observer</class>
+                        <method>addSeoSuffixToCategoryUrl</method>
+                    </set_category_url_suffix>
+                </observers>
+            </sitemap_categories_generating_before>
+            <sitemap_products_generating_before>
+                <observers>
+                    <set_product_url_suffix>
+                        <class>enterprise_catalog/observer</class>
+                        <method>addSeoSuffixToProductUrl</method>
+                    </set_product_url_suffix>
+                </observers>
+            </sitemap_products_generating_before>
+        </events>
     </crontab>
 </config>

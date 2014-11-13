@@ -4,24 +4,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Enterprise
  * @package     Enterprise_Search
- * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 
 /**
@@ -359,7 +359,7 @@ class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
 
         /**
          * use http_build_query to encode our arguments
-         * because it's faster than url encoding all the parts ourselves in a loop
+         * because its faster than url encoding all the parts ourselves in a loop
          */
         $queryString = http_build_query($params, null, $this->_queryStringDelimiter);
 
@@ -371,6 +371,56 @@ class Enterprise_Search_Model_Client_Solr extends Apache_Solr_Service
             return $this->_sendRawPost(
                 $this->_suggestionsUrl, $queryString, false, 'application/x-www-form-urlencoded'
             );
+        } else {
+            throw new Exception("Unsupported method '$method', please use the Apache_Solr_Service::METHOD_* constants");
+        }
+    }
+
+    /**
+     * Simple Search interface
+     *
+     * @param string $query The raw query string
+     * @param int $offset The starting offset for result documents
+     * @param int $limit The maximum number of result documents to return
+     * @param array $params key / value pairs for other query parameters (see Solr documentation), use arrays for parameter keys used more than once (e.g. facet.field)
+     * @param string $method
+     *
+     * @return Apache_Solr_Response
+     *
+     * @throws Exception If an error occurs during the service call
+     */
+    public function search($query, $offset = 0, $limit = 10, $params = array(), $method = self::METHOD_GET)
+    {
+        if (!is_array($params)) {
+            $params = array();
+        }
+
+        // construct our full parameters sending the version is important in case the format changes
+        $params['version']  = self::SOLR_VERSION;
+
+        // common parameters in this interface
+        $params['wt']       = self::SOLR_WRITER;
+        $params['json.nl']  = $this->_namedListTreatment;
+
+        $params['q']        = $query;
+        $params['start']    = $offset;
+        $params['rows']     = $limit;
+
+        // use http_build_query to encode our arguments because its faster
+        // than url encoding all the parts ourselves in a loop
+        $queryString = http_build_query($params, null, $this->_queryStringDelimiter);
+
+        // because http_build_query treats arrays differently than we want to, correct the query
+        // string by changing foo[#]=bar (# being an actual number) parameter strings to just
+        // multiple foo=bar strings. This regex should always work since '=' will be url encoded
+        // anywhere else the regex isn't expecting it
+        $queryString = preg_replace('/%5B(?:[0-9]|[1-9][0-9]+)%5D=/', '=', $queryString);
+
+        if ($method == self::METHOD_GET) {
+            return $this->_sendRawGet($this->_searchUrl . $this->_queryDelimiter . $queryString);
+        } elseif ($method == self::METHOD_POST) {
+            return $this->_sendRawPost($this->_searchUrl, $queryString, false,
+                'application/x-www-form-urlencoded; charset=UTF-8');
         } else {
             throw new Exception("Unsupported method '$method', please use the Apache_Solr_Service::METHOD_* constants");
         }
