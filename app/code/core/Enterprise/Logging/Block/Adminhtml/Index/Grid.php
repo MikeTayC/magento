@@ -107,10 +107,10 @@ class Enterprise_Logging_Block_Adminhtml_Index_Grid extends Mage_Adminhtml_Block
             'header'    => Mage::helper('enterprise_logging')->__('IP Address'),
             'index'     => 'ip',
             'type'      => 'text',
-            'filter'    => 'enterprise_logging/adminhtml_grid_filter_ip',
             'renderer'  => 'adminhtml/widget_grid_column_renderer_ip',
             'sortable'  => false,
             'width'     => 125,
+            'filter_condition_callback' => array($this, '_ipFilterCallback'),
         ));
 
         $this->addColumn('user', array(
@@ -173,5 +173,16 @@ class Enterprise_Logging_Block_Adminhtml_Index_Grid extends Mage_Adminhtml_Block
         return $this;
     }
 
-
+    /**
+     * Add filter by ip
+     *
+     * @param Enterprise_Logging_Model_Resource_Event_Collection $collection
+     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
+     */
+    protected function _ipFilterCallback(
+        Enterprise_Logging_Model_Mysql4_Event_Collection $collection,
+        Mage_Adminhtml_Block_Widget_Grid_Column $column
+    ) {
+        $collection->addIpFilter($column->getFilter()->getValue());
+    }
 }

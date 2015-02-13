@@ -1,0 +1,9 @@
+-e 2015-02-13 20:29:50 UTC | SUPEE-5390 | EE_1.10.1.0 | v1 | 6b4151716e436e74d74f2055faa35b8741048bba | Wed Feb 11 14:03:25 2015 +0200 | v1.10.1.0..HEAD
+patching file app/code/core/Enterprise/Logging/Block/Adminhtml/Grid/Filter/Ip.php
+patching file app/code/core/Enterprise/Logging/Block/Adminhtml/Index/Grid.php
+patching file app/code/core/Enterprise/Logging/Model/Mysql4/Event/Collection.php
+patching file app/code/core/Mage/Admin/Model/Observer.php
+patching file app/code/core/Mage/Core/Controller/Request/Http.php
+patching file lib/Varien/Data/Collection/Db.php
+
+
