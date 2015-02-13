@@ -25,44 +25,21 @@
  */
 
 /**
- * Log items collection
+ * Ip-address grid filter
  */
-class Enterprise_Logging_Model_Mysql4_Event_Collection extends Mage_Core_Model_Mysql4_Collection_Abstract
+class Enterprise_Logging_Block_Adminhtml_Grid_Filter_Ip extends Mage_Adminhtml_Block_Widget_Grid_Column_Filter_Text
 {
     /**
-     * Initialize resource
-     */
-    protected function _construct()
-    {
-        $this->_init('enterprise_logging/event');
-    }
-
-    /**
-     * Minimize usual count select
+     * Collection condition filter getter
      *
-     * @return Varien_Db_Select
+     * @return array
      */
-    public function getSelectCountSql()
+    public function getCondition()
     {
-        return parent::getSelectCountSql()->resetJoinLeft();
-    }
-
-    /**
-     * Add IP filter to collection
-     *
-     * @param string $value
-     * @return Enterprise_Logging_Model_Resource_Event_Collection
-     */
-    public function addIpFilter($value)
-    {
+        $value = $this->getValue();
         if (preg_match('/^(\d+\.){3}\d+$/', $value)) {
-            return $this->addFieldToFilter('ip', ip2long($value));
+            return ip2long($value);
         }
-        $condition = $this->getConnection()->prepareSqlCondition(
-            Mage::getResourceHelper('enterprise_logging')->getInetNtoaExpr('ip'),
-            array('like' => Mage::getResourceHelper('core')->addLikeEscape($value, array('position' => 'any')))
-        );
-        $this->getSelect()->where($condition);
-        return $this;
+        return array('field_expr' => 'INET_NTOA(#?)', 'like' => "%{$this->_escapeValue($value)}%");
     }
 }

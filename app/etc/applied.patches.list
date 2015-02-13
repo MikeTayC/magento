@@ -1,0 +1,12 @@
+-e 2015-02-13 20:30:47 UTC | SUPEE-5388 | EE_1.8.0.0 | v1 | 488a0787fd5dc50378ed96f643faa2eabeb39c21 | Wed Feb 11 13:47:07 2015 +0200 | v1.8.0.0..HEAD
+patching file app/code/core/Enterprise/Logging/Block/Adminhtml/Grid/Filter/Ip.php
+Hunk #1 succeeded at 26 with fuzz 2.
+patching file app/code/core/Enterprise/Logging/Block/Adminhtml/Index/Grid.php
+patching file app/code/core/Enterprise/Logging/Model/Mysql4/Event/Collection.php
+patching file app/code/core/Mage/Admin/Model/Observer.php
+patching file app/code/core/Mage/Core/Controller/Request/Http.php
+Hunk #2 succeeded at 535 with fuzz 2 (offset 69 lines).
+patching file lib/Varien/Data/Collection/Db.php
+Hunk #1 succeeded at 442 (offset 21 lines).
+
+
