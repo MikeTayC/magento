@@ -52,4 +52,24 @@ class Enterprise_Logging_Model_Resource_Event_Collection extends Mage_Core_Model
     {
         return parent::getSelectCountSql()->resetJoinLeft();
     }
+
+
+    /**
+     * Add IP filter to collection
+     *
+     * @param string $value
+     * @return Enterprise_Logging_Model_Resource_Event_Collection
+     */
+    public function addIpFilter($value)
+    {
+        if (preg_match('/^(\d+\.){3}\d+$/', $value)) {
+            return $this->addFieldToFilter('ip', ip2long($value));
+        }
+        $condition = $this->getConnection()->prepareSqlCondition(
+            Mage::getResourceHelper('enterprise_logging')->getInetNtoaExpr('ip'),
+            array('like' => Mage::getResourceHelper('core')->addLikeEscape($value, array('position' => 'any')))
+        );
+        $this->getSelect()->where($condition);
+        return $this;
+    }
 }
