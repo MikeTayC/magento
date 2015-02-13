@@ -26,6 +26,7 @@
 
 /**
  * Ip-address grid filter
+ * @deprecated since SUPEE-5345. See Replaced with Enterprise_Logging_Block_Adminhtml_Index_Grid::_ipFilterCallback
  */
 class Enterprise_Logging_Block_Adminhtml_Grid_Filter_Ip extends Mage_Adminhtml_Block_Widget_Grid_Column_Filter_Text
 {
