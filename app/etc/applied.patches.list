@@ -1,0 +1,9 @@
+-e 2015-02-13 20:28:41 UTC | SUPEE-5341 | EE_1.11.0.0 | v1 | f2b879155e454a19b4c22d109139e4af36e20603 | Thu Feb 5 19:29:29 2015 +0200 | v1.11.0.0..HEAD
+patching file app/code/core/Enterprise/Logging/Block/Adminhtml/Grid/Filter/Ip.php
+patching file app/code/core/Enterprise/Logging/Block/Adminhtml/Index/Grid.php
+patching file app/code/core/Enterprise/Logging/Model/Resource/Event/Collection.php
+patching file app/code/core/Mage/Admin/Model/Observer.php
+patching file app/code/core/Mage/Core/Controller/Request/Http.php
+patching file lib/Varien/Db/Adapter/Pdo/Mysql.php
+
+
