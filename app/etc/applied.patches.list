@@ -65,3 +65,7 @@ patching file app/code/core/Mage/XmlConnect/Model/Observer.php
 patching file lib/Varien/Db/Adapter/Pdo/Mysql.php
 
 
+2015-03-12 15:08:21 UTC | SUPEE-4403 | EE_1.14.0.1 | v1 | 5a8af8fa08e52ac2449b33f8207359f1edeb951f | Thu Sep 18 13:18:48 2014 +0300 | v1.14.0.1..HEAD
+patching file app/design/frontend/rwd/enterprise/template/catalog/category/view.phtml
+
+
