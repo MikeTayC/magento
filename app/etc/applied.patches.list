@@ -7,3 +7,8 @@ patching file app/code/core/Mage/Core/Controller/Request/Http.php
 patching file lib/Varien/Db/Adapter/Pdo/Mysql.php
 
 
+2015-04-24 13:43:59 UTC | SUPEE-1533 | EE_1.11 | v1 | _ | n/a | SUPEE-1533_EE_1.11_v1.patch
+patching file app/code/core/Mage/Adminhtml/Block/Dashboard/Graph.php
+patching file app/code/core/Mage/Adminhtml/controllers/DashboardController.php
+
+
