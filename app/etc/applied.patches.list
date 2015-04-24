@@ -1,0 +1,5 @@
+2015-04-24 13:47:02 UTC | SUPEE-1533 | EE_1.9 | v1 | _ | n/a | SUPEE-1533_EE_1.9_v1.patch
+patching file app/code/core/Mage/Adminhtml/Block/Dashboard/Graph.php
+patching file app/code/core/Mage/Adminhtml/controllers/DashboardController.php
+
+
