@@ -8,3 +8,8 @@ patching file app/code/core/Mage/Oauth/controllers/Adminhtml/Oauth/AuthorizeCont
 patching file lib/Varien/Db/Adapter/Pdo/Mysql.php
 
 
+2015-04-24 13:42:39 UTC | SUPEE-1533 | EE_1.12 | v1 | _ | n/a | SUPEE-1533_EE_1.12_v1.patch
+patching file app/code/core/Mage/Adminhtml/Block/Dashboard/Graph.php
+patching file app/code/core/Mage/Adminhtml/controllers/DashboardController.php
+
+
