@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -379,6 +379,29 @@ class Mage_Checkout_MultishippingController extends Mage_Checkout_Controller_Act
      */
     public function billingAction()
     {
+        $collectTotals = false;
+        $quote = $this->_getCheckoutSession()->getQuote();
+
+        /**
+         *  Reset customer balance
+         */
+        if ($quote->getUseCustomerBalance()) {
+            $quote->setUseCustomerBalance(false);
+            $collectTotals = true;
+        }
+
+        /**
+         *  Reset reward points
+         */
+        if ($quote->getUseRewardPoints()) {
+            $quote->setUseRewardPoints(false);
+            $collectTotals = true;
+        }
+
+        if ($collectTotals) {
+            $quote->collectTotals()->save();
+        }
+
         if (!$this->_validateBilling()) {
             return;
         }

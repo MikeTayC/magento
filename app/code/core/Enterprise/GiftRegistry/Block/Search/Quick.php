@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -79,6 +79,6 @@ class Enterprise_GiftRegistry_Block_Search_Quick extends Mage_Core_Block_Templat
      */
     public function getActionUrl()
     {
-        return $this->getUrl('giftregistry/search/results');
+        return $this->getUrl('giftregistry/search/results', array('_secure' => $this->_isSecure()));
     }
 }

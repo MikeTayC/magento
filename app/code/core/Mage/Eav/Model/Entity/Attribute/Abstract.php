@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -695,6 +695,10 @@ abstract class Mage_Eav_Model_Entity_Attribute_Abstract extends Mage_Core_Model_
         $condition = $this->getUsedForSortBy();
         if ($this->getFlatAddFilterableAttributes()) {
             $condition = $condition || $this->getIsFilterable();
+        }
+
+        if ($this->getAttributeCode() == 'status') {
+            $condition = true;
         }
 
         if ($condition) {

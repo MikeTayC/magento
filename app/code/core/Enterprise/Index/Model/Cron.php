@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Index
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -98,7 +98,7 @@ class Enterprise_Index_Model_Cron
      */
     protected function _runCleanupAction(Enterprise_Mview_Model_Metadata $metadata)
     {
-        $this->_getClient()->init($metadata->getTableName());
+        $this->_getClient()->initByTableName($metadata->getTableName());
         try {
             $this->_getClient()->execute('enterprise_mview/action_changelog_clear');
         } catch (Exception $e) {

@@ -21,14 +21,14 @@
  *
  * @category    OnTap
  * @package     OnTap_Merchandiser
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <OnTap_Merchandiser>
-            <version>2.2.6</version>
+            <version>2.2.8</version>
             <depends>
                 <Mage_Adminhtml/>
             </depends>
@@ -38,6 +38,14 @@
         <catalog>
             <merchandiser>
                 <actions>
+                    <move_bestsellers_top translate="name">
+                        <name>Move best sellers to top</name>
+                        <sorting_function>OnTap_Merchandiser_Model_Merchandiser::moveBestsellersTop</sorting_function>
+                    </move_bestsellers_top>
+                    <move_lowstock_top translate="name">
+                        <name>Move low stock to top</name>
+                        <sorting_function>OnTap_Merchandiser_Model_Merchandiser::moveLowstockTop</sorting_function>
+                    </move_lowstock_top>
                     <instock_at_top translate="name">
                         <name>Move out of stock to bottom</name>
                         <sorting_function>OnTap_Merchandiser_Model_Merchandiser::moveInStockToTheTop</sorting_function>
@@ -50,7 +58,20 @@
                         <name>Special price to bottom</name>
                         <sorting_function>OnTap_Merchandiser_Model_Merchandiser::moveSaleAtBottom</sorting_function>
                     </special_at_bottom>
+                    <newest translate="name">
+                        <name>Newest products first</name>
+                        <sorting_function>OnTap_Merchandiser_Model_Merchandiser::newestFirst</sorting_function>
+                    </newest>
+                    <highest_margin translate="name">
+                        <name>Highest margin first</name>
+                        <sorting_function>OnTap_Merchandiser_Model_Merchandiser::highestMarginFirst</sorting_function>
+                    </highest_margin>
+                    <sort_by_color translate="name">
+                        <name>Sort by color</name>
+                        <sorting_function>OnTap_Merchandiser_Model_Merchandiser::sortByColor</sorting_function>
+                    </sort_by_color>
                 </actions>
+                <color_attribute>color</color_attribute>
                 <attribute_codes>color,name,price</attribute_codes>
                 <column_count>4</column_count>
                 <show_creation_date>0</show_creation_date>
@@ -63,6 +84,8 @@
                 <rebuild_on_cron>1</rebuild_on_cron>
                 <new_products_handler>1</new_products_handler>
                 <cron_setup>0,30 * * * *</cron_setup>
+                <min_stock_threshold>1</min_stock_threshold>
+                <bestseller_sort_period>6</bestseller_sort_period>
             </merchandiser>
         </catalog>
     </default>

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -37,7 +37,7 @@ class Enterprise_GiftRegistry_Block_Cart_Link extends Mage_Core_Block_Template
      */
     public function getAddUrl()
     {
-        return $this->getUrl('giftregistry/index/cart');
+        return $this->getUrl('giftregistry/index/cart', array('_secure' => $this->_isSecure()));
     }
 
     /**

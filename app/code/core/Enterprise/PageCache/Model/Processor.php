@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -415,9 +415,8 @@ class Enterprise_PageCache_Model_Processor
             $isProcessed = false;
         }
 
-        if (isset($_COOKIE[Enterprise_PageCache_Model_Cookie::COOKIE_FORM_KEY])) {
-            $formKey = $_COOKIE[Enterprise_PageCache_Model_Cookie::COOKIE_FORM_KEY];
-        } else {
+        $formKey = Enterprise_PageCache_Model_Cookie::getFormKeyCookieValue();
+        if (!$formKey) {
             $formKey = Enterprise_PageCache_Helper_Data::getRandomString(16);
             Enterprise_PageCache_Model_Cookie::setFormKeyCookieValue($formKey);
         }
@@ -502,10 +501,13 @@ class Enterprise_PageCache_Model_Processor
      */
     public function addRequestTag($tag)
     {
-        if (is_array($tag)) {
-            $this->_requestTags = array_merge($this->_requestTags, $tag);
-        } else {
-            $this->_requestTags[] = $tag;
+        if (!is_array($tag)) {
+            $tag = array($tag);
+        }
+        foreach ($tag as $value) {
+            if (!in_array($value, $this->_requestTags)) {
+                $this->_requestTags[] = $value;
+            }
         }
         return $this;
     }

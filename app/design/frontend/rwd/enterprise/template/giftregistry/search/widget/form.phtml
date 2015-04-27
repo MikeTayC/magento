@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -85,7 +85,7 @@
         <div class="actions">
             <input type="hidden" name="params[search]" value="type" />
             <p class="note"><em>*</em> <?php echo Mage::helper('enterprise_giftregistry')->__('Enter at least two letters') ?></p>
-            <button type="submit" title="<?php echo Mage::helper('enterprise_giftregistry')->__('Go') ?>" class="button"><span><span><?php echo Mage::helper('enterprise_giftregistry')->__('Search') ?></span></span></button>
+            <button type="submit" title="<?php echo Mage::helper('core')->quoteEscape(Mage::helper('enterprise_giftregistry')->__('Go')) ?>" class="button"><span><span><?php echo Mage::helper('enterprise_giftregistry')->__('Search') ?></span></span></button>
         </div>
     </form>
     <script type="text/javascript">
@@ -93,7 +93,7 @@
         var grQuickSearchWidgetForm = new VarienForm('gr-quick-search-widget-name-form');
 
         Validation.addAllThese([
-            ['validate-name-length', '<?php echo $this->__('Please enter at least 2 letters.') ?>', function(v, elm) {
+            ['validate-name-length', '<?php echo Mage::helper('core')->jsQuoteEscape($this->__('Please enter at least 2 letters.')) ?>', function(v, elm) {
                 return (v.length >= 2);
             }]
         ]);
@@ -114,7 +114,7 @@
         </ul>
         <div class="actions">
             <input type="hidden" name="params[search]" value="email" />
-            <button type="submit" title="<?php echo Mage::helper('enterprise_giftregistry')->__('Go') ?>" class="button"><span><span><?php echo Mage::helper('enterprise_giftregistry')->__('Search') ?></span></span></button>
+            <button type="submit" title="<?php echo Mage::helper('core')->quoteEscape(Mage::helper('enterprise_giftregistry')->__('Go')) ?>" class="button"><span><span><?php echo Mage::helper('enterprise_giftregistry')->__('Search') ?></span></span></button>
         </div>
     </form>
     <script type="text/javascript">
@@ -137,7 +137,7 @@
         </ul>
         <div class="actions">
             <input type="hidden" name="params[search]" value="id" />
-            <button type="submit" title="<?php echo Mage::helper('enterprise_giftregistry')->__('Go') ?>" class="button"><span><span><?php echo Mage::helper('enterprise_giftregistry')->__('Search') ?></span></span></button>
+            <button type="submit" title="<?php echo Mage::helper('core')->quoteEscape(Mage::helper('enterprise_giftregistry')->__('Go')) ?>" class="button"><span><span><?php echo Mage::helper('enterprise_giftregistry')->__('Search') ?></span></span></button>
         </div>
     </form>
     <script type="text/javascript">

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Catalog
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -423,7 +423,7 @@ class Enterprise_Catalog_Helper_Product extends Mage_Core_Helper_Abstract
                     ->setFlatAddFilterableAttributes($this->getFlatHelper()->isAddFilterableAttributes())
                     ->setFlatAddChildData($this->getFlatHelper()->isAddChildData())
                     ->getFlatIndexes();
-                if ($indexes !== null) {
+                if ($indexes !== null && !empty($indexes)) {
                     $this->_indexes = array_merge($this->_indexes, $indexes);
                 }
             }

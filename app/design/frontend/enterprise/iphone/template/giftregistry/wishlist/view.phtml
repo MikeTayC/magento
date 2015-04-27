@@ -4,24 +4,24 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
  * that is bundled with this package in the file LICENSE_EE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
+ * http://www.magento.com/license/enterprise-edition
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    design
  * @package     enterprise_iphone
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
 <?php
@@ -62,7 +62,7 @@ $entityValues = $this->getEntityValues();
                                 <?php endif ?>
                             </th>
                             <td colspan="2">
-                                <a href="<?php echo $this->getItemRemoveUrl($item) ?>" title="<?php echo $this->__('Remove Item') ?>" onclick="return confirmRemoveWishlistItem();" class="btn-remove"><?php echo $this->__('Remove item')?></a>
+                                <a href="<?php echo $this->getItemRemoveUrl($item) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove Item')) ?>" onclick="return confirmRemoveWishlistItem();" class="btn-remove"><?php echo $this->__('Remove item')?></a>
                                 <h2 class="product-name"><a href="<?php echo $this->getProductUrl($item) ?>"><?php echo $this->escapeHtml($product->getName()) ?></a></h2>
 
                                 <div class="added-on"><?php echo $this->__('Added On') ?> <span class="nobr"><?php echo $this->getFormatedDate($item->getAddedAt()) ?></span></div>
@@ -76,14 +76,14 @@ $entityValues = $this->getEntityValues();
                                 <?php endif; ?>
                                 <?php if ($product->isSaleable()): ?>
                                     <?php if ($isVisibleProduct): ?>
-                                    <button type="button" title="<?php echo $this->__('Add to Cart') ?>" onclick="addWItemToCart(<?php echo $item->getId(); ?>)" class="button btn-cart"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+                                    <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Add to Cart')) ?>" onclick="addWItemToCart(<?php echo $item->getId(); ?>)" class="button btn-cart"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
                                     <?php endif ?>
                                 <?php else: ?>
                                     <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
                                 <?php endif; ?>
 
                                 <div class="comment">
-                                    <textarea name="description[<?php echo $item->getWishlistItemId() ?>]" rows="3" cols="5" onfocus="focusComment(this)" onblur="focusComment(this)" title="<?php echo $this->__('Comment') ?>" placeholder="<?php echo $this->__('Comment') ?>"><?php echo $this->getCommentValue($item); ?></textarea>
+                                    <textarea name="description[<?php echo $item->getWishlistItemId() ?>]" rows="3" cols="5" onfocus="focusComment(this)" onblur="focusComment(this)" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Comment')) ?>" placeholder="<?php echo Mage::helper('core')->quoteEscape($this->__('Comment')) ?>"><?php echo $this->getCommentValue($item); ?></textarea>
                                 </div>
 
                             </td>
@@ -94,7 +94,7 @@ $entityValues = $this->getEntityValues();
                                 <?php if ($this->checkProductType($product)): ?>
                                 <div class="btn-gift-registry">
                                     <div class="input-box">
-                                        <select id="giftregistry_entity_<?php echo $item->getId() ?>" name="entity" title="<?php echo $this->__('Gift Registry') ?>" >
+                                        <select id="giftregistry_entity_<?php echo $item->getId() ?>" name="entity" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Gift Registry')) ?>" >
                                             <?php foreach ($entityValues as $_entity):?>
                                                 <option value="<?php echo $_entity->getValue()?>" title="<?php echo $this->escapeHtml($_entity->getTitle())?>"><?php echo $this->escapeHtml($this->helper('core/string')->truncate($_entity->getTitle(), 40))?></option>
                                             <?php endforeach;?>
@@ -110,11 +110,11 @@ $entityValues = $this->getEntityValues();
                 <?php endforeach ?>
             </table>
             <div class="buttons-set buttons-set2">
-                <button type="submit" onclick="this.name='save_and_share'" title="<?php echo $this->__('Share Wishlist') ?>" class="button btn-share"><span><span><?php echo $this->__('Share Wishlist') ?></span></span></button>
+                <button type="submit" onclick="this.name='save_and_share'" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Share Wishlist')) ?>" class="button btn-share"><span><span><?php echo $this->__('Share Wishlist') ?></span></span></button>
                 <?php if($this->isSaleable()):?>
-                    <button type="button" title="<?php echo $this->__('Add All to Cart') ?>" onclick="addAllWItemsToCart()" class="button btn-add"><span><span><?php echo $this->__('Add All to Cart') ?></span></span></button>
+                    <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Add All to Cart')) ?>" onclick="addAllWItemsToCart()" class="button btn-add"><span><span><?php echo $this->__('Add All to Cart') ?></span></span></button>
                 <?php endif;?>
-                <button type="submit" title="<?php echo $this->__('Update Wishlist') ?>" onclick="this.name='do'" class="button btn-update"><span><span><?php echo $this->__('Update Wishlist') ?></span></span></button>
+                <button type="submit" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Update Wishlist')) ?>" onclick="this.name='do'" class="button btn-update"><span><span><?php echo $this->__('Update Wishlist') ?></span></span></button>
             </div>
         </fieldset>
     </form>
@@ -143,7 +143,7 @@ $entityValues = $this->getEntityValues();
     }
 
     function confirmRemoveWishlistItem() {
-        return confirm('<?php echo $this->__('Are you sure you want to remove this product from your wishlist?') ?>');
+        return confirm('<?php echo Mage::helper('core')->jsQuoteEscape($this->__('Are you sure you want to remove this product from your wishlist?')) ?>');
     }
 
     function focusComment(obj) {

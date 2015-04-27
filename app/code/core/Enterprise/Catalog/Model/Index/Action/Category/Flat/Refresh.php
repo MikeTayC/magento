@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Catalog
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -862,6 +862,7 @@ class Enterprise_Catalog_Model_Index_Action_Category_Flat_Refresh extends Enterp
                                 array('store_id' => $store->getId())
                             )
                         );
+                        $category->unsetData();
                     }
                 }
                 foreach ($data as $row) {

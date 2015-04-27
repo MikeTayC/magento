@@ -20,13 +20,14 @@
  *
  * @category    Mage
  * @package     Mage
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
 // Change current directory to the directory of current script
 chdir(dirname(__FILE__));
 
+require 'app/bootstrap.php';
 require 'app/Mage.php';
 
 if (!Mage::isInstalled()) {

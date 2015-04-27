@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 /* @var $this Enterprise_CustomerBalance_Block_Checkout_Onepage_Payment_Additional */
@@ -33,7 +33,6 @@
 <?php if ($this->isDisplayContainer()): ?>
     <dl class="sp-methods checkout-onepage-payment-additional-customerbalance" id="customerbalance_placer">
         <dt>
-            <input type="hidden" name="payment[use_customer_balance]" value="0" />
             <input type="checkbox" class="checkbox" name="payment[use_customer_balance]" value="1" id="use_customer_balance" <?php echo ($this->isCustomerBalanceUsed() ? 'checked' : '') ?>/>
 
             <?php $balance = Mage::helper('core')->currency($this->getBalance()); ?>
@@ -80,14 +79,34 @@
                     }
                 }
                 if (elements[i].name == 'payment[method]' && elements[i].value == 'free') {
-                    elements[i].checked = false;
-                    elements[i].disabled = true;
-                    $(elements[i].parentNode).hide();
+                    if ($('use_customer_balance').checked) {
+                        elements[i].checked = false;
+                        elements[i].disabled = true;
+                        $(elements[i].parentNode).hide();
+                    } else {
+                        elements[i].checked = true;
+                        elements[i].disabled = false;
+                        $(elements[i].parentNode).show();
+                        payment.switchMethod('free');
+                    }
                 }
             }
             if ($('use_customer_balance').checked) {
                 $('checkout-payment-method-load').hide();
                 payment.switchMethod();
+            } else {
+                if (quoteBaseGrandTotal > 0) {
+                    $('checkout-payment-method-load').show();
+                    var elements = Form.getElements(this.form);
+                    for (var i = 0; i < elements.length; i++) {
+                        if (elements[i].name == 'payment[method]') {
+                            elements[i].disabled = false;
+                        }
+                    }
+                    if (payment.lastUsedMethod != 'free') {
+                        payment.switchMethod(payment.lastUsedMethod);
+                    }
+                }
             }
         } else {
             var elements = Form.getElements(this.form);
@@ -98,6 +117,15 @@
             }
             $('checkout-payment-method-load').show();
             payment.switchMethod(payment.lastUsedMethod);
+        }
+        if (quoteBaseGrandTotal > 0) {
+            if ($('dt_method_free')) {
+                $('dt_method_free').hide();
+                if ($('p_method_free')) {
+                    $('p_method_free').checked = false;
+                    $('p_method_free').disabled = true;
+                }
+            }
         }
     }
 

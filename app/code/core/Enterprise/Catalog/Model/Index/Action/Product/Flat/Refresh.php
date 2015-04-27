@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Catalog
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -482,12 +482,65 @@ class Enterprise_Catalog_Model_Index_Action_Product_Flat_Refresh extends Enterpr
             );
         }
 
+        $tableName = $this->_productHelper->getFlatTableName($this->_storeId);
+        $foreignEntityKey = $this->_connection->getForeignKeyName(
+            $tableName, 'entity_id', $this->_productHelper->getTable('catalog/product'), 'entity_id'
+        );
+        $foreignChildKey  = $this->_connection->getForeignKeyName(
+            $tableName, 'child_id', $this->_productHelper->getTable('catalog/product'), 'entity_id'
+        );
+
+        $table->addForeignKey($foreignEntityKey,
+            'entity_id', $this->_productHelper->getTable('catalog/product'), 'entity_id',
+            Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE);
+
+        if ($this->_productHelper->getFlatHelper()->isAddChildData()) {
+            $table->addForeignKey($foreignChildKey,
+                'child_id', $this->_productHelper->getTable('catalog/product'), 'entity_id',
+                Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE);
+        }
+
         $table->setComment("Catalog Product Flat (Store {$this->_storeId})");
 
+        $this->_dropOldForeignKeys($tableName);
         $this->_connection->dropTable(
             $this->_getTemporaryTableName($this->_productHelper->getFlatTableName($this->_storeId))
         );
         $this->_connection->createTable($table);
+
+        return $this;
+    }
+
+    /**
+     * Drop foreign keys from current active table
+     * to avoid keys name duplication during new table
+     * creation
+     *
+     * @param string $tableName
+     * @return Enterprise_Catalog_Model_Index_Action_Product_Flat_Refresh
+     */
+    protected function _dropOldForeignKeys($tableName)
+    {
+        $writeAdapter = $this->_connection;
+
+        if ($writeAdapter->isTableExists($tableName)) {
+
+            $writeAdapter->dropForeignKey(
+                $tableName,
+                $writeAdapter->getForeignKeyName(
+                    $tableName, 'entity_id', $this->_productHelper->getTable('catalog/product'), 'entity_id'
+                )
+            );
+
+            if ($this->_productHelper->getFlatHelper()->isAddChildData()) {
+                $writeAdapter->dropForeignKey(
+                    $tableName,
+                    $writeAdapter->getForeignKeyName(
+                        $tableName, 'child_id', $this->_productHelper->getTable('catalog/product'), 'entity_id'
+                    )
+                );
+            }
+        }
 
         return $this;
     }
@@ -528,8 +581,6 @@ class Enterprise_Catalog_Model_Index_Action_Product_Flat_Refresh extends Enterpr
         $statusConditions = array('e.entity_id = dstatus.entity_id',
             'dstatus.entity_type_id = ' . (int)$status->getEntityTypeId(), 'dstatus.store_id = ' . (int)$this->_storeId,
             'dstatus.attribute_id = ' . (int)$status->getId());
-        $statusExpression = $this->_connection->getIfNullSql('dstatus.value',
-            $this->_connection->quoteIdentifier("$statusTable.status"));
 
         $select->from(
             array('e' => $entityTemporaryTableName),
@@ -542,7 +593,7 @@ class Enterprise_Catalog_Model_Index_Action_Product_Flat_Refresh extends Enterpr
             array('dstatus' => $status->getBackend()->getTable()),
             implode(' AND ', $statusConditions),
             array()
-        )->where($statusExpression . ' = ' . Mage_Catalog_Model_Product_Status::STATUS_ENABLED);
+        );
 
         foreach ($tables as $tableName => $columns) {
             $columnValueNames        = array();
@@ -694,11 +745,12 @@ class Enterprise_Catalog_Model_Index_Action_Product_Flat_Refresh extends Enterpr
      *
      * @param int $storeId
      * @param array $changedIds
+     * @param bool $resetFlag
      *
      * @return Enterprise_Catalog_Model_Index_Action_Product_Flat_Refresh
      * @throws Exception
      */
-    protected function _reindex($storeId, array $changedIds = array())
+    protected function _reindex($storeId, array $changedIds = array(), $resetFlag = false)
     {
         $this->_storeId     = $storeId;
         $entityTableName    = $this->_productHelper->getTable('catalog/product');
@@ -709,7 +761,7 @@ class Enterprise_Catalog_Model_Index_Action_Product_Flat_Refresh extends Enterpr
 
         try {
             //We should prepare temp. tables only for first call of reindex all
-            if (!self::$_calls) {
+            if (!self::$_calls && !$resetFlag) {
                 $temporaryEavAttributes = $eavAttributes;
 
                 //add status global value to the base table

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -154,6 +154,7 @@ class Enterprise_Reward_Model_Resource_Reward_History_Collection extends Mage_Co
         $customer = Mage::getModel('customer/customer');
         /* @var $customer Mage_Customer_Model_Customer */
         $firstname  = $customer->getAttribute('firstname');
+        $middlename = $customer->getAttribute('middlename');
         $lastname   = $customer->getAttribute('lastname');
         $warningNotification = $customer->getAttribute('reward_warning_notification');
 
@@ -173,9 +174,19 @@ class Enterprise_Reward_Model_Resource_Reward_History_Collection extends Mage_Co
             )
             ->joinLeft(
                 array('clt' => $lastname->getBackend()->getTable()),
-                $connection->quoteInto('clt.entity_id=reward_table.customer_id AND clt.attribute_id = ?',
-                    $lastname->getAttributeId()),
+                $connection->quoteInto(
+                    'clt.entity_id=reward_table.customer_id AND clt.attribute_id = ?',
+                    $lastname->getAttributeId()
+                ),
                 array('customer_lastname' => 'value')
+            )
+            ->joinLeft(
+                array('crt' => $middlename->getBackend()->getTable()),
+                $connection->quoteInto(
+                    'crt.entity_id=reward_table.customer_id AND crt.attribute_id = ?',
+                    $middlename->getAttributeId()
+                ),
+                array('customer_middlename' => 'value')
             )
             ->joinLeft(
                 array('cft' => $firstname->getBackend()->getTable()),

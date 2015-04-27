@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -57,7 +57,7 @@
                             <a href="<?php echo $this->getItemsUrl($item)?>"><?php echo $this->__('Manage Items') ?></a> <span class="separator">|</span>
                             <a href="<?php echo $this->getShareUrl($item)?>"><?php echo $this->__('Share') ?></a> <span class="separator">|</span>
                             <a href="<?php echo $this->getEditUrl($item)?>"><?php echo $this->__('Edit') ?></a> <span class="separator">|</span>
-                            <a href="<?php echo $this->getDeleteUrl($item)?>" onclick="return confirm('<?php echo Mage::helper('enterprise_giftregistry')->__('Are you sure you want to delete this gift registry?'); ?>');"><?php echo $this->__('Delete') ?></a>
+                            <a href="<?php echo $this->getDeleteUrl($item)?>" onclick="return confirm('<?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('enterprise_giftregistry')->__('Are you sure you want to delete this gift registry?')); ?>');"><?php echo $this->__('Delete') ?></a>
                         </span>
                     </td>
                 </tr>

@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -55,7 +55,7 @@
             <td><?php echo $this->escapeHtml($item->getTitle()) ?></td>
             <td class="event-type"><?php echo $this->escapeHtml($item->getType()) ?></td>
             <td><span class="nobr"><?php echo $this->getFormattedDate($item) ?></span></td>
-            <td><a href="<?php echo $this->getRegistryLink($item) ?>" title="<?php echo $this->__('View') ?>"><?php echo $this->__('View') ?></a></td>
+            <td><a href="<?php echo $this->getRegistryLink($item) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('View')) ?>"><?php echo $this->__('View') ?></a></td>
         </tr>
     <?php endforeach; ?>
     </tbody>

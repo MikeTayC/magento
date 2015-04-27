@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -109,7 +109,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Daterange
         return '<a href="javascript:void(0)" class="rule-chooser-trigger"><img src="'
             . Mage::getDesign()->getSkinUrl('images/rule_chooser_trigger.gif')
             . '" alt="" class="v-middle rule-chooser-trigger"'
-            . 'title="' . Mage::helper('rule')->__('Open Chooser') . '" /></a>';
+            . 'title="' . Mage::helper('core')->quoteEscape(Mage::helper('rule')->__('Open Chooser')) . '" /></a>';
     }
 
     /**

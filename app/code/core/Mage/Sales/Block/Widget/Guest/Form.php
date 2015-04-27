@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -95,6 +95,6 @@ class Mage_Sales_Block_Widget_Guest_Form
      */
     public function getActionUrl()
     {
-        return $this->getUrl('sales/guest/view');
+        return $this->getUrl('sales/guest/view', array('_secure' => $this->_isSecure()));
     }
 }

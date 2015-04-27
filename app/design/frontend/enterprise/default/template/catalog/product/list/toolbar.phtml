@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -62,9 +62,9 @@
             <?php endforeach; ?>
             </select>
             <?php if($this->getCurrentDirection() == 'desc'): ?>
-                <a href="<?php echo $this->getOrderUrl(null, 'asc') ?>"><img src="<?php echo $this->getSkinUrl('images/sort_desc_arrow.gif') ?>" alt="<?php echo $this->__('Set Ascending Direction') ?>" class="v-middle" /></a>
+                <a href="<?php echo $this->getOrderUrl(null, 'asc') ?>"><img src="<?php echo $this->getSkinUrl('images/sort_desc_arrow.gif') ?>" alt="<?php echo Mage::helper('core')->quoteEscape($this->__('Set Ascending Direction')) ?>" class="v-middle" /></a>
             <?php else: ?>
-                <a href="<?php echo $this->getOrderUrl(null, 'desc') ?>"><img src="<?php echo $this->getSkinUrl('images/sort_asc_arrow.gif') ?>" alt="<?php echo $this->__('Set Descending Direction') ?>" class="v-middle" /></a>
+                <a href="<?php echo $this->getOrderUrl(null, 'desc') ?>"><img src="<?php echo $this->getSkinUrl('images/sort_asc_arrow.gif') ?>" alt="<?php echo Mage::helper('core')->quoteEscape($this->__('Set Descending Direction')) ?>" class="v-middle" /></a>
             <?php endif; ?>
         </div>
     </div>

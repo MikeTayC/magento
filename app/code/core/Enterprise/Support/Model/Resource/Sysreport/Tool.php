@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Support
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -571,6 +571,7 @@ class Enterprise_Support_Model_Resource_Sysreport_Tool
      */
     public function __construct()
     {
+        register_shutdown_function(array($this, 'destruct'));
         $this->_magentoVersion = Mage::getVersion();
         if (version_compare($this->_magentoVersion, self::REPORT_EARLIEST_SUPPORTED_MAGENTO_VERSION, '<')) {
             Mage::throwException(
@@ -593,9 +594,9 @@ class Enterprise_Support_Model_Resource_Sysreport_Tool
     }
 
     /**
-     * Clean up temporary files
+     * Clean up temporary files on shutdown
      */
-    public function __destruct()
+    public function destruct()
     {
         $edition   = strtolower($this->_magentoEdition);
         $localFile = Mage::getBaseDir('var') . DS . 'support' . DS;

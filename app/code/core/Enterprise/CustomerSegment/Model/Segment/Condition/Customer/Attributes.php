@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -153,6 +153,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Attributes
                 return 'select';
             case 'select':
             case 'multiselect':
+            case 'datetime':
             case 'date':
                 return $input;
             default:
@@ -179,6 +180,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Attributes
                 return 'select';
             case 'select':
             case 'multiselect':
+            case 'datetime':
             case 'date':
                 return $input;
             default:
@@ -197,6 +199,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Attributes
         if (is_object($this->getAttributeObject())) {
             switch ($this->getAttributeObject()->getFrontendInput()) {
                 case 'date':
+                case 'datetime':
                     $element->setImage(Mage::getDesign()->getSkinUrl('images/grid-cal.gif'));
                     break;
             }
@@ -205,7 +208,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Attributes
     }
 
     /**
-     * Chechk if attribute value should be explicit
+     * Check if attribute value should be explicit
      *
      * @return bool
      */
@@ -214,6 +217,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Customer_Attributes
         if (is_object($this->getAttributeObject())) {
             switch ($this->getAttributeObject()->getFrontendInput()) {
                 case 'date':
+                case 'datetime':
                     return true;
             }
         }

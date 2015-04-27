@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -102,15 +102,10 @@ class Enterprise_CustomerBalance_Model_Observer
     protected function _checkStoreCreditBalance(Mage_Sales_Model_Order $order)
     {
         if ($order->getBaseCustomerBalanceAmount() > 0) {
-            $websiteId = Mage::app()->getStore($order->getStoreId())->getWebsiteId();
-
-            $balance = Mage::getModel('enterprise_customerbalance/balance')
-                ->setCustomerId($order->getCustomerId())
-                ->setWebsiteId($websiteId)
-                ->loadByCustomer()
+            $baseBalance = Mage::helper('enterprise_customerbalance')->getCustomerBalanceModelFromSalesEntity($order)
                 ->getAmount();
 
-            if (($order->getBaseCustomerBalanceAmount() - $balance) >= 0.0001) {
+            if (($order->getBaseCustomerBalanceAmount() - $baseBalance) >= Mage_Sales_Helper_Data::PRECISION_VALUE) {
                 Mage::getSingleton('checkout/type_onepage')
                     ->getCheckout()
                     ->setUpdateSection('payment-method')
@@ -267,9 +262,7 @@ class Enterprise_CustomerBalance_Model_Observer
     protected function _importPaymentData($quote, $payment, $shouldUseBalance)
     {
         $store = Mage::app()->getStore($quote->getStoreId());
-        if (!$quote || !$quote->getCustomerId()
-            || $quote->getBaseGrandTotal() + $quote->getBaseCustomerBalanceAmountUsed() <= 0
-        ) {
+        if (!$quote || !$quote->getCustomerId()) {
             return;
         }
         $quote->setUseCustomerBalance($shouldUseBalance);
@@ -636,7 +629,7 @@ class Enterprise_CustomerBalance_Model_Observer
             }
 
             $value = abs($salesEntity->getDataUsingMethod($balanceField));
-            if ($value > 0.0001) {
+            if ($value >= Mage_Sales_Helper_Data::PRECISION_VALUE) {
                 $paypalCart->updateTotal(Mage_Paypal_Model_Cart::TOTAL_DISCOUNT, (float)$value,
                     Mage::helper('enterprise_customerbalance')->__('Store Credit (%s)', Mage::app()->getStore()->convertPrice($value, true, false))
                 );
@@ -669,5 +662,64 @@ class Enterprise_CustomerBalance_Model_Observer
         );
 
         $expressionTransferObject->setArguments($arguments);
+    }
+
+    /**
+     * Return funds to store credit
+     *
+     * @param   Varien_Event_Observer $observer
+     *
+     * @return Enterprise_CustomerBalance_Model_Observer|void
+     */
+    public function returnFundsToStoreCredit(Varien_Event_Observer $observer)
+    {
+        /** @var Mage_Sales_Model_Order $order */
+        $order = $observer->getEvent()->getOrder();
+
+        if (!$order) {
+            return $this;
+        }
+
+        $balance = $order->getBaseCustomerBalanceAmount();
+        $customerId = $order->getCustomerId();
+        if ($customerId && $balance > 0) {
+            /** @var Enterprise_CustomerBalance_Model_Balance $balanceModel */
+            Mage::getModel('enterprise_customerbalance/balance')
+                ->setCustomerId($customerId)
+                ->setWebsiteId(Mage::app()->getStore($order->getStoreId())->getWebsiteId())
+                ->setAmountDelta($balance)
+                ->setHistoryAction(Enterprise_CustomerBalance_Model_Balance_History::ACTION_REVERTED)
+                ->setOrder($order)
+                ->save();
+        }
+    }
+
+    /**
+     * Set virtual store credit amount to quote in case order editing when old order is not canceled yet,
+     * and new one needs potentially reverted store credit to be available
+     *
+     * @param Varien_Event_Observer $observer
+     *
+     * @return Enterprise_CustomerBalance_Model_Observer|void
+     */
+    public function setBaseCustomerBalanceVirtualAmountToQuote(Varien_Event_Observer $observer)
+    {
+        /** @var Mage_Sales_Model_Order $order */
+        $order = $observer->getEvent()->getOrder();
+
+        if ($order && !$order->getReordered()
+            && $order->getBaseCustomerBalanceAmount() >= Mage_Sales_Helper_Data::PRECISION_VALUE
+        ) {
+            /** @var Mage_Sales_Model_Quote $quote */
+            $quote = $observer->getEvent()->getQuote();
+
+            if (!$quote) {
+                return $this;
+            }
+
+            $quote->setUseCustomerBalance(true);
+            $quote->setBaseCustomerBalanceVirtualAmount($quote->getBaseCustomerBalanceVirtualAmount()
+                + $order->getBaseCustomerBalanceAmount());
+        }
     }
 }

@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -78,7 +78,7 @@ $entityValues = $this->getEntityValues();
                                 <h2 class="product-name"><a href="<?php echo $this->getProductUrl($item) ?>"><?php echo $this->escapeHtml($product->getName()) ?></a></h2>
                             </td>
                             <td>
-                                <textarea name="description[<?php echo $item->getWishlistItemId() ?>]" rows="3" cols="5" onfocus="focusComment(this)" onblur="focusComment(this)" title="<?php echo $this->__('Comment') ?>"><?php echo $this->getCommentValue($item); ?></textarea>
+                                <textarea name="description[<?php echo $item->getWishlistItemId() ?>]" rows="3" cols="5" onfocus="focusComment(this)" onblur="focusComment(this)" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Comment')) ?>"><?php echo $this->getCommentValue($item); ?></textarea>
                             </td>
                             <td>
                                 <span class="nobr"><?php echo $this->getFormatedDate($item->getAddedAt()) ?></span>
@@ -88,7 +88,7 @@ $entityValues = $this->getEntityValues();
                                 <?php if ($this->checkProductType($product)): ?>
                                 <div class="btn-gift-registry">
                                     <div class="input-box">
-                                        <select id="giftregistry_entity_<?php echo $item->getId() ?>" name="entity" title="<?php echo $this->__('Gift Registry') ?>" >
+                                        <select id="giftregistry_entity_<?php echo $item->getId() ?>" name="entity" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Gift Registry')) ?>" >
                                             <?php foreach ($entityValues as $_entity):?>
                                                 <option value="<?php echo $_entity->getValue()?>" title="<?php echo $this->escapeHtml($_entity->getTitle())?>"><?php echo $this->escapeHtml($this->helper('core/string')->truncate($_entity->getTitle(), 40))?></option>
                                             <?php endforeach;?>
@@ -105,7 +105,7 @@ $entityValues = $this->getEntityValues();
                             <?php endif; ?>
                             <?php if ($product->isSaleable()): ?>
                                 <?php if ($isVisibleProduct): ?>
-                                <button type="button" title="<?php echo $this->__('Add to Cart') ?>" onclick="addWItemToCart(<?php echo $item->getId(); ?>)" class="button btn-cart"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+                                <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Add to Cart')) ?>" onclick="addWItemToCart(<?php echo $item->getId(); ?>)" class="button btn-cart"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
                                 <?php endif ?>
                             <?php else: ?>
                                 <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
@@ -115,7 +115,7 @@ $entityValues = $this->getEntityValues();
                                 <?php endif ?>
                             </td>
                             <td>
-                                <a href="<?php echo $this->getItemRemoveUrl($item) ?>" title="<?php echo $this->__('Remove Item') ?>" onclick="return confirmRemoveWishlistItem();" class="btn-remove btn-remove2"><?php echo $this->__('Remove item')?></a>
+                                <a href="<?php echo $this->getItemRemoveUrl($item) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove Item')) ?>" onclick="return confirmRemoveWishlistItem();" class="btn-remove btn-remove2"><?php echo $this->__('Remove item')?></a>
                             </td>
                         </tr>
                         <tr>
@@ -129,11 +129,11 @@ $entityValues = $this->getEntityValues();
             </table>
             <script type="text/javascript">decorateTable('wishlist-table', {'tbody' : ['odd', 'even', 'first', 'last'], 'tbody tr' : ['first', 'last']})</script>
             <div class="buttons-set buttons-set2">
-                <button type="submit" onclick="this.name='save_and_share'" title="<?php echo $this->__('Share Wishlist') ?>" class="button btn-share"><span><span><?php echo $this->__('Share Wishlist') ?></span></span></button>
+                <button type="submit" onclick="this.name='save_and_share'" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Share Wishlist')) ?>" class="button btn-share"><span><span><?php echo $this->__('Share Wishlist') ?></span></span></button>
                 <?php if($this->isSaleable()):?>
-                    <button type="button" title="<?php echo $this->__('Add All to Cart') ?>" onclick="addAllWItemsToCart()" class="button btn-add"><span><span><?php echo $this->__('Add All to Cart') ?></span></span></button>
+                    <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Add All to Cart')) ?>" onclick="addAllWItemsToCart()" class="button btn-add"><span><span><?php echo $this->__('Add All to Cart') ?></span></span></button>
                 <?php endif;?>
-                <button type="submit" title="<?php echo $this->__('Update Wishlist') ?>" onclick="this.name='do'" class="button btn-update"><span><span><?php echo $this->__('Update Wishlist') ?></span></span></button>
+                <button type="submit" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Update Wishlist')) ?>" onclick="this.name='do'" class="button btn-update"><span><span><?php echo $this->__('Update Wishlist') ?></span></span></button>
             </div>
         </div>
     </form>
@@ -162,7 +162,7 @@ $entityValues = $this->getEntityValues();
     }
 
     function confirmRemoveWishlistItem() {
-        return confirm('<?php echo $this->__('Are you sure you want to remove this product from your wishlist?') ?>');
+        return confirm('<?php echo Mage::helper('core')->jsQuoteEscape($this->__('Are you sure you want to remove this product from your wishlist?')) ?>');
     }
 
     function focusComment(obj) {

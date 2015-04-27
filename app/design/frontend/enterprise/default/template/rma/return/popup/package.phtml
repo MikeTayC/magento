@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -28,8 +28,8 @@
 <?php  $_results = $this->getPackageInfo() ?>
 <div class="page-title title-buttons">
     <h1><?php echo $this->__('Packages'); ?></h1>
-    <button class="button" type="button" title="<?php echo $this->__('Print') ?>" onclick="setLocation('<?php echo $this->getPrintPackageUrl() ?>');return false;"><span><span><?php echo $this->__('Print') ?></span></span></button>
-    <button class="button" type="button" title="<?php echo $this->__('Close Window') ?>" onclick="window.close(); window.opener.focus();"><span><span><?php echo $this->__('Close Window') ?></span></span></button>
+    <button class="button" type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Print')) ?>" onclick="setLocation('<?php echo $this->getPrintPackageUrl() ?>');return false;"><span><span><?php echo $this->__('Print') ?></span></span></button>
+    <button class="button" type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Close Window')) ?>" onclick="window.close(); window.opener.focus();"><span><span><?php echo $this->__('Close Window') ?></span></span></button>
 </div>
 <div class="packed-content">
 <?php foreach ($this->getPackages() as $packageId => $package): ?>
@@ -108,6 +108,6 @@
 <?php endforeach; ?>
 </div>
 <div class="buttons-set">
-    <button class="button" type="button" title="<?php echo $this->__('Close Window') ?>" onclick="window.close(); window.opener.focus();"><span><span><?php echo $this->__('Close Window') ?></span></span></button>
-    <button class="button" type="button" title="<?php echo $this->__('Print') ?>" onclick="setLocation('<?php echo $this->getPrintPackageUrl() ?>');return false;"><span><span><?php echo $this->__('Print') ?></span></span></button>
+    <button class="button" type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Close Window')) ?>" onclick="window.close(); window.opener.focus();"><span><span><?php echo $this->__('Close Window') ?></span></span></button>
+    <button class="button" type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Print')) ?>" onclick="setLocation('<?php echo $this->getPrintPackageUrl() ?>');return false;"><span><span><?php echo $this->__('Print') ?></span></span></button>
 </div>

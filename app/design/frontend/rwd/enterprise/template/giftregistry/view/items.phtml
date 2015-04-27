@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -63,7 +63,7 @@
                 <?php if ($_itemsCount): ?>
                 <tr>
                     <td colspan="50" class="a-right">
-                        <button type="submit" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-update"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+                        <button type="submit" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Add to Cart')) ?>" class="button btn-update"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
                     </td>
                 </tr>
                 <?php endif; ?>

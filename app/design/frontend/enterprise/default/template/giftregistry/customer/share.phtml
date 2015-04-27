@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -48,11 +48,11 @@
         li_mail.addClassName('fields');
 
         if (i!=0) {
-            li_mail.innerHTML = '<p class="btn-remove"><a href="delete_email" onclick="remove_recipient('+i+'); return false" class="btn-remove"><img src="<?php echo $this->getSkinUrl('images/btn_remove.gif') ?>" alt="<?php echo $this->__('Remove Email') ?>" /><\/a><\/p>'
+            li_mail.innerHTML = '<p class="btn-remove"><a href="delete_email" onclick="remove_recipient('+i+'); return false" class="btn-remove"><img src="<?php echo $this->getSkinUrl('images/btn_remove.gif') ?>" alt="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove Email'), true) ?>" /><\/a><\/p>'
             li_mail.addClassName('add-row');
         }
-        li_mail.innerHTML += '<div class="field"><label for="recipients_name'+i+'" class="required"><em>*<\/em> <?php echo $this->__('Name:') ?><\/label><div class="input-box"><input name="recipients['+i+'][name]" type="text" value="'+name+'" class="input-text required-entry" id="recipients_name'+i+'" /><\/div><\/div>';
-        li_mail.innerHTML += '<div class="field"><label for="recipients_email'+i+'" class="required"><em>*<\/em> <?php echo $this->__('Email Address:') ?><\/label><div class="input-box"><input name="recipients['+i+'][email]" value="'+email+'" title="<?php echo $this->__('Email Address') ?>" id="recipients_email'+i+'" type="text" class="input-text required-entry validate-email" /><\/div><\/div>';
+        li_mail.innerHTML += '<div class="field"><label for="recipients_name'+i+'" class="required"><em>*<\/em> <?php echo Mage::helper('core')->jsQuoteEscape($this->__('Name:')) ?><\/label><div class="input-box"><input name="recipients['+i+'][name]" type="text" value="'+name+'" class="input-text required-entry" id="recipients_name'+i+'" /><\/div><\/div>';
+        li_mail.innerHTML += '<div class="field"><label for="recipients_email'+i+'" class="required"><em>*<\/em> <?php echo Mage::helper('core')->jsQuoteEscape($this->__('Email Address:')) ?><\/label><div class="input-box"><input name="recipients['+i+'][email]" value="'+email+'" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Email Address'), true) ?>" id="recipients_email'+i+'" type="text" class="input-text required-entry validate-email" /><\/div><\/div>';
         i++;
         recipCount++;
         if(recipCount>=maxRecip && maxRecip != 0) {
@@ -78,7 +78,7 @@
                 <div class="field">
                     <label for="sender_name" class="required"><em>*</em><?php echo $this->__('Name:') ?></label>
                     <div class="input-box">
-                        <input name="sender_name" value="<?php if ($this->getFormData('sender_name')): ?><?php echo $this->getFormData('sender_name') ?><?php else:?><?php echo $this->getCustomerName() ?><?php endif;?>" title="<?php echo $this->__('Name') ?>" id="sender_name" type="text" class="input-text required-entry" />
+                        <input name="sender_name" value="<?php if ($this->getFormData('sender_name')): ?><?php echo $this->getFormData('sender_name') ?><?php else:?><?php echo $this->getCustomerName() ?><?php endif;?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Name')) ?>" id="sender_name" type="text" class="input-text required-entry" />
                     </div>
                 </div>
                 <div class="field">

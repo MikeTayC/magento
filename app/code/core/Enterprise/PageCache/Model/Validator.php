@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -68,6 +68,10 @@ class Enterprise_PageCache_Model_Validator
         'Mage_Poll_Model_Poll',
     );
 
+    protected $_skipCleanCache = array(
+        'Mage_Catalog_Model_Category',
+        'Mage_Catalog_Model_Product',
+    );
 
     /**
      * Mark full page cache as invalidated
@@ -149,9 +153,13 @@ class Enterprise_PageCache_Model_Validator
      */
     public function cleanEntityCache(Mage_Core_Model_Abstract $object)
     {
-        $tags = $object->getCacheIdTags();
-        if (!empty($tags)) {
-            $this->_getCacheInstance()->clean($tags);
+        $classes = $this->_getObjectClasses($object);
+        $intersect = array_intersect($this->_skipCleanCache, $classes);
+        if (empty($intersect)) {
+            $tags = $object->getCacheIdTags();
+            if (!empty($tags)) {
+                $this->_getCacheInstance()->clean($tags);
+            }
         }
         return $this;
     }

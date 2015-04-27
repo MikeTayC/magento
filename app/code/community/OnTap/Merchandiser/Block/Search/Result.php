@@ -20,7 +20,7 @@
  *
  * @category    OnTap
  * @package     OnTap_Merchandiser
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 class OnTap_Merchandiser_Block_Search_Result extends Mage_Adminhtml_Block_Abstract
@@ -84,7 +84,7 @@ class OnTap_Merchandiser_Block_Search_Result extends Mage_Adminhtml_Block_Abstra
         $params = $this->getRequest()->getParams();
 
         $productCollection = Mage::getModel('catalog/product')->getCollection();
-        $productCollection->addAttributeToSelect(array('name' , 'type'));
+        $productCollection->addAttributeToSelect('*');
         $productCollection->addAttributeToFilter(
             array(
                 array('attribute'=>'name', array('like' => "%".$params['q']."%")),

@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 /** @var $this Enterprise_Rma_Block_Return_View */
@@ -80,7 +80,7 @@
                             <a class="f-left"
                                 href="#"
                                 onclick="popWin('<?php echo $this->helper('enterprise_rma')->getTrackingPopupUrlBySalesModel($this->getRma()) ?>','trackshipment','width=800,height=600,top=0,left=0,resizable=yes,scrollbars=yes'); return false;"
-                                title="<?php echo $this->__('Track this shipment') ?>">
+                                title="<?php echo Mage::helper('core')->quoteEscape($this->__('Track this shipment')) ?>">
                                     <?php echo $this->__('Track this shipment') ?>
                             </a>
                         <?php endif ?>
@@ -119,7 +119,7 @@
                                             <input type="text" class="input-text required-entry f-fix" value="" name="tracking_number_input" id="tracking_number_input">
                                         </td>
                                         <td>
-                                            <button type="button" class="button" onclick="addTrackNumber()" title="<?php echo $this->__('Add') ?>"><span><span><?php echo $this->__('Add') ?></span></span></button>
+                                            <button type="button" class="button" onclick="addTrackNumber()" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Add')) ?>"><span><span><?php echo $this->__('Add') ?></span></span></button>
                                         </td>
                                     </tr>
                                 </tfoot>

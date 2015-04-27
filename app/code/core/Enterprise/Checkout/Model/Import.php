@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -53,10 +53,17 @@ class Enterprise_Checkout_Model_Import extends Varien_Object
         'csv'
     );
 
+    public function __construct()
+    {
+        // Initialize shutdown function
+        register_shutdown_function(array($this, 'destruct'));
+        parent::__construct();
+    }
+
     /**
-     * Destructor, removes uploaded file
+     * Removes uploaded file on shutdown
      */
-    public function __destruct()
+    public function destruct()
     {
         if (!empty($this->_uploadedFile)) {
             unlink($this->_uploadedFile);

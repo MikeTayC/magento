@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -95,11 +95,15 @@ class Enterprise_Staging_Block_Adminhtml_Backup_Edit extends Mage_Adminhtml_Bloc
                 ))
         );
 
+        $confirmationMessage = Mage::helper('core')->jsQuoteEscape(
+            Mage::helper('enterprise_staging')->__('Are you sure?')
+        );
         $this->setChild('delete_button',
             $this->getLayout()->createBlock('adminhtml/widget_button')
                 ->setData(array(
                     'label'     => Mage::helper('enterprise_staging')->__('Delete'),
-                    'onclick'   => 'confirmSetLocation(\''.Mage::helper('enterprise_staging')->__('Are you sure?').'\', \''.$this->getDeleteUrl().'\')',
+                    'onclick'   => 'confirmSetLocation(\'' . $confirmationMessage . '\', \'' . $this->getDeleteUrl()
+                        . '\')',
                     'class'  => 'delete'
                 ))
         );

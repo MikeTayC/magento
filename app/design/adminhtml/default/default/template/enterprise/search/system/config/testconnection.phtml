@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -45,11 +45,11 @@
         new Ajax.Request('<?php echo $this->getAjaxUrl() ?>', {
             parameters: params,
             onSuccess: function(response) {
-                result = '<?php echo $this->__('Connection failed! Test again?') ?>';
+                result = '<?php echo Mage::helper('core')->jsQuoteEscape($this->__('Connection failed! Test again?')) ?>';
                 try {
                     response = response.responseText;
                     if (response == 1) {
-                        result = '<?php echo $this->__('Successful! Test again?') ?>';
+                        result = '<?php echo Mage::helper('core')->jsQuoteEscape($this->__('Successful! Test again?')) ?>';
                         elem.removeClassName('fail').addClassName('success')
                     } else {
                         elem.removeClassName('success').addClassName('fail')

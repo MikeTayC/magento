@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
@@ -149,6 +149,14 @@
             </updates>
         </layout>
         <events>
+            <adminhtml_cms_page_grid_renderer_action_before_render>
+                <observers>
+                    <enterprise_cms>
+                        <class>enterprise_cms/observer</class>
+                        <method>prepareAdmihtmlCmsPageRowPreviewUrl</method>
+                    </enterprise_cms>
+                </observers>
+            </adminhtml_cms_page_grid_renderer_action_before_render>
             <adminhtml_cms_page_edit_tab_main_prepare_form>
                 <observers>
                     <enterprise_cms>

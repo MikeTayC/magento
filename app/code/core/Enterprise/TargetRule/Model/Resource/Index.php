@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -371,41 +371,8 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Index_Model_Resour
      */
     public function getOperatorCondition($field, $operator, $value)
     {
-        switch ($operator) {
-            case '!=':
-            case '>=':
-            case '<=':
-            case '>':
-            case '<':
-                $selectOperator = sprintf('%s?', $operator);
-                break;
-            case '{}':
-            case '!{}':
-                if ($field == 'category_id' && is_array($value)) {
-                    $selectOperator = ' IN (?)';
-                } else {
-                    $selectOperator = ' LIKE ?';
-                    $value          = '%' . $value . '%';
-                }
-                if (substr($operator, 0, 1) == '!') {
-                    $selectOperator = ' NOT' . $selectOperator;
-                }
-                break;
-
-            case '()':
-                $selectOperator = ' IN(?)';
-                break;
-
-            case '!()':
-                $selectOperator = ' NOT IN(?)';
-                break;
-
-            default:
-                $selectOperator = '=?';
-                break;
-        }
-        $field = $this->_getReadAdapter()->quoteIdentifier($field);
-        return $this->_getReadAdapter()->quoteInto("{$field}{$selectOperator}", $value);
+        return Mage::getResourceModel('rule/rule_condition_sqlBuilder')
+            ->getOperatorCondition($field, $operator, $value);
     }
 
     /**
@@ -441,11 +408,13 @@ class Enterprise_TargetRule_Model_Resource_Index extends Mage_Index_Model_Resour
                 $callback[] = 'bindLikeValue';
                 break;
 
+            case '[]':
             case '()':
                 $condition = $this->getReadConnection()
                     ->prepareSqlCondition($bindName, array('finset' => new Zend_Db_Expr($field)));
                 break;
 
+            case '![]':
             case '!()':
                 $condition = $this->getReadConnection()
                     ->prepareSqlCondition($bindName, array('finset' => new Zend_Db_Expr($field)));

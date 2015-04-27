@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Customer
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
@@ -42,8 +42,8 @@
                             <show_in_store>0</show_in_store>
                         </prefix_show>
                         <middlename_show>
-                            <show_in_default>0</show_in_default>
-                            <show_in_website>0</show_in_website>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </middlename_show>
                         <suffix_show>

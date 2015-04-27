@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCard
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -96,16 +96,14 @@ class Enterprise_GiftCard_Block_Catalog_Product_View_Type_Giftcard extends Mage_
         return true;
     }
 
+    /**
+     * Get customer name from session
+     *
+     * @return string
+     */
     public function getCustomerName()
     {
-        $firstName = (string)Mage::getSingleton('customer/session')->getCustomer()->getFirstname();
-        $lastName  = (string)Mage::getSingleton('customer/session')->getCustomer()->getLastname();
-
-        if ($firstName && $lastName) {
-            return $firstName . ' ' . $lastName;
-        } else {
-            return '';
-        }
+        return (string) Mage::getSingleton('customer/session')->getCustomer()->getName();
     }
 
     public function getCustomerEmail()

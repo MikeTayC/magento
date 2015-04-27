@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -33,11 +33,11 @@ var elementRadioTemplate =
     '<div class="input-box">'+
          '<input name="billing[use_for_shipping]" id="billing:use_gift_registry_address" value="2" onclick="$(\'shipping:same_as_billing\').checked = false;" class="radio" type="radio">'+
     '<\/div>'+
-    '<label for="billing:use_gift_registry_address"><?php echo $this->__("Ship to recipient\'s address") ?><\/label>';
+    '<label for="billing:use_gift_registry_address"><?php echo Mage::helper('core')->jsQuoteEscape($this->__("Ship to recipient's address")) ?><\/label>';
 
 var elementCheckboxTemplate =
-    '<input type="checkbox" title="<?php echo $this->__('Use gift registry shipping address') ?>" class="checkbox" onclick="giftregistry.checkAddress()" value="<?php echo $this->getAddressIdPrefix(); ?><?php echo $this->getItem(); ?>" id="use_gr_address" name="shipping_address_id" \/> ' +
-    '<label for="use_gr_address"><?php echo $this->__('Use gift registry shipping address') ?><\/label>';
+    '<input type="checkbox" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Use gift registry shipping address')) ?>" class="checkbox" onclick="giftregistry.checkAddress()" value="<?php echo $this->getAddressIdPrefix(); ?><?php echo $this->getItem(); ?>" id="use_gr_address" name="shipping_address_id" \/> ' +
+    '<label for="use_gr_address"><?php echo Mage::helper('core')->jsQuoteEscape($this->__('Use gift registry shipping address')) ?><\/label>';
 
 var GiftRegistryCheckout = Class.create();
 GiftRegistryCheckout.prototype = {

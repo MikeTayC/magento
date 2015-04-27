@@ -20,13 +20,13 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
 /**
  * Ip-address grid filter
- * @deprecated See Replaced with Enterprise_Logging_Block_Adminhtml_Index_Grid::_ipFilterCallback
+ * @deprecated since EE 1.14.2.0. See Replaced with Enterprise_Logging_Block_Adminhtml_Index_Grid::_ipFilterCallback
  */
 class Enterprise_Logging_Block_Adminhtml_Grid_Filter_Ip extends Mage_Adminhtml_Block_Widget_Grid_Column_Filter_Text
 {
@@ -38,8 +38,10 @@ class Enterprise_Logging_Block_Adminhtml_Grid_Filter_Ip extends Mage_Adminhtml_B
     public function getCondition()
     {
         $value = $this->getValue();
-        if (preg_match('/^(\d+\.){3}\d+$/', $value)) {
-            return ip2long($value);
+        if (preg_match('/^(\d+\.){3}\d+$/', $value)
+            || preg_match('/^(([0-9a-f]{1,4})?(:([0-9a-f]{1,4})?){1,}:([0-9a-f]{1,4}))(%[0-9a-z]+)?$/i', $value)
+        ) {
+            return inet_pton($value);
         }
         $expr = Mage::getResourceHelper('enterprise_logging')->getInetNtoaExpr();
         return array('field_expr' => $expr, 'like' => "%{$this->_escapeValue($value)}%");

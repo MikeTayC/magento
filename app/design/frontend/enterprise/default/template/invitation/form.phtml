@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -43,7 +43,7 @@
             <li>
                 <label for="email_<?php echo $_index ?>"<?php if ($_index == 1) echo ' class="required"' ?>><?php if ($_index == 1) echo '<em>*</em>' ?><?php echo $_index; ?>:</label>
                 <div class="input-box">
-                    <input tabindex="<?php echo $_index ?>" name="email[]" id="email_<?php echo $_index ?>" title="<?php echo Mage::helper('enterprise_invitation')->__('Email') ?>" value="" class="<?php if ($_index == 1): ?>required-entry <?php endif;?>input-text validate-email" type="text" />
+                    <input tabindex="<?php echo $_index ?>" name="email[]" id="email_<?php echo $_index ?>" title="<?php echo Mage::helper('core')->quoteEscape(Mage::helper('enterprise_invitation')->__('Email')) ?>" value="" class="<?php if ($_index == 1): ?>required-entry <?php endif;?>input-text validate-email" type="text" />
                 </div>
             </li>
             <?php endfor; ?>
@@ -51,7 +51,7 @@
             <li>
                 <label for="message"><?php echo Mage::helper('enterprise_invitation')->__('Message');?>: </label>
                 <div class="input-box">
-                    <textarea tabindex="<?php echo $_index+1 ?>" name="message" id="message" title="<?php echo Mage::helper('enterprise_invitation')->__('Message') ?>"  class="input-text" rows="5" cols="5"></textarea>
+                    <textarea tabindex="<?php echo $_index+1 ?>" name="message" id="message" title="<?php echo Mage::helper('core')->quoteEscape(Mage::helper('enterprise_invitation')->__('Message')) ?>"  class="input-text" rows="5" cols="5"></textarea>
                 </div>
             </li>
         </ul>

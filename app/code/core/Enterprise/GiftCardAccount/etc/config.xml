@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
@@ -381,6 +381,15 @@
                     </enterprise_giftcardaccount>
                 </observers>
             </sales_prepare_amount_expression>
+
+            <sales_convert_order_to_quote>
+                <observers>
+                    <enterprise_giftcardaccount>
+                        <class>enterprise_giftcardaccount/observer</class>
+                        <method>setBaseCustomerBalanceVirtualAmountToQuote</method>
+                    </enterprise_giftcardaccount>
+                </observers>
+            </sales_convert_order_to_quote>
         </events>
     </adminhtml>
     <default>

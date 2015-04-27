@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -101,7 +101,7 @@ class Enterprise_GiftRegistry_Block_Items extends Mage_Checkout_Block_Cart
      */
     public function getActionUrl()
     {
-        return $this->getUrl('*/*/addToCart', array('_current' => true));
+        return $this->getUrl('*/*/addToCart', array('_current' => true, '_secure' => $this->_isSecure()));
     }
 
     /**
@@ -111,7 +111,7 @@ class Enterprise_GiftRegistry_Block_Items extends Mage_Checkout_Block_Cart
      */
     public function getActionUpdateUrl()
     {
-        return $this->getUrl('*/*/updateItems', array('_current' => true));
+        return $this->getUrl('*/*/updateItems', array('_current' => true, '_secure' => $this->_isSecure()));
     }
 
     /**

@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 /* @var $this Enterprise_TargetRule_Block_Catalog_Product_List_Related */
@@ -63,13 +63,13 @@
                 elem.checked = true;
             });
             relatedProductsCheckFlag = true;
-            txt.innerHTML="<strong><?php echo $this->__('unselect all') ?><\/strong>";
+            txt.innerHTML = "<strong><?php echo $this->jsQuoteEscape($this->__('unselect all')) ?><\/strong>";
         } else {
             $$('.related-checkbox').each(function(elem){
                 elem.checked = false;
             });
             relatedProductsCheckFlag = false;
-            txt.innerHTML="<strong><?php echo $this->__('select all') ?><\/strong>";
+            txt.innerHTML = "<strong><?php echo $this->jsQuoteEscape($this->__('select all')) ?><\/strong>";
         }
         addRelatedToProduct();
     }

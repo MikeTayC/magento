@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Catalog
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
@@ -418,6 +418,14 @@
                     </enterprise_product_flat>
                 </observers>
             </controller_action_postdispatch_adminhtml_catalog_product_action_attribute_save>
+            <catalog_controller_product_mass_status>
+                <observers>
+                    <enterprise_product_flat>
+                        <class>enterprise_catalog/index_observer_flat</class>
+                        <method>processMassStatusUpdate</method>
+                    </enterprise_product_flat>
+                </observers>
+            </catalog_controller_product_mass_status>
             <sitemap_categories_generating_before>
                 <observers>
                     <set_category_url_suffix>

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -116,11 +116,8 @@ extends Mage_Core_Block_Template
                 return false;
             }
 
-            $store = Mage::app()->getStore($quote->getStoreId());
-            $this->_balanceInstance = Mage::getModel('enterprise_customerbalance/balance')
-                ->setCustomerId($quote->getCustomerId())
-                ->setWebsiteId($store->getWebsiteId())
-                ->loadByCustomer();
+            $this->_balanceInstance = Mage::helper('enterprise_customerbalance')
+                ->getCustomerBalanceModelFromSalesEntity($quote);
         }
         return $this->_balanceInstance;
     }

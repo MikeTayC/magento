@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 /** @var $this Enterprise_Rma_Block_Return_Create */
@@ -347,7 +347,7 @@
 
     <div class="buttons-set form-buttons">
         <p class="back-link a-left"><a href="<?php echo $this->getBackUrl() ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
-        <button type="submit" class="button" id="submit.save" title="<?php echo $this->__('Save') ?>"><span><span><?php echo $this->__('Submit') ?></span></span></button>
+        <button type="submit" class="button" id="submit.save" title="<?php echo $this->quoteEscape($this->__('Save')) ?>"><span><span><?php echo $this->__('Submit') ?></span></span></button>
     </div>
 </form>
 
@@ -423,7 +423,7 @@ document.observe("dom:loaded", function() {
 
 <?php if(!empty($html)): ?>
     <?php foreach($html as $key=>$value): ?>
-    Validation.add('validate-one-checkbox-<?php echo $key?>', '<?php echo $this->__('Please select one of the options.')?>', function(value, entity) {
+    Validation.add('validate-one-checkbox-<?php echo $key?>', '<?php echo $this->jsQuoteEscape($this->__('Please select one of the options.')) ?>', function(value, entity) {
         var error = 1;
         $$('input[id*="][<?php echo $key?>][checkbox][item]["]').each(function(input) {
             if(input.checked == true) {

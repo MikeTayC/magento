@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -29,9 +29,9 @@
     <div class="add-to-cart">
         <?php if(!$_product->isGrouped()): ?>
         <label for="qty"><?php echo $this->__('Qty:') ?></label>
-        <input type="text" name="qty" id="qty" maxlength="12" value="<?php echo $this->getMinimalQty($_product) ?>" title="<?php echo $this->__('Qty') ?>" class="input-text qty" />
+        <input type="text" name="qty" id="qty" maxlength="12" value="<?php echo $this->getMinimalQty($_product) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Qty')) ?>" class="input-text qty" />
         <?php endif; ?>
-        <button type="button" title="<?php echo $this->__('Add to Gift Registry') ?>" class="button btn-cart btn-gr" onclick="productAddToCartForm.submit(this)"><span><span><?php echo $this->__('Add to Gift Registry') ?></span></span></button>
+        <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Add to Gift Registry')) ?>" class="button btn-cart btn-gr" onclick="productAddToCartForm.submit(this)"><span><span><?php echo $this->__('Add to Gift Registry') ?></span></span></button>
     </div>
 <?php endif; ?>
 <script type="text/javascript">

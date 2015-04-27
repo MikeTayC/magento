@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -37,13 +37,13 @@
         <li>
             <label for="title" class="required"><em>*</em><?php echo $this->__('Event') ?></label>
             <div class="input-box">
-                <input type="text" name="title" id="title" value="<?php echo $this->escapeHtml($this->getEntity()->getTitle());?>" title="<?php echo $this->__('Event') ?>" class="input-text required-entry" />
+                <input type="text" name="title" id="title" value="<?php echo $this->escapeHtml($this->getEntity()->getTitle());?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Event')) ?>" class="input-text required-entry" />
             </div>
         </li>
         <li>
             <label for="message" class="required"><em>*</em><?php echo $this->__('Message') ?></label>
             <div class="input-box">
-                <textarea name="message" id="message" cols="5" rows="3" title="<?php echo $this->__('Message') ?>" class="required-entry" ><?php echo $this->escapeHtml($this->getEntity()->getMessage());?></textarea>
+                <textarea name="message" id="message" cols="5" rows="3" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Message')) ?>" class="required-entry" ><?php echo $this->escapeHtml($this->getEntity()->getMessage());?></textarea>
             </div>
         </li>
         <li>

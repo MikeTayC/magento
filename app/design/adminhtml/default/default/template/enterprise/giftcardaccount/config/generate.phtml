@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -45,7 +45,7 @@ echo Mage::helper('enterprise_giftcardaccount')->__('Code Pool used: <b>%.2f%%</
 function redirectToGeneration()
 {
     var url = '<?php echo Mage::getSingleton('adminhtml/url')->getUrl('*/giftcardaccount/generate'); ?>';
-    if (confirm('<?php echo Mage::helper('enterprise_giftcardaccount')->__('Do you really want to proceed? All unsaved changes will be lost.'); ?>')) {
+    if (confirm('<?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('enterprise_giftcardaccount')->__('Do you really want to proceed? All unsaved changes will be lost.')); ?>')) {
         if (Prototype.Browser.IE) {
             var generateLink = new Element('a', {href: url});
             $$('body')[0].insert(generateLink);

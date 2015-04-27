@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -82,7 +82,7 @@
         <?php if ($_item->getRemainingQty() < 1):?>
             <?php echo $this->__('Fulfilled')?>
         <?php else:?>
-            <input type="number" name="items[<?php echo $_item->getItemId() ?>][qty]" pattern="\d*" value="0" size="4" title="<?php echo $this->__('Qty') ?>" class="input-text qty" maxlength="12" />
+            <input type="number" name="items[<?php echo $_item->getItemId() ?>][qty]" pattern="\d*" value="0" size="4" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Qty')) ?>" class="input-text qty" maxlength="12" />
         <?php endif;?>
     </td>
 </tr>

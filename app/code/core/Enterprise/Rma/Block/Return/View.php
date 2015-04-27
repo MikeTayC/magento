@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -229,7 +229,10 @@ class Enterprise_Rma_Block_Return_View extends Enterprise_Rma_Block_Form
 
     public function getSubmitUrl()
     {
-        return $this->getUrl('*/*/addComment', array('entity_id' => (int)$this->getRequest()->getParam('entity_id')));
+        return $this->getUrl('*/*/addComment', array(
+                'entity_id' => (int)$this->getRequest()->getParam('entity_id'),
+                '_secure' => $this->_isSecure()
+        ));
     }
 
     public function getCustomerName()

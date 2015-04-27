@@ -20,7 +20,7 @@
  *
  * @category    OnTap
  * @package     OnTap_Merchandiser
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 class OnTap_Merchandiser_Model_Merchandiser
@@ -106,6 +106,10 @@ class OnTap_Merchandiser_Model_Merchandiser
         $iCounter = 1;
 
         $categoryValues = $merchandiserResourceModel->getCategoryValues($categoryId);
+        if ($categoryValues['smart_attributes'] == "") {
+            $categoryValues['ruled_only'] = 0;
+        }
+
         $categoryProductsResult = $merchandiserResourceModel->getCategoryProduct($categoryId);
         $positionsArray = array();
         foreach ($categoryProductsResult as $categoryProductPostions) {
@@ -160,7 +164,7 @@ class OnTap_Merchandiser_Model_Merchandiser
                  $ruledProductCount = $differenceFactor + $normalProductCount;
             }
             foreach ($ruledProductIds as $productId) {
-                if (!in_array($productId, $allocatedProducts) && !in_array($productId, $productPositions)) {
+                if (!in_array($productId, $allocatedProducts)) {
                     $allocatedProducts[] = $productId;
                     if ($addTo == 2) {
                         unset($positionsArray[$productId]);
@@ -197,7 +201,6 @@ class OnTap_Merchandiser_Model_Merchandiser
                         );
                     }
                 }
-                $iCounter = $currentPosition;
             }
         }
 
@@ -247,6 +250,125 @@ class OnTap_Merchandiser_Model_Merchandiser
         }
         if (!empty($cacheTags)) {
             Enterprise_PageCache_Model_Cache::getCacheInstance()->clean($cacheTags);
+        }
+    }
+
+    /**
+     * arrangeProducts function.
+     *
+     * @param array $params
+     * @param string $resourceMethod
+     * @return void
+     */
+    protected function arrangeProducts($params, $resourceMethod)
+    {
+        if (isset($params['catId']) && $params['catId'] > 0) {
+            $catId = $params['catId'];
+            $merchandiserResourceModel = Mage::getResourceModel('merchandiser/merchandiser');
+            $categoryProducts = $merchandiserResourceModel->getCategoryProduct($catId);
+
+            if (count($categoryProducts) > 0) {
+                $iCounter = 1;
+                $allocatedProducts = array();
+
+                $products = $merchandiserResourceModel->{$resourceMethod}($catId);
+
+                foreach ($products as $product) {
+                    $productId = $product['product_id'];
+                    if (!in_array($productId, $allocatedProducts)) {
+                        $merchandiserResourceModel->updateProductPosition($catId, $productId, $iCounter);
+                        $allocatedProducts[] = $productId;
+                        $iCounter++;
+                    }
+                }
+
+                foreach ($categoryProducts as $catProduct) {
+                     $productId = $catProduct['product_id'];
+                     if (!in_array($productId, $allocatedProducts)) {
+                        $merchandiserResourceModel->updateProductPosition($catId, $productId, $iCounter);
+                        $allocatedProducts[] = $productId;
+                        $iCounter++;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * moveBestsellersTop
+     *
+     * @param array $params
+     * @return void
+     */
+    public function moveBestsellersTop($params)
+    {
+        $this->arrangeProducts($params, 'getBestSellersProducts');
+    }
+
+    /**
+     * moveLowstockTop
+     *
+     * @param array $params
+     * @return void
+     */
+    public function moveLowstockTop($params)
+    {
+        $this->arrangeProducts($params, 'getLowStockProducts');
+    }
+
+    /**
+     * newestFirst function.
+     *
+     * @param array $params
+     * @return void
+     */
+    public function newestFirst($params)
+    {
+        $catId = $params['catId'];
+        $merchandiserResourceModel = Mage::getResourceModel('merchandiser/merchandiser');
+        $categoryProducts = $merchandiserResourceModel->getCategoryProduct($catId, "product_id DESC");
+        $position = 1;
+        foreach ($categoryProducts as $product) {
+            $merchandiserResourceModel->updateProductPosition($catId, $product['product_id'], $position);
+            $position++;
+        }
+    }
+
+    /**
+     * highestMarginFirst function.
+     *
+     * @param array $params
+     * @return void
+     */
+    public function highestMarginFirst($params)
+    {
+        $categoryId = $params['catId'];
+        $resource = Mage::getResourceModel('merchandiser/merchandiser');
+        $productCollection = $resource->getProductsOrderedByMargin($categoryId);
+
+        $position = 1;
+        foreach ($productCollection as $product) {
+            $resource->updateProductPosition($categoryId, $product->getId(), $position);
+            $position++;
+        }
+    }
+
+    /**
+     * sortByColor function.
+     *
+     * @param array $params
+     * @return void
+     */
+    public function sortByColor($params)
+    {
+        $categoryId = $params['catId'];
+        $resource = Mage::getResourceModel('merchandiser/merchandiser');
+        $productCollection = $resource->getProductsOrderedByColor($categoryId);
+
+        $position = 1;
+        foreach ($productCollection as $product) {
+            $resource->updateProductPosition($categoryId, $product->getId(), $position);
+            $position++;
         }
     }
 }

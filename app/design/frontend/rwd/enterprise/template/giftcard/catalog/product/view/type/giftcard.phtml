@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -196,7 +196,7 @@
                     <textarea name="giftcard_message" id="giftcard_message" class="input-text giftcard-message-max-length" cols="5" rows="3"><?php echo $this->escapeHtml($this->getDefaultValue('giftcard_message')) ?></textarea>
                     <?php if ($this->getMessageMaxLength()): ?>
                         <script type="text/javascript">
-                            Validation.add('giftcard-message-max-length', '<?php echo Mage::helper('enterprise_giftcard')->__('Maximum length of the message is %d characters.', $this->getMessageMaxLength()); ?>', function(v) {
+                            Validation.add('giftcard-message-max-length', '<?php echo $this->jsQuoteEscape(Mage::helper('enterprise_giftcard')->__('Maximum length of the message is %d characters.', $this->getMessageMaxLength())); ?>', function(v) {
                                 return v.length <= <?php echo $this->getMessageMaxLength(); ?>;
                             });
                         </script>

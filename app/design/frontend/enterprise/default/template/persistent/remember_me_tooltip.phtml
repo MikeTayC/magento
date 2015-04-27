@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -35,9 +35,9 @@
 //<![CDATA[
     var showTooltip = function() {
         this.rememberTip = new Enterprise.Widget.Dialog(
-            '<?php echo $this->__('What is this?');?>',
-            '<p><?php echo $this->__('Checking &quot;Remember Me&quot; will let you access your shopping cart on this computer when you are logged out')?></p>'+
-            '<div class="buttons-set"><button type="button" class="button btn-close"><span><span><?php echo $this->__('Close') ?></span></span></button></div>',
+            '<?php echo $this->jsQuoteEscape($this->__('What is this?')); ?>',
+            '<p><?php echo $this->jsQuoteEscape($this->__('Checking &quot;Remember Me&quot; will let you access your shopping cart on this computer when you are logged out')) ?></p>'+
+            '<div class="buttons-set"><button type="button" class="button btn-close"><span><span><?php echo $this->jsQuoteEscape($this->__('Close')) ?></span></span></button></div>',
             'popup-remember-tip'
         ),
         $(this.rememberTip.getContent()).select('button.btn-close')[0].onclick = this.rememberTip.hide.bind(this.rememberTip);

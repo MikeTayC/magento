@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 /** @var $this Enterprise_Rma_Block_Adminhtml_Rma_Edit_Tab_General_Shipping_Packaging */
@@ -229,7 +229,7 @@ document.observe("dom:loaded", function() {
             <div id="packages_content"></div>
         </div>
         <div class="buttons-set a-right">
-            <button type="button" class="scalable disabled SavePackagesBtn" disabled="disabled" onclick="packaging.confirmPackaging();" title="<?php echo Mage::helper('sales')->__('Products should be added to package(s)')?>">
+            <button type="button" class="scalable disabled SavePackagesBtn" disabled="disabled" onclick="packaging.confirmPackaging();" title="<?php echo Mage::helper('core')->quoteEscape(Mage::helper('sales')->__('Products should be added to package(s)')) ?>">
                 <span><span><span><?php echo Mage::helper('sales')->__('OK') ?></span></span></span>
             </button>
             <button type="button" class="scalable" onclick="packaging.cancelPackaging();">

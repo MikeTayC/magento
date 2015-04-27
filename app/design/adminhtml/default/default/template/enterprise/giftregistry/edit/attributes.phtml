@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 /* @var $coreHelper Mage_Core_Helper_Data */
@@ -45,12 +45,12 @@ var attributeTemplate =
     '<table id="{{prefix}}_attribute_{{id}}" class="option-header" cellpadding="0" cellspacing="0">'+
     '<thead>'+
         '<tr>'+
-            '<th class="opt-title"><?php echo Mage::helper('enterprise_giftregistry')->__('Code') ?> <span class="required">*</span></th>'+
-            '<th class="opt-type"><?php echo Mage::helper('enterprise_giftregistry')->__('Input Type') ?> <span class="required">*</span></th>'+
-            '<th class="opt-type"><?php echo Mage::helper('enterprise_giftregistry')->__('Attribute Group') ?> <span class="required">*</span></th>'+
-            '<th class="opt-title"><?php echo Mage::helper('enterprise_giftregistry')->__('Label') ?> <span class="required">*</span></th>'+
-            '<th class="opt-req"><?php echo Mage::helper('enterprise_giftregistry')->__('Is Required') ?></th>'+
-            '<th class="opt-order"><?php echo Mage::helper('enterprise_giftregistry')->__('Sort Order') ?></th>'+
+            '<th class="opt-title"><?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('enterprise_giftregistry')->__('Code')) ?> <span class="required">*</span></th>'+
+            '<th class="opt-type"><?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('enterprise_giftregistry')->__('Input Type')) ?> <span class="required">*</span></th>'+
+            '<th class="opt-type"><?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('enterprise_giftregistry')->__('Attribute Group')) ?> <span class="required">*</span></th>'+
+            '<th class="opt-title"><?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('enterprise_giftregistry')->__('Label')) ?> <span class="required">*</span></th>'+
+            '<th class="opt-req"><?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('enterprise_giftregistry')->__('Is Required')) ?></th>'+
+            '<th class="opt-order"><?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('enterprise_giftregistry')->__('Sort Order')) ?></th>'+
             '<th class="a-right"><?php echo $this->jsQuoteEscape($this->getDeleteButtonHtml()) ?></th>'+
         '</tr>'+
     '</thead>'+
@@ -59,7 +59,7 @@ var attributeTemplate =
         '<td>' + <?php echo $coreHelper->jsonEncode($this->getTypeSelectHtml()); ?> + '</td>'+
         '<td>' + <?php echo $coreHelper->jsonEncode($this->getGroupSelectHtml()); ?> + '</td>'+
         '<td><input type="text" class="required-entry input-text" id="{{prefix}}_attribute_{{id}}_label" name="attributes[{{prefix}}][{{id}}][label]" value="{{label}}">{{checkbox_scope}}</td>'+
-        '<td><?php echo $this->getRequiredSelectHtml() ?></td>'+
+        '<td><?php echo Mage::helper('core')->jsQuoteEscape($this->getRequiredSelectHtml()) ?></td>'+
         '<td><input type="text" class="input-text global-scope" id="{{prefix}}_attribute_{{id}}_sort_order" name="attributes[{{prefix}}][{{id}}][sort_order]" value="{{sort_order}}"></td>'+
         '<td>'+
             '<input type="hidden" id="{{prefix}}_attribute_{{id}}_is_deleted" name="attributes[{{prefix}}][{{id}}][is_deleted]">'+
@@ -75,13 +75,13 @@ var attributeTemplate =
             '<table cellpadding="0" cellspacing="0" class="option-header">'+
              '<thead>'+
              '<tr>'+
-                '<th class="opt-title"><?php echo Mage::helper('enterprise_giftregistry')->__('Is Searcheable') ?> </th>'+
-                '<th class="opt-title"><?php echo Mage::helper('enterprise_giftregistry')->__('Is Listed') ?></th>'+
+                '<th class="opt-title"><?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('enterprise_giftregistry')->__('Is Searcheable')) ?> </th>'+
+                '<th class="opt-title"><?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('enterprise_giftregistry')->__('Is Listed')) ?></th>'+
             '</tr>'+
             '</thead>'+
             '<tr>'+
-                '<td><?php echo $this->getSearcheableSelectHtml() ?> </td>'+
-                '<td><?php echo $this->getListedSelectHtml() ?></td>'+
+                '<td><?php echo Mage::helper('core')->jsQuoteEscape($this->getSearcheableSelectHtml()) ?> </td>'+
+                '<td><?php echo Mage::helper('core')->jsQuoteEscape($this->getListedSelectHtml()) ?></td>'+
             '</tr>'+
             '</table>'+
         '</div>'+
@@ -95,7 +95,7 @@ var customAttribute = {
     templateText : attributeTemplate,
     attributeId : 0,
     prefix : '<?php echo $this->getFieldPrefix() ?>',
-    usedMessage : '<?php echo $this->__('Adding more than one attribute with the same static input type is not allowed for the same gift registry type. Please select another input type for your attribute.') ?>',
+    usedMessage : '<?php echo Mage::helper('core')->jsQuoteEscape($this->__('Adding more than one attribute with the same static input type is not allowed for the same gift registry type. Please select another input type for your attribute.')) ?>',
     add : function(data) {
         if(data.id == undefined){
             data = {};
@@ -355,7 +355,7 @@ customAttribute.bindScopeCheckbox();
 customAttribute.changeScopeInputs(<?php echo $this->getTypeStoreId() ?>);
 
 Validation.addAllThese([
-    ['attribute-code', '<?php echo $this->__('Please use different input type for this code.') ?>', function(v, element) {
+    ['attribute-code', '<?php echo Mage::helper('core')->jsQuoteEscape($this->__('Please use different input type for this code.')) ?>', function(v, element) {
         var resultFlag = true;
         $A($(element.id.sub('_code','_type')).options).each(function(option){
             parts = option.value.split(':');

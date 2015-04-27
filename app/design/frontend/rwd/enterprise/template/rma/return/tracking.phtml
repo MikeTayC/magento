@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 /** @var $this Enterprise_Rma_Block_Return_Tracking */
@@ -59,7 +59,7 @@
 <script type="text/javascript">
 //<![CDATA[
     function deleteTrackNumber(number) {
-        if (confirm("<?php echo $this->__('Are you sure you want to delete this tracking information?') ?>")){
+        if (confirm("<?php echo $this->jsQuoteEscape($this->__('Are you sure you want to delete this tracking information?')) ?>")) {
             new Ajax.Updater('track-info-tbody', '<?php echo $this->getDeleteLabelUrl() ?>', {
                 onCreate: function() { $('rma-please-wait').show() },
                 onComplete: function() {

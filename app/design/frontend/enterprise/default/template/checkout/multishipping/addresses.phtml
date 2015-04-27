@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -34,7 +34,7 @@
 <form id="checkout_multishipping_form" action="<?php echo $this->getPostActionUrl() ?>" method="post">
 <div class="page-title title-buttons">
     <h1><?php echo $this->__('Ship to Multiple Addresses') ?></h1>
-    <button data-action="add-new-customer-address" type="button" title="<?php echo $this->__('Enter a New Address') ?>" class="button" onclick="$('add_new_address_flag').value=1; $('checkout_multishipping_form').submit();"><span><span><?php echo $this->__('Enter a New Address') ?></span></span></button>
+    <button data-action="add-new-customer-address" type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Enter a New Address')) ?>" class="button" onclick="$('add_new_address_flag').value=1; $('checkout_multishipping_form').submit();"><span><span><?php echo $this->__('Enter a New Address') ?></span></span></button>
 </div>
 <?php echo $this->getMessagesBlock()->toHtml() ?>
 <fieldset class="multiple-checkout">
@@ -56,7 +56,11 @@
         </thead>
         <tfoot>
             <tr>
-                <td colspan="100" class="a-right"><button type="submit" class="button" onclick="$('can_continue_flag').value=0"><span><span><?php echo $this->__('Update Qty &amp; Addresses') ?></span></span></button></td>
+                <td colspan="100" class="a-right">
+                    <button type="submit" class="button" onclick="$('can_continue_flag').value=0" data-multiship-item-update >
+                        <span><span><?php echo $this->__('Update Qty &amp; Addresses') ?></span></span>
+                    </button>
+                </td>
             </tr>
         </tfoot>
         <tbody>
@@ -64,9 +68,9 @@
             <?php if ($_item->getQuoteItem()) :?>
             <tr>
                 <td><?php echo $this->getItemHtml($_item->getQuoteItem())?></td>
-                <td><input type="text" name="ship[<?php echo $_index ?>][<?php echo $_item->getQuoteItemId() ?>][qty]" value="<?php echo $this->escapeHtml($_item->getQty()) ?>" size="2" class="input-text qty" /></td>
+                <td><input type="text" data-multiship-item-id="<?php echo $this->jsQuoteEscape($_item->getSku()) ?>" name="ship[<?php echo $_index ?>][<?php echo $_item->getQuoteItemId() ?>][qty]" value="<?php echo $this->escapeHtml($_item->getQty()) ?>" size="2" class="input-text qty" /></td>
                 <td><?php if ($_item->getProduct()->getIsVirtual()): echo $this->__('Shipping selection is not applicable'); else: echo $this->getAddressesHtmlSelect($_item, $_index); endif; ?></td>
-                <td class="a-center"><a href="<?php echo $this->getItemDeleteUrl($_item) ?>" title="<?php echo $this->__('Remove Item') ?>" class="btn-remove"><img src="<?php echo $this->getSkinUrl('images/btn_remove.gif') ?>" alt="<?php echo $this->__('Remove item')?>" /></a></td>
+                <td class="a-center"><a href="<?php echo $this->getItemDeleteUrl($_item) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove Item')) ?>" class="btn-remove"><img src="<?php echo $this->getSkinUrl('images/btn_remove.gif') ?>" alt="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove item')) ?>" /></a></td>
             </tr>
             <?php endif; ?>
         <?php endforeach; ?>

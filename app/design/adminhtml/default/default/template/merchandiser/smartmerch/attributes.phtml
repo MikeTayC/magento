@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -72,12 +72,12 @@ var arrayRow = {
     template: new Template(
         '<tr id="#{_id}">'
             <?php foreach ($this->_columns as $columnName => $column): ?>
-                + '<td class="#{_id}-<?php echo $columnName?>">' + '<?php echo $this->_renderCellTemplate($columnName)?>' + '</td>'
+                + '<td class="#{_id}-<?php echo $columnName?>">' + '<?php echo Mage::helper('core')->jsQuoteEscape($this->_renderCellTemplate($columnName))?>' + '</td>'
             <?php endforeach;?>
             <?php if ($this->_addAfter): ?>
-                + '<td><button onclick="" class="scalable add" type="button" id="addAfterBtn#{_id}"><span><?php echo Mage::helper('merchandiser')->__('Add after') ?></span></button></td>'
+                + '<td><button onclick="" class="scalable add" type="button" id="addAfterBtn#{_id}"><span><?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('merchandiser')->__('Add after')) ?></span></button></td>'
             <?php endif; ?>
-            + '<td><button test="yes" onclick="arrayRow.del(\'#{_id}\')" class="scalable delete" type="button"><span><?php echo Mage::helper('merchandiser')->__('Delete') ?></span></button></td>'
+            + '<td><button test="yes" onclick="arrayRow.del(\'#{_id}\')" class="scalable delete" type="button"><span><?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('merchandiser')->__('Delete')) ?></span></button></td>'
         + '</tr>'
     ),
 

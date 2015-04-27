@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -97,6 +97,19 @@ class Mage_Catalog_Model_Product_Compare_Item extends Mage_Core_Model_Abstract
             $this->setStoreId(Mage::app()->getStore()->getId());
         }
 
+        return $this;
+    }
+
+    /**
+     * Save object data
+     *
+     * @return Mage_Catalog_Model_Product_Compare_Item
+     */
+    public function save()
+    {
+        if ($this->hasCustomerId() || $this->hasVisitorId()) {
+            parent::save();
+        }
         return $this;
     }
 

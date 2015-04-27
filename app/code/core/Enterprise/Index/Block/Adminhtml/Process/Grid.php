@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Index
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -161,8 +161,7 @@ class Enterprise_Index_Block_Adminhtml_Process_Grid extends Mage_Adminhtml_Block
             'type'      => 'datetime',
             'width'     => '180',
             'align'     => 'left',
-            'index'     => 'ended_at',
-            'frame_callback' => array($this, 'decorateDate')
+            'index'     => 'ended_at'
         ));
 
         $this->addColumn('action',
@@ -244,7 +243,7 @@ class Enterprise_Index_Block_Adminhtml_Process_Grid extends Mage_Adminhtml_Block
     }
 
     /**
-     * Decorate last run date coumn
+     * Decorate last run date column
      *
      * @param string $value
      * @param Mage_Index_Model_Process $row

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -231,13 +231,29 @@ class Mage_Core_Model_Locale
      */
     protected function _getOptionLocales($translatedName=false)
     {
-        $options    = array();
-        $locales    = $this->getLocale()->getLocaleList();
-        $languages  = $this->getLocale()->getTranslationList('language', $this->getLocale());
-        $countries  = $this->getCountryTranslationList();
+        $options = array();
+        $zendLocales = $this->getLocale()->getLocaleList();
+        $languages = $this->getLocale()->getTranslationList('language', $this->getLocale());
+        $countries = $this->getCountryTranslationList();
 
-        $allowed    = $this->getAllowLocales();
-        foreach ($locales as $code=>$active) {
+        //Zend locale codes for internal allowed locale codes
+        $allowed = $this->getAllowLocales();
+        $allowedAliases = array();
+        foreach ($allowed as $code) {
+            $allowedAliases[Zend_Locale::getAlias($code)] = $code;
+        }
+
+        //Internal locale codes translated from Zend locale codes
+        $locales = array();
+        foreach ($zendLocales as $code => $active) {
+            if (array_key_exists($code, $allowedAliases)) {
+                $locales[$allowedAliases[$code]] = $active;
+            } else {
+                $locales[$code] = $active;
+            }
+        }
+
+        foreach ($locales as $code => $active) {
             if (strstr($code, '_')) {
                 if (!in_array($code, $allowed)) {
                     continue;

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -46,5 +46,15 @@ class Enterprise_GiftCardAccount_Block_Account_Redeem extends Mage_Core_Block_Te
         $code = $this->getRequest()->getParam('giftcard', '');
 
         return $this->escapeHtml($code);
+    }
+
+    /**
+     * Return "redeem gift card" form action url
+     *
+     * @return string
+     */
+    public function getRedeemActionUrl()
+    {
+        return $this->getUrl('*/*/*', array('_secure' => $this->_isSecure()));
     }
 }

@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 jQuery.noConflict();
@@ -83,8 +83,9 @@ merchandiserJS.prototype = {
         });
     },
     observeCategoryAdd : function() {
+        var escapedId = jQuery("<div></div>").text(this.id).html();
         jQuery('.category-add-button').unbind('click').click( function() {
-            var liHTML = '<li id="s' + this.id + '" class="' + $('search-s' + this.id).className + '">';
+            var liHTML = '<li id="s' + escapedId + '" class="' + $('search-s' + this.id).className + '">';
             liHTML += $('search-s' + this.id).innerHTML;
             liHTML += '</li>';
             jQuery(liHTML).prependTo('#infinite_scroll');
@@ -312,7 +313,6 @@ merchandiserJS.prototype = {
             jQuery('#massproductresult').append(sku_removed.join(', '));
             jQuery('#massproductresult').append('<br/>');
             jQuery('#massproductresult').show();
-            this.hideMassProducts();
         }
         this.updateInputPositions();
         observerAddMassProducts();
@@ -407,7 +407,6 @@ merchandiserJS.prototype = {
                             jQuery('#massproductresult').append('Following SKUs were added: ');
                             jQuery('#massproductresult').append(sku_added.join(", "));
                             jQuery('#massproductresult').append('<br/>');
-                            merJSObject.hideMassProducts();
                             jQuery('#massproductresult').show();
                         }
                         if(merJSObject.countElements(sku_existed) ) {
@@ -437,13 +436,15 @@ merchandiserJS.prototype = {
     },
     removeDups : function(){
         $$('li.productid').each(function (e){
-            var ids = $$('[id=' + e.id + ']');  
-            if (ids.length > 1 && ids[0] === e) {  
-                ids[1].remove();
-            }
+            $$('input[type=hidden].productid.hiddenbox').each(function (ee) {
+                if (e.id == ee.id) {
+                    ee.remove();
+                    return;
+                }
+            });
             var removedIds = $('removed_product_ids').value;
-            if(removedIds.search(e.id) >= 0){
-                ids[0].remove();
+            if (removedIds.search(e.id) >= 0) {
+                e.remove();
             }
         });
     },

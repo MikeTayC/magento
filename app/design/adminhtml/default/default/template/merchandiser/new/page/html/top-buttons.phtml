@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -142,7 +142,7 @@
 
             function checkifAllowed() {
                 if ('<?php echo $helper->isCurrentCategoryRuled($this->getCategoryId()) ?>' == 1) {
-                    alert('<?php echo $this->__("This category is set to only include products matched by rules") ?>');
+                    alert('<?php echo $helper->jsQuoteEscape($this->__("This category is set to only include products matched by rules")) ?>');
                 } else {
                     var merJSObject = new merchandiserJS();
                     merJSObject.openMassProductAssignment();
@@ -198,7 +198,7 @@
             }
         }
         storeFrontInSession(storeId);
-        if (isChanged == 1 && $('search').value != '' && $('search').value != '<?php echo $this->__("Search entire store here...") ?>') {
+        if (isChanged == 1 && $('search').value != '' && $('search').value != '<?php echo Mage::helper('core')->jsQuoteEscape($this->__("Search entire store here...")) ?>') {
             submitMerchandiserSearch($('search_mini_form'));
         }
     }

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pci
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -220,12 +220,15 @@ class Enterprise_Pci_Model_Observer
     {
         /* @var $user Mage_Admin_Model_User */
         $user = $observer->getEvent()->getObject();
-        if ($user->getId()) {
-            $password = $user->getNewPassword();
+        if ($user->getId() && $user->getPassword() != $user->getOrigData('password')) {
+            if ($user->getNewPassword()) {
+                $passwordHash = $user->getNewPassword();
+            } else {
+                $passwordHash = $user->getPassword();
+            }
             $passwordLifetime = $this->getAdminPasswordLifetime();
-            if ($passwordLifetime && $password && !$user->getForceNewPassword()) {
+            if ($passwordLifetime && $passwordHash && !$user->getForceNewPassword()) {
                 $resource     = Mage::getResourceSingleton('enterprise_pci/admin_user');
-                $passwordHash = Mage::helper('core')->getHash($password, false);
                 $resource->trackPassword($user, $passwordHash, $passwordLifetime);
                 Mage::getSingleton('adminhtml/session')
                         ->getMessages()

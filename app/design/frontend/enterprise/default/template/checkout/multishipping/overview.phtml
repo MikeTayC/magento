@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -203,7 +203,7 @@
             var checkboxes = $$('#checkout-agreements input');
             for (var i=0, l=checkboxes.length; i<l; i++) {
                 if (!checkboxes[i].checked) {
-                    alert("<?php echo $this->__('Please agree to all Terms and Conditions before placing the orders.')?>");
+                    alert("<?php echo Mage::helper('core')->jsQuoteEscape($this->__('Please agree to all Terms and Conditions before placing the orders.')) ?>");
                     return false;
                 }
             }

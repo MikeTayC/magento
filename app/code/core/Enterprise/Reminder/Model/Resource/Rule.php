@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -353,7 +353,7 @@ class Enterprise_Reminder_Model_Resource_Rule extends Mage_Rule_Model_Resource_A
             array('finset' => $_helper->getDateDiff('log_sent_at_min', $adapter->formatDate($currentDate)))
         );
         $select->having('log_sent_at_max IS NULL OR (' . $findInSetSql . ' AND '
-            . $_helper->getDateDiff('log_sent_at_max', $adapter->formatDate($currentDate)) . ' = 0)');
+            . $_helper->getDateDiff('log_sent_at_max', $adapter->formatDate($currentDate)) . ' <> 0)');
 
         if ($limit) {
             $select->limit($limit);

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -64,11 +64,12 @@ class Enterprise_Rma_Block_Adminhtml_Rma_Edit extends Mage_Adminhtml_Block_Widge
             $this->_formScripts[] = 'function saveAndContinueEdit() {
                 editForm.submit($(\'edit_form\').action + \'back/edit/\');}';
 
+            $confirmationMessage = Mage::helper('core')->jsQuoteEscape(
+                Mage::helper('enterprise_rma')->__('Are you sure you want to close this RMA request?')
+            );
             $this->_addButton('close', array(
                 'label'     => Mage::helper('enterprise_rma')->__('Close'),
-                'onclick'   => 'confirmSetLocation(\''
-                                . Mage::helper('enterprise_rma')->__('Are you sure you want to close this RMA request?')
-                                .'\', \'' . $this->getCloseUrl().'\')'
+                'onclick'   => 'confirmSetLocation(\'' . $confirmationMessage . '\', \'' . $this->getCloseUrl() . '\')'
                 )
             );
         } else {
@@ -135,7 +136,7 @@ class Enterprise_Rma_Block_Adminhtml_Rma_Edit extends Mage_Adminhtml_Block_Widge
     public function getHeaderText()
     {
         if ($this->getRma()->getId()) {
-            return Mage::helper('enterprise_rma')->__('RMA #%s - %s', intval($this->getRma()->getIncrementId()), $this->getRma()->getStatusLabel());
+            return Mage::helper('enterprise_rma')->__('RMA #%s - %s', $this->getRma()->getIncrementId(), $this->getRma()->getStatusLabel());
         }
 
         return '';

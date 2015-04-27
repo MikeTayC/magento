@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Connect
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -775,7 +775,7 @@ final class Maged_Controller
      */
     protected function _addDomainPolicyHeader()
     {
-        if (class_exists('Mage') && Mage::isInstalled()) {
+        if ($this->isInstalled()) {
             /** @var Mage_Core_Model_Domainpolicy $domainPolicy */
             $domainPolicy = Mage::getModel('core/domainpolicy');
             if ($domainPolicy) {
@@ -1016,7 +1016,7 @@ final class Maged_Controller
         return array(
             'major'     => '1',
             'minor'     => '14',
-            'revision'  => '1',
+            'revision'  => '2',
             'patch'     => '0',
             'stability' => '',
             'number'    => '',

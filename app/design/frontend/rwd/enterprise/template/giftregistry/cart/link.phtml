@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -30,7 +30,7 @@
 <form action="<?php echo $this->getAddUrl();?>" method="post" id="form-validate">
     <div class="btn-gift-registry">
         <div class="input-box">
-            <select id="giftregistry_entity" name="entity" title="<?php echo $this->__('Gift Registry') ?>" class="required-entry">
+            <select id="giftregistry_entity" name="entity" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Gift Registry')) ?>" class="required-entry">
                 <?php foreach ($entityValues as $_entity):?>
                     <option value="<?php echo $_entity->getValue()?>" title="<?php echo $_entity->getTitle()?>"><?php echo $this->escapeHtml($this->helper('core/string')->truncate($_entity->getTitle(), 40))?></option>
                 <?php endforeach;?>

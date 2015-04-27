@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -222,13 +222,17 @@ class Enterprise_Cms_Adminhtml_Cms_Page_RevisionController extends Enterprise_Cm
     {
         // check if data sent
         $data = $this->getRequest()->getPost();
-        if (empty($data) || !isset($data['page_id'])) {
+        if ((empty($data) || !isset($data['page_id'])) && !$this->getRequest()->getParam('page_id')) {
             $this->_forward('noRoute');
             return $this;
         }
 
         $page = $this->_initPage();
         $this->loadLayout();
+
+        if (empty($data)) {
+            $data = $page->getData();
+        }
 
         $stores = $page->getStoreId();
         if (isset($data['stores'])) {
@@ -325,8 +329,10 @@ class Enterprise_Cms_Adminhtml_Cms_Page_RevisionController extends Enterprise_Cm
             Mage::app()->getLocale()->emulate($selectedStoreId);
             Mage::app()->setCurrentStore(Mage::app()->getStore($selectedStoreId));
 
-            Mage::getDesign()->setArea('frontend')
-                ->setStore($selectedStoreId);
+            Mage::getDesign()
+                ->setArea('frontend')
+                ->setStore($selectedStoreId)
+                ->setPackageName();
 
             $designChange = Mage::getSingleton('core/design')
                 ->loadChange($selectedStoreId);

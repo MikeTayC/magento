@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -263,6 +263,17 @@ class Enterprise_GiftRegistry_Model_Resource_Entity_Collection extends Mage_Core
     public function filterByIsActive($status)
     {
         $this->getSelect()->where('main_table.is_active = ?', $status);
+        return $this;
+    }
+
+    /**
+     * Used to emulate after load functionality for each item without loading them
+     *
+     * @return Enterprise_GiftRegistry_Model_Resource_Entity_Collection
+     */
+    protected function _afterLoad()
+    {
+        $this->walk('afterLoad');
         return $this;
     }
 }

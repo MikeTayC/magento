@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -46,7 +46,7 @@
             <?php if ($this->getIsPsl() == Enterprise_Rma_Block_Adminhtml_Rma_Edit_Tab_General_Shippingmethod::PSL_ALLOWED): ?>
                 <button class="scalable save" type="button" id="get-shipping-method-and-rates"><span><span><span><?php echo Mage::helper('enterprise_rma')->__('Create Shipping Label') ?></span></span></span></button>
             <?php elseif ($this->getIsPsl() == Enterprise_Rma_Block_Adminhtml_Rma_Edit_Tab_General_Shippingmethod::PSL_DISABLED): ?>
-                <button class="scalable save disabled" type="button" title="<?php echo Mage::helper('enterprise_rma')->__('Enabled when authorized items require a new shipment'); ?>"><span><span><span><?php echo Mage::helper('enterprise_rma')->__('Create Shipping Label') ?></span></span></span></button>
+                <button class="scalable save disabled" type="button" title="<?php echo Mage::helper('core')->quoteEscape(Mage::helper('enterprise_rma')->__('Enabled when authorized items require a new shipment')); ?>"><span><span><span><?php echo Mage::helper('enterprise_rma')->__('Create Shipping Label') ?></span></span></span></button>
             <?php endif; ?>
             <?php if ($this->getShipment()->getShippingLabel()): ?>
                 <?php echo $this->getPrintLabelButton() ?>
@@ -226,7 +226,7 @@
         </div>
         <div class="buttons-set a-right">
             <?php echo $this->getPrintButton() ?>
-            <button type="button" class="scalable SavePackagesBtn save" onclick="hidePackedWindow();" title="<?php echo Mage::helper('sales')->__('Products should be added to package(s)')?>">
+            <button type="button" class="scalable SavePackagesBtn save" onclick="hidePackedWindow();" title="<?php echo Mage::helper('core')->quoteEscape(Mage::helper('sales')->__('Products should be added to package(s)')) ?>">
                 <span><span><span><?php echo Mage::helper('enterprise_rma')->__('OK') ?></span></span></span>
             </button>
         </div>

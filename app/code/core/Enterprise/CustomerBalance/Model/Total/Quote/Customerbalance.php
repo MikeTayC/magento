@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -54,20 +54,11 @@ class Enterprise_CustomerBalance_Model_Total_Quote_Customerbalance extends Mage_
             $quote->setCustomerBalanceCollected(true);
         }
 
-        $baseTotalUsed = $totalUsed = $baseUsed = $used = 0;
-
         $baseBalance = $balance = 0;
-        if ($quote->getCustomer()->getId()) {
-            if ($quote->getUseCustomerBalance()) {
-                $store = Mage::app()->getStore($quote->getStoreId());
-                $baseBalance = Mage::getModel('enterprise_customerbalance/balance')
-                    ->setCustomer($quote->getCustomer())
-                    ->setCustomerId($quote->getCustomer()->getId())
-                    ->setWebsiteId($store->getWebsiteId())
-                    ->loadByCustomer()
-                    ->getAmount();
-                $balance = $quote->getStore()->convertPrice($baseBalance);
-            }
+        if ($quote->getCustomer()->getId() && $quote->getUseCustomerBalance()) {
+            $baseBalance = Mage::helper('enterprise_customerbalance')->getCustomerBalanceModelFromSalesEntity($quote)
+                ->getAmount();
+            $balance = $quote->getStore()->convertPrice($baseBalance);
         }
 
         $baseAmountLeft = $baseBalance - $quote->getBaseCustomerBalAmountUsed();
@@ -83,8 +74,8 @@ class Enterprise_CustomerBalance_Model_Total_Quote_Customerbalance extends Mage_
             $baseUsed = $baseAmountLeft;
             $used = $amountLeft;
 
-            $address->setBaseGrandTotal($address->getBaseGrandTotal()-$baseAmountLeft);
-            $address->setGrandTotal($address->getGrandTotal()-$amountLeft);
+            $address->setBaseGrandTotal($address->getBaseGrandTotal() - $baseAmountLeft);
+            $address->setGrandTotal($address->getGrandTotal() - $amountLeft);
         }
 
         $baseTotalUsed = $quote->getBaseCustomerBalAmountUsed() + $baseUsed;

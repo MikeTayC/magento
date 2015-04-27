@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -68,8 +68,8 @@
 
     function deleteCurrentHierarchy()
     {
-        if (confirm(<?php echo json_encode(Mage::helper('enterprise_cms')->__("Are you sure you want to delete current hierarchy?")); ?>)) {
-            document.location = '<?php echo $this->getDeleteHierarchyUrl() ?>';
+        if (confirm(<?php echo json_encode($this->jsQuoteEscape(Mage::helper('enterprise_cms')->__("Are you sure you want to delete current hierarchy?"))); ?>)) {
+            document.location = '<?php echo $this->jsQuoteEscape($this->getDeleteHierarchyUrl()) ?>';
         }
     }
 
@@ -217,7 +217,7 @@
         },
 
         getEditPageAnchorHtml: function(pageId, pageTitle) {
-            return '<a href="<?php echo $this->getUrl('*/cms_page/edit')?>page_id/' + pageId + '/" target="_blank">' + pageTitle + '</a>';
+            return '<a href="<?php echo $this->jsQuoteEscape($this->getUrl('*/cms_page/edit'))?>page_id/' + pageId + '/" target="_blank">' + pageTitle + '</a>';
         },
 
         getNodePreviewUrlInfo: function(node) {
@@ -235,7 +235,7 @@
             var urlPath = urlKeys.join('/');
             return {
                 path: urlPath,
-                url: '<?php echo $this->getStoreBaseUrl() ?>' + urlPath + '<?php echo $this->getCurrentStoreUrlParam() ?>'
+                url: '<?php echo $this->jsQuoteEscape($this->getStoreBaseUrl()) ?>' + urlPath + '<?php echo $this->jsQuoteEscape($this->getCurrentStoreUrlParam()) ?>'
             };
         },
 
@@ -283,8 +283,8 @@
 
             // change main fieldset title
             $('node_properties_fieldset').previous().down('.icon-head').innerHTML = hasPageId
-                ? '<?php echo $this->getPageFieldsetLegend()?>'
-                : '<?php echo $this->getNodeFieldsetLegend()?>';
+                ? '<?php echo $this->jsQuoteEscape($this->getPageFieldsetLegend())?>'
+                : '<?php echo $this->jsQuoteEscape($this->getNodeFieldsetLegend())?>';
 
             // prepare preview link
             Validation.add('IsEmpty', '', function(v) {
@@ -712,9 +712,9 @@
 
                 if (save != undefined) {
                     if (save) {
-                        btn.down(2).update('<?php echo $this->getButtonSaveLabel() ?>');
+                        btn.down(2).update('<?php echo $this->jsQuoteEscape($this->getButtonSaveLabel()) ?>');
                     } else {
-                        btn.down(2).update('<?php echo $this->getButtonUpdateLabel() ?>');
+                        btn.down(2).update('<?php echo $this->jsQuoteEscape($this->getButtonUpdateLabel()) ?>');
                     }
                 }
             } else {
@@ -748,7 +748,7 @@
             });
 
             var allowedTypes = this.menuListTypes[listType];
-            this.addOptionToSelect('menu_list_type', '', '<?php echo $this->__('Default') ?>');
+            this.addOptionToSelect('menu_list_type', '', '<?php echo $this->jsQuoteEscape($this->__('Default')) ?>');
             if (allowedTypes) {
                 Object.keys(allowedTypes).each(function(k) {
                     this.addOptionToSelect('menu_list_type', k, allowedTypes[k]);

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Catalog
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -190,6 +190,34 @@ class Enterprise_Catalog_Model_Index_Observer_Flat
                 Mage::getSingleton('adminhtml/session')->addError(
                     Mage::helper('enterprise_catalog')->__('An error occured while reindexing the products.')
                 );
+            }
+        }
+    }
+
+    /**
+     * Executes product re-index after mass status update
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function processMassStatusUpdate(Varien_Event_Observer $observer)
+    {
+        if ($this->_isLiveCategoryReindexEnabled()) {
+            $productIds = $observer->getEvent()->getProductIds();
+            if (!empty($productIds)) {
+                try {
+                    /** @var $helper Enterprise_Index_Helper_Data */
+                    $helper      = Mage::helper('enterprise_index');
+                    $client = $this->_getClient($helper->getIndexerConfigValue('catalog_product_flat', 'index_table'));
+                    $arguments = array(
+                        'value'      => $productIds,
+                    );
+                    $client->execute('enterprise_catalog/index_action_product_flat_refresh_rows', $arguments);
+                } catch (Exception $e) {
+                    Mage::logException($e);
+                    Mage::getSingleton('adminhtml/session')->addError(
+                        Mage::helper('enterprise_catalog')->__('An error occured while reindexing the products.')
+                    );
+                }
             }
         }
     }

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -29,7 +29,8 @@
  *
  * @author     Magento Core Team <core@magentocommerce.com>
  */
-class Enterprise_Staging_Block_Adminhtml_Widget_Grid_Column_Renderer_Ip extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract
+class Enterprise_Staging_Block_Adminhtml_Widget_Grid_Column_Renderer_Ip
+    extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract
 {
     /**
      * replacing ip from long to 4-digits value.
@@ -40,6 +41,10 @@ class Enterprise_Staging_Block_Adminhtml_Widget_Grid_Column_Renderer_Ip extends 
      */
     public function render(Varien_Object $row)
     {
-        return long2ip($row->getData($this->getColumn()->getIndex()));
+        /**
+         * The output of the "inet_ntop" function was disabled to prevent an error throwing
+         * in case when the database value is not an ipv6 or an ipv4 binary representation (ex. NULL).
+         */
+        return @inet_ntop($row->getData($this->getColumn()->getIndex()));
     }
 }

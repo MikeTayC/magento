@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -31,7 +31,7 @@
         var rma = new AdminRma(<?php ///*echo $this->getOrderDataJson()*/ ?>);
         rma.setLoadAttributesUrl('<?php echo $this->getLoadAttributesUrl() ?>');
         rma.setLoadSplitLineUrl('<?php echo $this->getLoadSplitLineUrl() ?>');
-        rma.setDeleteLineLabel('<?php echo Mage::helper('enterprise_rma')->__('Delete Line') ?>');
+        rma.setDeleteLineLabel('<?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('enterprise_rma')->__('Delete Line')) ?>');
         $$('a.item_details').each(function(obj) {
             obj.observe('click', rma.itemDetailsRowClick.bind(rma))
         });

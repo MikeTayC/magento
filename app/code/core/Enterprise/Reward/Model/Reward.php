@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -648,7 +648,8 @@ class Enterprise_Reward_Model_Reward extends Mage_Core_Model_Abstract
     /**
      * Send low Balance Warning Notification to customer if notification is enabled
      *
-     * @param Enterprise_Reward_Model_Reward_History $history
+     * @param Enterprise_Reward_Model_Reward_History $item
+     * @param int $websiteId
      * @return Enterprise_Reward_Model_Reward
      * @see Enterprise_Reward_Model_Mysql4_Reward_History_Collection::loadExpiredSoonPoints()
      */
@@ -662,14 +663,14 @@ class Enterprise_Reward_Model_Reward extends Mage_Core_Model_Abstract
             ->getRateFromRatesArray($item->getPointsBalanceTotal(),$websiteId, $item->getCustomerGroupId());
         $action = Mage::getSingleton('enterprise_reward/reward')->getActionInstance($item->getAction());
         $templateVars = array(
-            'store' => $store,
-            'customer_name' => $item->getCustomerFirstname().' '.$item->getCustomerLastname(),
+            'store'              => $store,
+            'customer_name'      => Mage::helper('customer')->getFullCustomerName($item),
             'unsubscription_url' => Mage::helper('enterprise_reward/customer')->getUnsubscribeUrl('warning'),
-            'remaining_days' => $store->getConfig('enterprise_reward/notification/expiry_day_before'),
-            'points_balance' => $item->getPointsBalanceTotal(),
-            'points_expiring' => $item->getTotalExpired(),
-            'reward_amount_now' => Mage::helper('enterprise_reward')->formatAmount($amount, true, $item->getStoreId()),
-            'update_message' => ($action !== null ? $action->getHistoryMessage($item->getAdditionalData()) : '')
+            'remaining_days'     => $store->getConfig('enterprise_reward/notification/expiry_day_before'),
+            'points_balance'     => $item->getPointsBalanceTotal(),
+            'points_expiring'    => $item->getTotalExpired(),
+            'reward_amount_now'  => Mage::helper('enterprise_reward')->formatAmount($amount, true, $item->getStoreId()),
+            'update_message'     => ($action !== null ? $action->getHistoryMessage($item->getAdditionalData()) : ''),
         );
         $mail->sendTransactional(
             $store->getConfig(self::XML_PATH_BALANCE_WARNING_TEMPLATE),

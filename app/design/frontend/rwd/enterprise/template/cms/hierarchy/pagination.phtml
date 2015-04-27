@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 /* @var $this Enterprise_Cms_Block_Hierarchy_Pagination */
@@ -31,7 +31,7 @@
         <ol>
         <?php if ($this->canShowSequence()):?>
             <?php if ($this->canShowPrevious()):?>
-            <li><a class="previous" href="<?php echo $this->getPreviousNode()->getUrl()?>"><img src="<?php echo $this->getSkinUrl('images/pager_arrow_left.gif') ?>" alt="<?php echo $this->__('Previous') ?>" class="v-middle" /></a></li>
+            <li><a class="previous" href="<?php echo $this->getPreviousNode()->getUrl()?>"><img src="<?php echo $this->getSkinUrl('images/pager_arrow_left.gif') ?>" alt="<?php echo $this->quoteEscape($this->__('Previous')) ?>" class="v-middle" /></a></li>
             <?php endif;?>
         <?php endif;?>
 
@@ -61,7 +61,7 @@
 
         <?php if ($this->canShowSequence()):?>
             <?php if ($this->canShowNext()):?>
-            <li><a class="next" href="<?php echo $this->getNextNode()->getUrl()?>"><img src="<?php echo $this->getSkinUrl('images/pager_arrow_right.gif') ?>" alt="<?php echo $this->__('Next') ?>" class="v-middle" /></a></li>
+            <li><a class="next" href="<?php echo $this->getNextNode()->getUrl()?>"><img src="<?php echo $this->getSkinUrl('images/pager_arrow_right.gif') ?>" alt="<?php echo $this->quoteEscape($this->__('Next')) ?>" class="v-middle" /></a></li>
             <?php endif;?>
         <?php endif;?>
         </ol>

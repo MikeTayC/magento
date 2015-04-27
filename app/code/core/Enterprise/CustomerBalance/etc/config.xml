@@ -21,14 +21,14 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_CustomerBalance>
-            <version>1.11.0.0</version>
+            <version>1.11.0.1</version>
         </Enterprise_CustomerBalance>
     </modules>
     <global>
@@ -82,7 +82,7 @@
                 <totals>
                     <customerbalance>
                         <class>enterprise_customerbalance/total_quote_customerbalance</class>
-                        <after>weee,discount,tax,tax_subtotal,grand_total,reward,giftcardaccount</after>
+                        <after>weee,discount,tax,tax_subtotal,grand_total,reward</after>
                         <renderer>enterprise_customerbalance/checkout_total</renderer>
                     </customerbalance>
                 </totals>
@@ -91,7 +91,7 @@
                 <totals>
                     <customerbalance>
                         <class>enterprise_customerbalance/total_invoice_customerbalance</class>
-                        <after>weee,discount,tax,grand_total,reward,giftcardaccount</after>
+                        <after>weee,discount,tax,grand_total,reward</after>
                     </customerbalance>
                 </totals>
             </order_invoice>
@@ -298,6 +298,15 @@
                     </enterprise_customerbalance>
                 </observers>
             </paypal_prepare_line_items>
+
+            <sales_convert_order_to_quote>
+                <observers>
+                    <enterprise_customerbalance>
+                        <class>enterprise_customerbalance/observer</class>
+                        <method>setBaseCustomerBalanceVirtualAmountToQuote</method>
+                    </enterprise_customerbalance>
+                </observers>
+            </sales_convert_order_to_quote>
         </events>
         <pdf>
             <totals>
@@ -385,6 +394,14 @@
                     </enterprise_customerbalance>
                 </observers>
             </sales_prepare_amount_expression>
+            <order_cancel_after>
+                <observers>
+                    <enterprise_customerbalance>
+                        <class>enterprise_customerbalance/observer</class>
+                        <method>returnFundsToStoreCredit</method>
+                    </enterprise_customerbalance>
+                </observers>
+            </order_cancel_after>
         </events>
         <translate>
             <modules>

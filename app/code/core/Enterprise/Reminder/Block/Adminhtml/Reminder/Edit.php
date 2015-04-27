@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -46,13 +46,18 @@ class Enterprise_Reminder_Block_Adminhtml_Reminder_Edit extends Mage_Adminhtml_B
         /** @var $rule Enterprise_Reminder_Model_Rule */
         $rule = Mage::registry('current_reminder_rule');
         if ($rule && $rule->getId()) {
-            $confirm = Mage::helper('enterprise_reminder')->__('Are you sure you want to match this rule now?');
+            $confirmationMessage = Mage::helper('core')->jsQuoteEscape(
+                Mage::helper('enterprise_reminder')->__('Are you sure you want to match this rule now?')
+            );
             if ($limit = Mage::helper('enterprise_reminder')->getOneRunLimit()) {
-                $confirm .= ' ' . Mage::helper('enterprise_reminder')->__('Up to %s customers may receive reminder email after this action.', $limit);
+                $confirmationMessage .= Mage::helper('core')->jsQuoteEscape(
+                    ' ' . Mage::helper('enterprise_reminder')
+                        ->__('Up to %s customers may receive reminder email after this action.', $limit)
+                );
             }
             $this->_addButton('run_now', array(
                 'label'   => Mage::helper('enterprise_reminder')->__('Run Now'),
-                'onclick' => "confirmSetLocation('{$confirm}', '{$this->getRunUrl()}')"
+                'onclick' => "confirmSetLocation('{$confirmationMessage}', '{$this->getRunUrl()}')"
             ), -1);
         }
 

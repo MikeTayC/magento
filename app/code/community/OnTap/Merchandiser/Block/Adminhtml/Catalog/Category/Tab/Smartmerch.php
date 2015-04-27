@@ -20,7 +20,7 @@
  *
  * @category    OnTap
  * @package     OnTap_Merchandiser
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 class OnTap_Merchandiser_Block_Adminhtml_Catalog_Category_Tab_Smartmerch extends Mage_Core_Block_Template
@@ -44,7 +44,7 @@ class OnTap_Merchandiser_Block_Adminhtml_Catalog_Category_Tab_Smartmerch extends
     {
         $categoryValues = Mage::getResourceModel('merchandiser/merchandiser')
             ->fetchCategoriesValuesByCategoryId($this->getCategory()->getId());
-        return array_shift($categoryValues);
+        return count($categoryValues) ? array_shift($categoryValues) : null;
     }
 
     /**

@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -142,7 +142,7 @@
 
     function alertMessage() {
         if ($('automatic_sort').value != 'none') {
-            alert('<?php echo $this->__("Please note, this category is set to automatically sort. Any drag-and-drop positions will be reset.") ?>');
+            alert('<?php echo Mage::helper('core')->jsQuoteEscape($this->__('Please note, this category is set to automatically sort. Any drag-and-drop positions will be reset.')) ?>');
         }
     }
     //]]>

@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 /** @var $this Enterprise_Rma_Block_Return_Create */
@@ -66,7 +66,7 @@
     <div id="template_container" class="template" style="display:none;">
         <div id="template_registrant">
             <p class="btn-remove" id="btn-remove_index_"><a href="#" onclick="removeRegistrant(_index_); return false" class="btn-remove">
-                <img src="<?php echo $this->getSkinUrl('images/btn_remove.gif') ?>" alt="<?php echo $this->__('Remove') ?>" /></a>
+                <img src="<?php echo $this->getSkinUrl('images/btn_remove.gif') ?>" alt="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove')) ?>" /></a>
             </p>
             <div class="field">
                 <label for="items:item_index_" class="required"><em>*</em><?php echo $this->__('Item') ?></label>
@@ -347,7 +347,7 @@
     <br />
     <div class="buttons-set form-buttons">
         <p class="back-link a-left"><a href="<?php echo $this->getBackUrl() ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
-        <button type="submit" class="button" id="submit.save" title="<?php echo $this->__('Save') ?>"><span><span><?php echo $this->__('Submit') ?></span></span></button>
+        <button type="submit" class="button" id="submit.save" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Save')) ?>"><span><span><?php echo $this->__('Submit') ?></span></span></button>
     </div>
 </form>
 
@@ -423,7 +423,7 @@ document.observe("dom:loaded", function() {
 
 <?php if(!empty($html)): ?>
     <?php foreach($html as $key=>$value): ?>
-    Validation.add('validate-one-checkbox-<?php echo $key?>', '<?php echo $this->__('Please select one of the options.')?>', function(value, entity) {
+    Validation.add('validate-one-checkbox-<?php echo $key?>', '<?php echo  Mage::helper('core')->jsQuoteEscape($this->__('Please select one of the options.')) ?>', function(value, entity) {
         var error = 1;
         $$('input[id*="][<?php echo $key?>][checkbox][item]["]').each(function(input) {
             if(input.checked == true) {

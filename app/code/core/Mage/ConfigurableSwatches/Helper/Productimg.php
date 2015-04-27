@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_ConfigurableSwatches
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -227,6 +227,8 @@ class Mage_ConfigurableSwatches_Helper_Productimg extends Mage_Core_Helper_Abstr
             $fileExt = self::SWATCH_FILE_EXT;
         }
 
+        // normalize to all lower case so that value can be used as array key below
+        $value = Mage_ConfigurableSwatches_Helper_Data::normalizeKey($value);
         $defaultValue = $value; // default to no fallback value
         if ($object instanceof Mage_Catalog_Model_Layer_Filter_Item) { // fallback for swatches loaded for nav filters
             $source = $object->getFilter()->getAttributeModel()->getFrontend()->getAttribute()->getSource();

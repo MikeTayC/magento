@@ -10,8 +10,8 @@
     <description>Magento Library</description>
     <notes>1.14.1.0</notes>
     <authors><author><name>Magento Enterprise Team</name><user>core</user><email>core@magentocommerce.com</email></author></authors>
-    <date>2014-11-09</date>
-    <time>17:12:06</time>
+    <date>2015-04-18</date>
+    <time>12:34:33</time>
     <contents><target name="magelib"><dir name="Pelago"><file name="Emogrifier.php" hash="de3919d36c718834d9755dd1cb68df87"/></dir></target></contents>
     <compatible/>
     <dependencies><required><php><min>5.2.0</min><max>6.0.0</max></php></required></dependencies>

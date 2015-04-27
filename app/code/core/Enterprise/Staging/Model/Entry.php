@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -147,8 +147,16 @@ class Enterprise_Staging_Model_Entry
                 mkdir(dirname($outputFile));
             }
             $result = str_replace(
-                array('include $', 'app/Mage.php'),
-                array('include \'../../\' . $', '../../app/Mage.php'),
+                array(
+                    'include $',
+                    'app/Mage.php',
+                    'app/bootstrap.php',
+                    ),
+                array(
+                    'include \'../../\' . $',
+                    '../../app/Mage.php',
+                    '../../app/bootstrap.php',
+                    ),
                 $sample
             );
             $result = preg_replace('/Mage::run\(.*?\)/us', "Mage::run('{$this->_website->getCode()}', 'website')", $result);

@@ -20,23 +20,23 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
 <?php $entityValues = $this->getEntityValues() ?>
 
 <?php if ($this->getEnabled() && count($entityValues)): ?>
-<form action="<?php echo $this->getAddUrl();?>" method="post" id="form-validate">
+<form action="<?php echo $this->getAddUrl(); ?>" method="post" id="form-validate">
     <div class="btn-gift-registry">
         <div class="input-box">
-            <select id="giftregistry_entity" name="entity" title="<?php echo $this->__('Gift Registry') ?>" class="required-entry">
-                <?php foreach ($entityValues as $_entity):?>
-                    <option value="<?php echo $_entity->getValue()?>" title="<?php echo $_entity->getTitle()?>"><?php echo $this->escapeHtml($this->helper('core/string')->truncate($_entity->getTitle(), 40))?></option>
-                <?php endforeach;?>
+            <select id="giftregistry_entity" name="entity" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Gift Registry')) ?>" class="required-entry">
+                <?php foreach ($entityValues as $_entity): ?>
+                    <option value="<?php echo $_entity->getValue() ?>" title="<?php echo Mage::helper('core')->quoteEscape($_entity->getTitle()) ?>"><?php echo $this->escapeHtml($this->helper('core/string')->truncate($_entity->getTitle(), 40)) ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
-        <button type="submit" class="button"><span><span><?php echo Mage::helper('enterprise_giftregistry')->__('Add All To Gift Registry ');?></span></span></button>
+        <button type="submit" class="button"><span><span><?php echo Mage::helper('enterprise_giftregistry')->__('Add All To Gift Registry '); ?></span></span></button>
     </div>
 </form>
 <script type="text/javascript">

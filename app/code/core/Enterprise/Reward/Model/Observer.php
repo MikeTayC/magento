@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -444,9 +444,7 @@ class Enterprise_Reward_Model_Observer
      */
     protected function _paymentDataImport($quote, $payment, $useRewardPoints)
     {
-        if (!$quote || !$quote->getCustomerId()
-            || $quote->getBaseGrandTotal() + $quote->getBaseRewardCurrencyAmount() <= 0
-        ) {
+        if (!$quote || !$quote->getCustomerId()) {
             return $this;
         }
         $quote->setUseRewardPoints((bool)$useRewardPoints);

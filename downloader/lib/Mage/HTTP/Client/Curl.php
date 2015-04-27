@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_HTTP
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -374,7 +374,7 @@ implements Mage_HTTP_IClient
         $this->_ch = curl_init();
         $this->curlOption(CURLOPT_URL, $uriModified);
         $this->curlOption(CURLOPT_SSL_VERIFYPEER, false);
-        $this->curlOption(CURLOPT_SSL_VERIFYHOST, 2);
+        $this->curlOption(CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
         $this->getCurlMethodSettings($method, $params, $isAuthorizationRequired);
 
         if(count($this->_headers)) {

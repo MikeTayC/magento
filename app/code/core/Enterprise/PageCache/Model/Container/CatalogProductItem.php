@@ -20,11 +20,13 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
 /**
+ * @deprecated
+ *
  * Placeholder container for catalog product items
  */
 class Enterprise_PageCache_Model_Container_CatalogProductItem
@@ -258,8 +260,8 @@ class Enterprise_PageCache_Model_Container_CatalogProductItem
         if (is_null($this->_infoCacheId)) {
             $this->_infoCacheId = 'CATALOG_PRODUCT_LIST_SHARED_'
                 . md5($this->_placeholder->getName()
-                . $this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_CART, '')
-                . $this->_getProductId());
+                    . $this->_getCookieValue(Enterprise_PageCache_Model_Cookie::COOKIE_CART, '')
+                    . $this->_getProductId());
         }
         return $this->_infoCacheId;
     }

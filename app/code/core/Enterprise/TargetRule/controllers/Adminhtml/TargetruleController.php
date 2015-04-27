@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -161,6 +161,7 @@ class Enterprise_TargetRule_Adminhtml_TargetRuleController extends Mage_Adminhtm
 
                 $model->loadPost($data);
                 $model->save();
+                Mage::app()->getCacheInstance()->invalidateType('block_html');
 
                 $this->_getSession()->addSuccess(
                     Mage::helper('enterprise_targetrule')->__('The rule has been saved.')
@@ -266,5 +267,4 @@ class Enterprise_TargetRule_Adminhtml_TargetRuleController extends Mage_Adminhtm
     {
         return Mage::getSingleton('admin/session')->isAllowed('catalog/targetrule');
     }
-
 }

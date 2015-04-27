@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 /* @var $this Enterprise_Cms_Block_Adminhtml_Cms_Page_Edit_Tab_Hierarchy */
@@ -64,7 +64,7 @@ hierarchyNodes = {
         this.treeRoot = new Ext.tree.TreeNode({
             id: '_root',
             expanded: true,
-            text: '<?php echo $this->__("Website Root")?>',
+            text: '<?php echo Mage::helper('core')->jsQuoteEscape($this->__("Website Root"))?>',
             cls: 'cms_node_root',
             uiProvider: Ext.tree.CheckboxNodeUI,
             checked: this.pageAssignedToWebsiteRoot

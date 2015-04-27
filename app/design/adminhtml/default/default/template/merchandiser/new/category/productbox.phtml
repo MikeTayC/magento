@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -30,13 +30,13 @@
     $_product = $this->getCurrentProduct();
     $pId = $_product->getId();
 ?>
-<li id="sku-<?php echo $helper->getSkuIdDisplay($_product->getSku()) ?>" class="<?php echo $this->getWebClassesFromProduct($_product) ?> dragbox product-shop productid product<?php echo $pId ?> <?php echo $this->getProductClasses($_product) ?>">
+<li id="sku-<?php echo $this->htmlEscape($helper->getSkuIdDisplay($_product->getSku())) ?>" class="<?php echo $this->getWebClassesFromProduct($_product) ?> dragbox product-shop productid product<?php echo $pId ?> <?php echo $this->getProductClasses($_product) ?>">
     <div class="product-shop">
         <h2 class="product-name">
             <strong>
                 <span class="dragbox-position-container">
                     <span class="dragbox-position"></span>
-                </span><?php echo $_product->getName() ?>
+                </span><?php echo $this->htmlEscape($_product->getName()) ?>
             </strong>
             <?php if ($_product->getTypeId() == "bundle"): ?>
                 <?php echo $helper->getBundlePrice($pId); ?>
@@ -45,7 +45,7 @@
             <?php endif; ?>
             <?php echo $helper->getStockQtyHtml($_product) ?>
         </h2>
-        <input type="hidden" class="productid input-product-position productid<?php echo $pId ?>" rel="<?php echo $_product->getSku() ?>" name="product[<?php echo $pId ?>]" value="<?php echo $currentPosition++ ?>" />
+        <input type="hidden" class="productid input-product-position productid<?php echo $pId ?>" rel="<?php echo $this->htmlEscape($_product->getSku()) ?>" name="product[<?php echo $pId ?>]" value="<?php echo $currentPosition++ ?>" />
         <div class="dragbox-content">
             <div class="cols2">
                 <div class="cols2-left">
@@ -75,7 +75,7 @@
                 </div>
                 <div class="cols2-right">
                     <div>
-                        <strong><?php echo $helper->__('SKU') ?></strong>:&nbsp;<?php echo $_product->getSku() ?>
+                        <strong><?php echo $helper->__('SKU') ?></strong>:&nbsp;<?php echo $this->htmlEscape($_product->getSku()) ?>
                     </div>
 
                     <?php if ($helper->getShowCreationDate()) : ?>
@@ -98,28 +98,28 @@
 
                     <div id="box-button" class="buttons">
                         <?php if ($helper->isCurrentCategoryRuled($this->getRequest()->getParam('category_id')) == 1): ?>
-                            <a href="#" onclick="alert('<?php echo $this->__("This category is set to only include products matched by rules") ?>')" class="">
+                            <a href="#" onclick="alert('<?php echo $helper->jsQuoteEscape($this->__("This category is set to only include products matched by rules")) ?>')" class="">
                         <?php else: ?>
                             <a href="#" onclick="return false;" class="remove-button">
                         <?php endif; ?>
-                        <img src="<?php echo $this->getSkinUrl('merchandiser/images/cross.png') ?>" alt="<?php echo $helper->__('Detach from category') ?>" title="<?php echo $helper->__('Detach from category') ?>" /></a>
+                        <img src="<?php echo $this->getSkinUrl('merchandiser/images/cross.png') ?>" alt="<?php echo $helper->quoteEscape($helper->__('Detach from category')) ?>" title="<?php echo $helper->quoteEscape($helper->__('Detach from category')) ?>" /></a>
 
                         <a href="#" onclick="return false;" class="category-add-button">
-                            <img src="<?php echo $this->getSkinUrl('merchandiser/images/add.png') ?>" alt="<?php echo $helper->__('Add to category') ?>" title="<?php echo $helper->__('Add to category') ?>" />
+                            <img src="<?php echo $this->getSkinUrl('merchandiser/images/add.png') ?>" alt="<?php echo $helper->quoteEscape($helper->__('Add to category')) ?>" title="<?php echo $helper->quoteEscape($helper->__('Add to category')) ?>" />
                             <?php echo $helper->__('Add to category') ?>
                         </a>
 
                         <a href="#" onclick="return false;" class="cancel-remove-button">
-                            <img src="<?php echo $this->getSkinUrl('merchandiser/images/error_msg_icon.gif') ?>" alt="<?php echo $helper->__('Cancel detach') ?>" title="<?php echo $helper->__('Cancel detach') ?>" />
+                            <img src="<?php echo $this->getSkinUrl('merchandiser/images/error_msg_icon.gif') ?>" alt="<?php echo $helper->quoteEscape($helper->__('Cancel detach')) ?>" title="<?php echo $helper->quoteEscape($helper->__('Cancel detach')) ?>" />
                             <?php echo $helper->__('Cancel detach') ?>
                         </a>
 
                         <a href="#" onclick="return false;" class="move-to-bottom-button" id="move-bottom-buttom-<?php echo $_product->getId(); ?>">
-                            <img src="<?php   echo $this->getSkinUrl('merchandiser/images/arrow_down.png') ?>" alt="<?php echo $helper->__('Move to bottom') ?>" title="<?php echo $helper->__('Move to bottom') ?>" />
+                            <img src="<?php   echo $this->getSkinUrl('merchandiser/images/arrow_down.png') ?>" alt="<?php echo $helper->quoteEscape($helper->__('Move to bottom')) ?>" title="<?php echo $helper->quoteEscape($helper->__('Move to bottom')) ?>" />
                         </a>
 
                         <a href="#" onclick="return false;" class="move-to-top-button">
-                            <img src="<?php echo $this->getSkinUrl('merchandiser/images/arrow_up.png') ?>" alt="<?php echo $helper->__('Move to top') ?>" title="<?php echo $helper->__('Move to top') ?>" />
+                            <img src="<?php echo $this->getSkinUrl('merchandiser/images/arrow_up.png') ?>" alt="<?php echo $helper->quoteEscape($helper->__('Move to top')) ?>" title="<?php echo $helper->quoteEscape($helper->__('Move to top')) ?>" />
                         </a>
                     </div>
                 </div>

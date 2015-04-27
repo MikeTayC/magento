@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -75,6 +75,13 @@ class Enterprise_PageCache_Model_Observer
      * @var Mage_Core_Model_Cache
      */
     protected $_cacheInstance;
+
+    /**
+     * Uses for store rendering context (parent blocks)
+     *
+     * @var array
+     */
+    protected $_context = array();
 
     /**
      * Class constructor
@@ -145,8 +152,14 @@ class Enterprise_PageCache_Model_Observer
         }
         /**
          * Check if request will be cached
+         * canProcessRequest checks is theoretically possible to cache page
+         * getRequestProcessor check is page have full page cache processor
+         * isStraight works for partially cached pages where getRequestProcessor doesn't work
+         * (not all holes are filled by content)
          */
-        if ($this->_processor->canProcessRequest($request)) {
+        if ($this->_processor->canProcessRequest($request)
+            && ($request->isStraight() || $this->_processor->getRequestProcessor($request))
+        ) {
             Mage::app()->getCacheInstance()->banUse(Mage_Core_Block_Abstract::CACHE_GROUP);
         }
         $this->_getCookie()->updateCustomerCookies();
@@ -273,6 +286,22 @@ class Enterprise_PageCache_Model_Observer
     }
 
     /**
+     * Add block to rendering context if it declared as cached
+     *
+     * @param Varien_Event_Observer $observer
+     * @return $this
+     */
+    public function registerBlockContext(Varien_Event_Observer $observer)
+    {
+        if (!$this->isCacheEnabled()) {
+            return $this;
+        }
+        $block = $observer->getEvent()->getBlock();
+        $this->registerContext($block);
+        return $this;
+    }
+
+    /**
      * Retrieve block tags and add it to processor
      *
      * @param Varien_Event_Observer $observer
@@ -286,9 +315,8 @@ class Enterprise_PageCache_Model_Observer
 
         /** @var $block Mage_Core_Block_Abstract*/
         $block = $observer->getEvent()->getBlock();
-        if (in_array($block->getType(), array_keys($this->_config->getDeclaredPlaceholders()))) {
-            return $this;
-        }
+        $contextBlock = $this->_getContextBlock($block);
+        $this->unregisterContext($block);
 
         $tags = $block->getCacheTags();
         if (empty($tags)) {
@@ -301,9 +329,56 @@ class Enterprise_PageCache_Model_Observer
         if (empty($tags)) {
             return $this;
         }
-        $this->_processor->addRequestTag($tags);
+
+        if (!empty($contextBlock)) {
+            if ($contextBlock->getType() != $block->getType()) {
+                $contextBlock->addCacheTag($tags);
+            } else {
+                $block->addCacheTag($tags);
+            }
+        } else {
+            $this->_processor->addRequestTag($tags);
+        }
 
         return $this;
+    }
+
+    /**
+     * Retrieve nearest cached block from context
+     *
+     * @return bool|Mage_Core_Block_Abstract
+     */
+    protected function _getContextBlock()
+    {
+        $contextBlock = end($this->_context);
+        reset($this->_context);
+
+        return $contextBlock;
+    }
+
+    /**
+     * Store block to context
+     *
+     * @param Mage_Core_Block_Abstract $block
+     */
+    public function registerContext(Mage_Core_Block_Abstract $block)
+    {
+        if (in_array($block->getType(), array_keys($this->_config->getDeclaredPlaceholders()))) {
+            array_push($this->_context, $block);
+        }
+    }
+
+    /**
+     * Remove last block from context
+     *
+     * @param Mage_Core_Block_Abstract $block
+     */
+    public function unregisterContext(Mage_Core_Block_Abstract $block)
+    {
+        if (in_array($block->getType(), array_keys($this->_config->getDeclaredPlaceholders()))) {
+            array_pop($this->_context);
+        }
+
     }
 
     /**
@@ -1059,5 +1134,22 @@ class Enterprise_PageCache_Model_Observer
             )
         );
         return $this;
+    }
+
+    /**
+     * Clear request path cache by tag
+     * (used for redirects invalidation)
+     *
+     * @param Varien_Event_Observer $observer
+     * @return $this
+     */
+    public function fixInvalidCategoryCookie(Varien_Event_Observer $observer)
+    {
+        $categoryId = $observer->getCategoryId();
+        if (Enterprise_PageCache_Model_Cookie::getCategoryCookieValue () != $categoryId) {
+            Enterprise_PageCache_Model_Cookie::setCategoryViewedCookieValue($categoryId);
+            Enterprise_PageCache_Model_Cookie::setCurrentCategoryCookieValue($categoryId);
+        }
+
     }
 }

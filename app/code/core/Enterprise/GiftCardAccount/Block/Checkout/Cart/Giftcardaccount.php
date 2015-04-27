@@ -20,11 +20,20 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
 
 class Enterprise_GiftCardAccount_Block_Checkout_Cart_Giftcardaccount extends Mage_Checkout_Block_Cart_Abstract
 {
+    /**
+     * Return "add cart" form action URL
+     *
+     * @return string
+     */
+    public function getAddCartActionUrl()
+    {
+        return $this->getUrl('enterprise_giftcardaccount/cart/add', array('_secure' => $this->_isSecure()));
+    }
 }

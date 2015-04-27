@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -72,7 +72,7 @@ $qtyValidationClasses = 'required-entry validate-number validate-greater-than-ze
                 </table>
                 <?php echo $this->getChildHtml(); ?>
                 <div class="actions">
-                    <button id="sku-submit-button<?php echo $uniqueSuffix; ?>" type="submit" title="<?php echo $this->__('Add to Cart') ?>" class="button"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+                    <button id="sku-submit-button<?php echo $uniqueSuffix; ?>" type="submit" title="<?php echo $this->quoteEscape($this->__('Add to Cart')) ?>" class="button"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
                 </div>
                 <?php if ($this->getLink()): ?>
                     <p class="link-widget-sku"><?php echo $this->getLink(); ?></p>
@@ -92,7 +92,7 @@ itemOptions["<?php echo $uniqueSuffix; ?>"] = {
     templateText:
         '<tr class="order-row">'
             + '<td><div class="input-box"><input type="text" name="items[{{id}}][sku]" class="input-text" /></div></td>'
-            + '<td class="last"><div class="input-box"><input type="text" name="items[{{id}}][qty]" class="input-text qty" maxlength="13" /></div><span class="btn-remove" title="<?php echo $this->__('Remove Row') ?>"></span></td>'
+            + '<td class="last"><div class="input-box"><input type="text" name="items[{{id}}][qty]" class="input-text qty" maxlength="13" /></div><span class="btn-remove" title="<?php echo $this->quoteEscape($this->__('Remove Row')) ?>"></span></td>'
         + '</tr>',
     itemCount: 1,
 

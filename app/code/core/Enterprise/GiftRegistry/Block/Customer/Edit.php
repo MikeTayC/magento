@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -109,7 +109,17 @@ class Enterprise_GiftRegistry_Block_Customer_Edit extends Mage_Directory_Block_D
      */
     public function getAddActionUrl()
     {
-        return $this->getUrl('enterprise_giftregistry/index/edit');
+        return $this->getUrl('enterprise_giftregistry/index/edit', array('_secure' => $this->_isSecure()));
+    }
+
+    /**
+     * Returns "edit giftregistry" form action Url
+     *
+     * @return string
+     */
+    public function getEditPostActionUrl()
+    {
+        return $this->getUrl('*/*/editPost', array('_secure' => $this->_isSecure()));
     }
 
     /**
@@ -129,7 +139,7 @@ class Enterprise_GiftRegistry_Block_Customer_Edit extends Mage_Directory_Block_D
      */
     public function getAddPostActionUrl()
     {
-        return $this->getUrl('enterprise_giftregistry/index/addPost');
+        return $this->getUrl('enterprise_giftregistry/index/addPost', array('_secure' => $this->_isSecure()));
     }
 
     /**

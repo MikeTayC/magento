@@ -20,7 +20,7 @@
  *
  * @category    Varien
  * @package     Varien_Crypt
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -41,7 +41,18 @@ class Varien_Crypt_Mcrypt extends Varien_Crypt_Abstract
      */
     public function __construct(array $data=array())
     {
+        register_shutdown_function(array($this, 'destruct'));
         parent::__construct($data);
+    }
+
+    /**
+     * Close mcrypt module on shutdown
+     */
+    public function destruct()
+    {
+        if ($this->getHandler()) {
+            $this->_reset();
+        }
     }
 
     /**
@@ -117,17 +128,6 @@ class Varien_Crypt_Mcrypt extends Varien_Crypt_Abstract
             return $data;
         }
         return mdecrypt_generic($this->getHandler(), $data);
-    }
-
-    /**
-     * Desctruct cipher module
-     *
-     */
-    public function __destruct()
-    {
-        if ($this->getHandler()) {
-            $this->_reset();
-        }
     }
 
     protected function _reset()

@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -80,8 +80,8 @@
                             </button>
                         </span>
                         <span>
-                            <img style="" title="Select Date" id="schedule_merge_later_trig" class="v-middle" alt="" src="<?php echo $this->getSkinUrl("images/grid-cal.gif");?> "/>
-                            <input type="text" style="width: 120px;" class="schedule_merge_later schedule_merge_empty input-text" title="Set Staging Merge Date" value="" id="schedule_merge_later" name="schedule_merge_later"/>
+                            <img style="" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Select Date')) ?>" id="schedule_merge_later_trig" class="v-middle" alt="" src="<?php echo $this->getSkinUrl("images/grid-cal.gif");?> "/>
+                            <input type="text" style="width: 120px;" class="schedule_merge_later schedule_merge_empty input-text" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Set Staging Merge Date')) ?>" value="" id="schedule_merge_later" name="schedule_merge_later"/>
                             <script type="text/javascript">
                             //<![CDATA[
                                 Calendar.setup({
@@ -193,7 +193,7 @@ stagingGrid.rows.each(function(row){<?php echo $this->getRowInitCallback() ?>(st
 <?php endif; ?>
 
 Validation.addAllThese([
-    ['schedule_merge_later', '<?php echo Mage::helper('catalog')->__('Please set up merge date/time later then present date') ?>', function(v) {
+    ['schedule_merge_later', '<?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('catalog')->__('Please set up merge date/time later then present date')) ?>', function(v) {
         if ($('schedule_merge_later_flag').value == 1) {
             var dateV = $('schedule_merge_later').value;
             if (!dateV) {
@@ -208,7 +208,7 @@ Validation.addAllThese([
         }
         return true;
     }],
-    ['schedule_merge_empty', '<?php echo Mage::helper('catalog')->__('Please set up merge date/time') ?>', function(v) {
+    ['schedule_merge_empty', '<?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('catalog')->__('Please set up merge date/time')) ?>', function(v) {
         if ($('schedule_merge_later_flag').value == 1) {
             var dateV = $('schedule_merge_later').value;
             if (!dateV) {
@@ -217,13 +217,13 @@ Validation.addAllThese([
         }
         return true;
     }],
-    ['validate-select-website', 'Please select website', function(v, elem) {
+    ['validate-select-website', '<?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('catalog')->__('Please select website')) ?>', function(v, elem) {
         if (elem.parentNode.parentNode.style.display != 'none') {
 
         }
         return true;
     }],
-    ['validate-select-store', 'Please select store view', function(v, elem) {
+    ['validate-select-store', '<?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('catalog')->__('Please select store view')) ?>', function(v, elem) {
         if (elem.parentNode.parentNode.style.display != 'none') {
             return ((v != "none") && (v != null) && (v.length != 0));
         }

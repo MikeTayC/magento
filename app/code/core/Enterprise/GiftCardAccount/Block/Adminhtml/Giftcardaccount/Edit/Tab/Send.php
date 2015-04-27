@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -131,7 +131,7 @@ class Enterprise_GiftCardAccount_Block_Adminhtml_Giftcardaccount_Edit_Tab_Send e
             }
             else {
               var option = document.createElement("option");
-              option.appendChild(document.createTextNode(\''.Mage::helper('enterprise_giftcardaccount')->__('-- First Please Select a Website --').'\'));
+              option.appendChild(document.createTextNode(\'' . Mage::helper('core')->jsQuoteEscape(Mage::helper('enterprise_giftcardaccount')->__('-- First Please Select a Website --')) . '\'));
               sSel.appendChild(option);
             }
         }

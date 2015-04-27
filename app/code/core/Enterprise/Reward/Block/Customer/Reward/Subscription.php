@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -62,5 +62,15 @@ class Enterprise_Reward_Block_Customer_Reward_Subscription extends Mage_Core_Blo
     protected function _getCustomer()
     {
         return Mage::getSingleton('customer/session')->getCustomer();
+    }
+
+    /**
+     * Returns form action URL
+     *
+     * @return string
+     */
+    public function getActionUrl()
+    {
+        return $this->getUrl('reward/customer/saveSettings', array('_secure' => $this->_isSecure()));
     }
 }

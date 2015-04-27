@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -80,7 +80,7 @@ class Enterprise_Rma_Block_Adminhtml_Rma_Grid extends Mage_Adminhtml_Block_Widge
         $this->addColumn('increment_id', array(
             'header' => Mage::helper('enterprise_rma')->__('RMA #'),
             'width'  => '50px',
-            'type'   => 'number',
+            'type'   => 'text',
             'index'  => 'increment_id'
         ));
 

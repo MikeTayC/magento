@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -59,5 +59,19 @@ class Enterprise_TargetRule_Block_Catalog_Product_Item extends Mage_Catalog_Bloc
             $cacheKeyInfo['item_id'] = $this->getItem()->getId();
         }
         return $cacheKeyInfo;
+    }
+
+    /**
+     * Get cache tags
+     *
+     * @return array
+     */
+    public function getCacheTags()
+    {
+        $tags = array(Mage_Core_Block_Abstract::CACHE_GROUP);
+        if ($this->getItem()) {
+            $tags = array_merge($tags, $this->getItem()->getCacheIdTags());
+        }
+        return $tags;
     }
 }

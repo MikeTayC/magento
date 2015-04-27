@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -46,7 +46,7 @@
         <tr>
             <td><span class="owner"><?php echo $this->escapeHtml($item->getCustomer()->getName()) ?></span></td>
             <td><span class="item-name"><?php echo $this->escapeHtml($item->getName()) ?></span></td>
-            <td><a href="<?php echo $this->getWishlistLink($item) ?>" title="<?php echo $this->__('View') ?>"><?php echo $this->__('View') ?></a></td>
+            <td><a href="<?php echo $this->getWishlistLink($item) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('View')) ?>"><?php echo $this->__('View') ?></a></td>
         </tr>
     <?php endforeach; ?>
     </tbody>

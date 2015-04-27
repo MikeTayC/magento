@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -49,7 +49,7 @@
 </div>
 <div class="buttons-set form-buttons">
     <p class="back-link"><a href="<?php echo $this->escapeUrl($this->getBackUrl()) ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
-    <button type="submit" id="submit.next" title="<?php echo $this->__('Next') ?>" class="button"><span><span><?php echo $this->__('Next') ?></span></span></button>
+    <button type="submit" id="submit.next" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Next')) ?>" class="button"><span><span><?php echo $this->__('Next') ?></span></span></button>
 </div>
 <p class="required"><?php echo $this->__('* Required Fields') ?></p>
 </form>

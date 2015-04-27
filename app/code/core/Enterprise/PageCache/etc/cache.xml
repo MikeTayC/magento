@@ -1,4 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
+<!--
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Enterprise
+ * @package     Enterprise_PageCache
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+-->
 <config>
     <placeholders>
         <last_viewed_products>
@@ -20,6 +46,13 @@
             <container>Enterprise_PageCache_Model_Container_Catalognavigation</container>
             <cache_lifetime>86400</cache_lifetime>
         </catalog_navigation>
+        <catalog_navigation_left>
+            <block>catalog/navigation</block>
+            <name>catalog.leftnav</name>
+            <placeholder>LEFTMENU</placeholder>
+            <container>Enterprise_PageCache_Model_Container_Leftnavigation</container>
+            <cache_lifetime>86400</cache_lifetime>
+        </catalog_navigation_left>
         <cart_sidebar>
             <block>checkout/cart_sidebar</block>
             <placeholder>CART_SIDEBAR</placeholder>
@@ -105,14 +138,14 @@
             <block>enterprise_targetrule/catalog_product_item</block>
             <name>catalog.product.related.item</name>
             <placeholder>CATALOG_PRODUCT_ITEM_RELATED</placeholder>
-            <container>Enterprise_PageCache_Model_Container_CatalogProductItem</container>
+            <container>Enterprise_PageCache_Model_Container_Item_Related</container>
             <cache_lifetime>86400</cache_lifetime>
         </catalog_product_item_related>
         <catalog_product_item_upsell>
             <block>enterprise_targetrule/catalog_product_item</block>
             <name>catalog.product.upsell.item</name>
             <placeholder>CATALOG_PRODUCT_ITEM_UPSELL</placeholder>
-            <container>Enterprise_PageCache_Model_Container_CatalogProductItem</container>
+            <container>Enterprise_PageCache_Model_Container_Item_Upsell</container>
             <cache_lifetime>86400</cache_lifetime>
         </catalog_product_item_upsell>
         <giftcard_form>
@@ -129,6 +162,13 @@
             <container>Enterprise_PageCache_Model_Container_CatalogProductList</container>
             <cache_lifetime>86400</cache_lifetime>
         </catalog_product_list_related>
+        <targetrule_catalog_product_list_related>
+            <block>enterprise_targetrule/catalog_product_list_related</block>
+            <name>catalog.product.related</name>
+            <placeholder>TARGETRULE_CATALOG_PRODUCT_LIST_RELATED</placeholder>
+            <container>Enterprise_PageCache_Model_Container_List_Related</container>
+            <cache_lifetime>86400</cache_lifetime>
+        </targetrule_catalog_product_list_related>
         <catalog_product_list_upsell>
             <block>catalog/product_list_upsell</block>
             <name>product.info.upsell</name>
@@ -136,6 +176,13 @@
             <container>Enterprise_PageCache_Model_Container_CatalogProductList</container>
             <cache_lifetime>86400</cache_lifetime>
         </catalog_product_list_upsell>
+        <targetrule_catalog_product_list_upsell>
+            <block>enterprise_targetrule/catalog_product_list_upsell</block>
+            <name>product.info.upsell</name>
+            <placeholder>TARGETRULE_CATALOG_PRODUCT_LIST_UPSELL</placeholder>
+            <container>Enterprise_PageCache_Model_Container_List_Upsell</container>
+            <cache_lifetime>86400</cache_lifetime>
+        </targetrule_catalog_product_list_upsell>
         <widget_recently_compared>
             <block>reports/product_widget_compared</block>
             <placeholder>WIDGET_RECENTLY_COMPARED_GG</placeholder>

@@ -20,7 +20,7 @@
  *
  * @category    OnTap
  * @package     OnTap_Merchandiser
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 class OnTap_Merchandiser_Model_Adminhtml_Observer
@@ -138,6 +138,14 @@ class OnTap_Merchandiser_Model_Adminhtml_Observer
         $insertValues['automatic_sort'] =   $post['merchandiser']['automatic_sort'];
         $insertValues['category_id']    =   $catId;
         $insertValues['attribute_codes']=   implode(",", array_unique($attributeCodes));
+
+        if ($insertValues['smart_attributes'] == "") {
+            $post['merchandiser']['ruled_only'] = 0;
+        }
+
+        if ($post['merchandiser']['ruled_only'] == 1) {
+            $productPositions = array();
+        }
 
         $allocatedProducts = array();
         if (Mage::helper('merchandiser')->rebuildOnCategorySave()) {
@@ -295,7 +303,7 @@ class OnTap_Merchandiser_Model_Adminhtml_Observer
         foreach ($changeAttributes as $attributeCode) {
             if (Mage::getModel('catalog/resource_eav_attribute')->load($attributeCode, 'attribute_code')) {
                 $categoryValues = $merchandiserResourceModel->getVmBuildRows($attributeCode);
-                if (!$categoryValues || sizeof($categoryValues) <1) {
+                if (!$categoryValues || sizeof($categoryValues) < 1) {
                     $insertData[] = array('attribute_code' => $attributeCode);
                 }
             }

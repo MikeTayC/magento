@@ -20,16 +20,16 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
-<button title="<?php echo $this->__('Delete Wishlist') ?>" onclick="return deleteWishlist(<?php echo $this->getWishlistInstance()->getId();?>);" class="button btn-share left"><span><span><?php echo $this->__('Delete Wishlist') ?></span></span></button>
+<button title="<?php echo Mage::helper('core')->quoteEscape($this->__('Delete Wishlist')) ?>" onclick="return deleteWishlist(<?php echo $this->getWishlistInstance()->getId();?>);" class="button btn-share left"><span><span><?php echo $this->__('Delete Wishlist') ?></span></span></button>
 <script type="text/javascript">
 //<![CDATA[
     function deleteWishlist(id)
     {
-        if (confirm('<?php echo $this->__('You are about to delete your wish list.\nThis action cannot be undone.\nDo you want to proceed?');?>')) {
+        if (confirm('<?php echo Mage::helper('core')->jsQuoteEscape($this->__('You are about to delete your wish list.\nThis action cannot be undone.\nDo you want to proceed?')); ?>')) {
             var url = '<?php echo $this->getDeleteUrl();?>';
             url = url.gsub('%item%', id);
             new Ajax.Request(url, {

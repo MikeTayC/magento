@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Sendfriend
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -158,7 +158,8 @@ class Mage_Sendfriend_Block_Send extends Mage_Core_Block_Template
     {
         return Mage::getUrl('*/*/sendmail', array(
             'id'     => $this->getProductId(),
-            'cat_id' => $this->getCategoryId()
+            'cat_id' => $this->getCategoryId(),
+            '_secure' => $this->_isSecure()
         ));
     }
 

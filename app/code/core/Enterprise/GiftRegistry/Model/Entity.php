@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -359,8 +359,8 @@ class Enterprise_GiftRegistry_Model_Entity extends Mage_Core_Model_Abstract
         $collection = $this->getRegistrantsCollection();
         if ($collection->getSize()) {
             $registrants = array();
-            foreach($collection as $item) {
-                $registrants[] =  $item->getFirstname().' '.$item->getLastname();
+            foreach ($collection as $item) {
+                $registrants[] = Mage::helper('customer')->getFullCustomerName($item);
             }
             return implode(', ', $registrants);
         }

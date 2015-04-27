@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -47,11 +47,6 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
      * @var Mage_Core_Block_Abstract
      */
     protected $_placeholderBlock;
-
-    /**
-     * @var array
-     */
-    protected $_layouts = array();
 
     /**
      * Class constructor
@@ -307,15 +302,19 @@ abstract class Enterprise_PageCache_Model_Container_Abstract
      * @param string $handler
      * @return Mage_Core_Model_Layout
      */
-    protected function _getLayout($handler = 'default')
+    protected function _getLayout($handler)
     {
-        if (!isset($this->_layouts[$handler])) {
+        /** @var $layoutStorage Enterprise_PageCache_Model_Container_Layout_Storage */
+        $layoutStorage = Mage::getSingleton('enterprise_pagecache/container_layout_storage');
+        $layout = $layoutStorage->getLayout($handler);
+        if (!$layout) {
+            $handlers = array_unique(array('default', $handler));
             $layout = Mage::app()->getLayout();
-            $layout->getUpdate()->load($handler);
+            $layout->getUpdate()->setCacheId(null)->load($handlers);
             $layout->generateXml();
             $layout->generateBlocks();
-            $this->_layouts[$handler] = $layout;
+            $layoutStorage->addLayout($layout, $handler);
         }
-        return $this->_layouts[$handler];
+        return $layout;
     }
 }

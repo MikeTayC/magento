@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -69,7 +69,7 @@ class Enterprise_Checkout_Block_Sku_Products extends Mage_Checkout_Block_Cart
      */
     public function getFormActionUrl()
     {
-        return $this->getUrl('checkout/cart/addFailedItems');
+        return $this->getUrl('checkout/cart/addFailedItems', array('_secure' => $this->_isSecure()));
     }
 
     /**

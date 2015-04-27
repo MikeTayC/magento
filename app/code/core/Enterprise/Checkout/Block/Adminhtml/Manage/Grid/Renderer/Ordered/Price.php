@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -46,7 +46,7 @@ class Enterprise_Checkout_Block_Adminhtml_Manage_Grid_Renderer_Ordered_Price
         $priceInitial = $row->getProduct()->getPrice() * 1;
 
         $priceInitial = floatval($priceInitial) * $this->_getRate($row);
-        $priceInitial = sprintf("%f", $priceInitial);
+        $priceInitial = sprintf("%F", $priceInitial);
         $currencyCode = $this->_getCurrencyCode($row);
         if ($currencyCode) {
             $priceInitial = Mage::app()->getLocale()->currency($currencyCode)->toCurrency($priceInitial);

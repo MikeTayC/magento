@@ -20,7 +20,7 @@
  *
  * @category    OnTap
  * @package     OnTap_Merchandiser
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 class OnTap_Merchandiser_Model_Resource_Merchandiser extends Mage_Catalog_Model_Resource_Abstract
@@ -98,7 +98,7 @@ class OnTap_Merchandiser_Model_Resource_Merchandiser extends Mage_Catalog_Model_
      * @param mixed $categoryValueInsertData
      * @return void
      */
-    public function updateCategoryProducts($catId,$categoryValueInsertData)
+    public function updateCategoryProducts($catId, $categoryValueInsertData)
     {
         $write = $this->_getWriteAdapter();
         $condition = array($write->quoteInto('category_id=?', $catId));
@@ -125,6 +125,7 @@ class OnTap_Merchandiser_Model_Resource_Merchandiser extends Mage_Catalog_Model_
             return $row['max_pos'];
         } catch (Exception $e) {
             Mage::log($e->getMessage());
+            return 0;
         }
     }
 
@@ -135,7 +136,7 @@ class OnTap_Merchandiser_Model_Resource_Merchandiser extends Mage_Catalog_Model_
      * @param mixed $products
      * @return void
      */
-    public function deleteSpecificProducts($categoryId,$products)
+    public function deleteSpecificProducts($categoryId, $products)
     {
         $write = $this->_getWriteAdapter();
         try {
@@ -161,6 +162,7 @@ class OnTap_Merchandiser_Model_Resource_Merchandiser extends Mage_Catalog_Model_
             return $writeAdapter->fetchAll($select);
         } catch (Exception $e) {
             Mage::log($e->getMessage());
+            return array();
         }
     }
 
@@ -180,6 +182,7 @@ class OnTap_Merchandiser_Model_Resource_Merchandiser extends Mage_Catalog_Model_
             return $writeAdapter->fetchAll($select);
         } catch (Exception $e) {
             Mage::log($e->getMessage());
+            return array();
         }
     }
 
@@ -205,6 +208,7 @@ class OnTap_Merchandiser_Model_Resource_Merchandiser extends Mage_Catalog_Model_
             return $write->fetchAll($select);
         } catch (Exception $e) {
             Mage::log($e->getMessage());
+            return array();
         }
     }
 
@@ -216,7 +220,7 @@ class OnTap_Merchandiser_Model_Resource_Merchandiser extends Mage_Catalog_Model_
      * @param mixed $position
      * @return void
      */
-    public function updateProductPosition($categoryId,$productId,$position)
+    public function updateProductPosition($categoryId, $productId, $position)
     {
         $write = $this->_getWriteAdapter();
         $updateData = array('position' => $position);
@@ -235,7 +239,7 @@ class OnTap_Merchandiser_Model_Resource_Merchandiser extends Mage_Catalog_Model_
      * @param mixed $order
      * @return array
      */
-    public function getSaleCategoryProducts($categoryId,$order)
+    public function getSaleCategoryProducts($categoryId, $order)
     {
         $write = $this->_getWriteAdapter();
         $priceTable = Mage::getSingleton('core/resource')->getTableName('catalog_product_index_price');
@@ -249,6 +253,7 @@ class OnTap_Merchandiser_Model_Resource_Merchandiser extends Mage_Catalog_Model_
             return $write->fetchAll($select);
         } catch (Exception $e) {
             Mage::log($e->getMessage());
+            return array();
         }
     }
 
@@ -259,19 +264,15 @@ class OnTap_Merchandiser_Model_Resource_Merchandiser extends Mage_Catalog_Model_
      * @param mixed $field (default: null)
      * @return array
      */
-    public function getCategoryValues($categoryId,$field = null)
+    public function getCategoryValues($categoryId, $field = null)
     {
         $write = $this->_getWriteAdapter();
-        try {
-            $select = $write->select()->from($this->categoryValuesTable)->where('category_id = ?', $categoryId);
-            $categoryValues = $write->fetchRow($select);
-            if ($field != null && isset($categoryValues[$field])) {
-                return $categoryValues[$field];
-            }
-            return $categoryValues;
-        } catch (Exception $e) {
-            Mage::log($e->getMessage());
+        $select = $write->select()->from($this->categoryValuesTable)->where('category_id = ?', $categoryId);
+        $categoryValues = $write->fetchRow($select);
+        if ($field != null && isset($categoryValues[$field])) {
+            return $categoryValues[$field];
         }
+        return $categoryValues;
     }
 
     /**
@@ -281,7 +282,7 @@ class OnTap_Merchandiser_Model_Resource_Merchandiser extends Mage_Catalog_Model_
      * @param string $order (default: "")
      * @return array
      */
-    public function getCategoryProduct($categoryId,$order = "")
+    public function getCategoryProduct($categoryId, $order = "")
     {
         $write = $this->_getWriteAdapter();
         try {
@@ -292,6 +293,7 @@ class OnTap_Merchandiser_Model_Resource_Merchandiser extends Mage_Catalog_Model_
             return $write->fetchAll($select);
         } catch (Exception $e) {
             Mage::log($e->getMessage());
+            return array();
         }
     }
 
@@ -312,6 +314,7 @@ class OnTap_Merchandiser_Model_Resource_Merchandiser extends Mage_Catalog_Model_
             }
             return $writeAdapter->fetchAll($select);
         } catch (Exception $e) {
+            return array();
         }
     }
 
@@ -499,6 +502,164 @@ class OnTap_Merchandiser_Model_Resource_Merchandiser extends Mage_Catalog_Model_
             return $row['max_pos'];
         } catch (Exception $e) {
             Mage::log($e->getMessage());
+            return 0;
         }
+    }
+
+    /**
+     * getBestSellersProducts
+     *
+     * @param mixed $categoryId
+     * @return array
+     */
+    public function getBestSellersProducts($categoryId)
+    {
+        $period = (int)Mage::getStoreConfig('catalog/merchandiser/bestseller_sort_period');
+
+        $date = date('Y-m-d');
+        $end = date('Y-m-d', strtotime("{$date} - {$period} months"));
+
+        $bestsellersAggregatedMonthly = Mage::getSingleton('core/resource')
+            ->getTableName('sales_bestsellers_aggregated_monthly');
+
+        try {
+            $write = $this->_getWriteAdapter();
+            $select = $write->select()
+                ->from(array('cp' => $this->catalogCategoryProduct), array('cp.product_id'))
+                ->join(array('bs' => $bestsellersAggregatedMonthly),
+                    'bs.product_id = cp.product_id', array('qty_ordered' => 'qty_ordered'))
+                ->where("period >= :end AND period <= :start")
+                ->group('cp.product_id')
+                ->order('bs.qty_ordered DESC');
+
+            return $write->fetchAll($select, array(
+                'end' => $end,
+                'start' => $date,
+            ));
+        } catch (Exception $e) {
+            Mage::log($e->getMessage());
+            return array();
+        }
+    }
+
+    /**
+     * getLowStockProducts
+     *
+     * @param mixed $categoryId
+     * @return array
+     */
+    public function getLowStockProducts($categoryId)
+    {
+        $write = $this->_getWriteAdapter();
+
+        $minStockThreshold = Mage::helper('merchandiser')->getMinStockThreshold();
+
+        $catalogProductRelation = Mage::getSingleton('core/resource')
+            ->getTableName('catalog_product_relation');
+
+        $cataloginventryStockItem = Mage::getSingleton('core/resource')
+            ->getTableName('cataloginventory_stock_item');
+
+        try {
+            $select = $write->select()
+                ->from(array('cp' => $this->catalogCategoryProduct))
+                ->join(array('si1' => $cataloginventryStockItem),
+                        "si1.product_id = cp.product_id",
+                        array("si1.product_id", "si1.qty", "si1.is_in_stock")
+                    )
+                ->joinLeft(array('pr' => $catalogProductRelation), "pr.parent_id = cp.product_id")
+                ->joinLeft(
+                        array('si2' => $cataloginventryStockItem),
+                        "pr.child_id = si2.product_id AND si2.is_in_stock = 1",
+                        array("si2.product_id", "si2.qty", "si2.is_in_stock")
+                    )
+                ->columns("IF(SUM(si2.qty), SUM(si2.qty), si1.qty) as final_qty, cp.product_id as product_id")
+                ->where("cp.category_id = ?", $categoryId)
+                ->having("final_qty <= ?", $minStockThreshold)
+                ->group("cp.product_id")
+                ->order("final_qty ASC");
+
+            return $write->fetchAll($select);
+        } catch (Exception $e) {
+            Mage::log($e->getMessage());
+            return array();
+        }
+    }
+
+    /**
+     * getProductsOrderedByColor function.
+     *
+     * @param int $categoryId
+     * @return array
+     */
+    public function getProductsOrderedByColor($categoryId)
+    {
+        $categoryProducts = $this->getCategoryProduct($categoryId);
+        $productIdArray = array_map(array($this, "returnId"), $categoryProducts);
+        $valueOrderArray = explode("\n", Mage::helper('merchandiser')->getColorAttributeOrder());
+        $valueOrderArray = array_map("trim", $valueOrderArray);
+        $valueOrderArray = array_reverse($valueOrderArray);
+
+        $attributeModel = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product',
+            Mage::helper('merchandiser')->getColorAttribute());
+
+        if (!$attributeModel || !$attributeModel->getId()) {
+            return array();
+        }
+
+        $productCollection = Mage::getModel('catalog/product')->getCollection();
+        $productCollection->addAttributeToSelect('color', 'left');
+        $productCollection->addAttributeToFilter('entity_id', array('in' => $productIdArray));
+        $optionValueTable = Mage::getSingleton('core/resource')->getTableName('eav_attribute_option_value');
+
+        $productCollection->getSelect()
+            ->joinLeft(array(
+                'option_value' => $optionValueTable
+            ), "`at_color`.`value` = `option_value`.`option_id`", array(
+                'color_value' => 'value'
+            ))
+            ->where('option_value.store_id = 0');
+
+        $fieldList = $this->_getWriteAdapter()->quote($valueOrderArray);
+        $productCollection->getSelect()->order(new Zend_Db_Expr("FIELD (color_value, {$fieldList}) DESC"));
+
+        return $productCollection;
+    }
+
+    /**
+     * getProductsOrderedByMargin function.
+     *
+     * @param int $categoryId
+     * @return array
+     */
+    public function getProductsOrderedByMargin($categoryId)
+    {
+        $categoryProducts = $this->getCategoryProduct($categoryId);
+
+        $productIdArray = array_map(array($this, "returnId"), $categoryProducts);
+
+        $productCollection = Mage::getModel('catalog/product')->getCollection()
+            ->addAttributeToSelect('cost', 'left')
+            ->addAttributeToSelect('price', 'left')
+            ->addAttributeToFilter('entity_id', array('in' => $productIdArray));
+
+        $productCollection->getSelect()->order("IF(cost>0,1,2) ASC");
+        $productCollection->getSelect()->order("(price-cost) DESC");
+
+        return $productCollection;
+    }
+
+    /**
+     * returnId function.
+     *
+     * @param array $value
+     * @return string
+     */
+    public function returnId($value)
+    {
+        if (isset($value['product_id'])) {
+            return $value['product_id'];
+        }
+        return "";
     }
 }

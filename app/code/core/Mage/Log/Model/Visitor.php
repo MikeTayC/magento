@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Log
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -52,14 +52,17 @@ class Mage_Log_Model_Visitor extends Mage_Core_Model_Abstract
     protected $_skipRequestLogging = false;
 
     /**
-     * Onject initialization
+     * Object initialization
      */
     protected function _construct()
     {
         $this->_init('log/visitor');
         $userAgent = Mage::helper('core/http')->getHttpUserAgent();
         $ignoreAgents = Mage::getConfig()->getNode('global/ignore_user_agents');
-        if ($ignoreAgents) {
+        if (!Mage::helper('log')->isLogEnabled()) {
+            $this->_skipRequestLogging = true;
+        }
+        if (!$this->_skipRequestLogging && $ignoreAgents) {
             $ignoreAgents = $ignoreAgents->asArray();
             if (in_array($userAgent, $ignoreAgents)) {
                 $this->_skipRequestLogging = true;

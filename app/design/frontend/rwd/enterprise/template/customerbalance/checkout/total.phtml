@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -30,7 +30,7 @@
             <?php if ($this->getRenderingArea() == $this->getTotal()->getArea()): ?><strong><?php endif; ?>
                 <?php $_title = $this->__('Remove'); ?>
                 <?php $_url = Mage::getUrl('enterprise_customerbalance/cart/remove'); ?>
-                <a href="<?php echo $_url; ?>" title="<?php echo $_title; ?>" class="btn-remove"></a>
+                <a href="<?php echo $_url; ?>" title="<?php echo Mage::helper('core')->quoteEscape($_title); ?>" class="btn-remove"></a>
 
                 <?php echo $this->getTotal()->getTitle(); ?>
             <?php if ($this->getRenderingArea() == $this->getTotal()->getArea()): ?></strong><?php endif; ?>

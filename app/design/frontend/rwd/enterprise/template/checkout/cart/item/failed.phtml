@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -46,7 +46,9 @@ $additionalInfoBlock = $this->getProductAdditionalInformationBlock();
     <?php if ($this->helper('wishlist')->isAllowInCart()) : ?><td class="a-center"></td><?php endif ?>
     <td class="a-right"<?php if ($displayBothPrices): ?> colspan="2"<?php endif; ?>></td>
     <td class="a-center">
-        <input name="cart[<?php echo $_item->getId() ?>][qty]" value="<?php echo $this->getQty() ?>" size="4" title="<?php echo $this->__('Qty') ?>" class="input-text qty disabled" maxlength="12" disabled="disabled" />
+        <input name="cart[<?php echo $_item->getId() ?>][qty]" value="<?php echo $this->getQty() ?>" size="4"
+               title="<?php echo $this->quoteEscape($this->__('Qty')) ?>"
+               class="input-text qty disabled" maxlength="12" disabled="disabled" />
     </td>
-    <td class="a-center last"><a href="<?php echo $this->getDeleteUrl()?>" title="<?php echo $this->__('Remove item')?>" class="btn-remove btn-remove2"><?php echo $this->__('Remove item')?></a></td>
+    <td class="a-center last"><a href="<?php echo $this->getDeleteUrl()?>" title="<?php echo $this->quoteEscape($this->__('Remove item')) ?>" class="btn-remove btn-remove2"><?php echo $this->__('Remove item')?></a></td>
 </tr>

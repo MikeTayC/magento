@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -31,9 +31,9 @@
     $pId = $_product->getId();
 ?>
 
-<li id="sku-<?php echo $helper->getSkuIdDisplay($_product->getSku()) ?>" class="<?php echo $this->getWebClassesFromProduct($_product) ?> dragbox product-shop productid product<?php echo $pId ?> <?php echo $this->getProductClasses($_product) ?>">
+<li id="sku-<?php echo $this->htmlEscape($helper->getSkuIdDisplay($_product->getSku())) ?>" class="<?php echo $this->getWebClassesFromProduct($_product) ?> dragbox product-shop productid product<?php echo $pId ?> <?php echo $this->getProductClasses($_product) ?>">
     <input type="hidden" value="<?php echo $_product->getId() ?>" class="hero-sku" name="heroproducts[]" />
-    <input type="hidden" value="<?php echo $_product->getSku() ?>" class="product-sku" />
+    <input type="hidden" value="<?php echo $this->htmlEscape($_product->getSku()) ?>" class="product-sku" />
     <div class="product-shop">
         <h2 class="product-name">
             <strong>
@@ -48,7 +48,7 @@
             <?php endif; ?>
             <?php echo $helper->getStockQtyHtml($_product) ?>
         </h2>
-        <input type="hidden" class="productid input-product-position productid<?php echo $pId ?>" rel="<?php echo $_product->getSku() ?>" name="product[<?php echo $pId ?>]" value="<?php echo $currentPosition++ ?>" />
+        <input type="hidden" class="productid input-product-position productid<?php echo $pId ?>" rel="<?php echo $this->htmlEscape($_product->getSku()) ?>" name="product[<?php echo $pId ?>]" value="<?php echo $currentPosition++ ?>" />
         <div class="dragbox-content">
             <div class="cols2">
                 <div class="cols2-left">
@@ -79,7 +79,7 @@
 
                 <div class="cols2-right">
                     <div>
-                        <strong><?php echo $helper->__('SKU') ?></strong>:&nbsp;<?php echo $_product->getSku() ?>
+                        <strong><?php echo $helper->__('SKU') ?></strong>:&nbsp;<?php echo $this->htmlEscape($_product->getSku()) ?>
                     </div>
 
                     <?php if ($helper->getShowCreationDate()): ?>

@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -49,11 +49,11 @@
                             <thead>
                                 <tr>
                                     <th>&nbsp;</th>
-                                    <th><div class="rating-box"><span class="rating nobr" style="width:20%" title="<?php echo $this->__('1 star') ?>"><?php echo $this->__('1 star') ?></span></div></th>
-                                    <th><div class="rating-box"><span class="rating nobr" style="width:40%" title="<?php echo $this->__('2 stars') ?>"><?php echo $this->__('2 stars') ?></span></div></th>
-                                    <th><div class="rating-box"><span class="rating nobr" style="width:60%" title="<?php echo $this->__('3 stars') ?>"><?php echo $this->__('3 stars') ?></span></div></th>
-                                    <th><div class="rating-box"><span class="rating nobr" style="width:80%" title="<?php echo $this->__('4 stars') ?>"><?php echo $this->__('4 stars') ?></span></div></th>
-                                    <th><div class="rating-box"><span class="rating nobr" style="width:100%" title="<?php echo $this->__('5 stars') ?>"><?php echo $this->__('5 stars') ?></span></div></th>
+                                    <th><div class="rating-box"><span class="rating nobr" style="width:20%" title="<?php echo Mage::helper('core')->quoteEscape($this->__('1 star')) ?>"><?php echo $this->__('1 star') ?></span></div></th>
+                                    <th><div class="rating-box"><span class="rating nobr" style="width:40%" title="<?php echo Mage::helper('core')->quoteEscape($this->__('2 stars')) ?>"><?php echo $this->__('2 stars') ?></span></div></th>
+                                    <th><div class="rating-box"><span class="rating nobr" style="width:60%" title="<?php echo Mage::helper('core')->quoteEscape($this->__('3 stars')) ?>"><?php echo $this->__('3 stars') ?></span></div></th>
+                                    <th><div class="rating-box"><span class="rating nobr" style="width:80%" title="<?php echo Mage::helper('core')->quoteEscape($this->__('4 stars')) ?>"><?php echo $this->__('4 stars') ?></span></div></th>
+                                    <th><div class="rating-box"><span class="rating nobr" style="width:100%" title="<?php echo Mage::helper('core')->quoteEscape($this->__('5 stars')) ?>"><?php echo $this->__('5 stars') ?></span></div></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -98,7 +98,7 @@
     var dataForm = new VarienForm('review-form');
     Validation.addAllThese(
     [
-           ['validate-rating', '<?php echo $this->__('Please select one of each of the ratings above') ?>', function(v) {
+           ['validate-rating', '<?php echo Mage::helper('core')->jsQuoteEscape($this->__('Please select one of each of the ratings above')) ?>', function(v) {
                 var trs = $('product-review-table').select('tr');
                 var inputs;
                 var error = 1;

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -479,6 +479,27 @@ class Enterprise_GiftCardAccount_Model_Giftcardaccount extends Mage_Core_Model_A
         return false;
     }
 
+    /**
+     * Check if card is valid without exceptions throw
+     *
+     * @param bool $expirationCheck
+     * @param bool $statusCheck
+     * @param bool|int|Mage_Core_Model_Website $websiteCheck
+     * @param bool|float $balanceCheck
+     *
+     * @return bool
+     */
+    public function checkSilently($expirationCheck = true, $statusCheck = true, $websiteCheck = false,
+        $balanceCheck = true)
+    {
+        try {
+            $this->isValid($expirationCheck, $statusCheck, $websiteCheck, $balanceCheck);
+        } catch (Mage_Core_Exception $e) {
+            return false;
+        }
+
+        return true;
+    }
 
     /**
      * Check all the gift card validity attributes

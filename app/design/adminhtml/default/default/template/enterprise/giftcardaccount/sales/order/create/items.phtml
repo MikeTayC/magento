@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -32,7 +32,7 @@
          <div class="content">
             <p><input id="giftcardaccount_add_input" type="text" class="input-text" style="width:200px" />&nbsp;<button onclick="applyGiftCard()" type="button" value="" class="scalable"><span><span><span><?php echo $this->__('Add Gift Card'); ?></span></span></span></button></p>
             <?php foreach ($this->getGiftCards() as $_card): ?>
-                <p><strong><?php echo $_card; ?></strong> [<a href="#" onclick="removeGiftCard('<?php echo $_card; ?>'); return false;" title="<?php echo $this->__('Remove'); ?>"><?php echo $this->__('Remove'); ?></a>]</p>
+                <p><strong><?php echo $_card; ?></strong> [<a href="#" onclick="removeGiftCard('<?php echo $_card; ?>'); return false;" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove')); ?>"><?php echo $this->__('Remove'); ?></a>]</p>
             <?php endforeach; ?>
         </div>
     </fieldset>

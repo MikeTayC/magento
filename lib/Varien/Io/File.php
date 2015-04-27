@@ -20,7 +20,7 @@
  *
  * @category    Varien
  * @package     Varien_Io
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -99,10 +99,16 @@ class Varien_Io_File extends Varien_Io_Abstract
      */
     protected $_streamLocked = false;
 
+    public function __construct()
+    {
+        // Initialize shutdown function
+        register_shutdown_function(array($this, 'destruct'));
+    }
+
     /**
-     * Destruct
+     * stream close on shutdown
      */
-    public function __destruct()
+    public function destruct()
     {
         if ($this->_streamHandler) {
             $this->streamClose();

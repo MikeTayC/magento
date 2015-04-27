@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -54,5 +54,41 @@ class Enterprise_CustomerBalance_Helper_Data extends Mage_Core_Helper_Abstract
     public function isAutoRefundEnabled()
     {
         return Mage::getStoreConfigFlag(self::XML_PATH_AUTO_REFUND);
+    }
+
+    /**
+     * Get customer balance model using sales entity
+     *
+     * @param Mage_Sales_Model_Quote|Mage_Sales_Model_Order $salesEntity
+     *
+     * @return Enterprise_CustomerBalance_Model_Balance|bool
+     */
+    public function getCustomerBalanceModelFromSalesEntity($salesEntity)
+    {
+        if ($salesEntity instanceof Mage_Sales_Model_Order) {
+            $customerId = $salesEntity->getCustomerId();
+            $quote = $salesEntity->getQuote();
+        } elseif ($salesEntity instanceof Mage_Sales_Model_Quote) {
+            $customerId = $salesEntity->getCustomer()->getId();
+            $quote = $salesEntity;
+        } else {
+            return false;
+        }
+
+        if (!$customerId) {
+            return false;
+        }
+
+        $customerBalanceModel = Mage::getModel('enterprise_customerbalance/balance')
+            ->setCustomerId($customerId)
+            ->setWebsiteId(Mage::app()->getStore($salesEntity->getStoreId())->getWebsiteId())
+            ->loadByCustomer();
+
+        if ($quote->getBaseCustomerBalanceVirtualAmount() > 0) {
+            $customerBalanceModel->setAmount($customerBalanceModel->getAmount()
+                + $quote->getBaseCustomerBalanceVirtualAmount());
+        }
+
+        return $customerBalanceModel;
     }
 }

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Checkout
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -77,7 +77,9 @@ class Enterprise_Checkout_Block_Adminhtml_Manage extends Mage_Adminhtml_Block_Wi
                     'style' => 'float:right; margin-left: 5px;'
                 ))
         );
-        $deleteAllConfirmString = Mage::helper('enterprise_checkout')->__('Are you sure you want to delete all items from shopping cart?');
+        $deleteAllConfirmString = Mage::helper('core')->jsQuoteEscape(
+            Mage::helper('enterprise_checkout')->__('Are you sure you want to delete all items from shopping cart?')
+        );
         $this->setChild('empty_customer_cart_button',
             $this->getLayout()->createBlock('adminhtml/widget_button')
                 ->setData(array(

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -240,7 +240,7 @@ class Mage_Catalog_Model_Resource_Product_Indexer_Eav_Source
         $data  = array();
         $query = $select->query();
         while ($row = $query->fetch()) {
-            $values = explode(',', $row['value']);
+            $values = array_unique(explode(',', $row['value']));
             foreach ($values as $valueId) {
                 if (isset($options[$row['attribute_id']][$valueId])) {
                     $data[] = array(

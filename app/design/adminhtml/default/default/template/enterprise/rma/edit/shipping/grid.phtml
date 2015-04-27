@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -33,7 +33,7 @@
                     <th class=" no-link"><span class="nobr"><?php echo Mage::helper('sales')->__('Product Name') ?></span></th>
                     <th class=" no-link"><span class="nobr"><?php echo Mage::helper('sales')->__('Weight') ?></span></th>
                     <th class=" no-link" <?php echo $this->displayCustomsValue() ? '' : 'style="display: none;"' ?> width="100">
-                        <span class="nobr"><?php echo Mage::helper('sales')->__('Customs Value') ?></span>
+                        <span class="nobr"><?php echo Mage::helper('core')->quoteEscape(Mage::helper('sales')->__('Customs Value')) ?></span>
                     </th>
                     <th class="a-center no-link" width="100">
                         <span class="nobr"><input type="checkbox" name="" onclick="packaging.checkAllItems(this);" class="checkbox" title="<?php echo Mage::helper('sales')->__('Select All') ?>"></span>

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Wishlist
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -94,7 +94,10 @@ class Enterprise_Wishlist_Block_Behaviour extends Mage_Core_Block_Template
     {
         $wishlistData = array();
         foreach($this->getWishlists() as $wishlist){
-            $wishlistData[] = array('id' => $wishlist->getId(), 'name' => $wishlist->getName());
+            $wishlistData[] = array(
+                'id' => $wishlist->getId(),
+                'name' => Mage::helper('core')->escapeHtml($wishlist->getName())
+            );
         }
         return $wishlistData;
     }

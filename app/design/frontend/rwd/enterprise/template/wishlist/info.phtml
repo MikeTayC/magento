@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -33,7 +33,7 @@
     <?php endif; ?>
     <h1><?php echo $this->__('Wishlist Info') ?></h1>
 </div>
-<?php echo $this->getMessagesBlock()->toHtml();?>
+<?php echo $this->getMessagesBlock()->toHtml(); ?>
 <div class="info-box">
     <div class="box-content">
         <table class="info-table">
@@ -41,16 +41,16 @@
             <col />
             <tbody>
                 <tr>
-                    <th><span class="nobr"><?php echo $this->__('Owner');?></span></th>
-                    <td><?php echo $this->escapeHtml($this->getWishlistOwner()->getName());?></td>
+                    <th><span class="nobr"><?php echo $this->__('Owner'); ?></span></th>
+                    <td><?php echo $this->escapeHtml($this->getWishlistOwner()->getName()); ?></td>
                 </tr>
                 <tr>
-                    <th><span class="nobr"><?php echo $this->__('Name');?></span></th>
-                    <td><?php echo $this->escapeHtml($this->getWishlistInstance()->getName());?></td>
+                    <th><span class="nobr"><?php echo $this->__('Name'); ?></span></th>
+                    <td><?php echo $this->escapeHtml($this->getWishlistInstance()->getName()); ?></td>
                 </tr>
                 <tr>
-                    <th><span class="nobr"><?php echo $this->__('Updated at');?></span></th>
-                    <td><?php echo $this->formatDate($this->getWishlistInstance()->getUpdatedAt(), Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);?></td>
+                    <th><span class="nobr"><?php echo $this->__('Updated at'); ?></span></th>
+                    <td><?php echo $this->formatDate($this->getWishlistInstance()->getUpdatedAt(), Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM); ?></td>
                 </tr>
             </tbody>
         </table>
@@ -58,13 +58,13 @@
 </div>
 
 <h2 class="subtitle"><?php echo $this->__('Wishlist Items') ?></h2>
-<form method="post" action="<?php echo $this->getToCartUrl();?>" id="wishlist-info-form">
+<form method="post" action="<?php echo $this->getToCartUrl(); ?>" id="wishlist-info-form">
     <?php echo $this->getBlockHtml('formkey') ?>
     <?php $this->getChild('items')->setItems($this->getWishlistItems()); ?>
-    <?php echo $this->getChildHtml('items');?>
+    <?php echo $this->getChildHtml('items'); ?>
     <?php if (count($wishlistItems) && $this->isSaleable()): ?>
         <div class="buttons-set buttons-set2">
-            <button type="submit" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-add"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+            <button type="submit" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Add to Cart')) ?>" class="button btn-add"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
         </div>
     <?php endif; ?>
 </form>
@@ -89,7 +89,7 @@
         Event.observe(form, 'submit', function(event) {
             if (form.isValid && !itemsSelected()) {
                 Event.stop(event);
-                alert('<?php echo $this->__('You must select items to add to cart');?>');
+                alert('<?php echo Mage::helper('core')->jsQuoteEscape($this->__('You must select items to add to cart')); ?>');
             }
         });
     })();

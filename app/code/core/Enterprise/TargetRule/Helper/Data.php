@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -99,10 +99,10 @@ class Enterprise_TargetRule_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getMaxProductsListResult($number = 0)
     {
+        $number = abs((int)$number);
         if ($number == 0 || $number > self::MAX_PRODUCT_LIST_RESULT) {
             $number = self::MAX_PRODUCT_LIST_RESULT;
         }
-
         return $number;
     }
 

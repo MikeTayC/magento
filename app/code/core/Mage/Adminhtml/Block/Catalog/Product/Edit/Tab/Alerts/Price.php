@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -68,6 +68,12 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Alerts_Price extends Mage_Ad
             'header'    => Mage::helper('catalog')->__('First Name'),
             'index'     => 'firstname',
         ));
+
+        $this->addColumn('middlename', array(
+            'header'    => Mage::helper('catalog')->__('Middle Name'),
+            'index'     => 'middlename',
+        ));
+
 
         $this->addColumn('lastname', array(
             'header'    => Mage::helper('catalog')->__('Last Name'),

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_TargetRule
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -200,7 +200,7 @@ abstract class Enterprise_TargetRule_Block_Catalog_Product_List_Abstract
 
         Mage::getSingleton('catalog/product_visibility')
             ->addVisibleInCatalogFilterToCollection($linkCollection);
-
+        $linkCollection->addAttributeToFilter('status', Mage_Catalog_Model_Product_Status::STATUS_ENABLED);
         $linkCollection->setFlag('do_not_use_category_id', true);
 
         $excludeProductIds = $this->getExcludeProductIds();
@@ -267,19 +267,34 @@ abstract class Enterprise_TargetRule_Block_Catalog_Product_List_Abstract
 
         $items = array();
         if ($productIds) {
-            /** @var $collection Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection */
-            $collection = Mage::getResourceModel('catalog/product_collection');
-            $collection->addFieldToFilter('entity_id', array('in' => $productIds));
-            $this->_addProductAttributesAndPrices($collection);
-
-            $collection->setFlag('is_link_collection', true);
-            Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($collection);
-            $collection->setPageSize($limit)->setFlag('do_not_use_category_id', true);
-            foreach ($collection as $item) {
-                $items[$item->getEntityId()] = $item;
-            }
+            $items = $this->_getTargetRuleProductsByIds($productIds, $limit);
         }
 
+        return $items;
+    }
+
+    /**
+     * Get target rule products by ids
+     *
+     * @param array $ids
+     * @param int $limit
+     * @return array
+     */
+    protected function _getTargetRuleProductsByIds(array $ids, $limit)
+    {
+        /** @var $collection Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection */
+        $collection = Mage::getResourceModel('catalog/product_collection');
+        $collection->addFieldToFilter('entity_id', array('in' => $ids));
+        $collection->addAttributeToFilter('status', Mage_Catalog_Model_Product_Status::STATUS_ENABLED);
+        $this->_addProductAttributesAndPrices($collection);
+
+        $collection->setFlag('is_link_collection', true);
+        Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($collection);
+        $collection->setPageSize($limit)->setFlag('do_not_use_category_id', true);
+        $items = array();
+        foreach ($collection as $item) {
+            $items[$item->getEntityId()] = $item;
+        }
         return $items;
     }
 
@@ -316,13 +331,31 @@ abstract class Enterprise_TargetRule_Block_Catalog_Product_List_Abstract
                 return $this->_allProductIds;
             }
 
-            $targetRuleProductIds = $this->_getTargetRuleProductIds();
-            $linkProductCollection = $this->_getPreparedTargetLinkCollection();
+            $limit = $this->getTargetRuleHelper()->getMaxProductsListResult();
+            $productIds = $this->_getTargetRuleProductIds($limit);
+            $targetRuleProducts = $this->_getTargetRuleProductsByIds($productIds, $limit);
+            $targetRuleProductIds = array();
+            foreach ($targetRuleProducts as $product) {
+                $targetRuleProductIds[] = $product->getId();
+            }
+
+            $linkProductCollection = $this->_getPreparedTargetLinkCollection($limit);
             $linkProductIds = array();
             foreach ($linkProductCollection as $item) {
                 $linkProductIds[] = $item->getEntityId();
             }
-            $this->_allProductIds = array_unique(array_merge($targetRuleProductIds, $linkProductIds));
+
+            // to ensure that all displayed items are included to ids for shuffle
+            $currentItemCollectionIds = array();
+            foreach ($this->getItemCollection() as $item) {
+                $currentItemCollectionIds[] = $item->getId();
+            }
+
+            $this->_allProductIds = array_unique(array_merge(
+                $targetRuleProductIds,
+                $linkProductIds,
+                $currentItemCollectionIds
+            ));
             shuffle($this->_allProductIds);
         }
 
@@ -336,6 +369,13 @@ abstract class Enterprise_TargetRule_Block_Catalog_Product_List_Abstract
      */
     public function getCacheTags()
     {
-        return array_merge(parent::getCacheTags(), $this->getItemsTags($this->getItemCollection()));
+        $tags = parent::getCacheTags();
+        $ids = $this->getAllIds();
+        if (!empty($ids)) {
+            foreach ($ids as $id) {
+                $tags[] = Mage_Catalog_Model_Product::CACHE_TAG . '_' . $id;
+            }
+        }
+        return $tags;
     }
 }

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -56,7 +56,7 @@ class Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Price
             }
 
             $data = floatval($data) * $this->_getRate($row);
-            $data = sprintf("%f", $data);
+            $data = sprintf("%F", $data);
             $data = Mage::app()->getLocale()->currency($currency_code)->toCurrency($data);
             return $data;
         }

@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -30,13 +30,13 @@
  * @see Enterprise_Reward_Block_Customer_Reward_Settings
  */
 ?>
-<form action="<?php echo $this->getUrl('reward/customer/saveSettings') ?>" method="post" id="form-validate">
+<form action="<?php echo $this->getActionUrl() ?>" method="post" id="form-validate">
 <div class="box">
     <?php echo $this->getBlockHtml('formkey')?>
     <h2 class="sub-title"><?php echo $this->__('Email Notification Settings'); ?></h2>
     <ul class="form-list">
         <li class="control">
-            <span class="input-box"><input type="checkbox" name="subscribe_updates" id="subscribe_updates" value="1" title="<?php echo $this->__('Subscribe for balance updates') ?>"<?php if($this->isSubscribedForUpdates()): ?> checked="checked"<?php endif; ?> class="checkbox" /></span><label for="subscribe_updates"><?php echo $this->__('Subscribe for balance updates') ?></label>
+            <span class="input-box"><input type="checkbox" name="subscribe_updates" id="subscribe_updates" value="1" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Subscribe for balance updates')) ?>"<?php if($this->isSubscribedForUpdates()): ?> checked="checked"<?php endif; ?> class="checkbox" /></span><label for="subscribe_updates"><?php echo $this->__('Subscribe for balance updates') ?></label>
         </li>
         <li class="control">
             <span class="input-box"><input type="checkbox" name="subscribe_warnings" id="subscribe_warnings" value="1"<?php if($this->isSubscribedForWarnings()): ?> checked="checked"<?php endif; ?> class="checkbox" /></span><label for="subscribe_warnings"><?php echo $this->__('Subscribe for points expiration notifications') ?></label>
@@ -44,6 +44,6 @@
     </ul>
 </div>
 <div class="buttons-set btn-only">
-    <button type="submit" class="button" title="<?php echo $this->__('Save Subscription Settings') ?>"><span><span><?php echo $this->__('Save Subscription Settings') ?></span></span></button>
+    <button type="submit" class="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Save Subscription Settings')) ?>"><span><span><?php echo $this->__('Save Subscription Settings') ?></span></span></button>
 </div>
 </form>

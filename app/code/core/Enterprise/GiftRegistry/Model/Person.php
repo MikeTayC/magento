@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -32,6 +32,8 @@
  * @method Enterprise_GiftRegistry_Model_Person setEntityId(int $value)
  * @method string getFirstname()
  * @method Enterprise_GiftRegistry_Model_Person setFirstname(string $value)
+ * @method string getMiddlename()
+ * @method Enterprise_GiftRegistry_Model_Person setMiddlename(string $value)
  * @method string getLastname()
  * @method Enterprise_GiftRegistry_Model_Person setLastname(string $value)
  * @method string getEmail()

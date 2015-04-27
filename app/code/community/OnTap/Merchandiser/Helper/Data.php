@@ -20,15 +20,28 @@
  *
  * @category    OnTap
  * @package     OnTap_Merchandiser
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 class OnTap_Merchandiser_Helper_Data extends Mage_Core_Helper_Abstract
 {
     const ID_EMPTY = 'empty';
     const DEFAULT_COLUMN_COUNT = 4;
+    const MAX_COLUMN_COUNT = 5;
+    const MIN_COLUMN_COUNT = 1;
     const DEFAULT_IMAGE_COUNT = 4;
     const PLACEHOLDER_PATH = 'merchandiser/images/placeholder.jpg';
+
+    /**
+     * getMinStockThreshold
+     *
+     * @return int
+     */
+    public function getMinStockThreshold()
+    {
+        $minStock = Mage::getStoreConfig('catalog/merchandiser/min_stock_threshold');
+        return is_numeric($minStock) && $minStock > 0 ? $minStock : 0;
+    }
 
     /**
      * getImageUrl
@@ -177,8 +190,12 @@ class OnTap_Merchandiser_Helper_Data extends Mage_Core_Helper_Abstract
             $_columnCount = intval(Mage::getStoreConfig('catalog/merchandiser/column_count'));
         }
 
-        if ($_columnCount < 1) {
+        if ($_columnCount < self::MIN_COLUMN_COUNT) {
             $_columnCount = self::DEFAULT_COLUMN_COUNT;
+        }
+
+        if ($_columnCount > self::MAX_COLUMN_COUNT) {
+            $_columnCount = self::MAX_COLUMN_COUNT;
         }
 
         return $_columnCount;
@@ -644,5 +661,25 @@ class OnTap_Merchandiser_Helper_Data extends Mage_Core_Helper_Abstract
     public function newProductsHandler()
     {
         return Mage::getStoreConfig('catalog/merchandiser/new_products_handler');
+    }
+
+    /**
+     * getColorAttribute function.
+     *
+     * @return string
+     */
+    public function getColorAttribute()
+    {
+        return Mage::getStoreConfig('catalog/merchandiser/color_attribute');
+    }
+
+    /**
+     * getColorAttributeOrder function.
+     *
+     * @return string
+     */
+    public function getColorAttributeOrder()
+    {
+        return Mage::getStoreConfig('catalog/merchandiser/color_order');
     }
 }

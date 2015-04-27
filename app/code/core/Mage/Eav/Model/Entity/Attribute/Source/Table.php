@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -33,6 +33,87 @@ class Mage_Eav_Model_Entity_Attribute_Source_Table extends Mage_Eav_Model_Entity
      * @var array
      */
     protected $_optionsDefault = array();
+
+    /**
+     * List of preloaded options per attribute
+     *
+     * @var array
+     */
+    protected $_preloadedOptions = array();
+
+    /**
+     * List of stores where default values already preloaded
+     *
+     * @var array
+     */
+    protected $_preloadedOptionsStores = array();
+
+    /**
+     * List of preloaded options for each option id
+     *
+     * @var array
+     */
+    protected $_preloadedOptionHash = array();
+
+    /**
+     * Retrieve store options from preloaded hashes
+     *
+     * @param int $storeId
+     * @param int $attributeId
+     * @return array
+     */
+    protected function _getPreloadedOptions($storeId, $attributeId, $type)
+    {
+        $this->_preloadOptions($storeId);
+
+        $key = $this->_getCombinedKey($storeId, $attributeId, $type);
+
+        if (isset($this->_preloadedOptions[$key])) {
+            return $this->_preloadedOptions[$key];
+        }
+
+        return array();
+    }
+
+    /**
+     * Preloads values for option values on the first call
+     *
+     * @param int $storeId
+     */
+    protected function _preloadOptions($storeId)
+    {
+        if (isset($this->_preloadedOptionsStores[$storeId])) {
+            return;
+        }
+        $this->_preloadedOptionsStores[$storeId] = true;
+        $collection = Mage::getResourceModel('eav/entity_attribute_option_collection')
+            ->setPositionOrder('asc')
+            ->setStoreFilter($storeId);
+        // This one allows to limit selection of options, based on frontend criteria.
+        // E.g. if not all the attribute options are needed for the current page
+        Mage::dispatchEvent('eav_entity_attribute_source_table_preload_options', array(
+            'collection' => $collection,
+            'store_id' => $storeId
+        ));
+        $options = $collection->getData();
+
+        foreach ($options as $option) {
+            $optionKey = $this->_getCombinedKey($storeId, $option['option_id'], 'store');
+            $storeKey = $this->_getCombinedKey($storeId, $option['attribute_id'], 'store');
+            $defaultKey = $this->_getCombinedKey($storeId, $option['attribute_id'], 'default');
+
+            $this->_preloadedOptionHash[$optionKey] = $option['value'];
+            $this->_preloadedOptions[$storeKey][] = array(
+                'value' => $option['option_id'],
+                'label' => $option['value']
+            );
+            $this->_preloadedOptions[$defaultKey][] = array(
+                'value' => $option['option_id'],
+                'label' => $option['default_value']
+            );
+        }
+    }
+
 
     /**
      * Retrieve Full Option values array
@@ -51,20 +132,35 @@ class Mage_Eav_Model_Entity_Attribute_Source_Table extends Mage_Eav_Model_Entity
             $this->_optionsDefault = array();
         }
         if (!isset($this->_options[$storeId])) {
-            $collection = Mage::getResourceModel('eav/entity_attribute_option_collection')
-                ->setPositionOrder('asc')
-                ->setAttributeFilter($this->getAttribute()->getId())
-                ->setStoreFilter($this->getAttribute()->getStoreId())
-                ->load();
-            $this->_options[$storeId]        = $collection->toOptionArray();
-            $this->_optionsDefault[$storeId] = $collection->toOptionArray('default_value');
+            $this->_options[$storeId] = $this->_getPreloadedOptions(
+                $storeId,
+                $this->getAttribute()->getId(),
+                'store'
+            );
+            $this->_optionsDefault[$storeId] = $this->_getPreloadedOptions(
+                $storeId,
+                $this->getAttribute()->getId(),
+                'default'
+            );
         }
         $options = ($defaultValues ? $this->_optionsDefault[$storeId] : $this->_options[$storeId]);
         if ($withEmpty) {
             array_unshift($options, array('label' => '', 'value' => ''));
         }
-
         return $options;
+    }
+
+    /**
+     * Returns option key for hash generation
+     *
+     * @param int $storeId
+     * @param int $optionId
+     * @param string $type
+     * @return string
+     */
+    protected function _getCombinedKey($storeId, $optionId, $type)
+    {
+        return $storeId . '|' . $optionId . '|' . $type;
     }
 
     /**
@@ -75,28 +171,30 @@ class Mage_Eav_Model_Entity_Attribute_Source_Table extends Mage_Eav_Model_Entity
      */
     public function getOptionText($value)
     {
+        $storeId = $this->getAttribute()->getStoreId();
+        $this->_preloadOptions($storeId);
         $isMultiple = false;
         if (strpos($value, ',')) {
             $isMultiple = true;
             $value = explode(',', $value);
         }
 
-        $options = $this->getAllOptions(false);
 
         if ($isMultiple) {
             $values = array();
-            foreach ($options as $item) {
-                if (in_array($item['value'], $value)) {
-                    $values[] = $item['label'];
+            foreach ($value as $item) {
+                $key = $this->_getCombinedKey($storeId, $item, 'store');
+                if (isset($this->_preloadedOptionHash[$key])) {
+                    $values[] = $this->_preloadedOptionHash[$key];
                 }
             }
             return $values;
         }
 
-        foreach ($options as $item) {
-            if ($item['value'] == $value) {
-                return $item['label'];
-            }
+        $key = $this->_getCombinedKey($storeId, $value, 'store');
+
+        if (isset($this->_preloadedOptionHash[$key])) {
+            return $this->_preloadedOptionHash[$key];
         }
         return false;
     }

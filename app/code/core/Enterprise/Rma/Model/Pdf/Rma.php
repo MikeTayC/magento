@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Rma
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -72,21 +72,15 @@ class Enterprise_Rma_Model_Pdf_Rma extends Mage_Sales_Model_Order_Pdf_Abstract
 
         /* Add image */
         $this->insertLogo($page, $storeId);
+        /* Add address */
+        $this->insertAddress($page, $storeId);
 
         $page->setFillColor(new Zend_Pdf_Color_GrayScale(0));
         $this->_setFontRegular($page, 5);
 
-        $page->setLineWidth(0.5);
-        $page->setLineColor(new Zend_Pdf_Color_GrayScale(0.5));
-        $page->drawLine(125, 825, 125, 790);
-
-        $page->setLineWidth(0);
-        /* start y-position for next block */
-        $this->y = 820;
-
         /* Add head */
         $page->setFillColor(new Zend_Pdf_Color_GrayScale(0.5));
-        $page->drawRectangle(25, $this->y - 30, 570, $this->y - 75);
+        $page->drawRectangle(25, $this->y, 570, $this->y - 45);
 
         $page->setFillColor(new Zend_Pdf_Color_GrayScale(1));
         $this->_setFontRegular($page);
@@ -94,7 +88,7 @@ class Enterprise_Rma_Model_Pdf_Rma extends Mage_Sales_Model_Order_Pdf_Abstract
         $page->drawText(
             Mage::helper('enterprise_rma')->__('Return # ') . $rma->getIncrementId() . ' - ' . $rma->getStatusLabel(),
             35,
-            $this->y - 40,
+            $this->y - 10,
             'UTF-8'
         );
 
@@ -102,14 +96,14 @@ class Enterprise_Rma_Model_Pdf_Rma extends Mage_Sales_Model_Order_Pdf_Abstract
             Mage::helper('enterprise_rma')->__('Return Date: ') .
                 Mage::helper('core')->formatDate($rma->getDateRequested(), 'medium', false),
             35,
-            $this->y - 50,
+            $this->y - 20,
             'UTF-8'
         );
 
         $page->drawText(
             Mage::helper('enterprise_rma')->__('Order # ') . $rma->getOrder()->getIncrementId(),
             35,
-            $this->y - 60,
+            $this->y - 30,
             'UTF-8'
         );
 
@@ -117,12 +111,12 @@ class Enterprise_Rma_Model_Pdf_Rma extends Mage_Sales_Model_Order_Pdf_Abstract
             Mage::helper('enterprise_rma')->__('Order Date: ') .
                 Mage::helper('core')->formatDate($rma->getOrder()->getCreatedAtStoreDate(), 'medium', false),
             35,
-            $this->y - 70,
+            $this->y - 40,
             'UTF-8'
         );
 
         /* start y-position for next block */
-        $this->y = $this->y - 80;
+        $this->y = $this->y - 50;
 
         /* add address blocks */
         $shippingAddress = $this->_formatAddress($rma->getOrder()->getShippingAddress()->format('pdf'));
@@ -282,14 +276,17 @@ class Enterprise_Rma_Model_Pdf_Rma extends Mage_Sales_Model_Order_Pdf_Abstract
      */
     protected function _drawRmaItem($item, $page)
     {
-        $productName = Mage::helper('core/string')->str_split($item->getProductName(), 60, true, true);
-        $productName = isset($productName[0]) ? $productName[0] : '';
+        $shift = 0;
+        foreach (Mage::helper('core/string')->str_split($item->getProductName(), 40, true, true) as $key => $part) {
+            $page->drawText($part, $this->getProductNameX(), $this->y-$shift, 'UTF-8');
+            $shift += 10;
+        }
 
-        $page->drawText($productName, $this->getProductNameX(), $this->y, 'UTF-8');
-
-        $productSku = Mage::helper('core/string')->str_split($item->getProductSku(), 25);
-        $productSku = isset($productSku[0]) ? $productSku[0] : '';
-        $page->drawText($productSku, $this->getProductSkuX(),$this->y, 'UTF-8');
+        $shift = 0;
+        foreach (Mage::helper('core/string')->str_split($item->getProductSku(), 18) as $key => $part) {
+            $page->drawText($part, $this->getProductSkuX(),$this->y-$shift, 'UTF-8');
+            $shift += 10;
+        }
 
         $condition = Mage::helper('core/string')->str_split(
             $this->_getOptionAttributeStringValue($item->getCondition()),

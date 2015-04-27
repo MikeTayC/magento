@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -64,6 +64,22 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Abstract
      * Store template data defined per store view, will be used in email templates as variables
      */
     protected $_storeData = array();
+
+    /**
+     * @var Mage_Core_Model_Email_Template
+     */
+    protected $_mail;
+
+    /**
+     * Constructor
+     *
+     * @param array $args
+     */
+    public function __construct(array $args = array())
+    {
+        $this->_mail = isset($args['mail']) ? $args['mail'] : Mage::getModel('core/email_template');
+        parent::__construct($args);
+    }
 
     /**
      * Init resource model
@@ -144,9 +160,6 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Abstract
      */
     public function sendReminderEmails()
     {
-        /** @var $mail Mage_Core_Model_Email_Template */
-        $mail = Mage::getModel('core/email_template');
-
         /* @var $translate Mage_Core_Model_Translate */
         $translate = Mage::getSingleton('core/translate');
         $translate->setTranslateInline(false);
@@ -187,12 +200,12 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Abstract
                 'promotion_description' => $storeData['description']
             );
 
-            $mail->setDesignConfig(array('area' => 'frontend', 'store' => $store->getId()));
-            $mail->sendTransactional($storeData['template_id'], $identity,
+            $this->_mail->setDesignConfig(array('area' => 'frontend', 'store' => $store->getId()));
+            $this->_mail->sendTransactional($storeData['template_id'], $identity,
                 $customer->getEmail(), null, $templateVars, $store->getId()
             );
 
-            if ($mail->getSentSuccess()) {
+            if ($this->_mail->getSentSuccess()) {
                 $this->_getResource()->addNotificationLog($recipient['rule_id'], $customer->getId());
             } else {
                 $this->_getResource()->updateFailedEmailsCounter($recipient['rule_id'], $customer->getId());

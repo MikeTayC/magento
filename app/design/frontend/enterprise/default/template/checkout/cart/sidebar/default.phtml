@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -221,12 +221,12 @@
         </div>
     <?php endif; ?>
     <?php if ($_item->getProduct()->isVisibleInSiteVisibility()): ?>
-        <a href="<?php echo $this->getConfigureUrl() ?>" title="<?php echo $this->__('Edit item') ?>"
+        <a href="<?php echo $this->getConfigureUrl() ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Edit item')) ?>"
            class="btn-edit"><?php echo $this->__('Edit item') ?></a>
         |
     <?php endif ?>
     <a href="<?php echo $this->getDeleteUrl() ?>"
-       onclick="return confirm('<?php echo $this->__('Are you sure you would like to remove this item from the shopping cart?') ?>');"
-       title="<?php echo $this->__('Remove item') ?>" class="btn-remove"><?php echo $this->__('Remove item') ?></a>
+       onclick="return confirm('<?php echo Mage::helper('core')->quoteEscape($this->__('Are you sure you would like to remove this item from the shopping cart?')) ?>');"
+       title="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove item')) ?>" class="btn-remove"><?php echo $this->__('Remove item') ?></a>
 </div>
 </li>

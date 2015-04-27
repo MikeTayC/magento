@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Support
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -52,7 +52,10 @@ class Enterprise_Support_Block_Adminhtml_Sysreport_View extends Mage_Adminhtml_B
         $this->updateButton(
             'delete',
             'onclick',
-            'deleteConfirm(\''. Mage::helper('enterprise_support')->__('Are you sure you want to delete the system report?')
+            'deleteConfirm(\''
+            . Mage::helper('core')->jsQuoteEscape(
+                Mage::helper('enterprise_support')->__('Are you sure you want to delete the system report?')
+            )
             . '\', \'' . $this->getDeleteUrl() . '\')');
         $this->addButton('go_to_top', array(
             'label'   => Mage::helper('adminhtml')->__('Go to Top'),

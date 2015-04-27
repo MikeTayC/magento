@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -69,5 +69,15 @@ class Enterprise_PageCache_Model_Cache
         }
 
         return self::$_cache;
+    }
+
+    /**
+     * Set cache instance
+     *
+     * @param Mage_Core_Model_Cache
+     */
+    public static function setCacheInstance($cacheInstance)
+    {
+        self::$_cache = $cacheInstance;
     }
 }

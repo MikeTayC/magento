@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Logging
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -91,7 +91,11 @@ class Enterprise_Logging_Block_Adminhtml_Details extends Mage_Adminhtml_Block_Wi
     public function getEventXForwardedIp()
     {
         if ($this->getCurrentEvent()) {
-            $xForwarderFor = long2ip($this->getCurrentEvent()->getXForwardedIp());
+            /**
+             * The output of the "inet_ntop" function was disabled to prevent an error throwing
+             * in case when the database value is not an ipv6 or an ipv4 binary representation (ex. NULL).
+             */
+            $xForwarderFor = @inet_ntop($this->getCurrentEvent()->getXForwardedIp());
             if ($xForwarderFor && $xForwarderFor != '0.0.0.0') {
                 return $xForwarderFor;
             }
@@ -107,7 +111,11 @@ class Enterprise_Logging_Block_Adminhtml_Details extends Mage_Adminhtml_Block_Wi
     public function getEventIp()
     {
         if ($this->getCurrentEvent()) {
-            return long2ip($this->getCurrentEvent()->getIp());
+            /**
+             * The output of the "inet_ntop" function was disabled to prevent an error throwing
+             * in case when the database value is not an ipv6 or an ipv4 binary representation (ex. NULL).
+             */
+            return @inet_ntop($this->getCurrentEvent()->getIp());
         }
         return false;
     }

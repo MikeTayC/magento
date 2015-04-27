@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -29,7 +29,7 @@
     <div id="template_registrant">
     <input name="registrant[_index_][person_id]" value="" id="registrant:person_id_index_" type="hidden" />
         <p class="btn-remove" id="btn-remove_index_"><a href="#" onclick="removeRegistrant(_index_); return false" class="btn-remove">
-        <img src="<?php echo $this->getSkinUrl('images/btn_remove.gif') ?>" alt="<?php echo $this->__('Remove') ?>" /></a>
+        <img src="<?php echo $this->getSkinUrl('images/btn_remove.gif') ?>" alt="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove')) ?>" /></a>
     </p>
     <div class="field">
         <label for="registrant:firstname_index_" class="required"><em>*</em><?php echo $this->__('First Name:') ?></label>
@@ -46,7 +46,7 @@
     <div class="field">
         <label for="registrant:email_index_" class="required"><em>*</em><?php echo $this->__('Email Address:') ?></label>
         <div class="input-box">
-            <input name="registrant[_index_][email]" value="" title="<?php echo $this->__('Email Address') ?>" id="registrant:email_index_" type="text" class="input-text required-entry validate-email" />
+            <input name="registrant[_index_][email]" value="" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Email Address')) ?>" id="registrant:email_index_" type="text" class="input-text required-entry validate-email" />
         </div>
     </div>
 

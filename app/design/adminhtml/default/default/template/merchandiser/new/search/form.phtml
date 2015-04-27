@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -39,7 +39,7 @@
         <input id="search" type="text" name="q" value="<?php echo $this->helper('catalogsearch')->getEscapedQueryText() ?>" class="input-text" />
         <input id="store_id" type="hidden" name="store_id" value="<?php echo $this->getRequest()->getParam('store_id') ?>" />
         <input id="asid" type="hidden" name="asid" value="<?php echo $this->getRequest()->getParam('asid'); ?>" />
-        <button type="submit" id="search_mini_form.submit" title="<?php echo $helper->__('Search') ?>" class="button">
+        <button type="submit" id="search_mini_form.submit" title="<?php echo $helper->quoteEscape($helper->__('Search')) ?>" class="button">
             <span>
                 <span><?php echo $helper->__('Search') ?></span>
             </span>
@@ -49,7 +49,7 @@
 </form>
 
 <div id="loading-mask">
-    <img src="<?php echo $this->getSkinUrl('merchandiser/images/rule-ajax-loader.gif') ?>" alt="<?php echo $helper->__('Please wait') ?>" title="<?php echo $helper->__('Please wait') ?>" />
+    <img src="<?php echo $this->getSkinUrl('merchandiser/images/rule-ajax-loader.gif') ?>" alt="<?php echo $helper->quoteEscape($helper->__('Please wait')) ?>" title="<?php echo $helper->quoteEscape($helper->__('Please wait')) ?>" />
     <span><?php echo $helper->__('Searching...') ?></span>
 </div>
 
@@ -134,7 +134,7 @@
         var storeid = $('store_id').value;
         var asid = $('asid').value;
         if('<?php echo $isRuled ?>' == 1) {
-            alert('<?php echo $this->__("This category is set to only include products matched by rules") ?>');
+            alert('<?php echo $helper->jsQuoteEscape($this->__("This category is set to only include products matched by rules")) ?>');
         } else {
             var searchjs = new searchJS();
             searchjs.sendAjax(form.action+'?q='+query+'&store_id='+storeid+'&asid='+asid, form.method, 'search-results');
@@ -164,7 +164,7 @@
                 var elementId = e.id ;
                 elementId = elementId.replace('search-s','');
                 $(elementId).remove();
-                e.down('div.buttons').innerHTML = e.down('div.buttons').innerHTML + '<a><?php echo $this->__("Product not available in this website") ?></a>'
+                e.down('div.buttons').innerHTML = e.down('div.buttons').innerHTML + '<a><?php echo $helper->jsQuoteEscape($this->__("Product not available in this website")) ?></a>'
             }
         });
     }

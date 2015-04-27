@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftCardAccount
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 class Enterprise_GiftCardAccount_Model_Observer
@@ -415,7 +415,9 @@ class Enterprise_GiftCardAccount_Model_Observer
             return $this;
         }
 
-        if ($order->getGiftCardsInvoiced() - $order->getGiftCardsRefunded() >= 0.0001) {
+        if ($order->getGiftCardsInvoiced() - $order->getGiftCardsRefunded()
+            >= Mage_Sales_Helper_Data::PRECISION_VALUE
+        ) {
             $order->setForcedCanCreditmemo(true);
         }
 
@@ -433,7 +435,7 @@ class Enterprise_GiftCardAccount_Model_Observer
         if ($paypalCart) {
             $salesEntity = $paypalCart->getSalesEntity();
             $value = abs($salesEntity->getBaseGiftCardsAmount());
-            if ($value > 0.0001) {
+            if ($value >= Mage_Sales_Helper_Data::PRECISION_VALUE) {
                 $paypalCart->updateTotal(Mage_Paypal_Model_Cart::TOTAL_DISCOUNT, $value,
                     Mage::helper('enterprise_giftcardaccount')->__('Gift Card (%s)', $this->_getApp()->getStore()->convertPrice($value, true, false))
                 );
@@ -613,5 +615,55 @@ class Enterprise_GiftCardAccount_Model_Observer
             )
         );
         $expressionTransferObject->setArguments($arguments);
+    }
+
+    /**
+     * Set virtual store credit amount to quote in case order editing when old order is not canceled yet,
+     * and new one needs potentially reverted gift card amount converted to store credit to be available
+     *
+     * @param Varien_Event_Observer $observer
+     *
+     * @return Enterprise_GiftCardAccount_Model_Observer|void
+     */
+    public function setBaseCustomerBalanceVirtualAmountToQuote(Varien_Event_Observer $observer)
+    {
+        /** @var Mage_Sales_Model_Order $order */
+        $order = $observer->getEvent()->getOrder();
+
+        if ($order && !$order->getReordered()
+            && $order->getBaseGiftCardsAmount() >= Mage_Sales_Helper_Data::PRECISION_VALUE
+        ) {
+            /** @var Mage_Sales_Model_Quote $quote */
+            $quote = $observer->getEvent()->getQuote();
+
+            if (!$quote) {
+                return $this;
+            }
+
+            /*
+             * Transfer used cards info from order to quote on order edit
+             * providing an ability to redeem still active used cards additionally if needed
+             */
+            $cards = Mage::helper('enterprise_giftcardaccount')->getCards($order);
+            if ($cards) {
+                $website = Mage::app()->getStore($quote->getStoreId())->getWebsite();
+                foreach ($cards as $cardData) {
+                    if ($cardData['i']) {
+                        /**
+                         * @var Enterprise_GiftCardAccount_Model_Giftcardaccount $card
+                         */
+                        $card = Mage::getModel('enterprise_giftcardaccount/giftcardaccount')
+                            ->load($cardData['i']);
+                        if ($card->checkSilently(true, true, $website)) {
+                            $card->addToCart(true, $quote);
+                        }
+                    }
+                }
+            }
+
+            $quote->setUseCustomerBalance(true);
+            $quote->setBaseCustomerBalanceVirtualAmount($quote->getBaseCustomerBalanceVirtualAmount()
+                + $order->getBaseGiftCardsAmount());
+        }
     }
 }

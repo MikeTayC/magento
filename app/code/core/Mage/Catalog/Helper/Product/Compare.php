@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -115,7 +115,12 @@ class Mage_Catalog_Helper_Product_Compare extends Mage_Core_Helper_Url
      */
     public function getAddUrl($product)
     {
-        return $this->_getUrl('catalog/product_compare/add', $this->_getUrlParams($product));
+        // Compare products functionlaity for not logged in customer relies on visitor log
+        if (!Mage::helper('customer')->isLoggedIn() && !Mage::helper('log')->isLogEnabled()) {
+            return '';
+        } else {
+            return $this->_getUrl('catalog/product_compare/add', $this->_getUrlParams($product));
+        }
     }
 
     /**

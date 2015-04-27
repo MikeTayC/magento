@@ -20,11 +20,12 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Staging
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
-class Enterprise_Staging_Block_Adminhtml_Widget_Grid_Column_Filter_Ip extends Mage_Adminhtml_Block_Widget_Grid_Column_Filter_Text
+class Enterprise_Staging_Block_Adminhtml_Widget_Grid_Column_Filter_Ip
+    extends Mage_Adminhtml_Block_Widget_Grid_Column_Filter_Text
 {
     /**
      * ip filter method
@@ -32,6 +33,6 @@ class Enterprise_Staging_Block_Adminhtml_Widget_Grid_Column_Filter_Ip extends Ma
     public function getCondition()
     {
         $ip = $this->getValue();
-        return ip2long($ip);
+        return inet_pton($ip);
     }
 }

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -545,6 +545,17 @@ class Enterprise_Cms_Model_Observer
         $action->getLayout()->getUpdate()->addHandle($menuLayout->getLayoutHandle());
 
         return $this;
+    }
+
+    /**
+     * Adds CMS page preview url
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function prepareAdmihtmlCmsPageRowPreviewUrl(Varien_Event_Observer $observer)
+    {
+        $row = $observer->getEvent()->getRow();
+        $row->setPreviewUrl(Mage::helper('adminhtml')->getUrl('*/cms_page_revision/preview', array('page_id' => $row->getPageId())));
     }
 
     /**

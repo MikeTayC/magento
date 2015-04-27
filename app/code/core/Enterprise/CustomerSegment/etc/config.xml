@@ -21,14 +21,14 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
 <config>
     <modules>
         <Enterprise_CustomerSegment>
-            <version>1.11.0.0.3</version>
+            <version>1.11.0.0.4</version>
         </Enterprise_CustomerSegment>
     </modules>
     <global>

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -68,6 +68,6 @@ class Enterprise_PageCache_Model_Container_Sidebar_Cart extends Enterprise_PageC
      */
     protected function _getExtraActionsChildBlock()
     {
-        return $this->_getLayout()->getBlock('topCart.extra_actions');
+        return $this->_getLayout('default')->getBlock('topCart.extra_actions');
     }
 }

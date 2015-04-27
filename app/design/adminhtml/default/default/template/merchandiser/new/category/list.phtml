@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -71,10 +71,10 @@
             $skuId = $helper->getSkuIdDisplay($_product->getSku());
         ?>
         <?php if ((!$isVisible && Mage::helper('merchandiser')->isHideInvisibleProducts()) || !$helper->isEnabledProduct($_product) && Mage::helper('merchandiser')->isHideDisabledProducts()): ?>
-            <input id="sku-<?php echo $skuId ?>" type="hidden" class="not-visible productid productid<?php echo $pId ?>" name="product[<?php echo $pId ?>]" value="99999" />
+            <input id="sku-<?php echo $this->htmlEscape($skuId) ?>" type="hidden" class="not-visible productid productid<?php echo $pId ?>" name="product[<?php echo $pId ?>]" value="99999" />
         <?php else: ?>
             <?php $visibleCount++; ?>
-            <input id="sku-<?php echo $skuId ?>" rel="<?php echo $_product->getSku() ?>" type="hidden" class="productid hiddenbox productid<?php echo $pId ?>" name="product[<?php echo $pId ?>]" value="<?php echo $currentPosition++ ?>" />
+            <input id="sku-<?php echo $this->htmlEscape($skuId) ?>" rel="<?php echo $this->htmlEscape($_product->getSku()) ?>" type="hidden" class="productid hiddenbox productid<?php echo $pId ?>" name="product[<?php echo $pId ?>]" value="<?php echo $currentPosition++ ?>" />
         <?php endif; ?>
     <?php endforeach; ?>
 <?php endif; ?>

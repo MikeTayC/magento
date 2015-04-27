@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -30,13 +30,13 @@
     $_product = $this->getCurrentProduct();
     $pId = $_product->getId();
 ?>
-<li id="search-sku-<?php echo $helper->getSkuIdDisplay($_product->getSku()) ?>" class="<?php echo $this->getWebClassesFromProduct($_product) ?> search-result dragbox product-shop productid product<?php echo $pId ?> <?php echo $this->getProductClasses($_product) ?>">
+<li id="search-sku-<?php echo $this->htmlEscape($helper->getSkuIdDisplay($_product->getSku())) ?>" class="<?php echo $this->getWebClassesFromProduct($_product) ?> search-result dragbox product-shop productid product<?php echo $pId ?> <?php echo $this->getProductClasses($_product) ?>">
     <div class="product-shop">
         <h2 class="product-name">
             <strong>
                 <span class="dragbox-position-container">
                     <span class="dragbox-position"></span>
-                </span><?php echo $_product->getName() ?>
+                </span><?php echo $this->htmlEscape($_product->getName()) ?>
             </strong>
             <?php if ($_product->getTypeId() == "bundle"): ?>
                 <?php echo $helper->getBundlePrice($pId); ?>
@@ -45,8 +45,8 @@
             <?php endif; ?>
             <?php echo $helper->getStockQtyHtml($_product) ?>
         </h2>
-        <input type="hidden" class="productid input-product-position productid<?php echo $pId ?>" rel="<?php echo $_product->getSku() ?>" name="product[<?php echo $pId ?>]" value="<?php echo $currentPosition++ ?>" />
-        <div class="dragbox-content" id="dragbox-sku-<?php echo $helper->getSkuIdDisplay($_product->getSku()) ?>">
+        <input type="hidden" class="productid input-product-position productid<?php echo $pId ?>" rel="<?php echo $this->htmlEscape($_product->getSku()) ?>" name="product[<?php echo $pId ?>]" value="<?php echo $currentPosition++ ?>" />
+        <div class="dragbox-content" id="dragbox-sku-<?php echo $this->htmlEscape($helper->getSkuIdDisplay($_product->getSku())) ?>">
             <div class="cols2">
                 <div class="cols2-left">
                     <div class="product-image-container">
@@ -75,7 +75,7 @@
                 </div>
                 <div class="cols2-right">
                     <div>
-                        <strong><?php echo $helper->__('SKU') ?></strong>:&nbsp;<?php echo $_product->getSku() ?>
+                        <strong><?php echo $helper->__('SKU') ?></strong>:&nbsp;<?php echo $this->htmlEscape($_product->getSku()) ?>
                     </div>
 
                     <?php if ($helper->getShowCreationDate()) : ?>
@@ -89,7 +89,6 @@
                             <strong><?php echo $attribute['label']; ?>:&nbsp;</strong><?php echo $attribute['value']; ?>
                         </div>
                     <?php endforeach; ?>
-
                     <?php foreach($this->getUserPriceAttributesPerProduct($_product) as $attribute): ?>
                         <div>
                             <strong><?php echo $attribute['label']; ?>:&nbsp;</strong><?php echo $attribute['value']; ?>
@@ -100,13 +99,17 @@
                         <a href="#" onclick="return false;" class="remove-button">
                             <img src="<?php echo $this->getSkinUrl('merchandiser/images/cross.png') ?>" alt="<?php echo $helper->__('Detach from category') ?>" title="<?php echo $helper->__('Detach from category') ?>" />
                         </a>
-                        <a href="#" onclick="return false;" class="category-add-button" id="ku-<?php echo $helper->getSkuIdDisplay($_product->getSku()) ?>">
+                        <a href="#" onclick="return false;" class="category-add-button" id="ku-<?php echo $this->htmlEscape($helper->getSkuIdDisplay($_product->getSku())) ?>">
                             <img src="<?php echo $this->getSkinUrl('merchandiser/images/add.png') ?>" alt="<?php echo $helper->__('Add to category') ?>" title="<?php echo $helper->__('Add to category') ?>" />
                             <?php echo $helper->__('Add to category') ?>
                         </a>
                         <a href="#" onclick="return false;" class="cancel-remove-button">
                             <img src="<?php echo $this->getSkinUrl('merchandiser/images/error_msg_icon.gif') ?>" alt="<?php echo $helper->__('Cancel detach') ?>" title="<?php echo $helper->__('Cancel detach') ?>" />
                             <?php echo $helper->__('Cancel detach') ?>
+                        </a>
+
+                        <a href="#" onclick="return false;" class="move-to-bottom-button" id="move-bottom-buttom-<?php echo $_product->getId(); ?>">
+                            <img src="<?php   echo $this->getSkinUrl('merchandiser/images/arrow_down.png') ?>" alt="<?php echo $helper->__('Move to bottom') ?>" title="<?php echo $helper->__('Move to bottom') ?>" />
                         </a>
                         <a href="#" onclick="return false;" class="move-to-top-button">
                             <img src="<?php echo $this->getSkinUrl('merchandiser/images/arrow_up.png') ?>" alt="<?php echo $helper->__('Move to top') ?>" title="<?php echo $helper->__('Move to top') ?>" />
@@ -117,7 +120,7 @@
             </div>
         </div>
         <p class="cannot-add"><?php echo $helper->__('Already in category') ?></p>
-        <p class="move-top" id="u-<?php echo $helper->getSkuIdDisplay($_product->getSku()) ?>">
+        <p class="move-top" id="u-<?php echo $this->htmlEscape($helper->getSkuIdDisplay($_product->getSku())) ?>">
             <img src="<?php echo $this->getSkinUrl('merchandiser/images/arrow_up.png') ?>" alt="<?php echo $helper->__('Move to top') ?>" title="<?php echo $helper->__('Move to top') ?>" />
         </p>
     </div>

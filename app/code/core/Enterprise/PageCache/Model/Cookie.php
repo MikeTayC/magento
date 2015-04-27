@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -167,10 +167,15 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
         if ($taxConfig->getPriceDisplayType() > 1) {
             /** @var $taxCalculationModel Mage_Tax_Model_Calculation */
             $taxCalculationModel = Mage::getSingleton('tax/calculation');
+            $session = Mage::getSingleton('customer/session');
+            if ($session->getCustomerId()) {
+                $customer = Mage::getModel('customer/customer')->load($session->getCustomerId());
+                $taxCalculationModel->setCustomer($customer);
+            }
             $request = $taxCalculationModel->getRateRequest();
             $rates = $taxCalculationModel->getApplicableRateIds($request);
             sort($rates);
-            $this->setObscure(self::COOKIE_CUSTOMER_RATES, 'customer_rates_' . implode(',', $rates));
+            $this->set(self::COOKIE_CUSTOMER_RATES, md5('customer_rates_' . implode(',', $rates)));
         }
     }
 
@@ -235,6 +240,17 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
     }
 
     /**
+     * Get cookie with visited category id
+     *
+     * @param int $id
+     */
+    public static function getCategoryViewedCookieValue($id)
+    {
+        return (int)  isset($_COOKIE[self::COOKIE_CATEGORY_ID]) ? $_COOKIE[self::COOKIE_CATEGORY_ID] : 0;
+    }
+
+
+    /**
      * Set cookie with form key for cached front
      *
      * @param string $formKey
@@ -251,6 +267,32 @@ class Enterprise_PageCache_Model_Cookie extends Mage_Core_Model_Cookie
      */
     public static function getFormKeyCookieValue()
     {
-        return (isset($_COOKIE[self::COOKIE_FORM_KEY])) ? $_COOKIE[self::COOKIE_FORM_KEY] : false;
+        return self::_getValidCookieValue(self::COOKIE_FORM_KEY, new Zend_Validate_Alnum());
     }
+
+    /**
+     * Return cookie value "as is" as long as it exists and passes the validation
+     *
+     * @param string $cookieName
+     * @param Zend_Validate_Interface $validator
+     * @return string|bool
+     */
+    protected static function _getValidCookieValue($cookieName, Zend_Validate_Interface $validator)
+    {
+        if (isset($_COOKIE[$cookieName]) && $validator->isValid($_COOKIE[$cookieName])) {
+            return $_COOKIE[$cookieName];
+        }
+        return false;
+    }
+
+    /**
+     * Set current variable $_COOKIE with visited category id
+     *
+     * @param int $categoryId
+     */
+    public static function setCurrentCategoryCookieValue($categoryId)
+    {
+        $_COOKIE[self::COOKIE_CATEGORY_ID] = $categoryId;
+    }
+
 }

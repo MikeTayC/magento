@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -62,8 +62,12 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Page_Revision_Edit extends Mage_Adminht
             $this->_addButton('delete_revision', array(
                 'label'     => Mage::helper('enterprise_cms')->__('Delete'),
                 'class'     => 'delete',
-                'onclick'   => 'deleteConfirm(\''. Mage::helper('enterprise_cms')->__('Are you sure you want to delete this revision?')
-                                .'\', \'' . $this->getDeleteUrl() . '\')',
+                'onclick'   => 'deleteConfirm(\''
+                    . Mage::helper('core')->quoteEscape(
+                        Mage::helper('enterprise_cms')->__('Are you sure you want to delete this revision?'),
+                        true
+                    )
+                    . '\', \'' . $this->getDeleteUrl() . '\')',
             ));
         }
 
@@ -110,11 +114,13 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Page_Revision_Edit extends Mage_Adminht
                 'class'     => 'new',
             ));
 
+            $versionMessage     = Mage::helper('enterprise_cms')->__('Specify New Version Name (required)');
+            $invalidNameMessage = Mage::helper('enterprise_cms')->__('You should specify valid name');
             $this->_formScripts[] = "
                 function newVersionAction(){
-                    var versionName = prompt('" . Mage::helper('enterprise_cms')->__('Specify New Version Name (required)') . "', '')
+                    var versionName = prompt('" . Mage::helper('core')->jsQuoteEscape($versionMessage) . "', '')
                     if (versionName == '') {
-                        alert('" . Mage::helper('enterprise_cms')->__('You should specify valid name') . "');
+                        alert('" . Mage::helper('core')->jsQuoteEscape($invalidNameMessage) . "');
                         return false;
                     } else if (versionName == null) {
                         return false;
@@ -145,7 +151,11 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Page_Revision_Edit extends Mage_Adminht
         $title = $this->escapeHtml(Mage::registry('cms_page')->getTitle());
 
         if ($revisionNumber) {
-            return Mage::helper('enterprise_cms')->__("Edit Page '%s' Revision #%s", $title, $this->escapeHtml($revisionNumber));
+            return Mage::helper('enterprise_cms')->__(
+                "Edit Page '%s' Revision #%s",
+                $title,
+                $this->escapeHtml($revisionNumber)
+            );
         } else {
             return Mage::helper('enterprise_cms')->__("Edit Page '%s' New Revision", $title);
         }

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Mview
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -69,14 +69,28 @@ class Enterprise_Mview_Model_Client
     }
 
     /**
-     * Init materialized view metadata
+     * Init materialized view metadata by name
      *
      * @param string $name
+     *
      * @return Enterprise_Mview_Model_Client
      */
     public function init($name)
     {
         $tableName = $this->_factory->getSingleton('core/resource')->getTableName($name);
+
+        return $this->initByTableName($tableName);
+    }
+
+    /**
+     * Init materialized view metadata by table name
+     *
+     * @param string $tableName
+     *
+     * @return Enterprise_Mview_Model_Client
+     */
+    public function initByTableName($tableName)
+    {
         $this->_metadata = $this->_factory->getModel('enterprise_mview/metadata')
             ->load($tableName, 'table_name');
         if (!$this->_metadata->getId()) {

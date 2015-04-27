@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Tag
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -243,6 +243,7 @@ class Mage_Tag_Model_Resource_Customer_Collection extends Mage_Customer_Model_Re
 
         //TODO: add full name logic
         $this->addAttributeToSelect('firstname')
+            ->addAttributeToSelect('middlename')
             ->addAttributeToSelect('lastname')
             ->addAttributeToSelect('email');
 

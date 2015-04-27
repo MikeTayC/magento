@@ -20,15 +20,13 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
 <?php if ($this->isAllowed()): ?>
     <div class="checkout-multishipping-payment-customerbalance" id="customerbalance_block">
-        <input type="hidden" name="payment[use_customer_balance]" value="0" />
         <input type="checkbox" class="checkbox" name="payment[use_customer_balance]" value="1" id="use_customer_balance" <?php echo ($this->isCustomerBalanceUsed() ? 'checked' : '') ?>/>
-
         <?php $balance = Mage::helper('core')->currency($this->getBalance()); ?>
         <label for="use_customer_balance"><strong><?php echo Mage::helper('enterprise_customerbalance')->__('Use Store Credit (%s available)', $balance); ?></strong></label>
     </div>

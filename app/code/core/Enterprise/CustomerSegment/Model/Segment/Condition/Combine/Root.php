@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -81,7 +81,7 @@ class Enterprise_CustomerSegment_Model_Segment_Condition_Combine_Root
 
         if ($customer) {
             // For existing customer
-            $select->from($table, new Zend_Db_Expr(1));
+            $select->from($table, new Zend_Db_Expr(1))->limit(1);
         } else {
             $select->from($table, array('entity_id' , 'website_id'));
             if ($customer === null) {

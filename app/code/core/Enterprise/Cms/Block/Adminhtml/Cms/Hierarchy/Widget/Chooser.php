@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -81,19 +81,19 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Widget_Chooser extends Mage_A
     {
         $chooserJsObject = $this->getId();
         $html = '
-            <div id="tree'.$this->getId().'" class="cms-tree tree x-tree"></div>
+            <div id="tree' . $this->getId() . '" class="cms-tree tree x-tree"></div>
             <script type="text/javascript">
 
             function clickNode(node) {
                 $("tree-container").insert({before: node.text});
-                $("'.$this->getId().'").value = node.id;
+                $("' . $this->getId() . '").value = node.id;
                 treeRoot.collapse();
             }
 
-            var nodes = '.$this->getNodesJson().';
+            var nodes = ' . $this->getNodesJson() . ';
 
             if (nodes.length > 0) {
-                var tree'.$this->getId().' = new Ext.tree.TreePanel("tree'.$this->getId().'", {
+                var tree' . $this->getId() . ' = new Ext.tree.TreePanel("tree' . $this->getId() . '", {
                     animate: false,
                     enableDD: false,
                     containerScroll: true,
@@ -101,8 +101,8 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Widget_Chooser extends Mage_A
                     lines: true
                 });
 
-                var treeRoot'.$this->getId().' = new Ext.tree.AsyncTreeNode({
-                    text: "'. $this->__("Root") .'",
+                var treeRoot' . $this->getId() . ' = new Ext.tree.AsyncTreeNode({
+                    text: \'' . Mage::helper('core')->quoteEscape($this->__("Root")) . '\',
                     id: "root",
                     allowDrop: true,
                     allowDrag: false,
@@ -110,7 +110,7 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Widget_Chooser extends Mage_A
                     cls: "cms_node_root"
                 });
 
-                tree'.$this->getId().'.setRootNode(treeRoot'.$this->getId().');
+                tree' . $this->getId() . '.setRootNode(treeRoot' . $this->getId() . ');
 
                 for (var i = 0; i < nodes.length; i++) {
                     var cls = nodes[i].page_id ? "cms_page" : "cms_node";
@@ -123,23 +123,25 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Widget_Chooser extends Mage_A
                         allowDrag: false,
                         page_id: nodes[i].page_id
                     });
-                    if (parentNode = tree'.$this->getId().'.getNodeById(nodes[i].parent_node_id)) {
+                    if (parentNode = tree' . $this->getId() . '.getNodeById(nodes[i].parent_node_id)) {
                         parentNode.appendChild(node);
                     } else {
-                        treeRoot'.$this->getId().'.appendChild(node);
+                        treeRoot' . $this->getId() . '.appendChild(node);
                     }
                 }
 
-                tree'.$this->getId().'.addListener("click", function (node, event) {
-                    '.$chooserJsObject.'.setElementValue(node.id);
-                    '.$chooserJsObject.'.setElementLabel(node.text);
-                    '.$chooserJsObject.'.close();
+                tree' . $this->getId() . '.addListener("click", function (node, event) {
+                    ' . $chooserJsObject . '.setElementValue(node.id);
+                    ' . $chooserJsObject . '.setElementLabel(node.text);
+                    ' . $chooserJsObject . '.close();
                 });
-                tree'.$this->getId().'.render();
-                treeRoot'.$this->getId().'.expand();
+                tree' . $this->getId() . '.render();
+                treeRoot' . $this->getId() . '.expand();
             }
             else {
-                $("tree'.$this->getId().'").innerHTML = "'.$this->__('No Nodes available').'";
+                $("tree' . $this->getId() . '").innerHTML = \''
+            . Mage::helper('core')->quoteEscape($this->__('No Nodes available'))
+            . '\';
             }
             </script>
         ';

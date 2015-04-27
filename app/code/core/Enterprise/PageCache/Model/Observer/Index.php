@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -44,7 +44,25 @@ class Enterprise_PageCache_Model_Observer_Index
         $cacheTags = array();
         foreach ($ids as $entityId) {
             $entity->setId($entityId);
-            $cacheTags = array_merge($cacheTags, $entity->getCacheIdTags());
+            $cacheTags = array_unique(array_merge($cacheTags, $entity->getCacheIdTags()));
+        }
+        if (!empty($cacheTags)) {
+            Enterprise_PageCache_Model_Cache::getCacheInstance()->clean($cacheTags);
+        }
+    }
+
+    /**
+     * Clean cache by specified product and its ids
+     *
+     * @param Mage_Core_Model_Abstract $entity
+     * @param array $ids
+     */
+    protected function _cleanProductsCache(Mage_Core_Model_Abstract $entity, array $ids)
+    {
+        $cacheTags = array();
+        foreach ($ids as $entityId) {
+            $entity->setId($entityId);
+            $cacheTags = array_unique(array_merge($cacheTags, $entity->getCacheIdTagsWithCategories()));
         }
         if (!empty($cacheTags)) {
             Enterprise_PageCache_Model_Cache::getCacheInstance()->clean($cacheTags);
@@ -70,7 +88,7 @@ class Enterprise_PageCache_Model_Observer_Index
     {
         $entityIds = $observer->getEvent()->getProductIds();
         if (is_array($entityIds)) {
-            $this->_cleanEntityCache(Mage::getModel('catalog/product'), $entityIds);
+            $this->_cleanProductsCache(Mage::getModel('catalog/product'), $entityIds);
         }
     }
 
@@ -82,8 +100,9 @@ class Enterprise_PageCache_Model_Observer_Index
     public function cleanCategoriesCacheAfterPartialReindex(Varien_Event_Observer $observer)
     {
         $entityIds = $observer->getEvent()->getCategoryIds();
-        if (is_array($entityIds)) {
+        if (is_array($entityIds) && !empty($entityIds)) {
             $this->_cleanEntityCache(Mage::getModel('catalog/category'), $entityIds);
+            Enterprise_PageCache_Model_Cache::getCacheInstance()->clean(Mage_Catalog_Model_Category::CACHE_TAG);
         }
     }
 

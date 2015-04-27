@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Log
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -29,5 +29,15 @@
  */
 class Mage_Log_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    const XML_PATH_LOG_ENABLED = 'system/log/enable_log';
 
+    /**
+     * Return log flag enabled.
+     *
+     * @return boolean
+     */
+    public function isLogEnabled()
+    {
+        return Mage::getStoreConfigFlag(self::XML_PATH_LOG_ENABLED);
+    }
 }

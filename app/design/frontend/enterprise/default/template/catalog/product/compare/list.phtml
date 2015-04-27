@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -46,7 +46,7 @@
                 <?php if($_i++%10==0): ?>
                     <th>&nbsp;</th>
                 <?php endif; ?>
-                <td class="a-right"><a href="#" onclick="removeItem('<?php echo $this->helper('catalog/product_compare')->getRemoveUrl($_item) ?>');" title="<?php echo $this->__('Remove Product') ?>"><img src="<?php echo $this->getSkinUrl('images/list_remove_btn.gif') ?>" alt="<?php echo $this->__('Remove Product') ?>" /></a></td>
+                <td class="a-right"><a href="#" onclick="removeItem('<?php echo $this->helper('catalog/product_compare')->getRemoveUrl($_item) ?>');" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove Product')) ?>"><img src="<?php echo $this->getSkinUrl('images/list_remove_btn.gif') ?>" alt="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove Product')) ?>" /></a></td>
             <?php endforeach; ?>
             </tr>
         </thead>
@@ -136,7 +136,7 @@
     <div class="buttons-set">
         <button type="button" class="button" onclick="window.close();"><span><span><?php echo $this->__('Close Window') ?></span></span></button>
         <span class="please-wait" id="compare-list-please-wait" style="display:none;">
-            <img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo $this->__('Please wait...') ?>" title="<?php echo $this->__('Please wait...') ?>" class="v-middle" /> <?php echo $this->__('Please wait...') ?>
+            <img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo Mage::helper('core')->quoteEscape($this->__('Please wait...')) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Please wait...')) ?>" class="v-middle" /> <?php echo $this->__('Please wait...') ?>
         </span>
     </div>
     <script type="text/javascript">

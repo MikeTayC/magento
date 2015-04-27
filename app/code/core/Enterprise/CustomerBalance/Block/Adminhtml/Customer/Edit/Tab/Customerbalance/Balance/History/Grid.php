@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerBalance
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -144,5 +144,20 @@ class Enterprise_CustomerBalance_Block_Adminhtml_Customer_Edit_Tab_Customerbalan
     public function getGridUrl()
     {
         return $this->getUrl('*/*/gridHistory', array('_current'=> true));
+    }
+
+    /**
+     * Add sorting by id for correct items order with same date
+     *
+     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
+     *
+     * @return Enterprise_CustomerBalance_Block_Adminhtml_Customer_Edit_Tab_Customerbalance_Balance_History_Grid
+     */
+    protected function _setCollectionOrder($column)
+    {
+        parent::_setCollectionOrder($column);
+        $this->getCollection()->addOrder('history_id', strtoupper($column->getDir()));
+
+        return $this;
     }
 }

@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -39,10 +39,20 @@ class Enterprise_Reminder_Block_Adminhtml_Promo_Notice extends Mage_Adminhtml_Bl
         if ($salesRule = Mage::registry('current_promo_quote_rule')) {
             $resource = Mage::getResourceModel('enterprise_reminder/rule');
             if ($count = $resource->getAssignedRulesCount($salesRule->getId())) {
-                $confirm = Mage::helper('enterprise_reminder')->__('This rule is assigned to %s automated reminder rule(s). Deleting this rule will automatically unassign it.', $count);
+                $confirm = Mage::helper('core')->jsQuoteEscape(
+                    Mage::helper('enterprise_reminder')
+                        ->__('This rule is assigned to %s automated reminder rule(s). Deleting this rule will automatically unassign it.',
+                        $count
+                        )
+                );
                 $block = $this->getLayout()->getBlock('promo_quote_edit');
                 if ($block instanceof Mage_Adminhtml_Block_Promo_Quote_Edit) {
-                    $block->updateButton('delete', 'onclick', 'deleteConfirm(\'' . $confirm . '\', \'' . $block->getDeleteUrl() . '\')');
+                    $block->updateButton('delete', 'onclick', 'deleteConfirm(\''
+                        . $confirm
+                        . '\', \''
+                        . $block->getDeleteUrl()
+                        . '\')'
+                    );
                 }
             }
         }

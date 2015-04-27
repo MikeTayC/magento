@@ -20,16 +20,16 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
 <?php if(strtolower(substr($this->getLinkUrl(),0,4))==='http'): ?>
-    <a href="<?php echo $this->getLinkUrl() ?>" title="<?php echo $this->__($this->getImgAlt()) ?>">
+    <a href="<?php echo $this->getLinkUrl() ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__($this->getImgAlt())) ?>">
 <?php elseif($this->getLinkUrl()): ?>
-    <a href="<?php echo $this->getUrl($this->getLinkUrl()) ?>" title="<?php echo $this->__($this->getImgAlt()) ?>">
+    <a href="<?php echo $this->getUrl($this->getLinkUrl()) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__($this->getImgAlt())) ?>">
 <?php endif; ?>
-<img src="<?php echo $this->getSkinUrl($this->getImgSrc()) ?>"<?php if(!$this->getLinkUrl()): ?> title="<?php echo $this->__($this->getImgAlt()) ?>"<?php endif; ?> alt="<?php echo $this->__($this->getImgAlt()) ?>" class="callout" />
+<img src="<?php echo $this->getSkinUrl($this->getImgSrc()) ?>"<?php if(!$this->getLinkUrl()): ?> title="<?php echo Mage::helper('core')->quoteEscape($this->__($this->getImgAlt())) ?>"<?php endif; ?> alt="<?php echo Mage::helper('core')->quoteEscape($this->__($this->getImgAlt())) ?>" class="callout" />
 <?php if($this->getLinkUrl()): ?>
     </a>
 <?php endif ?>

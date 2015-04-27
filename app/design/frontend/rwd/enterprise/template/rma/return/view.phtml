@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 /** @var $this Enterprise_Rma_Block_Return_View */
@@ -80,7 +80,7 @@
                             <a class="f-left"
                                 href="#"
                                 onclick="popWin('<?php echo $this->helper('enterprise_rma')->getTrackingPopupUrlBySalesModel($this->getRma()) ?>','trackshipment','width=800,height=600,top=0,left=0,resizable=yes,scrollbars=yes'); return false;"
-                                title="<?php echo $this->__('Track this shipment') ?>">
+                                title="<?php echo $this->quoteEscape($this->__('Track this shipment')) ?>">
                                     <?php echo $this->__('Track this shipment') ?>
                             </a>
                         <?php endif ?>
@@ -119,7 +119,7 @@
                                             <input type="text" class="input-text required-entry f-fix" value="" name="tracking_number_input" id="tracking_number_input">
                                         </td>
                                         <td>
-                                            <button type="button" class="button" onclick="addTrackNumber()" title="<?php echo $this->__('Add') ?>"><span><span><?php echo $this->__('Add') ?></span></span></button>
+                                            <button type="button" class="button" onclick="addTrackNumber()" title="<?php echo $this->quoteEscape($this->__('Add')) ?>"><span><span><?php echo $this->__('Add') ?></span></span></button>
                                         </td>
                                     </tr>
                                 </tfoot>
@@ -165,7 +165,7 @@
     <col />
     <col />
     <col />
-    <!-- <col width="200" /> -->
+    <col />
     <thead>
         <tr>
             <th><span class="nobr"><?php echo $this->__('Product Name') ?></span></th>
@@ -175,7 +175,7 @@
             <th><span class="nobr"><?php echo $this->__('Request Qty') ?></span></th>
             <th><?php echo $this->__('Qty') ?></th>
             <th><?php echo $this->__('Status') ?></th>
-            <!-- <th></th> -->
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -204,13 +204,13 @@
 
             <td data-rwd-label="<?php echo $this->__('Status') ?>"><span class="nobr"><?php echo $this->escapeHtml($item->getStatusLabel()) ?></span></td>
 
-            <!-- <td>
-                <a id="as_<?php // echo $key ?>" href="javascript:void(0)" onclick="showHiddenForm(<?php // echo $key ?>)"><?php // echo $this->__('Show Details') ?></a>
-                <a id="ah_<?php // echo $key ?>" style="display:none" href="javascript:void(0)" onclick="hideHiddenForm(<?php // echo $key ?>)"><?php // echo $this->__('Hide Details') ?></a>
-            </td> -->
+             <td>
+                <a id="as_<?php  echo $key ?>" href="javascript:void(0)" onclick="showHiddenForm(<?php  echo $key ?>)"><?php  echo $this->__('Show Details') ?></a>
+                <a id="ah_<?php  echo $key ?>" style="display:none" href="javascript:void(0)" onclick="hideHiddenForm(<?php  echo $key ?>)"><?php  echo $this->__('Hide Details') ?></a>
+            </td>
 
         </tr>
-        <tr id="shf_<?php // echo $key ?>" style="display:none">
+        <tr id="shf_<?php  echo $key ?>" style="display:none">
             <td colspan="8" style="background:#F5F5F5;">
                 <div style="display:inline; float:left;width:40%;"><?php echo $this->__('Questions') ?>:</div>
                 <div style="display:inline; float:left;width:40%;"><?php echo $this->__('Answers') ?>:</div>

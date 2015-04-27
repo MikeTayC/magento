@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -36,7 +36,7 @@
                 if (arr[2] && arr[2] == item) {
                     var option = document.createElement('OPTION');
                     option.value = '<?php echo $this->getAddressIdPrefix(); ?>' + address;
-                    option.text = '<?php echo $this->__('Use gift registry shipping address') ?>';
+                    option.text = '<?php echo $this->jsQuoteEscape($this->__('Use gift registry shipping address')) ?>';
 
                     for (var i = 0; i < selectedIndexes.length; i++) {
                         if (selectedIndexes[i] == arr[1]) {

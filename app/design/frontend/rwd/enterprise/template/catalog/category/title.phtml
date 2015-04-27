@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     rwd_enterprise
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -37,7 +37,7 @@
 ?>
 <div class="page-title category-title">
 <?php if($this->IsRssCatalogEnable()): ?>
-    <a href="<?php echo $this->getRssLink() ?>" title="<?php echo $this->__('Subscribe to RSS Feed') ?>" class="rss-feed"><?php echo $this->__('Subscribe to RSS Feed') ?></a>
+    <a href="<?php echo $this->getRssLink() ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Subscribe to RSS Feed')) ?>" class="rss-feed"><?php echo $this->__('Subscribe to RSS Feed') ?></a>
 <?php endif; ?>
     <h1><?php echo $_helper->categoryAttribute($_category, $this->getCurrentCategory()->getName(), 'name') ?></h1>
 </div>

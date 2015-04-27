@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
@@ -75,7 +75,7 @@
     <?php echo $this->getChildHtml('sharing_form'); ?>
     <script type="text/javascript">
         Validation.addAllThese([
-            ['validate-emails', '<?php echo Mage::helper('enterprise_giftregistry')->__('Please enter valid email addresses, separated by comma.') ?>', function (v) {
+            ['validate-emails', '<?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('enterprise_giftregistry')->__('Please enter valid email addresses, separated by comma.')) ?>', function (v) {
                 v = v.strip();
                 var emails = v.split(/,+/g);
                 for (var i = 0, l = emails.length; i < l; i++) {
