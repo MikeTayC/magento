@@ -3,3 +3,16 @@ patching file app/code/core/Mage/Adminhtml/Block/Dashboard/Graph.php
 patching file app/code/core/Mage/Adminhtml/controllers/DashboardController.php
 
 
+2015-05-15 12:49:52 UTC | SUPEE-6004 | EE_1.9.0.0 | v1 | 73197f338d60626b1c38c59467c109b57483e436 | Wed May 13 13:34:16 2015 +0300 | v1.9.0.0..HEAD
+patching file app/code/core/Mage/Core/Controller/Varien/Router/Admin.php
+patching file app/code/core/Mage/Core/Controller/Varien/Router/Standard.php
+patching file app/code/core/Mage/Customer/Model/Customer.php
+patching file app/code/core/Mage/Dataflow/Model/Convert/Parser/Csv.php
+patching file app/code/core/Mage/Install/Controller/Router/Install.php
+patching file app/code/core/Mage/Install/etc/config.xml
+patching file app/code/core/Mage/Sales/controllers/Recurring/ProfileController.php
+patching file lib/PEAR/PEAR/PEAR.php
+patching file lib/PEAR/PEAR/PEAR5.php
+patching file lib/Varien/Io/File.php
+
+
