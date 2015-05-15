@@ -18,22 +18,22 @@
  * versions in the future. If you wish to customize Magento for your
  * needs please refer to http://www.magento.com for more information.
  *
- * @category    design
- * @package     default
- * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @category    Mage
+ * @package     Mage_Install
+ * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
-?>
-<?php if ($messages = $this->get('messages')): ?>
-<ul class="msgs">
-<?php foreach ($messages as $type=>$msgs): ?>
-    <li>
-        <ul class="<?php echo $type ?>-msg">
-        <?php foreach ($msgs as $msg): ?>
-            <li><?php echo $this->escapeHtml($msg) ?></li>
-        <?php endforeach; ?>
-        </ul>
-    </li>
-<?php endforeach; ?>
-</ul>
-<?php endif; ?>
+
+class Mage_Install_Controller_Router_Install extends Mage_Core_Controller_Varien_Router_Standard
+{
+    /**
+     * Check if current controller instance is allowed in current router.
+     * 
+     * @param Mage_Core_Controller_Varien_Action $controllerInstance
+     * @return boolean
+     */
+    protected function _validateControllerInstance($controllerInstance)
+    {
+        return $controllerInstance instanceof Mage_Install_Controller_Action;
+    }
+}

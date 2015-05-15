@@ -35,7 +35,7 @@ $start = microtime(true);
 /**
  * Error reporting
  */
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 
 $ds = DIRECTORY_SEPARATOR;
 $ps = PATH_SEPARATOR;
