@@ -48,3 +48,7 @@ patching file lib/PEAR/PEAR/PEAR5.php
 patching file lib/Varien/Io/File.php
 
 
+2015-06-30 15:08:20 UTC | SUPEE-2217 | EE_1.13.0.2 | v1 | 63eab8bcb27e1177621cb99abd8ff3b8267b8e29 | Thu Oct 3 17:47:00 2013 +0300 | v1.13.0.2..HEAD
+patching file app/code/core/Mage/Catalog/Model/Resource/Product/Collection.php
+
+
