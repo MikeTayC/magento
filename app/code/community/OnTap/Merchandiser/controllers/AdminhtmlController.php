@@ -385,4 +385,14 @@ class OnTap_Merchandiser_AdminhtmlController extends Mage_Adminhtml_Controller_A
         $storeFront = $this->getRequest()->getParam('store_front');
         Mage::getSingleton('adminhtml/session')->setStoreFront($storeFront);
     }
+
+    /**
+     * Check is allowed access to action
+     *
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('catalog/merchandiser');
+    }
 }

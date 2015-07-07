@@ -63,4 +63,14 @@ class Enterprise_Search_Adminhtml_Search_System_Config_TestconnectionController
             echo 1;
         }
     }
+
+    /**
+     * Check is allowed access to action
+     *
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('system/config');
+    }
 }
