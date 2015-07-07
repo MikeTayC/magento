@@ -240,8 +240,8 @@ class Enterprise_PromotionPermissions_Model_Observer
     public function controllerActionPredispatch($observer)
     {
         $controllerAction = $observer->getControllerAction();
-        $controllerActionName = $this->_request->getActionName();
-        $forbiddenActionNames = array('new', 'applyRules', 'save', 'delete', 'run');
+        $controllerActionName = strtolower($this->_request->getActionName());
+        $forbiddenActionNames = array('new', 'applyrules', 'save', 'delete', 'run');
 
         if (in_array($controllerActionName, $forbiddenActionNames)
             && ((!$this->_canEditSalesRules
