@@ -50,4 +50,14 @@ class Enterprise_Catalog_Adminhtml_UrlrewriteController extends Mage_Adminhtml_C
         $this->loadLayout();
         $this->renderLayout();
     }
+
+    /**
+     * Check for is allowed
+     *
+     * @return boolean
+     */
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('catalog');
+    }
 }

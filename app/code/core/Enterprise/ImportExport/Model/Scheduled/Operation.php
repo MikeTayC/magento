@@ -494,7 +494,7 @@ class Enterprise_ImportExport_Model_Scheduled_Operation extends Mage_Core_Model_
         $fs->open(array(
             'path' => dirname($filePath)
         ));
-        if (!$fs->write(basename($filePath), $source)) {
+        if (!$fs->write(basename($filePath), $source, 0640)) {
             Mage::throwException(Mage::helper('enterprise_importexport')->__('Unable to save file history file'));
         }
         return $this;
@@ -511,7 +511,7 @@ class Enterprise_ImportExport_Model_Scheduled_Operation extends Mage_Core_Model_
         $dirPath = basename(Mage::getBaseDir('var')) . DS . self::LOG_DIRECTORY . date('Y' . DS . 'm' . DS . 'd')
                 . DS . self::FILE_HISTORY_DIRECTORY . DS;
         if (!is_dir(Mage::getBaseDir() . DS . $dirPath)) {
-            mkdir(Mage::getBaseDir() . DS . $dirPath, 0777, true);
+            mkdir(Mage::getBaseDir() . DS . $dirPath, 0750, true);
         }
 
         $fileName = $fileName = join('_', array(
