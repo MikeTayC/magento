@@ -82,7 +82,7 @@ class Mage_Checkout_MultishippingController extends Mage_Checkout_Controller_Act
     {
         parent::preDispatch();
 
-        $action = $this->getRequest()->getActionName();
+        $action = strtolower($this->getRequest()->getActionName());
 
         /**
          * Catch index action call to set some flags before checkout/type_multishipping model initialization
