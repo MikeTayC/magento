@@ -281,6 +281,22 @@ abstract class Mage_Core_Helper_Abstract
     }
 
     /**
+     * Escape quotes inside html attributes
+     * Use $addSlashes = false for escaping js that inside html attribute (onClick, onSubmit etc)
+     *
+     * @param string $data
+     * @param bool $addSlashes
+     * @return string
+     */
+    public function quoteEscape($data, $addSlashes = false)
+    {
+        if ($addSlashes === true) {
+            $data = addslashes($data);
+        }
+        return htmlspecialchars($data, ENT_QUOTES, null, false);
+    }
+
+    /**
      * Retrieve url
      *
      * @param   string $route
