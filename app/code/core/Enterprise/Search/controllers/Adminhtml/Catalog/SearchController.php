@@ -63,4 +63,14 @@ class Enterprise_Search_Adminhtml_Catalog_SearchController extends Mage_Adminhtm
         $this->loadLayout();
         $this->renderLayout();
     }
+
+    /**
+     * Check is allowed access to action
+     *
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return true;
+    }
 }
