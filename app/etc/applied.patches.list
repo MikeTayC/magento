@@ -131,3 +131,9 @@ patching file downloader/template/settings.phtml
 patching file errors/processor.php
 
 
+2015-08-04 15:16:20 UTC | SUPEE-6482_EE_1.13.1.0 | EE_1.13.1.0 | v1 | af67566143f9ae16db51a87e413afc18dfe59c54 | Mon Jul 13 14:49:50 2015 +0300 | v1.13.1.0..HEAD
+patching file app/code/core/Mage/Api/Model/Server/Adapter/Soap.php
+patching file app/code/core/Mage/Catalog/Model/Product/Api/V2.php
+patching file app/design/frontend/enterprise/default/template/giftregistry/search/form.phtml
+
+
