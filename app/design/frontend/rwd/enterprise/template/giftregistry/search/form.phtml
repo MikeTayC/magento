@@ -138,7 +138,7 @@ $('params_type_id').observe('change', advancedFormUpdate);
 
 <?php if ($this->getFormData('type_id')): ?>
     $A($('params_type_id').options).each(function(option){
-        if (option.value==<?php echo $this->getFormData('type_id') ?>) option.selected = true;
+        if (option.value==<?php echo (int)$this->getFormData('type_id') ?>) option.selected = true;
     });
     advancedFormUpdate();
 <?php endif; ?>
