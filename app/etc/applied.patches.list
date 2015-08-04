@@ -180,3 +180,11 @@ patching file downloader/template/settings.phtml
 patching file errors/processor.php
 
 
+2015-08-04 15:16:50 UTC | SUPEE-6482 | EE_1.14.2.0 | v1 | 8e2bcb185139b2516b70b32079b1f571e6288b51 | Mon Jul 13 14:19:01 2015 +0300 | v1.14.2.0..HEAD
+patching file app/code/core/Mage/Api/Model/Server/Adapter/Soap.php
+Hunk #1 succeeded at 209 (offset -24 lines).
+patching file app/code/core/Mage/Catalog/Model/Product/Api/V2.php
+patching file app/design/frontend/enterprise/default/template/giftregistry/search/form.phtml
+patching file app/design/frontend/rwd/enterprise/template/giftregistry/search/form.phtml
+
+
