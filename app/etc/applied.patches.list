@@ -125,3 +125,7 @@ patching file app/design/frontend/enterprise/default/template/giftregistry/searc
 patching file app/design/frontend/rwd/enterprise/template/giftregistry/search/form.phtml
 
 
+2015-10-09 14:31:16 UTC | SUPEE-5143 | EE_1.14.1.0 | v1 | 403ad6a50bdf50c1f661c9c8646f62e41fffd58c | Mon Jan 12 11:40:30 2015 +0200 | v1.14.1.0..HEAD
+patching file app/code/core/Mage/Catalog/Model/Resource/Product/Type/Configurable/Attribute/Collection.php
+
+
