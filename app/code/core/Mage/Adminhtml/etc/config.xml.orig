@@ -192,7 +192,7 @@
                 <sitemap_generate_valid_paths>
                     <!-- This data should be merged with public_files_valid_paths -->
                     <available>
-                        <any_path>/*/*.xml</any_path>
+                        <any_path>/*/sitemap.xml</any_path>
                     </available>
                 </sitemap_generate_valid_paths>
             </file>
