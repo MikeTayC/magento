@@ -117,3 +117,9 @@ Hunk #2 succeeded at 262 (offset 19 lines).
 patching file app/design/frontend/enterprise/default/template/giftregistry/search/form.phtml
 
 
+2015-10-09 18:21:35 UTC | SUPEE-5026 | EE_1.14.1.0 | v1 | 37b926ee96bf0384b8f578ef154b0e522d712630 | Thu Dec 18 18:50:25 2014 +0200 | v1.14.1.0..HEAD
+patching file app/code/core/Mage/Adminhtml/etc/config.xml
+Hunk #1 succeeded at 192 (offset -5 lines).
+patching file app/code/core/Mage/Core/Model/File/Validator/AvailablePath.php
+
+
