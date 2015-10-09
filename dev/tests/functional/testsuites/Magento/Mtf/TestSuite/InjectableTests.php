@@ -26,9 +26,8 @@
 
 namespace Magento\Mtf\TestSuite;
 
-use Magento\Mtf\ObjectManagerFactory;
 use Magento\Mtf\ObjectManager;
-use Magento\Mtf\TestRunner\Configuration;
+use Magento\Mtf\ObjectManagerFactory;
 
 /**
  * Injectable tests class.

@@ -27,7 +27,7 @@
 namespace Mage\Sales\Test\Constraint;
 
 use Mage\Sales\Test\Fixture\Order;
-use Mage\Widget\Test\Block\Grid;
+use Mage\Adminhtml\Test\Block\Widget\Grid;
 
 /**
  * Abstract assert sales entity with corresponding filter is present in 'Sales Entity' with correct data.

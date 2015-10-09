@@ -60,6 +60,13 @@ class FormPageActions extends PageActions
     protected $deleteButton = '.scalable.delete';
 
     /**
+     * Selector for top page.
+     *
+     * @var string
+     */
+    protected $topPage = '#global_search';
+
+    /**
      * Click "Save" button.
      *
      * @return void
@@ -108,6 +115,7 @@ class FormPageActions extends PageActions
      */
     protected function buttonClick($buttonName)
     {
+        $this->clickOnTopPage();
         $button = $this->_rootElement->find($this->{$buttonName . 'Button'});
         if ($button->isVisible()) {
             $button->click();
@@ -115,5 +123,18 @@ class FormPageActions extends PageActions
             $this->browser->find($this->headerFloating . ' ' . $this->{$buttonName . 'Button'})->click();
         }
         $this->getTemplateBlock()->waitLoader();
+    }
+
+    /**
+     * Click on top page.
+     *
+     * @return void
+     */
+    protected function clickOnTopPage()
+    {
+        $topPage = $this->browser->find($this->topPage);
+        if ($topPage->isVisible()) {
+            $topPage->click();
+        }
     }
 }

@@ -568,26 +568,26 @@ img.product-image {
 
 .price-box p { margin:0; }
 .mass_product_assignment_div{
-	position:fixed;
-	padding:10px;
-	top:35%;
-	z-index:999;
-	width:450px;
-	background:#FFF;
-	border-radius:5px;
-	border:1px solid;
-	text-align:center;
-	opacity:0;
+    position:fixed;
+    padding:10px;
+    top:35%;
+    z-index:999;
+    width:450px;
+    background:#FFF;
+    border-radius:5px;
+    border:1px solid;
+    text-align:center;
+    opacity:0;
 }
 .col-right .form-search {
-	margin-top:2px;
-	
+    margin-top:2px;
+
 }
 .mass-product-assign-bounder{
 
 }
 .mass-product-close-button{
-	background: url("../../images/bkg_btn-close.gif") repeat-x scroll 0 50% !important;
+    background: url("../../images/bkg_btn-close.gif") repeat-x scroll 0 50% !important;
     border: 1px solid #EA7601;
     color: #FFFFFF;
     cursor: pointer;
@@ -598,41 +598,41 @@ img.product-image {
     margin-right:9px;
 }
 a.mass-product-close-button:hover{
-	color: #FFFFFF;
+    color: #FFFFFF;
 }
 #background_tilt{
-	top:0;
-	background:#000;
-	opacity:0.0;
-	position:fixed;
-	z-index:988;
-	display:none;
+    top:0;
+    background:#000;
+    opacity:0.0;
+    position:fixed;
+    z-index:988;
+    display:none;
 }
 .move-top{
-	margin-left:10px;
-	cursor:pointer;
-	display:none;
+    margin-left:10px;
+    cursor:pointer;
+    display:none;
 }
 .search-results .cannot-add{
-	float:left; 
+    float:left;
 }
 .ui-sortable li .move-top , .ui-sortable li .cannot-add{
-	display:none !important;
+    display:none !important;
 }
 
 .demo-notice { display:none }
 .hero-products{
-	
-	margin:5px;
-	
+
+    margin:5px;
+
 }
 .hero-products .input-text {
-	width:300px;
+    width:300px;
 }
 .hero-products-block ul{
-	width:90%;
-	min-height:0px;
-	float:none;
+    width:90%;
+    min-height:0px;
+    float:none;
 }
 .hero-products-block ul li{
     width: 190px !important;
@@ -658,11 +658,11 @@ a.mass-product-close-button:hover{
 .hero-products .comment{
 }
 .hero-fields{
-	padding:5px;
+    padding:5px;
 }
 #loader_div{
-	background:#fff;
-	border: 2px solid #DDDDDD;
+    background:#fff;
+    border: 2px solid #DDDDDD;
     display: none;
     left: 50%;
     margin-left: -55px;
@@ -676,14 +676,14 @@ a.mass-product-close-button:hover{
     z-index: 99999;
 }
 #loader_div iframe{
-	height:25px;
-	width:25px;
-	position:relative;
-	top:3px
+    height:25px;
+    width:25px;
+    position:relative;
+    top:3px
 }
 #loader_div span {
-	position:absolute;
-	bottom:5px;
+    position:absolute;
+    bottom:5px;
 }
 #massproductresult{
     text-align:left;

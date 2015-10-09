@@ -28,8 +28,8 @@ namespace Mage\Catalog\Test\Block\Product\ProductList;
 
 use Magento\Mtf\Fixture\InjectableFixture;
 use Magento\Mtf\Block\Block;
-use Magento\Mtf\Client\Element\SimpleElement as Element;
 use Magento\Mtf\Client\Locator;
+use Magento\Mtf\Block\BlockInterface;
 
 /**
  * Crosssell product block on the page.
@@ -44,14 +44,21 @@ class Crosssell extends Block
     protected $crosssellProduct = "//div[normalize-space(h3//a)='%s']";
 
     /**
-     * Verify cross-sell item.
+     * Get item block.
      *
      * @param InjectableFixture $product
-     * @return bool
+     * @return BlockInterface
      */
-    public function verifyProductCrosssell(InjectableFixture $product)
+    public function getItemBlock(InjectableFixture $product)
     {
-        return $this->_rootElement->find(sprintf($this->crosssellProduct, $product->getName()), Locator::SELECTOR_XPATH)
-            ->isVisible();
+        return $this->blockFactory->create(
+            'Mage\Catalog\Test\Block\Product\ProductList\Crosssell\Item',
+            [
+                'element' => $this->_rootElement->find(
+                    sprintf($this->crosssellProduct, $product->getName()),
+                    Locator::SELECTOR_XPATH
+                )
+            ]
+        );
     }
 }

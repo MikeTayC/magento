@@ -362,6 +362,21 @@ class CustomOptions implements FixtureInterface
                     ]
                 ],
             ],
+            'drop_down_with_one_option_fixed_price' => [
+                [
+                    'title' => 'custom option drop down %isolation%',
+                    'is_require' => 'Yes',
+                    'type' => 'Select/Drop-down',
+                    'options' => [
+                        [
+                            'title' => '30 bucks',
+                            'price' => 30,
+                            'price_type' => 'Fixed',
+                            'sku' => 'sku_drop_down_row_1',
+                        ],
+                    ],
+                ],
+            ],
         ];
         if (!isset($presets[$name])) {
             return null;

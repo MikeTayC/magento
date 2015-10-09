@@ -27,9 +27,9 @@
 namespace Mage\Catalog\Test\Block\Product\ProductList;
 
 use Magento\Mtf\Block\Block;
-use Magento\Mtf\Client\Element\SimpleElement as Element;
 use Magento\Mtf\Client\Locator;
 use Magento\Mtf\Fixture\InjectableFixture;
+use Mage\Catalog\Test\Block\Product\ProductList\Upsell\Item;
 
 /**
  * Upsell products block.
@@ -41,17 +41,25 @@ class Upsell extends Block
      *
      * @var string
      */
-    protected $crosssellProduct = "//li[normalize-space(h3//a)='%s']";
+    protected $upsellProduct = "//li[normalize-space(h3//a)='%s']";
 
     /**
-     * Checking Upsell product visibility.
+     * Get item block.
      *
      * @param InjectableFixture $product
-     * @return bool
+     * @return Item
      */
-    public function isUpsellProductVisible(InjectableFixture $product)
+    public function getItemBlock(InjectableFixture $product)
     {
-        return $this->_rootElement->find(sprintf($this->crosssellProduct, $product->getName()), Locator::SELECTOR_XPATH)
-        ->isVisible();
+        return $this->blockFactory->create(
+            'Mage\Catalog\Test\Block\Product\ProductList\Upsell\Item',
+            [
+                'element' => $this->_rootElement->find(
+                    sprintf($this->upsellProduct, $product->getName()),
+                    Locator::SELECTOR_XPATH
+                )
+            ]
+        );
     }
+
 }

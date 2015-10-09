@@ -48,8 +48,19 @@
             <field name="current_password" xsi:type="string">123123q</field>
             <field name="is_active" xsi:type="string">Active</field>
             <field name="role_id" xsi:type="array">
-                <item name="dataSet" xsi:type="string">Administrators</item>
+                <item name="dataSet" xsi:type="string">administrators</item>
             </field>
+        </dataset>
+
+        <dataset name="admin_without_role">
+            <field name="username" xsi:type="string">AdminUser%isolation%</field>
+            <field name="firstname" xsi:type="string">FirstName%isolation%</field>
+            <field name="lastname" xsi:type="string">LastName%isolation%</field>
+            <field name="email" xsi:type="string">email%isolation%@example.com</field>
+            <field name="password" xsi:type="string">123123q</field>
+            <field name="password_confirmation" xsi:type="string">123123q</field>
+            <field name="current_password" xsi:type="string">123123q</field>
+            <field name="is_active" xsi:type="string">Active</field>
         </dataset>
     </repository>
 </config>

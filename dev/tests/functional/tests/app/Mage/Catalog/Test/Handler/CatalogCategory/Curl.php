@@ -130,11 +130,11 @@ class Curl extends AbstractCurl implements CatalogCategoryInterface
      * @param string $landingName
      * @return int|null
      */
-    public function getBlockId($landingName)
+    protected function getBlockId($landingName)
     {
-        $url = $_ENV['app_backend_url'] . 'catalog/category';
+        $url = $_ENV['app_backend_url'] . 'catalog_category';
         $curl = new BackendDecorator(new CurlTransport(), $this->_configuration);
-        $curl->write(CurlInterface::POST, $url, '1.0', [], []);
+        $curl->write(CurlInterface::POST, $url);
         $response = $curl->read();
         $curl->close();
         preg_match('~<option.*value="(\d+)".*>' . preg_quote($landingName) . '</option>~', $response, $matches);

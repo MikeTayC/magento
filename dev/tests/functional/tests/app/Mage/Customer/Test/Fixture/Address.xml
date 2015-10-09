@@ -97,7 +97,7 @@
       <default_value xsi:type="null" />
     </field>
     <field name="email"/>
-    <field name="default_shipping" is_required="1"/>
+    <field name="default_billing" is_required="1"/>
     <field name="default_shipping" is_required="1"/>
   </fixture>
 </config>

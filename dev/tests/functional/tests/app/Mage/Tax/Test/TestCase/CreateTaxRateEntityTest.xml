@@ -89,7 +89,7 @@
       <data name="taxRate/data/tax_country_id" xsi:type="string">France</data>
       <data name="taxRate/data/tax_region_id" xsi:type="string">Val-d'Oise</data>
       <data name="taxRate/data/rate" xsi:type="string">999</data>
-      <data name="issue" xsi:type="string">Bug: MPERF-6755</data>
+      <data name="issue" xsi:type="string">Bug: MPERF-6755: Tax rate's rate percent can be set greater than 100</data>
       <constraint name="Mage\Tax\Test\Constraint\AssertTaxRateIsInCorrectRange"/>
     </variation>
   </testCase>

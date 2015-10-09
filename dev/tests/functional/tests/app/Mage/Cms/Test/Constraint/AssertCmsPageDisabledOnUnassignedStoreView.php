@@ -40,7 +40,7 @@ class AssertCmsPageDisabledOnUnassignedStoreView extends AbstractConstraint
     /**
      * Text of error message.
      */
-    const ERROR_MESSAGE = "WE ARE SORRY, BUT THE PAGE YOU ARE LOOKING FOR CANNOT BE FOUND.";
+    const ERROR_MESSAGE = "The page you requested was not found, and we have a fine guess why.";
 
     /* tags */
     const SEVERITY = 'low';
@@ -53,19 +53,22 @@ class AssertCmsPageDisabledOnUnassignedStoreView extends AbstractConstraint
      * @param FrontendCmsPage $frontendCmsPage
      * @param Browser $browser
      * @param CmsIndex $cmsIndex
+     * @param string|null $notFoundMessage
      * @return void
      */
     public function processAssert(
         CmsPage $cms,
         FrontendCmsPage $frontendCmsPage,
         Browser $browser,
-        CmsIndex $cmsIndex
+        CmsIndex $cmsIndex,
+        $notFoundMessage = null
     ) {
         $browser->open($_ENV['app_frontend_url'] . $cms->getIdentifier());
+        $notFoundMessage = ($notFoundMessage !== null) ? $notFoundMessage : self::ERROR_MESSAGE;
         $cmsIndex->getHeaderBlock()->selectStore('Default Store View');
-        \PHPUnit_Framework_Assert::assertEquals(
-            self::ERROR_MESSAGE,
-            $frontendCmsPage->getCmsPageContentBlock()->getPageHeadTitle(),
+        \PHPUnit_Framework_Assert::assertContains(
+            $notFoundMessage,
+            $frontendCmsPage->getCmsPageContentBlock()->getPageContent(),
             'Wrong page content is displayed.'
         );
     }

@@ -27,8 +27,10 @@
 namespace Mage\Widget\Test\Block\Adminhtml\Widget\Instance\Edit;
 
 use Magento\Mtf\Client\Element\SimpleElement as Element;
-use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Client\Locator;
+use Magento\Mtf\Fixture\FixtureInterface;
 use Mage\Adminhtml\Test\Block\Widget\FormTabs;
+use Mage\Widget\Test\Fixture\Widget;
 
 /**
  * Widget Instance edit form.
@@ -36,29 +38,51 @@ use Mage\Adminhtml\Test\Block\Widget\FormTabs;
 class WidgetForm extends FormTabs
 {
     /**
+     * Selector for store view field.
+     *
+     * @var string
+     */
+    protected $storeView = '#store_ids';
+
+    /**
      * Fill form with tabs.
      *
-     * @param InjectableFixture $fixture
+     * @param FixtureInterface $widget
      * @param Element|null $element
      * @return FormTabs
      */
-    public function fill(InjectableFixture $fixture, Element $element = null)
+    public function fill(FixtureInterface $widget, Element $element = null)
     {
-        $tabs = $this->getFieldsByTabs($fixture);
+        $tabs = $this->getFieldsByTabs($widget);
         $this->fillTabs(['settings' => $tabs['settings']]);
         unset($tabs['settings']);
-
+        $this->fillStoreView($widget);
         return $this->fillTabs($tabs, $element);
+    }
+
+    /**
+     * Fill store view.
+     *
+     * @param Widget $widget
+     * @return void
+     */
+    protected function fillStoreView(Widget $widget)
+    {
+        $this->openTab('frontend_properties');
+        $storeViewField = $this->_rootElement->find($this->storeView, Locator::SELECTOR_CSS, 'multiselectgrouplist');
+        if($storeViewField->isVisible() && !$widget->hasData('store_ids')) {
+            $storeViewField->setValue('All Store Views');
+        }
     }
 
     /**
      * Get data of the tabs.
      *
-     * @param InjectableFixture|null $fixture
+     * @param FixtureInterface|null $fixture
      * @param Element|null $element
      * @return array
      */
-    public function getData(InjectableFixture $fixture = null, Element $element = null)
+    public function getData(FixtureInterface $fixture = null, Element $element = null)
     {
         $widgetType = $fixture->getWidgetOptions()['type_id'];
         if ($this->hasRender($widgetType)) {

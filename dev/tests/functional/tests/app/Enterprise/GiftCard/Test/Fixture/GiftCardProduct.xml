@@ -40,7 +40,7 @@
             </item>
             <item name="1" xsi:type="array">
                 <item name="price" xsi:type="string">150</item>
-            </item>git log
+            </item>
         </field>
         <field name="stock_data" xsi:type="array">
             <item name="qty" xsi:type="string">333.0000</item>

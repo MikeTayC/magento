@@ -27,8 +27,26 @@
 -->
 <mapping strict="0">
     <fields>
+        <name>
+            <selector>h5.title span</selector>
+        </name>
+        <price>
+            <selector>//td[@class="price"][1]/span</selector>
+            <strategy>xpath</strategy>
+        </price>
         <qty>
             <selector>.item-qty</selector>
         </qty>
+        <checkout_data composite="1">
+            <custom_price>
+                <selector>//td[@class="price"][1]/input</selector>
+                <strategy>xpath</strategy>
+            </custom_price>
+            <use_custom_price>
+                <selector>//td[@class="price"][1]/div/input[@type="checkbox"]</selector>
+                <strategy>xpath</strategy>
+                <input>checkbox</input>
+            </use_custom_price>
+        </checkout_data>
     </fields>
 </mapping>

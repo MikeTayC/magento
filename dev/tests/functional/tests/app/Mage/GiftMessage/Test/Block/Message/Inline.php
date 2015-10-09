@@ -42,7 +42,7 @@ class Inline extends Form
      *
      * @var string
      */
-    protected $giftMessageItemForm = '//li[@class="gift-item" and .//*[contains(text(), "%s")]]/div[@class="fieldset"]';
+    protected $giftMessageItemForm = '//li[(@class="item"or@class="gift-item") and .//*[contains(text(), "%s")]]';
 
     /**
      * Selector for gift message on order form.
@@ -70,7 +70,7 @@ class Inline extends Form
      *
      * @var string
      */
-    protected $giftOptionsForm = '.add-gift-message';
+    protected $giftOptionsForm = '#onepage-checkout-shipping-method-additional-load';
 
     /**
      * Fill gift message form.
@@ -130,7 +130,9 @@ class Inline extends Form
     protected function clickGiftMassageItem(InjectableFixture $product)
     {
         $giftMessageItemSelector = sprintf($this->giftMessageItemButton, $product->getName());
-        $this->_rootElement->find($giftMessageItemSelector, Locator::SELECTOR_XPATH)->click();
+        if ($this->_rootElement->find($giftMessageItemSelector, Locator::SELECTOR_XPATH)->isVisible()) {
+            $this->_rootElement->find($giftMessageItemSelector, Locator::SELECTOR_XPATH)->click();
+        }
     }
 
     /**

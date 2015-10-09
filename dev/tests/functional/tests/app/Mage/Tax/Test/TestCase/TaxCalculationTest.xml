@@ -116,7 +116,7 @@
       <data name="arguments/shipping/shipping_method" xsi:type="string">Fixed</data>
       <data name="arguments/payment/method" xsi:type="string">checkmo</data>
       <data name="address/dataSet" xsi:type="string">US_address_NY</data>
-      <data name="issue" xsi:type="string">Bug: MPERF-7035</data>
+      <data name="issue" xsi:type="string">Bug: MPERF-7035: Subtotal Including Tax on invoice is discounted</data>
       <constraint name="Mage\Tax\Test\Constraint\AssertTaxRuleIsAppliedToAllPricesExcludingIncludingTax" next="Mage\Tax\Test\Constraint\AssertTaxCalculationAfterCheckoutExcludingIncludingTax"/>
       <constraint name="Mage\Tax\Test\Constraint\AssertTaxCalculationAfterCheckoutExcludingIncludingTax" next="Mage\Tax\Test\Constraint\AssertOrderTaxOnBackendExcludingIncludingTax" prev="Mage\Tax\Test\Constraint\AssertTaxRuleIsAppliedToAllPricesExcludingIncludingTax"/>
       <constraint name="Mage\Tax\Test\Constraint\AssertOrderTaxOnBackendExcludingIncludingTax" prev="Mage\Tax\Test\Constraint\AssertTaxCalculationAfterCheckoutExcludingIncludingTax"/>
@@ -241,7 +241,7 @@
       <data name="arguments/shipping/shipping_method" xsi:type="string">Fixed</data>
       <data name="arguments/payment/method" xsi:type="string">checkmo</data>
       <data name="address/dataSet" xsi:type="string">US_address_NY</data>
-      <data name="issue" xsi:type="string">Bug: MPERF-7035</data>
+      <data name="issue" xsi:type="string">Bug: MPERF-7035: Subtotal Including Tax on invoice is discounted</data>
       <constraint name="Mage\Tax\Test\Constraint\AssertTaxRuleIsAppliedToAllPricesExcludingIncludingTax" next="Mage\Tax\Test\Constraint\AssertTaxCalculationAfterCheckoutExcludingIncludingTax"/>
       <constraint name="Mage\Tax\Test\Constraint\AssertTaxCalculationAfterCheckoutExcludingIncludingTax" next="Mage\Tax\Test\Constraint\AssertOrderTaxOnBackendExcludingIncludingTax" prev="Mage\Tax\Test\Constraint\AssertTaxRuleIsAppliedToAllPricesExcludingIncludingTax"/>
       <constraint name="Mage\Tax\Test\Constraint\AssertOrderTaxOnBackendExcludingIncludingTax" prev="Mage\Tax\Test\Constraint\AssertTaxCalculationAfterCheckoutExcludingIncludingTax"/>
@@ -304,7 +304,7 @@
       <data name="arguments/shipping/shipping_method" xsi:type="string">Fixed</data>
       <data name="arguments/payment/method" xsi:type="string">checkmo</data>
       <data name="address/dataSet" xsi:type="string">US_address_NY</data>
-      <data name="issue" xsi:type="string">Bug: MPERF-7035</data>
+      <data name="issue" xsi:type="string">Bug: MPERF-7035: Subtotal Including Tax on invoice is discounted</data>
       <constraint name="Mage\Tax\Test\Constraint\AssertTaxRuleIsAppliedToAllPricesExcludingIncludingTax" next="Mage\Tax\Test\Constraint\AssertTaxCalculationAfterCheckoutExcludingIncludingTax"/>
       <constraint name="Mage\Tax\Test\Constraint\AssertTaxCalculationAfterCheckoutExcludingIncludingTax" next="Mage\Tax\Test\Constraint\AssertOrderTaxOnBackendExcludingIncludingTax" prev="Mage\Tax\Test\Constraint\AssertTaxRuleIsAppliedToAllPricesExcludingIncludingTax"/>
       <constraint name="Mage\Tax\Test\Constraint\AssertOrderTaxOnBackendExcludingIncludingTax" prev="Mage\Tax\Test\Constraint\AssertTaxCalculationAfterCheckoutExcludingIncludingTax"/>
@@ -336,7 +336,7 @@
       <data name="arguments/shipping/shipping_method" xsi:type="string">Fixed</data>
       <data name="arguments/payment/method" xsi:type="string">checkmo</data>
       <data name="address/dataSet" xsi:type="string">US_address_NY</data>
-      <data name="issue" xsi:type="string">Bug: MPERF-7035</data>
+      <data name="issue" xsi:type="string">Bug: MPERF-7035: Subtotal Including Tax on invoice is discounted</data>
       <constraint name="Mage\Tax\Test\Constraint\AssertTaxRuleIsAppliedToAllPricesExcludingIncludingTax" next="Mage\Tax\Test\Constraint\AssertTaxCalculationAfterCheckoutExcludingIncludingTax"/>
       <constraint name="Mage\Tax\Test\Constraint\AssertTaxCalculationAfterCheckoutExcludingIncludingTax" next="Mage\Tax\Test\Constraint\AssertOrderTaxOnBackendExcludingIncludingTax" prev="Mage\Tax\Test\Constraint\AssertTaxRuleIsAppliedToAllPricesExcludingIncludingTax"/>
       <constraint name="Mage\Tax\Test\Constraint\AssertOrderTaxOnBackendExcludingIncludingTax" prev="Mage\Tax\Test\Constraint\AssertTaxCalculationAfterCheckoutExcludingIncludingTax"/>

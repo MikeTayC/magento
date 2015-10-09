@@ -29,7 +29,7 @@ namespace Mage\Adminhtml\Test\Block\System;
 use Magento\Mtf\Block\Form;
 use Magento\Mtf\Client\Element\SimpleElement as Element;
 use Magento\Mtf\Client\Locator;
-use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Currency Symbol form.
@@ -46,11 +46,11 @@ class CurrencySymbolForm extends Form
     /**
      * Fill the root form.
      *
-     * @param InjectableFixture $fixture
+     * @param FixtureInterface $fixture
      * @param Element|null $element
      * @return $this
      */
-    public function fill(InjectableFixture $fixture, Element $element = null)
+    public function fill(FixtureInterface $fixture, Element $element = null)
     {
         $element = $this->_rootElement->find(sprintf($this->currencyRow, $fixture->getCode()), Locator::SELECTOR_XPATH);
         return parent::fill($fixture, $element);

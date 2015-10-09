@@ -30,6 +30,8 @@ use Magento\Mtf\Page\Page;
 use Mage\Paypal\Test\Block;
 use Mage\Paypal\Test\Block\Login;
 use Mage\Paypal\Test\Block\Review;
+use Mage\Paypal\Test\Block\OldReview;
+use Mage\Paypal\Test\Block\OldLogin;
 
 /**
  * Pay Pal page.
@@ -49,12 +51,22 @@ class Paypal extends Page
     protected $blocks = [
         'loginBlock' => [
             'class' => 'Mage\Paypal\Test\Block\Login',
-            'locator' => '.loggingIn',
+            'locator' => 'xo-login-page',
+            'strategy' => 'css selector',
+        ],
+        'oldLoginBlock' => [
+            'class' => 'Mage\Paypal\Test\Block\OldLogin',
+            'locator' => '#loginModule',
             'strategy' => 'css selector',
         ],
         'reviewBlock' => [
             'class' => 'Mage\Paypal\Test\Block\Review',
             'locator' => '.outerWrapper',
+            'strategy' => 'css selector',
+        ],
+        'oldReviewBlock' => [
+            'class' => 'Mage\Paypal\Test\Block\OldReview',
+            'locator' => '#content',
             'strategy' => 'css selector',
         ],
     ];
@@ -83,5 +95,21 @@ class Paypal extends Page
     public function getReviewBlock()
     {
         return $this->getBlockInstance('reviewBlock');
+    }
+
+    /**
+     * @return OldLogin
+     */
+    public function getOldLoginBlock()
+    {
+        return $this->getBlockInstance('oldLoginBlock');
+    }
+
+    /**
+     * @return OldReview
+     */
+    public function getOldReviewBlock()
+    {
+        return $this->getBlockInstance('oldReviewBlock');
     }
 }

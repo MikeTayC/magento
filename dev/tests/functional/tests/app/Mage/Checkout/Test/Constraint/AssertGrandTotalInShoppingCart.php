@@ -28,6 +28,7 @@ namespace Mage\Checkout\Test\Constraint;
 
 use Mage\Checkout\Test\Fixture\Cart;
 use Mage\Checkout\Test\Page\CheckoutCart;
+use Mage\Customer\Test\Fixture\Customer;
 use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
@@ -44,15 +45,33 @@ class AssertGrandTotalInShoppingCart extends AbstractConstraint
      *
      * @param CheckoutCart $checkoutCart
      * @param Cart $cart
+     * @param Customer|null $customer
      * @return void
      */
-    public function processAssert(CheckoutCart $checkoutCart, Cart $cart)
+    public function processAssert(CheckoutCart $checkoutCart, Cart $cart, Customer $customer = null)
     {
+        if ($customer !== null) {
+            $this->login($customer);
+        }
         $checkoutCart->open();
         \PHPUnit_Framework_Assert::assertEquals(
             number_format($cart->getGrandTotal(), 2),
             $checkoutCart->getTotalsBlock()->getData('grand_total')
         );
+    }
+
+    /**
+     * Login customer in frontend.
+     *
+     * @param Customer $customer
+     * @return void
+     */
+    protected function login(Customer $customer)
+    {
+        $this->objectManager->create(
+            'Mage\Customer\Test\TestStep\LoginCustomerOnFrontendStep',
+            ['customer' => $customer]
+        )->run();
     }
 
     /**

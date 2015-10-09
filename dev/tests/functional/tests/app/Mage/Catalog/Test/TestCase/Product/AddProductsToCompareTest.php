@@ -29,8 +29,6 @@ namespace Mage\Catalog\Test\TestCase\Product;
 use Mage\Catalog\Test\Page\Product\CatalogProductCompare;
 use Mage\Catalog\Test\Constraint\AssertProductCompareSuccessAddMessage;
 use Mage\Customer\Test\Fixture\Customer;
-use Magento\Mtf\Client\Browser;
-use Magento\Mtf\Fixture\FixtureFactory;
 
 /**
  * Preconditions:

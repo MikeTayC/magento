@@ -109,27 +109,6 @@ class Categories extends Tab
     }
 
     /**
-     * Find category name in array.
-     *
-     * @param array $structure
-     * @param array $category
-     * @return bool
-     */
-    protected function inTree(array $structure, array &$category)
-    {
-        $element = array_shift($category);
-        foreach ($structure as $item) {
-            $result = strpos($item['name'], $element);
-            if ($result !== false && !empty($item['subnodes'])) {
-                return $this->inTree($item['subnodes'], $category);
-            } elseif ($result !== false && empty($category)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Check category in category tree.
      *
      * @param CatalogCategory $category
@@ -138,17 +117,7 @@ class Categories extends Tab
     public function isCategoryVisible(CatalogCategory $category)
     {
         $categoryPath = $this->prepareFullCategoryPath($category);
-        $structure = $this->_rootElement->find($this->treeElement, Locator::SELECTOR_CSS, 'tree')->getStructure();
-        $result = false;
-        $element = array_shift($categoryPath);
-        foreach ($structure as $item) {
-            $searchResult = strpos($item['name'], $element);
-            if ($searchResult !== false && !empty($item['subnodes'])) {
-                $result = $this->inTree($item['subnodes'], $categoryPath);
-            } elseif ($searchResult !== false && empty($categoryPath)) {
-                $result = true;
-            }
-        }
-        return $result;
+        return $this->_rootElement->find($this->treeElement, Locator::SELECTOR_CSS, 'tree')
+            ->isCategoryVisible($categoryPath);
     }
 }

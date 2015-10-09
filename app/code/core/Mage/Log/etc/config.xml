@@ -176,9 +176,9 @@
         </log>
         <system>
             <log>
-                <enable_log>1</enable_log>
+                <enable_log>2</enable_log>
                 <clean_after_day>180</clean_after_day>
-                <enabled>0</enabled>
+                <enabled>1</enabled>
                 <time/>
                 <frequency>D</frequency>
                 <error_email/>

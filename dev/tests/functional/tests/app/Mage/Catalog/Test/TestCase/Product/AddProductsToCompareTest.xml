@@ -49,7 +49,7 @@
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductCompareBlockOnCmsPage" />
         </variation>
         <variation name="AddProductsToCompareTestVariation4" method="test">
-            <data name="products" xsi:type="string">catalogProductSimple::simple_for_composite_products,catalogProductVirtual::order_default,giftCardProduct::giftcard_product_with_price,downloadableProduct::default,groupedProduct::grouped_product_with_price,configurableProduct::default,bundleProduct::bundle_dynamic_product,bundleProduct::bundle_fixed_product</data>
+            <data name="products" xsi:type="string">catalogProductSimple::simple_for_composite_products,catalogProductVirtual::order_default,downloadableProduct::default,groupedProduct::grouped_product_with_price,configurableProduct::default,bundleProduct::bundle_dynamic_product,bundleProduct::bundle_fixed_product</data>
             <data name="isCustomerLoggedIn" xsi:type="string">Yes</data>
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductCompareItemsLink" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductComparePage" />

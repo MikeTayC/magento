@@ -30,4 +30,9 @@
         <step name="applyCustomerBalanceToCustomer" module="Enterprise_CustomerBalance" next="selectCheckoutMethod" prev="createCustomer" />
         <step name="selectStoreCredit" module="Enterprise_CustomerBalance" prev="fillShippingMethod" next="selectPaymentMethod" />
     </scenario>
+
+    <scenario name="CreateOrderFromBackendWithinOfflinePaymentMethodsTest">
+        <step name="applyCustomerBalanceToCustomer" module="Enterprise_CustomerBalance" next="openSalesOrders" prev="createCustomer" />
+        <step name="selectStoreCreditOnBackend" module="Enterprise_CustomerBalance" prev="selectShippingMethodForOrder" next="submitOrder" />
+    </scenario>
 </config>

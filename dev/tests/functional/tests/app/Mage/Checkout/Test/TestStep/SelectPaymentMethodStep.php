@@ -30,6 +30,7 @@ use Mage\Checkout\Test\Page\CheckoutOnepage;
 use Magento\Mtf\Fixture\FixtureFactory;
 use Magento\Mtf\TestStep\TestStepInterface;
 use Mage\Payment\Test\Fixture\Cc;
+use Magento\Mtf\ObjectManager;
 
 /**
  * Selecting payment method.

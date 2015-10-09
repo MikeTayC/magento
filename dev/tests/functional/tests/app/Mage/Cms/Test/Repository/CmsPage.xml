@@ -25,8 +25,7 @@
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
     <repository class="Mage\Cms\Test\Repository\CmsPage">
         <dataset name="default">
             <field name="title" xsi:type="string">test-%isolation%</field>
@@ -36,8 +35,6 @@
                     <item name="0" xsi:type="string">default</item>
                 </item>
             </field>
-            <field name="is_active" xsi:type="string">Published</field>
-            <field name="under_version_control" xsi:type="string">No</field>
             <field name="content" xsi:type="array">
                 <item name="content" xsi:type="string">text content</item>
             </field>
@@ -53,7 +50,6 @@
                     <item name="0" xsi:type="string">default</item>
                 </item>
             </field>
-            <field name="is_active" xsi:type="string">Published</field>
             <field name="content" xsi:type="array">
                 <item name="content" xsi:type="string">Test Content</item>
             </field>

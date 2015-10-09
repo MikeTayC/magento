@@ -28,6 +28,8 @@ namespace Mage\Adminhtml\Test\Block\Catalog\Product\Edit\Tab;
 
 use Magento\Mtf\Client\Element\SimpleElement as Element;
 use Mage\Adminhtml\Test\Block\Widget\Tab;
+use Magento\Mtf\Client\Locator;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Websites Tab.
@@ -40,6 +42,20 @@ class Websites extends Tab
      * @var string
      */
     protected $tabSelector = '#product_info_tabs_websites';
+
+    /**
+     * Selector foe checked websites fields.
+     *
+     * @var string
+     */
+    protected $checkedWebsites = '[name="product[website_ids][]"]';
+
+    /**
+     * Selector for label website.
+     *
+     * @var string
+     */
+    protected $websiteLabel = './..//label';
 
     /**
      * Fill data to fields on tab.
@@ -60,6 +76,26 @@ class Websites extends Tab
         $this->_fill($data, $context);
 
         return $this;
+    }
+
+    /**
+     * Get data of the form.
+     *
+     * @param FixtureInterface|null $fixture
+     * @param Element|null $element
+     * @return array
+     */
+    public function getData(FixtureInterface $fixture = null, Element $element = null)
+    {
+        $result = [];
+        $checkedWebsites = $this->_rootElement->getElements($this->checkedWebsites, Locator::SELECTOR_CSS, 'checkbox');
+        foreach ($checkedWebsites as $item) {
+            if($item->getValue() == 'Yes') {
+                $result[] = $item->find($this->websiteLabel, Locator::SELECTOR_XPATH)->getText();
+            }
+        }
+
+        return $result;
     }
 
     /**

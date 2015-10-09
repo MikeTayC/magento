@@ -33,6 +33,9 @@ use Mage\Catalog\Test\Page\Adminhtml\CatalogProductNew;
 use Mage\Catalog\Test\Page\Adminhtml\CatalogProduct;
 
 /**
+ * Preconditions:
+ * 1. Setup configuration.
+ *
  * Steps:
  * 1. Login to the backend.
  * 2. Navigate to Catalog > Manage Products.
@@ -92,14 +95,34 @@ class CreateSimpleProductEntityTest extends Injectable
      *
      * @param CatalogProductSimple $product
      * @param CatalogCategory $category
+     * @param string $configData
      * @return void
      */
-    public function test(CatalogProductSimple $product, CatalogCategory $category)
+    public function test(CatalogProductSimple $product, CatalogCategory $category, $configData)
     {
+        // Preconditions
+        $this->objectManager->create(
+            'Mage\Core\Test\TestStep\SetupConfigurationStep',
+            ['configData' => $configData]
+        )->run();
+
         // Steps
         $this->productGrid->open();
         $this->productGrid->getGridPageActionBlock()->addNew();
         $this->newProductPage->getProductForm()->fill($product, null, $category);
         $this->newProductPage->getFormPageActions()->save();
+    }
+
+    /**
+     * Disable enabled config after test.
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        $this->objectManager->create(
+            'Mage\Core\Test\TestStep\SetupConfigurationStep',
+            ['configData' => $this->currentVariation['arguments']['configData'], 'rollback' => true]
+        )->run();
     }
 }

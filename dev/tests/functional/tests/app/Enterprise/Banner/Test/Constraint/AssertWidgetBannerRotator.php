@@ -62,12 +62,12 @@ class AssertWidgetBannerRotator extends AbstractConstraint
         $adminCache->getMessagesBlock()->waitSuccessMessage();
 
         $cmsIndex->open();
-        $errors = $cmsIndex->getWidgetView()->isWidgetVisible($widget, 'Cms index');
-        \PHPUnit_Framework_Assert::assertEmpty($errors, implode(" ", $errors));
+        $errors = $cmsIndex->getWidgetView()->checkWidget($widget, 'Cms index');
+        \PHPUnit_Framework_Assert::assertEmpty($errors, $errors);
 
         $advancedSearch->open();
-        $errors = $cmsIndex->getWidgetView()->isWidgetVisible($widget, 'Advanced search');
-        \PHPUnit_Framework_Assert::assertEmpty($errors, implode(" ", $errors));
+        $errors = $cmsIndex->getWidgetView()->checkWidget($widget, 'Advanced search');
+        \PHPUnit_Framework_Assert::assertEmpty($errors, $errors);
     }
 
     /**

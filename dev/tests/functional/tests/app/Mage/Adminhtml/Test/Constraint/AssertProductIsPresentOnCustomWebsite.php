@@ -34,7 +34,6 @@ use Magento\Mtf\Client\Browser;
 use Magento\Mtf\Fixture\FixtureFactory;
 use Magento\Mtf\Fixture\InjectableFixture;
 use Magento\Mtf\Constraint\AbstractConstraint;
-use Mage\CatalogSearch\Test\Page\CatalogsearchResult;
 
 /**
  * Assert that product is present on custom website.
@@ -105,6 +104,7 @@ class AssertProductIsPresentOnCustomWebsite extends AbstractConstraint
         $code = $this->website->getCode();
         $productUrl = $_ENV['app_frontend_url'] . "websites/$code/" . $product->getUrlKey() . ".html";
         $browser->open(str_replace("index.php/", "", $productUrl));
+
         \PHPUnit_Framework_Assert::assertTrue(
             $catalogProductView->getViewBlock()->isVisible(),
             "Searched product is not visible."
@@ -120,15 +120,20 @@ class AssertProductIsPresentOnCustomWebsite extends AbstractConstraint
     protected function setupPaths()
     {
         $code = $this->website->getCode();
-        if (isset($_ENV['basedir'])) {
-            $this->baseDir = $_ENV['basedir'];
-            $this->magentoRoot = isset($_ENV['product_root_dir'])
-                ? $_ENV['product_root_dir'] . DIRECTORY_SEPARATOR . $_ENV['instance']
-                : $_ENV['basedir'];
-            $this->websiteFolder = $this->magentoRoot . DIRECTORY_SEPARATOR . "websites" . DIRECTORY_SEPARATOR . $code;
-        } else {
-            throw new \Exception("\$_ENV['basedir'] variable should be set in phpunit.xml.");
-        }
+        $this->magentoRoot = $this->resolveMagentoRoot();
+        $this->websiteFolder = $this->magentoRoot . DIRECTORY_SEPARATOR . "websites" . DIRECTORY_SEPARATOR . $code;
+    }
+
+    /**
+     * Resolve magento root path.
+     *
+     * @return string
+     */
+    protected function resolveMagentoRoot()
+    {
+        $realPath = realpath(MTF_BP . '/../../../');
+        preg_match('@instance-\d@', $_ENV['app_frontend_url'], $matches);
+        return isset($matches[0]) ? preg_replace('@instance-\d@', $matches[0], $realPath) : $realPath;
     }
 
     /**
@@ -138,13 +143,13 @@ class AssertProductIsPresentOnCustomWebsite extends AbstractConstraint
      */
     protected function createWebsiteFolder()
     {
-        $oldmask = umask(0);
+        $oldMask = umask(0);
         if (!is_dir($this->magentoRoot . DIRECTORY_SEPARATOR . 'websites')) {
 
             mkdir($this->magentoRoot . DIRECTORY_SEPARATOR . 'websites', 0777);
         }
         mkdir($this->websiteFolder, 0777);
-        umask($oldmask);
+        umask($oldMask);
     }
 
     /**
@@ -154,9 +159,9 @@ class AssertProductIsPresentOnCustomWebsite extends AbstractConstraint
      */
     protected function placeFiles()
     {
-        $htaccessFile = file_get_contents($this->baseDir . DIRECTORY_SEPARATOR .'.htaccess');
+        $htaccessFile = file_get_contents($this->magentoRoot . DIRECTORY_SEPARATOR . '.htaccess');
         file_put_contents($this->websiteFolder . DIRECTORY_SEPARATOR . ".htaccess", $htaccessFile);
-        $indexPhpFile = file_get_contents($this->baseDir . DIRECTORY_SEPARATOR . 'index.php');
+        $indexPhpFile = file_get_contents($this->magentoRoot . DIRECTORY_SEPARATOR . 'index.php');
 
         $replace = ["getcwd()", "(\$mageRunCode, \$mageRunType)"];
         $replacement = ["'{$this->magentoRoot}'", "('{$this->website->getCode()}', 'website')"];
@@ -176,17 +181,13 @@ class AssertProductIsPresentOnCustomWebsite extends AbstractConstraint
         $code = $this->website->getCode();
         $scope = "web/website/$code/";
         $data = [
-            'section' => [
-                [
-                    'path' => $scope . 'secure/base_link_url',
-                    'scope' => $scope,
-                    'value' => "{{secure_base_url}}websites/$code/"
-                ],
-                [
-                    'path' => $scope . 'unsecure/base_link_url',
-                    'scope' => $scope,
-                    'value' => "{{unsecure_base_url}}websites/$code/"
-                ]
+            $scope . 'secure/base_link_url' => [
+                'scope' => $scope,
+                'value' => "{{secure_base_url}}websites/$code/"
+            ],
+            $scope . 'unsecure/base_link_url' => [
+                'scope' => $scope,
+                'value' => "{{unsecure_base_url}}websites/$code/"
             ]
         ];
 

@@ -66,7 +66,7 @@ class AssertWidgetBannerRotatorOnProductPage extends AbstractConstraint
             foreach ($layout['entities'] as $layoutEntity) {
                 $urlKey = $layoutEntity['url_key'];
                 $browser->open($_ENV['app_frontend_url'] . $urlKey . '.html');
-                $errors = $productView->getWidgetView()->isWidgetVisible($widget, $layoutEntity['url_key']);
+                $errors = $productView->getWidgetView()->checkWidget($widget, $layoutEntity['url_key']);
                 \PHPUnit_Framework_Assert::assertEmpty($errors, implode(" ", $errors));
             }
         }

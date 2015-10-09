@@ -100,10 +100,9 @@ class AddProductsToCartFromCustomerWishlistOnFrontendTest extends AbstractWishli
      * Create cart fixture.
      *
      * @param array $products
-     * @param int|null $qty
      * @return Cart
      */
-    protected function createCart(array $products, $qty)
+    protected function createCart(array $products)
     {
         return $this->fixtureFactory->createByCode('cart', ['data' => ['items' => ['products' => $products]]]);
     }

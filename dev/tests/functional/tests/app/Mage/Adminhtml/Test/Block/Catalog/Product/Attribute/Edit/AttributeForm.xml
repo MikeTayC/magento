@@ -42,6 +42,7 @@
             <is_unique>
                 <input>select</input>
             </is_unique>
+            <default_value_text />
             <is_required>
                 <input>select</input>
             </is_required>

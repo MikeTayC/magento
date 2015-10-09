@@ -33,7 +33,6 @@ use Mage\Sales\Test\Fixture\Order;
 use Mage\SalesRule\Test\Fixture\SalesRule;
 use Magento\Mtf\Fixture\FixtureInterface;
 use Magento\Mtf\Handler\Curl as AbstractCurl;
-use Magento\Mtf\Config;
 use Magento\Mtf\Util\Protocol\CurlInterface;
 use Magento\Mtf\Util\Protocol\CurlTransport;
 use Magento\Mtf\Util\Protocol\CurlTransport\BackendDecorator;

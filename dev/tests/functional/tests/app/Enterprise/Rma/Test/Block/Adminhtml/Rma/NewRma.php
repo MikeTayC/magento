@@ -27,7 +27,7 @@
 namespace Enterprise\Rma\Test\Block\Adminhtml\Rma;
 
 use Enterprise\Rma\Test\Fixture\Rma;
-use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Fixture\FixtureInterface;
 use Enterprise\Rma\Test\Fixture\Rma\OrderId;
 use Magento\Mtf\Client\Element\SimpleElement;
 use Mage\Adminhtml\Test\Block\Widget\FormTabs;
@@ -40,11 +40,11 @@ class NewRma extends FormTabs
     /**
      * Fill form with tabs.
      *
-     * @param InjectableFixture $fixture
+     * @param FixtureInterface $fixture
      * @param SimpleElement|null $element
      * @return FormTabs
      */
-    public function fill(InjectableFixture $fixture, SimpleElement $element = null)
+    public function fill(FixtureInterface $fixture, SimpleElement $element = null)
     {
         $tabs = $this->getFieldsByTabs($fixture);
         if (isset($tabs['items']['items']['value'])) {
@@ -58,10 +58,10 @@ class NewRma extends FormTabs
     /**
      * Get order items from rma fixture.
      *
-     * @param InjectableFixture $fixture
+     * @param FixtureInterface $fixture
      * @return array
      */
-    protected function getOrderItems(InjectableFixture $fixture)
+    protected function getOrderItems(FixtureInterface $fixture)
     {
         /** @var OrderId $sourceOrderId */
         $sourceOrderId = $fixture->getDataFieldConfig('order_id')['source'];

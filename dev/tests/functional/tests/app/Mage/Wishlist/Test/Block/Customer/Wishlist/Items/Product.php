@@ -62,6 +62,13 @@ class Product extends Form
     protected $addToCart = '.btn-cart';
 
     /**
+     * Edit button css selector.
+     *
+     * @var string
+     */
+    protected $edit = '.link-edit';
+
+    /**
      * Get product options.
      *
      * @return array|null
@@ -109,5 +116,15 @@ class Product extends Form
     public function clickAddToCart()
     {
         $this->_rootElement->find($this->addToCart)->click();
+    }
+
+    /**
+     * Click edit button.
+     *
+     * @return void
+     */
+    public function clickEdit()
+    {
+        $this->_rootElement->find($this->edit)->click();
     }
 }

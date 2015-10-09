@@ -26,40 +26,49 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="../../../../../../vendor/magento/mtf/etc/fixture.xsd">
-  <fixture name="urlRewrite" module="Enterprise_UrlRewrite" type="flat" entity_type="enterprise_url_rewrite" repository_class="Enterprise\UrlRewrite\Test\Repository\UrlRewrite" handler_interface="Enterprise\UrlRewrite\Test\Handler\UrlRewrite\UrlRewriteInterface" class="Enterprise\UrlRewrite\Test\Fixture\UrlRewrite">
-    <dataset name="default">
-        <field name="entity_type" xsi:type="string">product</field>
-        <field name="request_path" xsi:type="string">test_%isolation%.html</field>
-    </dataset>
-    <field name="url_rewrite_id" is_required="1">
-      <default_value xsi:type="null" />
-    </field>
-    <field name="request_path" is_required="0">
-      <default_value xsi:type="null" />
-    </field>
-    <field name="target_path" is_required="0">
-      <default_value xsi:type="null" />
-    </field>
-    <field name="is_system" is_required="0">
-      <default_value xsi:type="null" />
-    </field>
-    <field name="guid" is_required="0">
-      <default_value xsi:type="null" />
-    </field>
-    <field name="identifier" is_required="0">
-      <default_value xsi:type="null" />
-    </field>
-    <field name="inc" is_required="0">
-      <default_value xsi:type="string">1</default_value>
-    </field>
-    <field name="value_id" is_required="0">
-      <default_value xsi:type="null" />
-    </field>
-    <field name="store_id" is_required="0" source="Enterprise\UrlRewrite\Test\Fixture\UrlRewrite\StoreId">
-      <default_value xsi:type="null" />
-    </field>
-    <field name="entity_type" is_required="0">
-      <default_value xsi:type="null" />
-    </field>
-  </fixture>
+    <fixture name="urlRewrite" module="Enterprise_UrlRewrite" type="flat" entity_type="enterprise_url_rewrite" repository_class="Enterprise\UrlRewrite\Test\Repository\UrlRewrite" handler_interface="Enterprise\UrlRewrite\Test\Handler\UrlRewrite\UrlRewriteInterface" class="Enterprise\UrlRewrite\Test\Fixture\UrlRewrite">
+        <dataset name="default">
+            <field name="identifier" xsi:type="string">product-test%isolation%.html</field>
+            <field name="target_path" xsi:type="array">
+                <item name="entity" xsi:type="string">product/catalogProductSimple::product_100_dollar</item>
+            </field>
+            <field name="options" xsi:type="string">Temporary (302)</field>
+            <field name="store_id" xsi:type="array">
+                <item name="dataSet" xsi:type="string">default</item>
+            </field>
+        </dataset>
+        <field name="store_id" is_required="0" source="Enterprise\UrlRewrite\Test\Fixture\UrlRewrite\StoreId">
+            <default_value xsi:type="null" />
+        </field>
+        <field name="url_rewrite_id" is_required="1">
+            <default_value xsi:type="null" />
+        </field>
+        <field name="request_path" is_required="0">
+            <default_value xsi:type="null" />
+        </field>
+        <field name="target_path" is_required="0" source="Enterprise\UrlRewrite\Test\Fixture\UrlRewrite\TargetPath">
+            <default_value xsi:type="null" />
+        </field>
+        <field name="is_system" is_required="0">
+            <default_value xsi:type="null" />
+        </field>
+        <field name="guid" is_required="0">
+            <default_value xsi:type="null" />
+        </field>
+        <field name="identifier" is_required="0">
+            <default_value xsi:type="null" />
+        </field>
+        <field name="inc" is_required="0">
+            <default_value xsi:type="string">1</default_value>
+        </field>
+        <field name="value_id" is_required="0">
+            <default_value xsi:type="null" />
+        </field>
+        <field name="entity_type" is_required="0">
+            <default_value xsi:type="null" />
+        </field>
+        <field name="options" is_required="0">
+            <default_value xsi:type="null" />
+        </field>
+    </fixture>
 </config>

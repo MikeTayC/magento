@@ -50,11 +50,6 @@ use Magento\Mtf\ObjectManager;
  */
 class TaxCalculationTest extends Scenario
 {
-    /* tags */
-    const MVP = 'yes';
-    const DOMAIN = 'CS';
-    /* end tags */
-
     /**
      * Delete all tax rules.
      *
@@ -89,13 +84,21 @@ class TaxCalculationTest extends Scenario
         $this->objectManager->create('\Mage\Tax\Test\TestStep\DeleteAllTaxRulesStep')->run();
         $this->objectManager->create('\Mage\SalesRule\Test\TestStep\DeleteAllSalesRuleStep')->run();
         $this->objectManager->create('\Mage\CatalogRule\Test\TestStep\DeleteAllCatalogRulesStep')->run();
+    }
 
-        // TODO: Move set default configuration to "tearDownAfterClass" method after fix bug MAGETWO-29331
-        $this->objectManager->create(
+    /**
+     * Setup default configuration after test.
+     *
+     * @return void
+     */
+    public static function tearDownAfterClass()
+    {
+        $objectManager =  ObjectManager::getInstance();
+        $objectManager->create(
             'Mage\Core\Test\TestStep\SetupConfigurationStep',
             ['configData' => 'default_tax_configuration']
         )->run();
-        $this->objectManager->create(
+        $objectManager->create(
             'Mage\Core\Test\TestStep\SetupConfigurationStep',
             ['configData' => 'shipping_tax_class_taxable_goods', 'rollback' => true]
         )->run();

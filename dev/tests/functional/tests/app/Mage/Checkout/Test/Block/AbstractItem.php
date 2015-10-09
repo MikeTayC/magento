@@ -122,6 +122,7 @@ class AbstractItem extends Form
             : Locator::SELECTOR_CSS;
         $selector = $this->prepareSelector($priceType);
         $price = $this->_rootElement->find($selector, $strategy)->getText();
+
         return $this->escapeCurrency($price);
     }
 
@@ -144,7 +145,7 @@ class AbstractItem extends Form
             foreach ($titles as $key => $title) {
                 $value = $values[$key]->getText();
                 $options[] = [
-                    'title' => $title->getText(),
+                    'title' => str_replace(':', '', $title->getText()),
                     'value' => $this->escapeCurrencyForOption($value),
                 ];
             }

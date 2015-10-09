@@ -108,10 +108,12 @@ class Curl extends AbstractCurl implements CatalogProductAttributeInterface
 
         $matches = [];
         preg_match_all('#"id":"(\d+)"#Umi', $response, $matches);
+        krsort($matches[1]);
+        $optionsIds = array_values($matches[1]);
 
         if ($fixture->hasData('options')) {
             $optionsData = $fixture->getData()['options'];
-            foreach ($matches[1] as $key => $optionId) {
+            foreach ($optionsIds as $key => $optionId) {
                 $optionsData[$key]['id'] = $optionId;
             }
             $resultData['options'] = $optionsData;

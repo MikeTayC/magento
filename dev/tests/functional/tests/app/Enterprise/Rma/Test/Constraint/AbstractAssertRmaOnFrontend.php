@@ -30,7 +30,7 @@ use Enterprise\Rma\Test\Fixture\Rma;
 use Mage\Sales\Test\Fixture\Order;
 use Magento\Mtf\Constraint\AbstractAssertForm;
 use Magento\Mtf\Fixture\InjectableFixture;
-use Magento\Mtf\Helper\Constraint\ProductHandler;
+use Mage\Catalog\Test\Constraint\ProductHandler;
 
 /**
  * Assert that rma is correctly displaying on frontend.
@@ -54,7 +54,7 @@ abstract class AbstractAssertRmaOnFrontend extends AbstractAssertForm
      *
      * @var string
      */
-    protected $productHandlerPath = 'Magento\Mtf\Helper\Constraint\ProductHandler';
+    protected $productHandlerPath = 'Mage\Catalog\Test\Constraint\ProductHandler';
 
     /**
      * Get rma items.

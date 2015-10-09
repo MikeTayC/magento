@@ -27,7 +27,6 @@
 namespace Mage\Authorizenet\Test\TestCase;
 
 use Mage\Paypal\Test\TestCase\CreateOfflineInvoiceForOnlinePaymentsMethodsWithIFrameTest;
-use Mage\Customer\Test\Page\CustomerAccountLogout;
 
 /**
  * Preconditions:

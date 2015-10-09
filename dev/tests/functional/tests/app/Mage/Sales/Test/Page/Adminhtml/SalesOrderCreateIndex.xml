@@ -29,5 +29,7 @@
     <page name="SalesOrderCreateIndex" area="Adminhtml" mca="sales_order_create/index" module="Mage_Sales">
         <block name="customerGrid" class="Mage\Adminhtml\Test\Block\Sales\Order\Create\CustomerGrid" locator="#order-customer-selector" strategy="css selector"/>
         <block name="createBlock" class="Mage\Adminhtml\Test\Block\Sales\Order\Create" locator="[id='page:main-container']" strategy="css selector"/>
-     </page>
+        <block name="storeBlock" class="Mage\Adminhtml\Test\Block\Sales\Order\Create\Store" locator="#order-store-selector" strategy="css selector"/>
+        <block name="customerActivitiesBlock" class="Mage\Adminhtml\Test\Block\Sales\Order\Create\CustomerActivities" locator="#order-sidebar" strategy="css selector"/>
+    </page>
 </config>

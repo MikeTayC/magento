@@ -26,14 +26,9 @@
 
 namespace Mage\Adminhtml\Test\Block\Widget;
 
-use Magento\Mtf\Block\Mapper;
-use Magento\Mtf\Client\Browser;
 use Magento\Mtf\Client\Element\SimpleElement as Element;
-use Magento\Mtf\Util\XmlConverter;
-use Magento\Mtf\Util\Iterator\File;
-use Magento\Mtf\Block\BlockFactory;
 use Magento\Mtf\Client\Locator;
-use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Fixture\FixtureInterface;
 use Magento\Mtf\Block\Form;
 
 /**
@@ -52,13 +47,6 @@ class FormTabs extends Form
     protected $tabs = [];
 
     /**
-     * XML converter.
-     *
-     * @var XmlConverter
-     */
-    protected $xmlConverter;
-
-    /**
      * Fields which aren't assigned to any tab.
      *
      * @var array
@@ -66,54 +54,28 @@ class FormTabs extends Form
     protected $unassignedFields = [];
 
     /**
-     * @constructor
-     * @param Element $element
-     * @param Mapper $mapper
-     * @param BlockFactory $blockFactory
-     * @param Browser $browser
-     * @param XmlConverter $xmlConverter
-     * @param array $config
-     */
-    public function __construct(
-        Element $element,
-        Mapper $mapper,
-        BlockFactory $blockFactory,
-        Browser $browser,
-        XmlConverter $xmlConverter,
-        array $config = []
-    ) {
-        $this->xmlConverter = $xmlConverter;
-        parent::__construct($element, $blockFactory, $mapper, $browser, $config);
-    }
-
-    /**
      * Initialize block.
      *
      * @return void
      */
-    protected function _init()
+    protected function init()
     {
-        $this->tabs = $this->getTabs();
+        $this->tabs = $this->getFormMapping();
     }
 
     /**
-     * Get all tabs on the form.
+     * Get path for form *.xml file with mapping
      *
-     * @return array
+     * @return string
      */
-    protected function getTabs()
+    protected function getFormMapping()
     {
         $result = [];
-
-        $files = new File($this->getPaths());
-
-        foreach ($files as $file) {
-            $presetXml = simplexml_load_string($file);
-            if ($presetXml instanceof \SimpleXMLElement) {
-                $array = $this->xmlConverter->convert($presetXml);
-                if (is_array($array)) {
-                    $result = array_replace_recursive($result, $array);
-                }
+        $paths = $this->getPaths();
+        foreach ($paths as $path) {
+            $content = $this->mapper->read($path);
+            if (is_array($content)) {
+                $result = array_replace_recursive($result, $content);
             }
         }
 
@@ -143,11 +105,11 @@ class FormTabs extends Form
     /**
      * Fill form with tabs.
      *
-     * @param InjectableFixture $fixture
+     * @param FixtureInterface $fixture
      * @param Element|null $element
      * @return FormTabs
      */
-    public function fill(InjectableFixture $fixture, Element $element = null)
+    public function fill(FixtureInterface $fixture, Element $element = null)
     {
         $tabs = $this->getFieldsByTabs($fixture);
         return $this->fillTabs($tabs, $element);
@@ -221,14 +183,14 @@ class FormTabs extends Form
     /**
      * Get data of the tabs.
      *
-     * @param InjectableFixture|null $fixture
+     * @param FixtureInterface|null $fixture
      * @param Element|null $element
      * @return array
      *
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getData(InjectableFixture $fixture = null, Element $element = null)
+    public function getData(FixtureInterface $fixture = null, Element $element = null)
     {
         $data = [];
 
@@ -253,10 +215,10 @@ class FormTabs extends Form
     /**
      * Update form with tabs.
      *
-     * @param InjectableFixture $fixture
+     * @param FixtureInterface $fixture
      * @return FormTabs
      */
-    public function update(InjectableFixture $fixture)
+    public function update(FixtureInterface $fixture)
     {
         $tabs = $this->getFieldsByTabs($fixture);
         foreach ($tabs as $tab => $tabFields) {
@@ -268,10 +230,10 @@ class FormTabs extends Form
     /**
      * Create data array for filling tabs.
      *
-     * @param InjectableFixture $fixture
+     * @param FixtureInterface $fixture
      * @return array
      */
-    protected function getFieldsByTabs(InjectableFixture $fixture)
+    protected function getFieldsByTabs(FixtureInterface $fixture)
     {
         return $this->getFixtureFieldsByTabs($fixture);
     }
@@ -279,10 +241,10 @@ class FormTabs extends Form
     /**
      * Create data array for filling tabs (new fixture specification).
      *
-     * @param InjectableFixture $fixture
+     * @param FixtureInterface $fixture
      * @return array
      */
-    private function getFixtureFieldsByTabs(InjectableFixture $fixture)
+    private function getFixtureFieldsByTabs(FixtureInterface $fixture)
     {
         $tabs = [];
 

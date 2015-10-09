@@ -100,8 +100,8 @@ class AssertStoreLocalized extends AbstractConstraint
     protected function setConfig(Store $store, FixtureFactory $fixtureFactory, ConfigData $config)
     {
         $configData = $config->getData();
-        $configData['section']['general_locale_code']['scope'] .=  '/' . $store->getCode();
-        $fixtureFactory->createByCode('configData', ['data' => $configData])->persist();
+        $configData['section']['general/locale/code']['scope'] .=  '/' . $store->getCode();
+        $fixtureFactory->createByCode('configData', ['data' => $configData['section']])->persist();
     }
 
     /**

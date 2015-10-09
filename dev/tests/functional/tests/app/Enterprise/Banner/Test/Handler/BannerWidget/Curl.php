@@ -26,7 +26,8 @@
 
 namespace Enterprise\Banner\Test\Handler\BannerWidget;
 
-use Magento\Mtf\Config;
+use Magento\Mtf\Config\DataInterface;
+use Magento\Mtf\System\Event\EventManagerInterface;
 
 /**
  * Curl handler for creating widgetInstance/frontendApp.
@@ -49,10 +50,12 @@ class Curl extends \Mage\Widget\Test\Handler\Widget\Curl
 
     /**
      * @constructor
+     * @param DataInterface $configuration
+     * @param EventManagerInterface $eventManager
      */
-    public function __construct(Config $configuration)
+    public function __construct(DataInterface $configuration, EventManagerInterface $eventManager)
     {
-        parent::__construct($configuration);
+        parent::__construct($configuration, $eventManager);
         $this->mappingData = array_merge($this->mappingData, $this->additionalMappingData);
     }
 }

@@ -26,13 +26,13 @@
 
 namespace Magento\Mtf\Page;
 
-use Magento\Mtf\Config;
 use Magento\Mtf\ObjectManager;
 use Mage\Adminhtml\Test\Page\AdminAuthLogin;
 use Mage\Adminhtml\Test\Page\Adminhtml\Dashboard;
 use Magento\Mtf\Block\BlockFactory;
 use Magento\Mtf\Client\BrowserInterface;
 use Magento\Mtf\Config\DataInterface;
+use Magento\Mtf\Config\Data;
 
 /**
  * Class for backend pages.
@@ -54,30 +54,6 @@ class BackendPage extends Page
     protected $dashboard;
 
     /**
-     * Configuration data.
-     *
-     * @var Config
-     */
-    protected $configuration;
-
-    /**
-     * @constructor
-     * @param DataInterface $configData
-     * @param BrowserInterface $browser
-     * @param BlockFactory $blockFactory
-     * @param Config $configuration
-     */
-    public function __construct(
-        DataInterface $configData,
-        BrowserInterface $browser,
-        BlockFactory $blockFactory,
-        Config $configuration
-    ) {
-        parent::__construct($configData, $browser, $blockFactory);
-        $this->configuration = $configuration;
-    }
-
-    /**
      * Init page. Set page url.
      *
      * @return void
@@ -95,12 +71,13 @@ class BackendPage extends Page
      */
     public function open(array $params = [])
     {
+        $systemConfig = ObjectManager::getInstance()->create('Magento\Mtf\Config\DataInterface');
         $admin = [
             'username' => [
-                'value' => $this->configuration->getParameter('application/backendLogin')
+                'value' => $systemConfig->get('application/0/backendLogin/0/value')
             ],
             'password' => [
-                'value' => $this->configuration->getParameter('application/backendPassword')
+                'value' => $systemConfig->get('application/0/backendPassword/0/value')
             ]
         ];
         $this->adminAuthLogin = ObjectManager::getInstance()->create('Mage\Adminhtml\Test\Page\AdminAuthLogin');

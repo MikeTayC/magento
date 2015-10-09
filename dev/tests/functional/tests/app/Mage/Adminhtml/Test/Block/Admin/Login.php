@@ -28,10 +28,10 @@ namespace Mage\Adminhtml\Test\Block\Admin;
 
 use Magento\Mtf\Block\Form;
 use Magento\Mtf\Client\Locator;
-use Magento\Mtf\Client\Element\SimpleElement as Element;
+use Magento\Mtf\Client\Element\SimpleElement;
 use Magento\Mtf\Block\BlockFactory;
 use Magento\Mtf\Block\Mapper;
-use Magento\Mtf\Client\Browser;
+use Magento\Mtf\Client\BrowserInterface;
 use Mage\Adminhtml\Test\Page\Adminhtml\Dashboard;
 
 /**
@@ -55,18 +55,18 @@ class Login extends Form
 
     /**
      * @constructor
-     * @param Element $element
+     * @param SimpleElement $element
      * @param BlockFactory $blockFactory
      * @param Mapper $mapper
-     * @param Browser $browser
+     * @param BrowserInterface $browser
      * @param array $config [optional]
      * @param Dashboard $dashboard
      */
     public function __construct(
-        Element $element,
+        SimpleElement $element,
         BlockFactory $blockFactory,
         Mapper $mapper,
-        Browser $browser,
+        BrowserInterface $browser,
         array $config = [],
         Dashboard $dashboard
     ) {

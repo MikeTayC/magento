@@ -76,34 +76,51 @@ class Curl extends AbstractCurl implements ConfigDataInterface
         $fields = $fixture->getData();
         if (isset($fields['section'])) {
             foreach ($fields['section'] as $key => $itemSection) {
-                $item = explode('/', $itemSection['path']);
-                $this->prepareResult($itemSection, $item, $result);
+                if (is_array($itemSection)) {
+                    $itemSection['path'] = $key;
+                }
+                parse_str($this->prepareConfigPath($itemSection), $configPath);
+                $result = array_merge_recursive($result, $configPath);
             }
         }
         return $result;
     }
 
     /**
-     * Prepare result array according to $item count.
+     * Prepare config path.
      *
-     * @param array $itemSection
-     * @param array $item
-     * @param array $result
-     * @return array
+     * From payment/cashondelivery/active to ['payment']['groups']['cashondelivery']['fields']['active']
+     *
+     * @param array $input
+     * @return string
      */
-    protected function prepareResult(array $itemSection, array $item, array &$result)
+    protected function prepareConfigPath(array $input)
     {
-        switch (count($item)) {
-            case 3:
-                $value = isset($this->mappingData[$item[2]])
-                    ? $this->mappingData[$item[2]][$itemSection['value']]
-                    : $itemSection['value'];
-                $result[$itemSection['scope']]['groups'][$item[1]]['fields'][$item[2]]['value'] = $value;
-                break;
-            case 5:
-                $result[$itemSection['scope']]['groups'][$item[3]]['fields'][$item[4]]['value'] = $itemSection['value'];
-                break;
+        $resultArray = '';
+        $InputValue = isset($input['value']) ? $input['value'] : null;
+        $path = explode('/', $input['path']);
+        foreach ($path as $position => $subPath) {
+            if ($position === 0) {
+                $resultArray .= $subPath;
+                continue;
+            } elseif ($position === (count($path) - 1)) {
+                $resultArray .= '[fields]';
+            } else {
+                $resultArray .= '[groups]';
+            }
+            $resultArray .= '[' . $subPath . ']';
         }
+        $resultArray .= '[value]';
+        if (is_array($InputValue)) {
+            $values = [];
+            foreach ($InputValue as $key => $value) {
+                $values[] = $resultArray . "[$key]=$value";
+            }
+            $resultArray = implode('&', $values);
+        } elseif(!empty($InputValue)) {
+            $resultArray .= '=' . $InputValue;
+        }
+        return $resultArray;
     }
 
     /**
@@ -118,7 +135,7 @@ class Curl extends AbstractCurl implements ConfigDataInterface
         $url = $this->getUrl($section);
         $curl = new BackendDecorator(new CurlTransport(), $this->_configuration);
         $curl->addOption(CURLOPT_HEADER, 1);
-        $curl->write(CurlInterface::POST, $url, '1.0', [], $data);
+        $curl->write(CurlInterface::POST, $url, '1.1', [], $data);
         $response = $curl->read();
         $curl->close();
 

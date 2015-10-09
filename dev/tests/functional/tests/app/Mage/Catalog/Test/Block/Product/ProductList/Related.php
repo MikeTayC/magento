@@ -27,9 +27,9 @@
 namespace Mage\Catalog\Test\Block\Product\ProductList;
 
 use Magento\Mtf\Block\Block;
-use Magento\Mtf\Client\Element\SimpleElement as Element;
 use Magento\Mtf\Client\Locator;
 use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Block\BlockInterface;
 
 /**
  * Related product block on the page.
@@ -41,27 +41,25 @@ class Related extends Block
      *
      * @var string
      */
-    protected $relatedProduct = "//div[normalize-space(div//a)='%s']";
+    protected $relatedProduct = "//div[normalize-space(*[@class='product-name']//a)='%s']";
 
     /**
-     * Checking related product visibility.
+     * Get item block.
      *
      * @param InjectableFixture $product
-     * @return bool
+     * @return BlockInterface
      */
-    public function isRelatedProductVisible(InjectableFixture $product)
+    public function getItemBlock(InjectableFixture $product)
     {
-        return $this->getProductElement($product->getName())->isVisible();
+        return $this->blockFactory->create(
+            'Mage\Catalog\Test\Block\Product\ProductList\Related\Item',
+            [
+                'element' => $this->_rootElement->find(
+                    sprintf($this->relatedProduct, $product->getName()),
+                    Locator::SELECTOR_XPATH
+                )
+            ]
+        );
     }
 
-    /**
-     * Get related product element.
-     *
-     * @param string $productName
-     * @return Element
-     */
-    protected function getProductElement($productName)
-    {
-        return $this->_rootElement->find(sprintf($this->relatedProduct, $productName), Locator::SELECTOR_XPATH);
-    }
 }

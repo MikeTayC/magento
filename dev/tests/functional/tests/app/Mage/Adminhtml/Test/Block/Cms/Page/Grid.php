@@ -26,12 +26,10 @@
 
 namespace Mage\Adminhtml\Test\Block\Cms\Page;
 
-use Mage\Adminhtml\Test\Block\Widget\Grid as ParentGrid;
-
 /**
  * Backend Cms Page grid.
  */
-class Grid extends ParentGrid
+class Grid extends \Mage\Adminhtml\Test\Block\Widget\Grid
 {
     /**
      * Filters array mapping.
@@ -57,4 +55,40 @@ class Grid extends ParentGrid
      * @var string
      */
     protected $editLink = 'td';
+
+    /**
+     * Selector for review link.
+     *
+     * @var string
+     */
+    protected $reviewLink = 'a';
+
+    /**
+     * The number of attempts for click.
+     */
+    const COUNT = 3;
+
+    /**
+     * Search and review.
+     *
+     * @param $filter
+     * @throws \Exception
+     * @return void
+     */
+    public function searchAndReview($filter)
+    {
+        $this->search($filter);
+        $rowItem = $this->_rootElement->find($this->rowItem);
+        if ($rowItem->isVisible()) {
+            $count = 0;
+            $link = $rowItem->find($this->reviewLink);
+            do {
+                $link->click();
+                $this->browser->selectWindow();
+                $count++;
+            } while ($link->isVisible() && $count < self::COUNT);
+        } else {
+            throw new \Exception('Searched item was not found.');
+        }
+    }
 }

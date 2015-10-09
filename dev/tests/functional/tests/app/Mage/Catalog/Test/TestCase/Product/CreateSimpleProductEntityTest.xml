@@ -42,6 +42,7 @@
             <data name="product/data/stock_data/qty" xsi:type="string">657</data>
             <data name="product/data/stock_data/is_in_stock" xsi:type="string">In Stock</data>
             <data name="product/data/visibility" xsi:type="string">Catalog, Search</data>
+            <data name="configData" xsi:type="string">-</data>
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" next="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductInGrid" next="Mage\Catalog\Test\Constraint\AssertProductForm" prev="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductForm" next="Mage\Catalog\Test\Constraint\AssertProductInStock" prev="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
@@ -67,6 +68,7 @@
             <data name="product/data/checkout_data/preset" xsi:type="string">with_tier_price</data>
             <data name="product/data/price/preset" xsi:type="string">with_tier_price</data>
             <data name="product/data/tier_price/preset" xsi:type="string">for_all_groups</data>
+            <data name="configData" xsi:type="string">-</data>
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" next="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductInGrid" next="Mage\Catalog\Test\Constraint\AssertProductForm" prev="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductForm" next="Mage\Catalog\Test\Constraint\AssertProductInCategory" prev="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
@@ -91,6 +93,7 @@
             <data name="product/data/stock_data/is_in_stock" xsi:type="string">In Stock</data>
             <data name="product/data/checkout_data/preset" xsi:type="string">with_special_price</data>
             <data name="product/data/price/preset" xsi:type="string">with_special_price</data>
+            <data name="configData" xsi:type="string">-</data>
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" next="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductInGrid" next="Mage\Catalog\Test\Constraint\AssertProductForm" prev="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductForm" next="Mage\Catalog\Test\Constraint\AssertProductInCategory" prev="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
@@ -117,6 +120,7 @@
             <data name="product/data/price/preset" xsi:type="string">with_group_price</data>
             <data name="product/data/group_price/preset" xsi:type="string">for_not_logged_users</data>
             <data name="product/data/tier_price/preset" xsi:type="string">-</data>
+            <data name="configData" xsi:type="string">-</data>
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" next="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductInGrid" next="Mage\Catalog\Test\Constraint\AssertProductForm" prev="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductForm" next="Mage\Catalog\Test\Constraint\AssertProductInCategory" prev="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
@@ -140,6 +144,7 @@
             <data name="product/data/stock_data/qty" xsi:type="string">-</data>
             <data name="product/data/stock_data/is_in_stock" xsi:type="string">Out of Stock</data>
             <data name="product/data/visibility" xsi:type="string">-</data>
+            <data name="configData" xsi:type="string">-</data>
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" next="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductInGrid" next="Mage\Catalog\Test\Constraint\AssertProductForm" prev="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductForm" next="Mage\Catalog\Test\Constraint\AssertProductVisibleInCategory" prev="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
@@ -161,6 +166,7 @@
             <data name="product/data/stock_data/is_in_stock" xsi:type="string">In Stock</data>
             <data name="product/data/custom_options/preset" xsi:type="string">drop_down_with_two_options</data>
             <data name="product/data/checkout_data/preset" xsi:type="string">with_one_custom_option</data>
+            <data name="configData" xsi:type="string">-</data>
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" next="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductInGrid" next="Mage\Catalog\Test\Constraint\AssertProductForm" prev="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductForm" next="Mage\Catalog\Test\Constraint\AssertProductPage" prev="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
@@ -182,6 +188,7 @@
             <data name="product/data/stock_data/qty" xsi:type="string">661</data>
             <data name="product/data/stock_data/is_in_stock" xsi:type="string">In Stock</data>
             <data name="product/data/visibility" xsi:type="string">Catalog</data>
+        <data name="configData" xsi:type="string">-</data>
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" next="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductInGrid" next="Mage\Catalog\Test\Constraint\AssertProductForm" prev="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductForm" next="Mage\Catalog\Test\Constraint\AssertProductVisibleInCategory" prev="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
@@ -202,6 +209,7 @@
             <data name="product/data/stock_data/qty" xsi:type="string">661</data>
             <data name="product/data/stock_data/is_in_stock" xsi:type="string">In Stock</data>
             <data name="product/data/visibility" xsi:type="string">Search</data>
+            <data name="configData" xsi:type="string">-</data>
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" next="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductInGrid" next="Mage\Catalog\Test\Constraint\AssertProductForm" prev="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductForm" next="Mage\Catalog\Test\Constraint\AssertProductVisibleInCategory" prev="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
@@ -224,6 +232,7 @@
             <data name="product/data/custom_options/preset" xsi:type="string">drop_down_with_two_options</data>
             <data name="product/data/price/preset" xsi:type="string">with_tier_price</data>
             <data name="product/data/tier_price/preset" xsi:type="string">for_all_groups</data>
+            <data name="configData" xsi:type="string">-</data>
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" next="Mage\Catalog\Test\Constraint\AssertProductTierPriceOnProductPage" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductTierPriceOnProductPage" prev="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" />
         </variation>
@@ -241,7 +250,8 @@
             <data name="product/data/weight" xsi:type="string">51</data>
             <data name="product/data/stock_data/qty" xsi:type="string">658</data>
             <data name="product/data/stock_data/is_in_stock" xsi:type="string">In Stock</data>
-            <data name="issue" xsi:type="string">Bug: MPERF-5976</data>
+            <data name="configData" xsi:type="string">-</data>
+            <data name="issue" xsi:type="string">Bug: MPERF-5976: Special Price can be larger than Actual Price</data>
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductSpecialPriceNotLargerActual" />
         </variation>
         <variation name="CreateSimpleProductEntityTestVariation11" firstConstraint="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" method="test">
@@ -258,12 +268,33 @@
             <data name="product/data/stock_data/qty" xsi:type="string">657</data>
             <data name="product/data/stock_data/is_in_stock" xsi:type="string">Out of Stock</data>
             <data name="product/data/visibility" xsi:type="string">Catalog, Search</data>
+            <data name="configData" xsi:type="string">-</data>
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" next="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductInGrid" next="Mage\Catalog\Test\Constraint\AssertProductForm" prev="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductForm" next="Mage\Catalog\Test\Constraint\AssertProductOutOfStock" prev="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductOutOfStock" next="Mage\Catalog\Test\Constraint\AssertProductOutOfStockOnCategory" prev="Mage\Catalog\Test\Constraint\AssertProductForm" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductOutOfStockOnCategory" next="Mage\Catalog\Test\Constraint\AssertProductCanNotAddToCart" prev="Mage\Catalog\Test\Constraint\AssertProductOutOfStock" />
-            <constraint name="Mage\Catalog\Test\Constraint\AssertProductCanNotAddToCart"  prev="Mage\Catalog\Test\Constraint\AssertProductOutOfStockOnCategory" />
+            <constraint name="Mage\Catalog\Test\Constraint\AssertProductCanNotAddToCart" prev="Mage\Catalog\Test\Constraint\AssertProductOutOfStockOnCategory" />
+        </variation>
+        <variation name="CreateSimpleProductEntityTestVariation12" firstConstraint="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" method="test">
+            <data name="description" xsi:type="string">Create Out of Stock Simple product</data>
+            <data name="product/data/name" xsi:type="string">Simple Product %isolation%</data>
+            <data name="product/data/sku" xsi:type="string">simple_sku_%isolation%</data>
+            <data name="product/data/url_key" xsi:type="string">simple-sku-%isolation%</data>
+            <data name="product/data/tax_class_id/dataSet" xsi:type="string">Taxable Goods</data>
+            <data name="product/data/price/value" xsi:type="string">10003</data>
+            <data name="product/data/status" xsi:type="string">Enabled</data>
+            <data name="product/data/short_description" xsi:type="string">Short description for Out of Stock Simple Product</data>
+            <data name="product/data/description" xsi:type="string">Description for Out of Stock Simple Product</data>
+            <data name="product/data/weight" xsi:type="string">53</data>
+            <data name="product/data/stock_data/qty" xsi:type="string">-</data>
+            <data name="product/data/stock_data/is_in_stock" xsi:type="string">Out of Stock</data>
+            <data name="configData" xsi:type="string">display_out_of_stock_products</data>
+            <constraint name="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" />
+            <constraint name="Mage\Catalog\Test\Constraint\AssertProductInGrid" />
+            <constraint name="Mage\Catalog\Test\Constraint\AssertProductForm" />
+            <constraint name="Mage\Catalog\Test\Constraint\AssertProductOutOfStockVisibleInCategory" />
+            <constraint name="Mage\Catalog\Test\Constraint\AssertProductOutOfStock" />
         </variation>
     </testCase>
 </config>

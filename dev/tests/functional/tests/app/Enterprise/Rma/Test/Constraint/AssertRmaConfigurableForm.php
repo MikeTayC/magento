@@ -28,7 +28,7 @@ namespace Enterprise\Rma\Test\Constraint;
 
 use Magento\Mtf\Fixture\InjectableFixture;
 use Mage\Catalog\Test\Fixture\ConfigurableProduct;
-use Magento\Mtf\Helper\Constraint\ProductConfigurableHandler;
+use Mage\Catalog\Test\Constraint\ProductConfigurableHandler;
 
 /**
  * Assert that displayed rma data on configurable product edit page equals passed from fixture.
@@ -40,7 +40,7 @@ class AssertRmaConfigurableForm extends AssertRmaForm
      *
      * @var string
      */
-    protected $productHandlerPath = 'Magento\Mtf\Helper\Constraint\ProductConfigurableHandler';
+    protected $productHandlerPath = 'Mage\Catalog\Test\Constraint\ProductConfigurableHandler';
 
     /**
      * Get product handler class.

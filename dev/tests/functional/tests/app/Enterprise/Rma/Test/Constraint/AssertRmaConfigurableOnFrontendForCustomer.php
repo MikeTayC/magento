@@ -36,5 +36,5 @@ class AssertRmaConfigurableOnFrontendForCustomer extends AssertRmaOnFrontendForC
      *
      * @var string
      */
-    protected $productHandlerPath = 'Magento\Mtf\Helper\Constraint\ProductConfigurableHandler';
+    protected $productHandlerPath = 'Mage\Catalog\Test\Constraint\ProductConfigurableHandler';
 }

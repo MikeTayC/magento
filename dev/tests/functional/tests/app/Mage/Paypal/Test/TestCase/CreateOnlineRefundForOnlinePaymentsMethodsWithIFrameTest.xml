@@ -174,7 +174,7 @@
             <data name="verifyData/items_data/0/item_subtotal" xsi:type="string">320.00</data>
             <data name="verifyData/items_data/0/item_row_total" xsi:type="string">320.00</data>
             <data name="status" xsi:type="string">Closed</data>
-            <data name="issue" xsi:type="string">Bug: Unskip after done TOOL-4060, MPERF-6836</data>
+            <data name="issue" xsi:type="string">Bug: Unskip after done TOOL-4060</data>
             <constraint name="Mage\Sales\Test\Constraint\AssertCreditMemoSuccessCreateMessage" />
             <constraint name="Mage\Sales\Test\Constraint\AssertCreditMemoInCreditMemosGrid" />
             <constraint name="Mage\Sales\Test\Constraint\AssertCreditMemoInCreditMemosTab" />

@@ -33,5 +33,20 @@ use Magento\Mtf\Block\Form;
  */
 class Address extends Form
 {
-    //
+    /**
+     * Existed addresses selector.
+     *
+     * @var string
+     */
+    protected $existedAddresses = '#order-billing_address_customer_address_id';
+
+    /**
+     * Get existing addresses.
+     *
+     * @return string
+     */
+    public function getExistingAddresses()
+    {
+        return explode("\n", $this->_rootElement->find($this->existedAddresses)->getText());
+    }
 }

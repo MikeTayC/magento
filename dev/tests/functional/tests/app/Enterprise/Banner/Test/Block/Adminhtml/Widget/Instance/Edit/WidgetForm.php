@@ -27,7 +27,7 @@
 namespace Enterprise\Banner\Test\Block\Adminhtml\Widget\Instance\Edit;
 
 use Magento\Mtf\Client\Element\SimpleElement as Element;
-use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Widget Instance edit form.
@@ -44,14 +44,14 @@ class WidgetForm extends \Mage\Widget\Test\Block\Adminhtml\Widget\Instance\Edit\
     /**
      * Get data of the tabs.
      *
-     * @param InjectableFixture|null $fixture
+     * @param FixtureInterface|null $fixture
      * @param Element|null $element
      * @return array
      *
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getData(InjectableFixture $fixture = null, Element $element = null)
+    public function getData(FixtureInterface $fixture = null, Element $element = null)
     {
         $data = [];
         if (null === $fixture) {

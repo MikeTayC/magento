@@ -25,8 +25,7 @@
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
     <repository class="Mage\Bundle\Test\Repository\BundleProduct">
         <dataset name="bundle_dynamic_product">
             <field name="name" xsi:type="string">Bundle dynamic product %isolation%</field>
@@ -43,7 +42,9 @@
                 <item name="dataSet" xsi:type="string">Taxable Goods</item>
             </field>
             <field name="website_ids" xsi:type="array">
-                <item name="0" xsi:type="string">Main Website</item>
+                <item name="dataSets" xsi:type="array">
+                    <item name="0" xsi:type="string">main_website</item>
+                </item>
             </field>
             <field name="stock_data" xsi:type="array">
                 <item name="manage_stock" xsi:type="string">Yes</item>
@@ -80,7 +81,9 @@
             <field name="weight_type" xsi:type="string">Fixed</field>
             <field name="shipment_type" xsi:type="string">Together</field>
             <field name="website_ids" xsi:type="array">
-                <item name="0" xsi:type="string">Main Website</item>
+                <item name="dataSets" xsi:type="array">
+                    <item name="0" xsi:type="string">main_website</item>
+                </item>
             </field>
             <field name="stock_data" xsi:type="array">
                 <item name="manage_stock" xsi:type="string">Yes</item>

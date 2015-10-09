@@ -39,7 +39,7 @@ class Navigation extends Block
      *
      * @var string
      */
-    protected $navigationItem = '//a[contains(.,"%s")]';
+    protected $navigationItem = './/a[contains(.,"%s")]';
 
     /**
      * Click to navigation item link.

@@ -70,9 +70,7 @@ class OrderId implements FixtureInterface
         } elseif (isset($data['dataSet'])) {
             $this->order = $fixtureFactory->createByCode(
                 'order',
-                [
-                    'dataSet' => isset($data['dataSet']) ? $data['dataSet'] : 'default'
-                ]
+                ['dataSet' => isset($data['dataSet']) ? $data['dataSet'] : 'default']
             );
             if (!$this->order->hasData('id')) {
                 $this->order->persist();

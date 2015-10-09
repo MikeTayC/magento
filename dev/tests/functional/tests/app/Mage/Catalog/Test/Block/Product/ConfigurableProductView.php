@@ -92,11 +92,19 @@ class ConfigurableProductView extends View
      */
     public function getOptions(InjectableFixture $product = null)
     {
-        $options = [
-            'configurable_options' => $this->getConfigurableOptionsBlock()->getOptions($product),
-        ];
+        $options = ['configurable_options' => $this->getConfigurableOptionsBlock()->getOptions($product)];
         $options += parent::getOptions($product);
 
         return $options;
+    }
+
+    /**
+     * Get text of Stock Availability control.
+     *
+     * @return string
+     */
+    public function getConfigurableStockAvailability()
+    {
+        return strtolower($this->_rootElement->find($this->stockAvailability)->getText());
     }
 }

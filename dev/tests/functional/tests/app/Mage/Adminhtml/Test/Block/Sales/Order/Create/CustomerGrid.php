@@ -72,5 +72,6 @@ class CustomerGrid extends Grid
         } else {
             $this->searchAndOpen(['email' => $customer->getEmail()]);
         }
+        $this->getTemplateBlock()->waitLoader();
     }
 }

@@ -30,6 +30,7 @@ use Mage\Payment\Test\Fixture\Cc;
 use Magento\Mtf\Block\Form;
 use Magento\Mtf\Client\ElementInterface;
 use Magento\Mtf\Client\Locator;
+use Magento\Mtf\ObjectManager;
 
 /**
  * 3d Secure verification frame block.
@@ -65,9 +66,12 @@ class Centinel extends Form
     public function submitCode()
     {
         $this->browser->find($this->sentinelSubmit)->click();
-        $this->browser->acceptAlert();
+        try {
+            $this->browser->acceptAlert();
+        } catch (\PHPUnit_Extensions_Selenium2TestCase_WebDriverException $e) {
+        }
         $this->waitForElementNotVisible($this->centinel);
-        $this->browser->selectWindow();
+        $this->browser->switchToFrame();
     }
 
     /**
@@ -76,8 +80,9 @@ class Centinel extends Form
      * @param Cc $creditCard
      * @return void
      */
-    public function fill(Cc $creditCard)
+    public function fillCc(Cc $creditCard)
     {
+        $this->waitForElementVisible($this->centinel);
         $this->browser->switchToFrame(new Locator($this->centinel));
         $element = $this->getRootElement();
         parent::fill($creditCard, $element);

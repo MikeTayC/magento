@@ -310,15 +310,18 @@ class Curl extends AbstractCurl implements CatalogProductSimpleInterface
             foreach ($data['attributes']['preset'] as $key => $attribute) {
                 $attributeKey = str_replace('attribute_key_', '', $key);
                 $options = $attributes[$attributeKey]->getOptions();
-                foreach ($attribute as $optionKey) {
-                    $optionKey = str_replace('option_key_', '', $optionKey);
-                    $option = $options[$optionKey];
-                    $optionsIds = $attributes[$attributeKey]->getDataFieldConfig('options')['source']->getOptionsIds();
-                    if (empty($optionsIds)) {
-                        $optionsData = $attributes[$attributeKey]->getOptions();
-                        $optionsIds = $this->prepareOptionsIds($optionsData);
+                if ($options !== null) {
+                    foreach ($attribute as $optionKey) {
+                        $optionKey = str_replace('option_key_', '', $optionKey);
+                        $option = $options[$optionKey];
+                        $optionsIds = $attributes[$attributeKey]->getDataFieldConfig('options' )['source']
+                            ->getOptionsIds();
+                        if (empty($optionsIds)) {
+                            $optionsData = $attributes[$attributeKey]->getOptions();
+                            $optionsIds = $this->prepareOptionsIds($optionsData);
+                        }
+                        $result[$attributes[$attributeKey]->getAttributeCode()] = $optionsIds[$option['admin']];
                     }
-                    $result[$attributes[$attributeKey]->getAttributeCode()] = $optionsIds[$option['admin']];
                 }
             }
         }

@@ -26,8 +26,6 @@
 
 namespace Mage\Adminhtml\Test\Block\Api\User\Tab\Role;
 
-use Magento\Mtf\Client\Element\SimpleElement as Element;
-
 /**
  * Role Grid on UserEdit page.
  */

@@ -27,9 +27,9 @@
 namespace Mage\SalesRule\Test\Handler\SalesRule;
 
 use Mage\Adminhtml\Test\Fixture\Website;
+use Mage\Adminhtml\Test\Handler\Conditions;
 use Mage\SalesRule\Test\Fixture\SalesRule;
 use Magento\Mtf\Fixture\FixtureInterface;
-use Magento\Mtf\Handler\Curl as AbstractCurl;
 use Magento\Mtf\Util\Protocol\CurlInterface;
 use Magento\Mtf\Util\Protocol\CurlTransport;
 use Magento\Mtf\Util\Protocol\CurlTransport\BackendDecorator;
@@ -37,7 +37,7 @@ use Magento\Mtf\Util\Protocol\CurlTransport\BackendDecorator;
 /**
  * Curl handler for creating sales rule.
  */
-class Curl extends AbstractCurl implements SalesRuleInterface
+class Curl extends Conditions implements SalesRuleInterface
 {
     /**
      * Mapping values for data.
@@ -83,6 +83,26 @@ class Curl extends AbstractCurl implements SalesRuleInterface
     ];
 
     /**
+     * Map of type parameter.
+     *
+     * @var array
+     */
+    protected $mapTypeParams = [
+        'Conditions combination' => [
+            'type' => 'salesrule/rule_condition_combine',
+            'aggregator' => 'all',
+            'value' => '1',
+        ],
+        'Customer Segment' => [
+            'type' => 'enterprise_customersegment/segment_condition_segment',
+        ],
+        'Category' => [
+            'type' => 'salesrule/rule_condition_product',
+            'attribute' => 'category_ids',
+        ]
+    ];
+
+    /**
      * Mapping values for customer group.
      *
      * @var array
@@ -107,6 +127,10 @@ class Curl extends AbstractCurl implements SalesRuleInterface
         $data = $this->replaceMappingData($fixture->getData());
         $data['customer_group_ids'] = $this->prepareCustomerGroup($data);
         $data['website_ids'] = $this->prepareWebsiteIds($fixture);
+        if (isset($data['conditions_serialized'])) {
+            $data['rule']['conditions'] = $this->prepareCondition($data['conditions_serialized']);
+            unset($data['conditions_serialized']);
+        }
 
         $curl = new BackendDecorator(new CurlTransport(), $this->_configuration);
         $curl->write(CurlInterface::POST, $url, '1.0', [], $data);

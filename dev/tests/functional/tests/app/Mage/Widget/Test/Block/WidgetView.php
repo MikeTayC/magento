@@ -43,40 +43,73 @@ class WidgetView extends Block
     protected $widgetSelectors = [];
 
     /**
-     * Check is visible widget selector.
+     * Check widget.
      *
      * @param Widget $widget
      * @param string $pageName
      * @return array
      * @throws \Exception
      */
-    public function isWidgetVisible(Widget $widget, $pageName)
+    public function checkWidget(Widget $widget, $pageName)
     {
         $error = [];
         $widgetType = $widget->getWidgetOptions()['type_id'];
         if ($this->hasRender($widgetType)) {
-            return $this->callRender($widgetType, 'isWidgetVisible', ['widget' => $widget, 'pageName' => $pageName]);
-        } else {
-            if (isset($this->widgetSelectors[$widgetType])) {
-                $widgetOptions = $widget->getWidgetOptions();
-                unset($widgetOptions['type_id']);
-                foreach ($widgetOptions as $widgetOption) {
-                    foreach ($widgetOption['entities'] as $entity) {
-                        $widgetText = $entity->getStoreContents()['store_content'];
-                        $isWidgetVisible = $this->_rootElement->find(
-                            sprintf($this->widgetSelectors[$widgetType], $widgetText),
-                            Locator::SELECTOR_XPATH
-                        )->isVisible();
-                        if (!$isWidgetVisible) {
-                            $error[] = "Widget with title {$widget->getTitle()} is absent on {$pageName}  page.";
-                        }
-                    }
-                }
-                return $error;
-            } else {
-                throw new \Exception('Determine how to find the widget on the page.');
+            return $this->callRender($widgetType, 'checkWidget', ['widget' => $widget, 'pageName' => $pageName]);
+        } elseif (isset($this->widgetSelectors[$widgetType])) {
+            $widgetOptions = $widget->getWidgetOptions();
+            unset($widgetOptions['type_id']);
+            foreach ($widgetOptions as $widgetOption) {
+                $error[] = array_filter($this->checkEntities($widget, $widgetOption, $pageName, $widgetType));
             }
+            return array_filter($error);
+        } else {
+            throw new \Exception('Determine how to find the widget on the page.');
         }
+    }
+
+    /**
+     * Check widget entities.
+     *
+     * @param Widget $widget
+     * @param array $widgetOption
+     * @param string $pageName
+     * @param string $widgetType
+     * @return array
+     */
+    protected function checkEntities(Widget $widget, $widgetOption, $pageName, $widgetType)
+    {
+        $error = [];
+        if (isset($widgetOption['entities'])) {
+            foreach ($widgetOption['entities'] as $entity) {
+                $widgetText = $entity->getStoreContents()['store_content'];
+                $visibility = $this->isWidgetVisible($widget, $pageName, $widgetType, $widgetText);
+                if ($visibility !== null) {
+                    $error[] = $visibility;
+                }
+            }
+        } else {
+            $error[] = $this->isWidgetVisible($widget, $pageName, $widgetType, $pageName);
+        }
+
+        return $error;
+    }
+
+    /**
+     * Check is visible widget selector.
+     *
+     * @param Widget $widget
+     * @param string $pageName
+     * @param string $widgetType
+     * @param string $widgetText
+     * @return string|null
+     */
+    protected function isWidgetVisible(Widget $widget, $pageName, $widgetType, $widgetText)
+    {
+        $widgetSelector = sprintf($this->widgetSelectors[$widgetType], $widgetText);
+        return $this->_rootElement->find($widgetSelector, Locator::SELECTOR_XPATH)->isVisible()
+            ? null
+            : "Widget with title {$widget->getTitle()} is absent on {$pageName}  page.";
     }
 
     /**
@@ -92,15 +125,13 @@ class WidgetView extends Block
         $widgetType = $widget->getWidgetOptions()['type_id'];
         if ($this->hasRender($widgetType)) {
             $this->callRender($widgetType, 'clickToWidget', ['widget' => $widget, 'widgetText' => $widgetText]);
+        } elseif (isset($this->widgetSelectors[$widgetType])) {
+            $this->_rootElement->find(
+                sprintf($this->widgetSelectors[$widgetType], $widgetText),
+                Locator::SELECTOR_XPATH
+            )->click();
         } else {
-            if (isset($this->widgetSelectors[$widgetType])) {
-                $this->_rootElement->find(
-                    sprintf($this->widgetSelectors[$widgetType], $widgetText),
-                    Locator::SELECTOR_XPATH
-                )->click();
-            } else {
-                throw new \Exception('Determine how to find the widget on the page.');
-            }
+            throw new \Exception('Determine how to find the widget on the page.');
         }
     }
 }

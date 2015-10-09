@@ -66,7 +66,7 @@ class Tree extends Block
      *
      * @return void
      */
-    protected function skipCategorySelection()
+    public function skipCategorySelection()
     {
         $this->_rootElement->find($this->skipCategoryButton)->click();
     }

@@ -88,6 +88,13 @@ class Cart extends Block
     protected $updateShoppingCart = '.button2.btn-update:not([style="visibility:hidden;"])';
 
     /**
+     * Checkout with multi shipping link selector.
+     *
+     * @var string
+     */
+    protected $checkoutWithMultiAddress = '.method-checkout-cart-methods-multishipping a';
+
+    /**
      * Get cart item block.
      *
      * @param InjectableFixture $product
@@ -175,5 +182,25 @@ class Cart extends Block
     public function updateShoppingCart()
     {
         $this->_rootElement->find($this->updateShoppingCart)->click();
+    }
+
+    /**
+     * Click on 'Checkout with Multiple Addresses' link.
+     *
+     * @return void
+     */
+    public function clickCheckoutWithMultiAddress()
+    {
+        $this->_rootElement->find($this->checkoutWithMultiAddress)->click();
+    }
+
+    /**
+     * Check that empty cart block is visible.
+     *
+     * @return bool
+     */
+    public function emptyCartBlockIsVisible()
+    {
+        return $this->_rootElement->find($this->emptyShoppingCart)->isVisible();
     }
 }

@@ -50,12 +50,14 @@ class AssertStoreSuccessSaveMessage extends AbstractConstraint
      * Assert that success message is displayed after Store View has been created.
      *
      * @param StoreIndex $storeIndex
+     * @param string|null $savedMessage
      * @return void
      */
-    public function processAssert(StoreIndex $storeIndex)
+    public function processAssert(StoreIndex $storeIndex, $savedMessage = null)
     {
+        $expectedMessage = ($savedMessage === null) ? self::SUCCESS_MESSAGE : $savedMessage;
         \PHPUnit_Framework_Assert::assertEquals(
-            self::SUCCESS_MESSAGE,
+            $expectedMessage,
             $storeIndex->getMessagesBlock()->getSuccessMessages(),
             'Wrong success message is displayed.'
         );

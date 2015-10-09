@@ -27,7 +27,6 @@
 namespace Mage\Cms\Test\Handler\CmsPage;
 
 use Magento\Mtf\Fixture\FixtureInterface;
-use Magento\Mtf\Config;
 use Magento\Mtf\Util\Protocol\CurlInterface;
 use Magento\Mtf\Util\Protocol\CurlTransport;
 use Magento\Mtf\Util\Protocol\CurlTransport\BackendDecorator;
@@ -47,6 +46,7 @@ class Curl extends AbstractCurl implements CmsPageInterface
         'is_active' => [
             'Published' => 1,
             'Disabled' => 0,
+            'Enabled' => 1
         ],
         'store_id' => [
             'Main Website/Main Website Store/Default Store View' => 1
@@ -110,6 +110,9 @@ class Curl extends AbstractCurl implements CmsPageInterface
         $data['stores'] = $resultStore['store_id'];
         unset($data['store_id']);
         $data['content'] = $data['content']['content'];
+        if (!isset($data['is_active'])) {
+            $data['is_active'] = 1;
+        }
         return $data;
     }
 

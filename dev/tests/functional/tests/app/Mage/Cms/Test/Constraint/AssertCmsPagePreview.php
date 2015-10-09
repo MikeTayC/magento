@@ -32,7 +32,6 @@ use Mage\Cms\Test\Fixture\CmsPage;
 use Magento\Mtf\Constraint\AbstractConstraint;
 use Mage\Cms\Test\Page\Adminhtml\CmsPageIndex;
 use Mage\Cms\Test\Page\CmsPage as FrontendCmsPage;
-use Mage\Cms\Test\Page\Adminhtml\CmsPageEdit;
 
 /**
  * Assert that content of created cms page displayed in main content section and equals passed from fixture.
@@ -51,28 +50,35 @@ class AssertCmsPagePreview extends AbstractConstraint
     protected $iFrameSelector = '#preview_iframe';
 
     /**
+     * Loader selector.
+     *
+     * @var string
+     */
+    protected $loader = '#loading_mask_loader';
+
+    /**
      * Assert that content of created cms page displayed in main content section and equals passed from fixture.
      *
      * @param CmsPage $cms
      * @param CmsPageIndex $cmsPageIndex
      * @param FrontendCmsPage $frontendCmsPage
-     * @param CmsPageEdit $cmsPageEdit
      * @param Browser $browser
+     * @param bool $isIFrame [optional]
      * @return void
      */
     public function processAssert(
         CmsPage $cms,
         CmsPageIndex $cmsPageIndex,
         FrontendCmsPage $frontendCmsPage,
-        CmsPageEdit $cmsPageEdit,
-        Browser $browser
+        Browser $browser,
+        $isIFrame = false
     ) {
         $cmsPageIndex->open();
-        $cmsPageIndex->getCmsPageGridBlock()->searchAndOpen(['title' => $cms->getTitle()]);
-        $cmsPageEdit->getPageMainActions()->preview();
+        $cmsPageIndex->getCmsPageGridBlock()->searchAndReview(['title' => $cms->getTitle()]);
         $browser->selectWindow();
-        $frontendCmsPage->getTemplateBlock()->waitLoader();
-        $browser->switchToFrame(new Locator($this->iFrameSelector));
+        if ($isIFrame) {
+            $this->switchToFrame($browser);
+        }
         $element = $browser->find('body');
 
         $fixtureContent = $cms->getContent();
@@ -96,6 +102,26 @@ class AssertCmsPagePreview extends AbstractConstraint
                 );
             }
         }
+        $browser->closeWindow();
+        $browser->selectWindow();
+        $browser->switchToFrame();
+    }
+
+    /**
+     * Switch to frame.
+     *
+     * @param Browser $browser
+     * @return void
+     */
+    protected function switchToFrame(Browser $browser)
+    {
+        $selector = $this->loader;
+        $browser->waitUntil(
+            function () use ($browser, $selector) {
+                return $browser->find($selector)->isVisible() == false ? true : null;
+            }
+        );
+        $browser->switchToFrame(new Locator($this->iFrameSelector));
     }
 
     /**

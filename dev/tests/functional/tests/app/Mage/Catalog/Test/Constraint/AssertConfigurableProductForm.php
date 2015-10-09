@@ -31,6 +31,10 @@ namespace Mage\Catalog\Test\Constraint;
  */
 class AssertConfigurableProductForm extends AssertProductForm
 {
+    /* tags */
+    const SEVERITY = 'high';
+    /* end tags */
+
     /**
      * List skipped attribute fields in verify.
      *
@@ -69,15 +73,20 @@ class AssertConfigurableProductForm extends AssertProductForm
     protected function prepareFixtureData(array $data, array $sortFields = [])
     {
         // filter values and reset keys in attributes data
-        $attributeData = $data['configurable_options']['attributes_data'];
-        foreach ($attributeData as $attributeKey => $attribute) {
-            foreach ($attribute['options'] as $optionKey => $option) {
-                $attribute['options'][$optionKey] = array_diff_key($option, array_flip($this->skippedOptionFields));
+        if (isset($data['configurable_options'])) {
+            $attributeData = $data['configurable_options']['attributes_data'];
+            foreach ($attributeData as $attributeKey => $attribute) {
+                foreach ($attribute['options'] as $optionKey => $option) {
+                    $attribute['options'][$optionKey] = array_diff_key($option, array_flip($this->skippedOptionFields));
+                }
+                $attribute['options'] = $this->sortDataByPath($attribute['options'], '::admin');
+                $attributeData[$attributeKey] = array_diff_key($attribute, array_flip($this->skippedAttributeFields));
             }
-            $attribute['options'] = $this->sortDataByPath($attribute['options'], '::admin');
-            $attributeData[$attributeKey] = array_diff_key($attribute, array_flip($this->skippedAttributeFields));
+            $data['configurable_options']['attributes_data'] = $this->sortDataByPath(
+                $attributeData,
+                '::frontend_label'
+            );
         }
-        $data['configurable_options']['attributes_data'] = $this->sortDataByPath($attributeData, '::frontend_label');
 
         return parent::prepareFixtureData($data, $sortFields);
     }
@@ -92,15 +101,20 @@ class AssertConfigurableProductForm extends AssertProductForm
     protected function prepareFormData(array $data, array $sortFields = [])
     {
         // prepare attributes data
-        $attributeData = $data['configurable_options']['attributes_data'];
-        foreach ($attributeData as $attributeKey => $attribute) {
-            $attribute['options'] = $this->sortDataByPath($attribute['options'], '::admin');
-            $attributeData[$attributeKey] = $attribute;
-        }
-        $data['configurable_options']['attributes_data'] = $this->sortDataByPath($attributeData, '::frontend_label');
+        if (isset($data['configurable_options'])) {
+            $attributeData = $data['configurable_options']['attributes_data'];
+            foreach ($attributeData as $attributeKey => $attribute) {
+                $attribute['options'] = $this->sortDataByPath($attribute['options'], '::admin');
+                $attributeData[$attributeKey] = $attribute;
+            }
+            $data['configurable_options']['attributes_data'] = $this->sortDataByPath(
+                $attributeData,
+                '::frontend_label'
+            );
 
-        foreach ($sortFields as $path) {
-            $data = $this->sortDataByPath($data, $path);
+            foreach ($sortFields as $path) {
+                $data = $this->sortDataByPath($data, $path);
+            }
         }
         return $data;
     }

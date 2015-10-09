@@ -32,7 +32,7 @@ use Magento\Mtf\Constraint\AbstractConstraint;
 use Mage\Catalog\Test\Page\Product\CatalogProductView;
 
 /**
- * Assert  that Out of Stock status is displayed on product page.
+ * Assert that Out of Stock status is displayed on product page.
  */
 class AssertProductOutOfStock extends AbstractConstraint
 {

@@ -31,9 +31,10 @@
         <field name="name" xsi:type="string">CatalogPriceRule %isolation%</field>
         <field name="description" xsi:type="string">Catalog Price Rule Description</field>
         <field name="website_ids" xsi:type="array">
-            <item name="0" xsi:type="string">Main Website</item>
-        </field>
-        <field name="customer_group_ids" xsi:type="array">
+            <item name="dataSets" xsi:type="array">
+                <item name="0" xsi:type="string">main_website</item>
+            </item>
+        </field>        <field name="customer_group_ids" xsi:type="array">
             <item name="0" xsi:type="string">NOT LOGGED IN</item>
         </field>
         <field name="simple_action" xsi:type="string">By Percentage of the Original Price</field>

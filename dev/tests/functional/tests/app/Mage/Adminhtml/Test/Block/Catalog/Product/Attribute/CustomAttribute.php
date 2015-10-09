@@ -136,9 +136,25 @@ class CustomAttribute extends SimpleElement
         foreach ($values as $value) {
             $result[] = $value->getText();
         }
-        array_shift($result);
 
-        return array_reverse($result);
+        return array_reverse($this->prepareResult($inputType, $result));
+    }
+
+    /**
+     * Prepare result.
+     *
+     * @param string $inputType
+     * @param array $result
+     * @return array
+     */
+    protected function prepareResult($inputType, array $result)
+    {
+        if ($inputType == 'multiselect') {
+            return $result;
+        } else {
+            array_shift($result);
+            return $result;
+        }
     }
 
     /**

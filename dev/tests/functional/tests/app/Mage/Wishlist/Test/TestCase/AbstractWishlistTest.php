@@ -33,6 +33,7 @@ use Mage\Wishlist\Test\Page\WishlistIndex;
 use Magento\Mtf\Fixture\FixtureFactory;
 use Magento\Mtf\ObjectManager;
 use Magento\Mtf\TestCase\Injectable;
+use Magento\Mtf\Fixture\InjectableFixture;
 
 /**
  * Abstract class for wish list tests.
@@ -134,12 +135,13 @@ abstract class AbstractWishlistTest extends Injectable
     /**
      * Add products to wish list.
      *
-     * @param array $products
+     * @param InjectableFixture|InjectableFixture[] $products
      * @param bool $configure [optional]
      * @return void
      */
-    protected function addToWishlist(array $products, $configure = false)
+    protected function addToWishlist($products, $configure = false)
     {
+        $products = is_array($products) ? $products : [$products];
         $this->objectManager->create(
             'Mage\Wishlist\Test\TestStep\AddProductsToWishlistStep',
             ['products' => $products, 'configure' => $configure]

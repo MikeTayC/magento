@@ -25,8 +25,7 @@
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
     <repository class="Mage\Tax\Test\Repository\TaxClass">
         <dataset name="Taxable Goods">
             <field name="class_id" xsi:type="string">2</field>
@@ -35,11 +34,13 @@
             <field name="id" xsi:type="string">2</field>
             <field name="mtf_dataset_name" xsi:type="string">Taxable Goods</field>
         </dataset>
+
         <dataset name="None">
             <field name="class_name" xsi:type="string">None</field>
             <field name="class_type" xsi:type="string">PRODUCT</field>
             <field name="id" xsi:type="string">0</field>
         </dataset>
+
         <dataset name="Retail Customer">
             <field name="class_id" xsi:type="string">3</field>
             <field name="class_name" xsi:type="string">Retail Customer</field>
@@ -47,10 +48,12 @@
             <field name="id" xsi:type="string">3</field>
             <field name="mtf_dataset_name" xsi:type="string">Retail Customer</field>
         </dataset>
+
         <dataset name="customer_tax_class">
             <field name="class_name" xsi:type="string">Customer Tax Class %isolation%</field>
             <field name="class_type" xsi:type="string">CUSTOMER</field>
         </dataset>
+
         <dataset name="product_tax_class">
             <field name="class_name" xsi:type="string">Product Tax Class %isolation%</field>
             <field name="class_type" xsi:type="string">PRODUCT</field>

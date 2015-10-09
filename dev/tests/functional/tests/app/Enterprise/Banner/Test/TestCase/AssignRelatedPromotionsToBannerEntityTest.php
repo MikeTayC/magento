@@ -220,6 +220,7 @@ class AssignRelatedPromotionsToBannerEntityTest extends Injectable
     /**
      * Prepare catalog price rule.
      *
+     * @param string $dataSet
      * @return CatalogRule
      */
     protected function prepareCatalogPriceRule($dataSet)

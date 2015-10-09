@@ -168,7 +168,7 @@
       <data name="product/data/use_config_lifetime" xsi:type="string">Yes</data>
       <data name="product/data/lifetime" xsi:type="string">-</data>
       <data name="product/data/custom_options/preset" xsi:type="string">-</data>
-      <data name="issue" xsi:type="string">Bug: MPERF-6325</data>
+      <data name="issue" xsi:type="string">Bug: MPERF-6325: The Gift Card Product page isn't showing out of stock[frontend]</data>
       <constraint name="Mage\Catalog\Test\Constraint\AssertProductSaveMessage" next="Enterprise\GiftCard\Test\Constraint\AssertGiftCardInGrid"/>
       <constraint name="Enterprise\GiftCard\Test\Constraint\AssertGiftCardInGrid" next="Enterprise\GiftCard\Test\Constraint\AssertGiftCardProductForm" prev="Mage\Catalog\Test\Constraint\AssertProductSaveMessage"/>
       <constraint name="Enterprise\GiftCard\Test\Constraint\AssertGiftCardProductForm" next="Mage\Catalog\Test\Constraint\AssertProductOutOfStock" prev="Enterprise\GiftCard\Test\Constraint\AssertGiftCardInGrid"/>

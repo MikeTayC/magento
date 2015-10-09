@@ -39,7 +39,7 @@ class Success extends Block
      *
      * @var string
      */
-    protected $orderIdGuest = '//div[contains(@class, "col-main")]//p[1]';
+    protected $orderIdGuest = '//div[contains(@class, "col-main")]//p[1][contains(text(), "Your order")]';
 
     /**
      * Determine order id if checkout was performed by registered customer.

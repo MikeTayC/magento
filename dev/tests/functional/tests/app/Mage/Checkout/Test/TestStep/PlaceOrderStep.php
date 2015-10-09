@@ -28,13 +28,23 @@ namespace Mage\Checkout\Test\TestStep;
 
 use Mage\Checkout\Test\Page\CheckoutOnepage;
 use Mage\Checkout\Test\Page\CheckoutOnepageSuccess;
+use Mage\Customer\Test\Fixture\Customer;
+use Magento\Mtf\Fixture\FixtureFactory;
 use Magento\Mtf\TestStep\TestStepInterface;
+use Mage\Sales\Test\Fixture\Order;
 
 /**
  * Place order in one page checkout.
  */
 class PlaceOrderStep implements TestStepInterface
 {
+    /**
+     * Fixture factory.
+     *
+     * @var FixtureFactory
+     */
+    protected $fixtureFactory;
+
     /**
      * Onepage checkout page.
      *
@@ -50,42 +60,81 @@ class PlaceOrderStep implements TestStepInterface
     protected $checkoutOnepageSuccess;
 
     /**
-     * Expecting for alert flag.
+     * Positive case flag.
      *
      * @var bool
      */
-    protected $hasAlert;
+    protected $positiveCase;
+
+    /**
+     * Fixture of customer.
+     *
+     * @var Customer
+     */
+    protected $customer;
+
+    /**
+     * Array fixtures of products.
+     *
+     * @var array
+     */
+    protected $products;
 
     /**
      * @constructor
-     * @constructor
+     * @param FixtureFactory $fixtureFactory
      * @param CheckoutOnepage $checkoutOnepage
      * @param CheckoutOnepageSuccess $checkoutOnepageSuccess
-     * @param bool $hasAlert [optional]
+     * @param bool $positiveCase [optional]
+     * @param Customer|null $customer
+     * @param array $products [optional]
      */
     public function __construct(
+        FixtureFactory $fixtureFactory,
         CheckoutOnepage $checkoutOnepage,
         CheckoutOnepageSuccess $checkoutOnepageSuccess,
-        $hasAlert = false
+        $positiveCase = true,
+        Customer $customer = null,
+        array $products = []
     ) {
         $this->checkoutOnepage = $checkoutOnepage;
         $this->checkoutOnepageSuccess = $checkoutOnepageSuccess;
-        $this->hasAlert = $hasAlert;
+        $this->positiveCase = $positiveCase;
+        $this->fixtureFactory = $fixtureFactory;
+        $this->customer = $customer;
+        $this->products = $products;
     }
 
     /**
      * Place order after checking order totals on review step.
      *
-     * @return array
+     * @return mixed
      */
     public function run()
     {
-        $reviewBlock = $this->checkoutOnepage->getReviewBlock();
-        if ($this->hasAlert) {
-            return ['alertText' => $reviewBlock->handleSubmittingOrderInformation()];
-        } else {
-            $reviewBlock->clickContinue();
-            return ['orderId' => $this->checkoutOnepageSuccess->getSuccessBlock()->getGuestOrderId()];
+        $orderId = null;
+        if ($this->positiveCase) {
+            $this->checkoutOnepage->getReviewBlock()->clickContinue();
+            $orderId = $this->checkoutOnepageSuccess->getSuccessBlock()->getGuestOrderId();
         }
+
+        return ['orderId' => $orderId, 'order' => $this->createOrderFixture($orderId)];
+    }
+
+    /**
+     * Create order fixture.
+     *
+     * @param string $id
+     * @return Order
+     */
+    protected function createOrderFixture($id)
+    {
+        $data = [
+            'id' => $id,
+            'customer_id' => ['customer' => $this->customer],
+            'entity_id' => ['products' => $this->products]
+        ];
+
+        return $this->fixtureFactory->createByCode('order', ['data' => $data]);
     }
 }

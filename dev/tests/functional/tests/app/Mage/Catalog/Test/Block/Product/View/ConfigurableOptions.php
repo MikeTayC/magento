@@ -96,6 +96,16 @@ class ConfigurableOptions extends CustomOptions
             $result[$title] = $optionData;
         }
 
-        return array_merge(parent::getOptions($product), ['configurable_options' => $result]);
+        return $result;
+    }
+
+    /**
+     * Get options context.
+     *
+     * @return Element
+     */
+    protected function getOptionsContext()
+    {
+        return $this->_rootElement->find(sprintf($this->optionsContext, 1), Locator::SELECTOR_XPATH);
     }
 }

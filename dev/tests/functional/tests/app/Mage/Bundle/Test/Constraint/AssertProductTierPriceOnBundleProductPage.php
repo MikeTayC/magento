@@ -28,7 +28,6 @@ namespace Mage\Bundle\Test\Constraint;
 
 use Magento\Mtf\Fixture\InjectableFixture;
 use Mage\Catalog\Test\Block\Product\View;
-use Mage\Catalog\Test\Page\Product\CatalogProductView;
 use Mage\Catalog\Test\Constraint\AssertProductTierPriceOnProductPage;
 
 /**

@@ -83,6 +83,9 @@ class Header extends Block
     public function selectStore($store, SimpleElement $element = null)
     {
         $element = ($element === null) ? $this->_rootElement : $element;
-        $element->find($this->storeSwitcher, Locator::SELECTOR_CSS, 'select')->setValue($store);
+        $storeSwitcher = $element->find($this->storeSwitcher, Locator::SELECTOR_CSS, 'select');
+        if ($storeSwitcher->isVisible()) {
+            $storeSwitcher->setValue($store);
+        }
     }
 }

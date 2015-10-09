@@ -84,14 +84,14 @@
                 </observers>
             </checkout_multishipping_controller_success_action>
 
-            <core_layout_block_create_after>
+            <block_widget_banner_create_after>
                 <observers>
                     <googleanalytics_banner_impression>
                         <class>enterprise_googleanalyticsuniversal/observer</class>
                         <method>setGoogleAnalyticsOnBanners</method>
                     </googleanalytics_banner_impression>
                 </observers>
-            </core_layout_block_create_after>
+            </block_widget_banner_create_after>
 
             <checkout_block_cart_sidebar_aftertohtml>
                 <observers>

@@ -39,4 +39,11 @@
         <baseUrl>http://127.0.0.1/magento1/</baseUrl>
         <backendName>admin</backendName>
     </install>
+    <server>
+        <item name="selenium" type="default" browser="Mozilla Firefox" browserName="firefox" host="localhost" port="4444" seleniumServerRequestsTimeout="120" sessionStrategy="shared">
+            <desiredCapabilities>
+                <platform>ANY</platform>
+            </desiredCapabilities>
+        </item>
+    </server>
 </config>

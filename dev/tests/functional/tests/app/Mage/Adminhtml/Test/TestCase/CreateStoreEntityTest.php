@@ -35,6 +35,7 @@ use Mage\Adminhtml\Test\Page\Adminhtml\EditStore;
 use Mage\Adminhtml\Test\Page\Adminhtml\DeleteStore;
 use Mage\Adminhtml\Test\Page\Adminhtml\EditGroup;
 use Mage\Adminhtml\Test\Page\Adminhtml\DeleteGroup;
+use Mage\Adminhtml\Test\Page\AdminLogout;
 
 /**
  * Test Creation for CreateStoreEntity (Store Management)
@@ -101,6 +102,13 @@ class CreateStoreEntityTest extends Injectable
     protected $deleteGroup;
 
     /**
+     * Admin logout page.
+     *
+     * @var AdminLogout
+     */
+    protected $adminLogout;
+
+    /**
      * Preparing pages for test.
      *
      * @param StoreIndex $storeIndex
@@ -109,6 +117,7 @@ class CreateStoreEntityTest extends Injectable
      * @param DeleteStore $deleteStore
      * @param EditGroup $editGroup
      * @param DeleteGroup $deleteGroup
+     * @param AdminLogout $adminLogout
      * @return void
      */
     public function __inject(
@@ -117,7 +126,8 @@ class CreateStoreEntityTest extends Injectable
         EditStore $editStore,
         DeleteStore $deleteStore,
         EditGroup $editGroup,
-        DeleteGroup $deleteGroup
+        DeleteGroup $deleteGroup,
+        AdminLogout $adminLogout
     ) {
         $this->storeIndex = $storeIndex;
         $this->storeNew = $storeNew;
@@ -125,6 +135,7 @@ class CreateStoreEntityTest extends Injectable
         $this->deleteStore = $deleteStore;
         $this->editGroup = $editGroup;
         $this->deleteGroup = $deleteGroup;
+        $this->adminLogout = $adminLogout;
     }
 
     /**
@@ -139,6 +150,7 @@ class CreateStoreEntityTest extends Injectable
         // Preconditions
         $this->store = $store;
         $config->persist();
+        $this->adminLogout->open();
 
         // Steps
         $this->storeIndex->open();

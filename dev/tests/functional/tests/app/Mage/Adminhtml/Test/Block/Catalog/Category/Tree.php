@@ -27,7 +27,6 @@
 namespace Mage\Adminhtml\Test\Block\Catalog\Category;
 
 use Magento\Mtf\Block\Block;
-use Magento\Mtf\Client\Element\TreeElement;
 use Magento\Mtf\Client\Locator;
 use Mage\Catalog\Test\Fixture\CatalogCategory;
 use Mage\Adminhtml\Test\Block\Template;
@@ -120,6 +119,9 @@ class Tree extends Block
         if (!$fullPath) {
             array_pop($parentPath);
         }
+        if (empty($parentPath)) {
+            return;
+        }
         $path = implode('/', $parentPath);
         $this->expandAllCategories();
         $this->_rootElement->find($this->treeElement, Locator::SELECTOR_CSS, 'tree')->setValue($path);
@@ -155,27 +157,6 @@ class Tree extends Block
     }
 
     /**
-     * Check category name in array.
-     *
-     * @param array $structure
-     * @param array $category
-     * @return bool
-     */
-    protected function inTree(array $structure, array &$category)
-    {
-        $element = array_shift($category);
-        foreach ($structure as $item) {
-            $result = strpos($item['name'], $element);
-            if ($result !== false && !empty($item['subnodes'])) {
-                return $this->inTree($item['subnodes'], $category);
-            } elseif ($result !== false && empty($category)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Check category in category tree.
      *
      * @param CatalogCategory $category
@@ -184,19 +165,8 @@ class Tree extends Block
     public function isCategoryVisible(CatalogCategory $category)
     {
         $categoryPath = $this->prepareFullCategoryPath($category);
-        /** @var TreeElement $treeElement */
-        $treeElement = $this->_rootElement->find($this->treeElement, Locator::SELECTOR_CSS, 'tree');
-        $structure = $treeElement->getStructure();
-        $result = false;
-        $element = array_shift($categoryPath);
-        foreach ($structure as $item) {
-            $searchResult = strpos($item['name'], $element);
-            if ($searchResult !== false && !empty($item['subnodes'])) {
-                $result = $this->inTree($item['subnodes'], $categoryPath);
-            } elseif ($searchResult !== false && empty($categoryPath)) {
-                $result = true;
-            }
-        }
-        return $result;
+        $categoryPath = implode('/', $categoryPath);
+        return $this->_rootElement->find($this->treeElement, Locator::SELECTOR_CSS, 'tree')
+            ->isElementVisible($categoryPath);
     }
 }

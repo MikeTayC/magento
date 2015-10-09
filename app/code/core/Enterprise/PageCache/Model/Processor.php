@@ -720,6 +720,11 @@ class Enterprise_PageCache_Model_Processor
          * Define server HTTP HOST
          */
         if (isset($_SERVER['HTTP_HOST'])) {
+            if (strpos($_SERVER['HTTP_HOST'], ',') !== false || strpos($_SERVER['HTTP_HOST'], ';') !== false) {
+                $response = new Zend_Controller_Response_Http();
+                $response->setHttpResponseCode(400)->sendHeaders();
+                exit();
+            }
             $uri = $_SERVER['HTTP_HOST'];
         } elseif (isset($_SERVER['SERVER_NAME'])) {
             $uri = $_SERVER['SERVER_NAME'];

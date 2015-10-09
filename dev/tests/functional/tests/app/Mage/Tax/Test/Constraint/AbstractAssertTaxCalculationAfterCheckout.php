@@ -26,7 +26,6 @@
 
 namespace Mage\Tax\Test\Constraint;
 
-use Mage\Checkout\Test\Page\CheckoutCart;
 use Mage\Checkout\Test\Page\CheckoutOnepage;
 use Mage\Checkout\Test\Page\CheckoutOnepageSuccess;
 use Mage\Customer\Test\Fixture\Customer;

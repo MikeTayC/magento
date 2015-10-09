@@ -28,19 +28,32 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
     <repository class="Mage\Admin\Test\Repository\Role">
-        <dataset name="Administrators">
+        <dataset name="administrators">
             <field name="rolename" xsi:type="string">Administrators</field>
             <field name="resource_access" xsi:type="string">All</field>
             <field name="role_id" xsi:type="string">1</field>
         </dataset>
 
-        <dataset name="Custom">
+        <dataset name="custom">
             <field name="rolename" xsi:type="string">Custom%isolation%</field>
             <field name="gws_is_all" xsi:type="string">All</field>
             <field name="current_password" xsi:type="string">123123q</field>
             <field name="resource_access" xsi:type="string">Custom</field>
             <field name="roles_resources" xsi:type="array">
                 <item name="preset" xsi:type="string">sales</item>
+            </field>
+        </dataset>
+
+        <dataset name="custom_with_gws_scope">
+            <field name="rolename" xsi:type="string">Custom%isolation%</field>
+            <field name="gws_is_all" xsi:type="string">Custom</field>
+            <field name="current_password" xsi:type="string">123123q</field>
+            <field name="resource_access" xsi:type="string">Custom</field>
+            <field name="roles_resources" xsi:type="array">
+                <item name="preset" xsi:type="string">sales</item>
+            </field>
+            <field name="gws_store_groups" xsi:type="array">
+                <item name="dataSets" xsi:type="string">custom</item>
             </field>
         </dataset>
     </repository>

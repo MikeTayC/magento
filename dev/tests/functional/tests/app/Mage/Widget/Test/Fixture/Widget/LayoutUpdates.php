@@ -115,7 +115,14 @@ class LayoutUpdates implements FixtureInterface
      */
     protected function getPreset($name)
     {
-        $presets = [];
+        $presets = [
+            'all_pages' => [
+                [
+                    'page_group' => 'Generic Pages/All Pages',
+                    'block' => 'Main Content Area'
+                ]
+            ]
+        ];
 
         if (!isset($presets[$name])) {
             return null;

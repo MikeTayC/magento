@@ -216,7 +216,7 @@ class Associated implements FixtureInterface
                         'qty' => 20
                     ],
                 ],
-                'products' => 'catalogProductSimple::default, catalogProductSimple::40_dollar_product,'
+                'products' => 'catalogProductSimple::default, catalogProductSimple::default,'
                     . 'catalogProductSimple::100_dollar_product',
             ],
         ];

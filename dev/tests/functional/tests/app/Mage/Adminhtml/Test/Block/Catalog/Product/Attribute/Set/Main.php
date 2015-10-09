@@ -90,10 +90,11 @@ class Main extends Block
             ? $attributeData['attribute_code']
             : strtolower($attributeData['frontend_label']);
 
-        $target = $this->_rootElement->find(sprintf($this->groups, $attributeGroup), Locator::SELECTOR_XPATH);
+        $this->_rootElement->find(sprintf($this->attribute, 'color'), Locator::SELECTOR_XPATH)->click();
         $attributeLocator = sprintf($this->attribute, $attribute);
         $attribute = $this->_rootElement->find($attributeLocator, Locator::SELECTOR_XPATH);
-
+        $attribute->click();
+        $target = $this->_rootElement->find(sprintf($this->groups, $attributeGroup), Locator::SELECTOR_XPATH);
         $attribute->dragAndDrop($target);
     }
 
@@ -115,11 +116,7 @@ class Main extends Block
      */
     public function checkProductAttribute($attributeLabel)
     {
-        $attributeLabelLocator = sprintf(
-            $this->attributeLocator,
-            $attributeLabel
-        );
-
+        $attributeLabelLocator = sprintf($this->attributeLocator, $attributeLabel);
         return $this->_rootElement->find($attributeLabelLocator, Locator::SELECTOR_XPATH)->isVisible();
     }
 

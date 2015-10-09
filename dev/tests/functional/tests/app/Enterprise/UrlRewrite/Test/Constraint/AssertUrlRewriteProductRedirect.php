@@ -29,7 +29,6 @@ namespace Enterprise\UrlRewrite\Test\Constraint;
 use Magento\Mtf\Client\Browser;
 use Magento\Mtf\Constraint\AbstractConstraint;
 use Enterprise\UrlRewrite\Test\Fixture\UrlRewrite;
-use Mage\Catalog\Test\Fixture\CatalogProductSimple;
 use Mage\Catalog\Test\Page\Product\CatalogProductView;
 use Mage\Cms\Test\Page\CmsIndex;
 use Mage\Adminhtml\Test\Page\Adminhtml\Cache;
@@ -48,7 +47,6 @@ class AssertUrlRewriteProductRedirect extends AbstractConstraint
      *
      * @param Browser $browser
      * @param UrlRewrite $urlRewrite
-     * @param CatalogProductSimple $product
      * @param CatalogProductView $catalogProductView
      * @param CmsIndex $cmsIndex
      * @param Cache $cachePage
@@ -57,7 +55,6 @@ class AssertUrlRewriteProductRedirect extends AbstractConstraint
     public function processAssert(
         Browser $browser,
         UrlRewrite $urlRewrite,
-        CatalogProductSimple $product,
         CatalogProductView $catalogProductView,
         CmsIndex $cmsIndex,
         Cache $cachePage
@@ -71,7 +68,7 @@ class AssertUrlRewriteProductRedirect extends AbstractConstraint
         $browser->open($_ENV['app_frontend_url'] . $urlRewrite->getRequestPath());
         \PHPUnit_Framework_Assert::assertEquals(
             $catalogProductView->getViewBlock()->getProductName(),
-            strtoupper($product->getName()),
+            strtoupper($urlRewrite->getDataFieldConfig('target_path')['source']->getEntity()->getName()),
             'URL rewrite product redirect false.'
         );
     }

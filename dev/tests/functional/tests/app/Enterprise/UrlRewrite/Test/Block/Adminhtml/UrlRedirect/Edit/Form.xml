@@ -36,10 +36,10 @@
             <input>text</input>
         </request_path>
         <target_path />
-        <redirect_type>
+        <options>
             <selector>#options</selector>
             <input>select</input>
-        </redirect_type>
+        </options>
         <description />
     </fields>
 </mapping>

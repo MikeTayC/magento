@@ -30,10 +30,12 @@
         <step name="createGiftCardAccount" module="Enterprise_GiftCardAccount" next="applyGiftCard"/>
         <step name="applyGiftCard" module="Enterprise_GiftCardAccount" prev="addProductsToTheCart" next="proceedToCheckout"/>
     </scenario>
+
     <scenario name="TestCreationForExpressCheckoutWithinPayPalButtonTest">
         <step name="createGiftCardAccount" module="Enterprise_GiftCardAccount" next="applyGiftCard"/>
         <step name="applyGiftCard" module="Enterprise_GiftCardAccount" prev="addProductsToTheCart" next="checkoutWithPayPal"/>
     </scenario>
+
     <scenario name="CreateOrderFromBackendWithinOfflinePaymentMethodsTest" firstStep="setupConfiguration">
         <step name="createGiftCardAccount" module="Enterprise_GiftCardAccount" next="applyGiftCardOnBackend"/>
         <step name="applyGiftCardOnBackend" module="Enterprise_GiftCardAccount" prev="addProducts" next="updateProductsData"/>

@@ -40,12 +40,9 @@ class ApplyCurrencyInConfigStep implements TestStepInterface
      * @var array
      */
     protected $data = [
-        'section' => [
-            [
-                'path' => 'currency/options/allow',
-                'scope' => 'currency',
-                'scope_id' => '1',
-            ],
+        'currency/options/allow' => [
+            'scope' => 'currency',
+            'scope_id' => '1'
         ]
     ];
 
@@ -86,7 +83,7 @@ class ApplyCurrencyInConfigStep implements TestStepInterface
             foreach ($symbols as &$symbol) {
                 $symbol = strtoupper(trim($symbol));
             }
-            $this->data['section'][0]['value'] = $symbols;
+            $this->data['currency/options/allow']['value'] = $symbols;
             $config = $this->fixtureFactory->createByCode('configData', ['data' => $this->data]);
             $config->persist();
         }

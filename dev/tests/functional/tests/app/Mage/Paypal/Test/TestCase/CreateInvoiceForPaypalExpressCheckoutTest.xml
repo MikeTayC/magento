@@ -188,7 +188,6 @@
             <data name="verifyData/items_data/0/item_subtotal" xsi:type="string">320.00</data>
             <data name="verifyData/items_data/0/item_row_total" xsi:type="string">320.00</data>
             <data name="status" xsi:type="string">Processing</data>
-            <data name="issue" xsi:type="string">Bug: MPERF-6836</data>
             <constraint name="Mage\Sales\Test\Constraint\AssertInvoiceSuccessCreateMessage" />
             <constraint name="Mage\Sales\Test\Constraint\AssertInvoiceInInvoicesGrid" />
             <constraint name="Mage\Sales\Test\Constraint\AssertInvoiceInInvoicesTab" />

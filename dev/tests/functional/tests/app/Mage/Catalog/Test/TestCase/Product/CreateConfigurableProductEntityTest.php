@@ -69,17 +69,6 @@ class CreateConfigurableProductEntityTest extends Injectable
     protected $productNew;
 
     /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
-     *
-     * @return void
-     */
-    protected function setUp()
-    {
-        $this->markTestIncomplete('Bug: MPERF-6836');
-    }
-
-    /**
      * Prepare data.
      *
      * @param CatalogCategory $category

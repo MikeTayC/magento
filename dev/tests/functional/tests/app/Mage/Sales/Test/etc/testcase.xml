@@ -29,16 +29,55 @@
     <scenario name="CreateOrderFromBackendWithinOfflinePaymentMethodsTest" firstStep="setupConfiguration">
         <step name="setupConfiguration" module="Mage_Core" next="createProducts" />
         <step name="createProducts" module="Mage_Catalog" next="createCustomer" />
-        <step name="createCustomer" module="Mage_Customer" next="openSalesOrders">
-            <item name="customer">
-                <item name="dataSet" value="johndoe_unique" />
-            </item>
-        </step>
+        <step name="createCustomer" module="Mage_Customer" next="openSalesOrders" />
         <step name="openSalesOrders" module="Mage_Sales" next="createNewOrder" />
         <step name="createNewOrder" module="Mage_Sales" next="selectCustomerOrder" />
-        <step name="selectCustomerOrder" module="Mage_Sales" next="addProducts" />
+        <step name="selectCustomerOrder" module="Mage_Sales" next="selectStoreOnCreateOrder" />
+        <step name="selectStoreOnCreateOrder" module="Mage_Sales" next="addProducts" />
         <step name="addProducts" module="Mage_Sales" next="updateProductsData" />
         <step name="updateProductsData" module="Mage_Sales" next="fillBillingAddress" />
+        <step name="fillBillingAddress" module="Mage_Sales" next="selectPaymentMethodForOrder" />
+        <step name="selectPaymentMethodForOrder" module="Mage_Sales" next="selectShippingMethodForOrder" />
+        <step name="selectShippingMethodForOrder" module="Mage_Sales" next="submitOrder" />
+        <step name="submitOrder" module="Mage_Sales" />
+    </scenario>
+
+    <scenario name="CreateOrderFromBackendCustomerPageTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Mage_Core" next="createProducts" />
+        <step name="createProducts" module="Mage_Catalog" next="createCustomer" />
+        <step name="createCustomer" module="Mage_Customer" next="openCustomerOnBackend" />
+        <step name="openCustomerOnBackend" module="Mage_Customer" next="createOrderFromCustomerAccount" />
+        <step name="createOrderFromCustomerAccount" module="Mage_Customer" next="selectStoreOnCreateOrder" />
+        <step name="selectStoreOnCreateOrder" module="Mage_Sales" next="addProducts" />
+        <step name="addProducts" module="Mage_Sales" next="updateProductsData" />
+        <step name="updateProductsData" module="Mage_Sales" next="fillBillingAddress" />
+        <step name="fillBillingAddress" module="Mage_Sales" next="selectPaymentMethodForOrder" />
+        <step name="selectPaymentMethodForOrder" module="Mage_Sales" next="selectShippingMethodForOrder" />
+        <step name="selectShippingMethodForOrder" module="Mage_Sales" next="submitOrder" />
+        <step name="submitOrder" module="Mage_Sales" />
+    </scenario>
+
+    <scenario name="PrintOrderFrontendGuestTest" firstStep="createNewOrderViaCurl">
+        <step name="createNewOrderViaCurl" module="Mage_Sales" next="openSalesOrderOnFrontendForGuest"/>
+        <step name="openSalesOrderOnFrontendForGuest" module="Mage_Sales" next="printOrderOnFrontend"/>
+        <step name="printOrderOnFrontend" module="Mage_Sales"/>
+    </scenario>
+
+    <scenario name="MoveShoppingCartProductsOnOrderPageTest" firstStep="createCustomer">
+        <step name="createCustomer" module="Mage_Customer" next="createProducts" />
+        <step name="createProducts" module="Mage_Catalog" next="loginCustomerOnFrontend" />
+        <step name="loginCustomerOnFrontend" module="Mage_Customer" next="addProductsToTheCart" />
+        <step name="addProductsToTheCart" module="Mage_Checkout" next="openCustomerOnBackend" />
+        <step name="openCustomerOnBackend" module="Mage_Customer" next="createOrderFromCustomerAccount" />
+        <step name="createOrderFromCustomerAccount" module="Mage_Customer" next="selectStoreOnCreateOrder" />
+        <step name="selectStoreOnCreateOrder" module="Mage_Sales" next="moveProductsFromShoppingCartSidebar" />
+        <step name="moveProductsFromShoppingCartSidebar" module="Mage_Sales" />
+    </scenario>
+
+    <scenario name="ReorderOrderEntityTest" firstStep="createNewOrderViaCurl">
+        <step name="createNewOrderViaCurl" module="Mage_Sales" next="openOrder" />
+        <step name="openOrder" module="Mage_Sales" next="reorderOrder" />
+        <step name="reorderOrder" module="Mage_Sales" next="fillBillingAddress" />
         <step name="fillBillingAddress" module="Mage_Sales" next="selectPaymentMethodForOrder" />
         <step name="selectPaymentMethodForOrder" module="Mage_Sales" next="selectShippingMethodForOrder" />
         <step name="selectShippingMethodForOrder" module="Mage_Sales" next="submitOrder" />

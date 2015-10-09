@@ -26,7 +26,6 @@
 
 namespace Enterprise\Rma\Test\Block\Adminhtml\Rma\Edit\Tab;
 
-use Magento\Mtf\Client\Locator;
 use Magento\Mtf\Client\Element\SimpleElement;
 
 /**

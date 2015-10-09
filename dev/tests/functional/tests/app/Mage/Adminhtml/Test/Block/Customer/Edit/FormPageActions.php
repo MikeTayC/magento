@@ -31,5 +31,20 @@ namespace Mage\Adminhtml\Test\Block\Customer\Edit;
  */
 class FormPageActions extends \Mage\Adminhtml\Test\Block\FormPageActions
 {
-    //
+    /**
+     * 'Create Order' button selector.
+     *
+     * @var string
+     */
+    protected $createOrderButton = '.scalable.add';
+
+    /**
+     * Click "Create Order" button.
+     *
+     * @return void
+     */
+    public function createOrder()
+    {
+        $this->_rootElement->find($this->createOrderButton)->click();
+    }
 }

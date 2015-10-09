@@ -35,6 +35,13 @@ use Magento\Mtf\Client\ElementInterface;
 class CartItem extends CheckoutCartItem
 {
     /**
+     * Selector for product sku.
+     *
+     * @var string
+     */
+    protected $productSku = '.product-cart-sku';
+
+    /**
      * Get product price.
      *
      * @return string
@@ -56,7 +63,7 @@ class CartItem extends CheckoutCartItem
      * @param array $data
      * @return void
      */
-    public function setQty(array $data)
+    public function setQty($data)
     {
         foreach ($data as $productSku => $qty) {
             /** @var CheckoutCartItem $cartItem */
@@ -109,11 +116,54 @@ class CartItem extends CheckoutCartItem
         foreach ($this->config['associated_cart_items'] as $cartItem) {
             /** @var CheckoutCartItem $cartItem */
             $result[] = [
-                'title' => $cartItem->getProductName(),
+                'title' => strtolower($cartItem->getProductName()),
                 'value' => $cartItem->getQty(),
             ];
         }
 
         return $result;
+    }
+
+    /**
+     * Get products sku.
+     *
+     * @return array
+     */
+    public function getProductsSku()
+    {
+        $elementsData = [];
+        $elements = $this->_rootElement->getElements($this->productSku);
+        foreach ($elements as $element) {
+            $elementsData[] = str_replace('SKU: ', '', $element->getText());
+        }
+
+        return $elementsData;
+    }
+
+    /**
+     * Get price type.
+     *
+     * @param string $priceType
+     * @return string
+     */
+    public function getCartItemTypePrice($priceType)
+    {
+        $result = [];
+        foreach ($this->config['associated_cart_items'] as $key => $cartItem) {
+            $result[$key] = $cartItem->getCartItemTypePrice($priceType);
+        }
+        return $result;
+    }
+
+    /**
+     * Remove product item from cart.
+     *
+     * @return void
+     */
+    public function removeItem()
+    {
+        foreach ($this->config['associated_cart_items'] as $key => $cartItem) {
+            $this->_rootElement->find($this->removeItem)->click();
+        }
     }
 }

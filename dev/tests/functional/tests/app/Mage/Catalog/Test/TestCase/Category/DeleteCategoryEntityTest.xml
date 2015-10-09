@@ -29,14 +29,14 @@
     <testCase name="Mage\Catalog\Test\TestCase\Category\DeleteCategoryEntityTest">
         <variation name="DeleteCategoryEntityTestVariation1">
             <data name="category/dataSet" xsi:type="string">root_category</data>
-            <constraint name="Mage\Catalog\Test\Constraint\AssertCategorySuccessDeleteMessage"/>
-            <constraint name="Mage\Catalog\Test\Constraint\AssertCategoryAbsenceOnBackend"/>
+            <constraint name="Mage\Catalog\Test\Constraint\AssertCategorySuccessDeleteMessage" />
+            <constraint name="Mage\Catalog\Test\Constraint\AssertCategoryAbsenceOnBackend" />
         </variation>
         <variation name="DeleteCategoryEntityTestVariation2">
             <data name="category/dataSet" xsi:type="string">default_subcategory</data>
-            <constraint name="Mage\Catalog\Test\Constraint\AssertCategorySuccessDeleteMessage"/>
-            <constraint name="Mage\Catalog\Test\Constraint\AssertCategoryAbsenceOnBackend"/>
-            <constraint name="Mage\Catalog\Test\Constraint\AssertCategoryAbsenceOnFrontend"/>
+            <constraint name="Mage\Catalog\Test\Constraint\AssertCategorySuccessDeleteMessage" />
+            <constraint name="Mage\Catalog\Test\Constraint\AssertCategoryAbsenceOnBackend" />
+            <constraint name="Mage\Catalog\Test\Constraint\AssertCategoryAbsenceOnFrontend" />
         </variation>
     </testCase>
 </config>

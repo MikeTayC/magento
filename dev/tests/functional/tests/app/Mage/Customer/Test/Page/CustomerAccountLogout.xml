@@ -26,7 +26,5 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/pages.xsd">
-  <page name="CustomerAccountLogout" mca="customer/account/logout" module="Mage_Customer">
-      <block name="placeholder" />
-  </page>
+    <page name="CustomerAccountLogout" mca="customer/account/logout" module="Mage_Customer" />
 </config>
