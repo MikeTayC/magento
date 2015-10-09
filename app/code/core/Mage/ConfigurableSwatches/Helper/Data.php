@@ -92,7 +92,10 @@ class Mage_ConfigurableSwatches_Helper_Data extends Mage_Core_Helper_Abstract
     public function getSwatchAttributeIds()
     {
         if (is_null($this->_configAttributeIds)) {
-            $this->_configAttributeIds = explode(',', Mage::getStoreConfig(self::CONFIG_PATH_SWATCH_ATTRIBUTES));
+            $this->_configAttributeIds = array();
+            if (Mage::getStoreConfig(self::CONFIG_PATH_SWATCH_ATTRIBUTES)) {
+                $this->_configAttributeIds = explode(',', Mage::getStoreConfig(self::CONFIG_PATH_SWATCH_ATTRIBUTES));
+            }
         }
         return $this->_configAttributeIds;
     }

@@ -129,3 +129,8 @@ patching file app/design/frontend/rwd/enterprise/template/giftregistry/search/fo
 patching file app/code/core/Mage/Catalog/Model/Resource/Product/Type/Configurable/Attribute/Collection.php
 
 
+2015-10-09 17:00:00 UTC | SUPEE-5091 | EE_1.14.1.0 | v1 | 490b9da69a84cf57f5dc109d373ee263ff9d1670 | Wed Dec 31 13:35:56 2014 +0200 | v1.14.1.0..HEAD
+patching file app/code/core/Mage/ConfigurableSwatches/Helper/Data.php
+patching file app/code/core/Mage/ConfigurableSwatches/Helper/Mediafallback.php
+
+
