@@ -367,9 +367,15 @@ class Enterprise_Catalog_Model_Observer
      */
     protected function _addSuffixToUrl($items, $seoSuffix)
     {
-        foreach ($items as $item) {
-            if ($item->getUrl() && strpos($item->getUrl(), $seoSuffix) === false) {
-                $item->setUrl($item->getUrl() . '.' . $seoSuffix);
+        $suffixLength = strlen($seoSuffix);
+        $fullSuffix = '.' . $seoSuffix;
+        $fullSuffixLength = strlen($fullSuffix);
+        if ($suffixLength > 0) {
+            foreach ($items as $item) {
+                $url = $item->getUrl();
+                if ($url && ($fullSuffix !== substr($url, -$fullSuffixLength))) {
+                    $item->setUrl($url . $fullSuffix);
+                }
             }
         }
     }

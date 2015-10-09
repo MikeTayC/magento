@@ -1,0 +1,19 @@
+2015-10-09 14:57:10 UTC | SUPEE-6222 | EE_1.14.2.0 | v1 | c5ff685c90e8d204a3aa59fe6b26f249f161accb | Tue Sep 9 12:50:19 2014 -0700 | v1.14.2.0..HEAD
+patching file app/code/core/Enterprise/Catalog/Model/Observer.php
+patching file app/code/core/Enterprise/Catalog/etc/config.xml
+
+
+2015-10-09 14:59:35 UTC | SUPEE-6222 | EE_1.14.2.0 | v1 | c5ff685c90e8d204a3aa59fe6b26f249f161accb | Tue Sep 9 12:50:19 2014 -0700 | v1.14.2.0..HEAD
+patching file app/code/core/Enterprise/Catalog/Model/Observer.php
+patching file app/code/core/Enterprise/Catalog/etc/config.xml
+
+
+2015-10-09 15:05:11 UTC | SUPEE-5143 | EE_1.14.1.0 | v1 | 403ad6a50bdf50c1f661c9c8646f62e41fffd58c | Mon Jan 12 11:40:30 2015 +0200 | v1.14.1.0..HEAD
+patching file app/code/core/Mage/Catalog/Model/Resource/Product/Type/Configurable/Attribute/Collection.php
+
+
+2015-10-09 17:19:41 UTC | SUPEE-5091 | EE_1.14.1.0 | v1 | 490b9da69a84cf57f5dc109d373ee263ff9d1670 | Wed Dec 31 13:35:56 2014 +0200 | v1.14.1.0..HEAD
+patching file app/code/core/Mage/ConfigurableSwatches/Helper/Data.php
+patching file app/code/core/Mage/ConfigurableSwatches/Helper/Mediafallback.php
+
+
