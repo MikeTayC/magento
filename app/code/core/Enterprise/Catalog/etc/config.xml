@@ -373,6 +373,22 @@
                     </remove_url_key>
                 </observers>
             </product_duplicate_attributes>
+            <sitemap_categories_generating_before>
+                <observers>
+                    <set_category_url_suffix>
+                        <class>enterprise_catalog/observer</class>
+                        <method>addSeoSuffixToCategoryUrl</method>
+                    </set_category_url_suffix>
+                </observers>
+            </sitemap_categories_generating_before>
+            <sitemap_products_generating_before>
+                <observers>
+                    <set_product_url_suffix>
+                        <class>enterprise_catalog/observer</class>
+                        <method>addSeoSuffixToProductUrl</method>
+                    </set_product_url_suffix>
+                </observers>
+            </sitemap_products_generating_before>
         </events>
         <redirect_type_block>
             <category>Enterprise_Catalog_Block_Adminhtml_Redirect_Edit</category>
@@ -426,22 +442,6 @@
                     </enterprise_product_flat>
                 </observers>
             </catalog_controller_product_mass_status>
-            <sitemap_categories_generating_before>
-                <observers>
-                    <set_category_url_suffix>
-                        <class>enterprise_catalog/observer</class>
-                        <method>addSeoSuffixToCategoryUrl</method>
-                    </set_category_url_suffix>
-                </observers>
-            </sitemap_categories_generating_before>
-            <sitemap_products_generating_before>
-                <observers>
-                    <set_product_url_suffix>
-                        <class>enterprise_catalog/observer</class>
-                        <method>addSeoSuffixToProductUrl</method>
-                    </set_product_url_suffix>
-                </observers>
-            </sitemap_products_generating_before>
         </events>
     </adminhtml>
     <frontend>
