@@ -50,5 +50,5 @@ class Grid extends \Mage\Adminhtml\Test\Block\Widget\Grid
      *
      * @var string
      */
-    protected $editLink = '//tr[not(contains(@class,"headings")) and not(contains(@class,"filter"))]/td[1]';
+    protected $editLink = 'td.last';
 }

@@ -168,6 +168,16 @@ class CheckoutData implements FixtureInterface
                     'subtotal' => 340,
                 ],
             ],
+            'drop_down_with_one_option_fixed_price' => [
+                'options' => [
+                    'custom_options' => [
+                        [
+                            'title' => 'attribute_key_0',
+                            'value' => 'option_key_0',
+                        ],
+                    ],
+                ],
+            ],
         ];
         return isset($presets[$name]) ? $presets[$name] : [];
     }

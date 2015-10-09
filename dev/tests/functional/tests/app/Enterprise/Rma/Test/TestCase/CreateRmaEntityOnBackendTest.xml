@@ -51,7 +51,7 @@
             <data name="rma/data/comment/comment" xsi:type="string">comments %isolation%</data>
             <data name="rma/data/comment/is_visible_on_front" xsi:type="string">No</data>
             <data name="rma/data/status" xsi:type="string">Pending</data>
-            <data name="issue" xsi:type="string">Bugs: MPERF-6836, MPERF-7346</data>
+            <data name="issue" xsi:type="string">Bugs: MPERF-7346: MPERF-7346: Product options wrong displayed on RMA items block on 'My Account' page for Customer on frontend</data>
             <constraint name="Enterprise\Rma\Test\Constraint\AssertRmaInGrid" />
             <constraint name="Enterprise\Rma\Test\Constraint\AssertRmaConfigurableForm" />
             <constraint name="Enterprise\Rma\Test\Constraint\AssertRmaConfigurableOnFrontendForCustomer" />
@@ -67,7 +67,7 @@
             <data name="rma/data/comment/comment" xsi:type="string">comments %isolation%</data>
             <data name="rma/data/comment/is_visible_on_front" xsi:type="string">Yes</data>
             <data name="rma/data/status" xsi:type="string">Pending</data>
-            <data name="issue" xsi:type="string">Bug: MPERF-7349</data>
+            <data name="issue" xsi:type="string">Bug: MPERF-7349: Can not find order(created on backend) on "Orders and Returns" page (on frontend)</data>
             <constraint name="Enterprise\Rma\Test\Constraint\AssertRmaInGrid" />
             <constraint name="Enterprise\Rma\Test\Constraint\AssertRmaOnFrontendForGuest" />
         </variation>

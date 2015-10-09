@@ -25,16 +25,51 @@
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
     <repository class="Mage\Core\Test\Repository\ConfigData">
         <dataset name="manual_layered_navigation_mysql">
-            <field path="catalog/layered_navigation/price_range_calculation" scope="catalog" scope_id="1" label="Manual" xsi:type="string">manual</field>
-            <field path="catalog/layered_navigation/price_range_step" scope="catalog" scope_id="1" xsi:type="string">10</field>
-            <field path="catalog/layered_navigation/price_range_max_intervals" scope="catalog" scope_id="1" xsi:type="string">10</field>
+            <field name="catalog/layered_navigation/price_range_calculation" xsi:type="array">
+                <item name="scope" xsi:type="string">catalog</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Manual</item>
+                <item name="value" xsi:type="string">manual</item>
+            </field>
+            <field name="catalog/layered_navigation/price_range_step" xsi:type="array">
+                <item name="scope" xsi:type="string">catalog</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string" />
+                <item name="value" xsi:type="string">10</item>
+            </field>
+            <field name="catalog/layered_navigation/price_range_max_intervals" xsi:type="array">
+                <item name="scope" xsi:type="string">catalog</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string" />
+                <item name="value" xsi:type="string">10</item>
+            </field>
         </dataset>
         <dataset name="manual_layered_navigation_mysql_rollback">
-            <field path="catalog/layered_navigation/price_range_calculation" scope="catalog" scope_id="1" label="Automatic (equalize price ranges)" xsi:type="string">auto</field>
+            <field name="catalog/layered_navigation/price_range_calculation" xsi:type="array">
+                <item name="scope" xsi:type="string">catalog</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Automatic (equalize price ranges)</item>
+                <item name="value" xsi:type="string">auto</item>
+            </field>
+        </dataset>
+        <dataset name="display_out_of_stock_products">
+            <field name="cataloginventory/options/show_out_of_stock" xsi:type="array">
+                <item name="scope" xsi:type="string">cataloginventory</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Yes</item>
+                <item name="value" xsi:type="string">1</item>
+            </field>
+        </dataset>
+        <dataset name="display_out_of_stock_products_rollback">
+            <field name="cataloginventory/options/show_out_of_stock" xsi:type="array">
+                <item name="scope" xsi:type="string">cataloginventory</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">No</item>
+                <item name="value" xsi:type="string" />
+            </field>
         </dataset>
     </repository>
 </config>

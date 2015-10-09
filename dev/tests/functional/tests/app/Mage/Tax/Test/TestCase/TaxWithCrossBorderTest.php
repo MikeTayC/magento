@@ -30,7 +30,6 @@ use Mage\Catalog\Test\Fixture\CatalogProductSimple;
 use Mage\CatalogRule\Test\Fixture\CatalogRule;
 use Mage\CatalogRule\Test\Page\Adminhtml\CatalogRuleIndex;
 use Mage\CatalogRule\Test\Page\Adminhtml\CatalogRuleEdit;
-use Mage\Core\Test\Fixture\ConfigData;
 use Mage\Customer\Test\Fixture\Customer;
 use Mage\SalesRule\Test\Fixture\SalesRule;
 use Mage\SalesRule\Test\Page\Adminhtml\PromoQuoteEdit;
@@ -104,6 +103,16 @@ class TaxWithCrossBorderTest extends Injectable
     protected $catalogRuleEdit;
 
     /**
+     * Prepare instance for test.
+     *
+     * @return void
+     */
+    public function __prepare()
+    {
+        $this->objectManager->create('Mage\Tax\Test\TestStep\DeleteAllTaxRulesStep')->run();
+    }
+
+    /**
      * Injection data.
      *
      * @param PromoQuoteIndex $promoQuoteIndex
@@ -124,11 +133,7 @@ class TaxWithCrossBorderTest extends Injectable
         $this->promoQuoteEdit = $promoQuoteEdit;
         $this->catalogRuleIndex = $catalogRuleIndex;
         $this->catalogRuleEdit = $catalogRuleEdit;
-
         $this->fixtureFactory = $fixtureFactory;
-
-        // TODO: Delete this step after fix bug MAGETWO-29331
-        $this->objectManager->create('Mage\Tax\Test\TestStep\DeleteAllTaxRulesStep')->run();
 
         $taxRule = $fixtureFactory->createByCode('taxRule', ['dataSet' => 'cross_border_tax_rule']);
         $taxRule->persist();
@@ -201,12 +206,20 @@ class TaxWithCrossBorderTest extends Injectable
             $this->catalogRule = null;
         }
         $this->objectManager->create('Mage\Tax\Test\TestStep\DeleteAllTaxRulesStep')->run();
+    }
 
-        // TODO: Move set default configuration and create default tax rule to "tearDownAfterClass" method after fix bug MAGETWO-29331
-        $this->objectManager->create(
+    /**
+     * Rollback default configuration.
+     *
+     * @return void
+     */
+    public static function tearDownAfterClass()
+    {
+        $objectManager = ObjectManager::getInstance();
+        $objectManager->create(
             'Mage\Core\Test\TestStep\SetupConfigurationStep',
             ['configData' => 'default_tax_configuration']
         )->run();
-        $this->objectManager->create('\Mage\Tax\Test\TestStep\CreateTaxRuleStep', ['taxRule' => 'default'])->run();
+        $objectManager->create('\Mage\Tax\Test\TestStep\CreateTaxRuleStep', ['taxRule' => 'default'])->run();
     }
 }

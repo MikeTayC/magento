@@ -27,7 +27,9 @@
 -->
 <mapping strict="1">
     <fields>
-        <email />
+        <email>
+            <selector>[name='username']</selector>
+        </email>
         <password />
     </fields>
 </mapping>

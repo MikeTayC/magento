@@ -46,6 +46,15 @@ class Grid extends \Mage\Adminhtml\Test\Block\Widget\Grid
     ];
 
     /**
+     * Products grids classes.
+     *
+     * @var array
+     */
+    protected $productsGrids = [
+        'bundle' => 'Enterprise\Rma\Test\Block\Adminhtml\Rma\NewRma\Tab\Items\Order\BundleGrid'
+    ];
+
+    /**
      * Select order item.
      *
      * @param FixtureInterface $product
@@ -55,12 +64,11 @@ class Grid extends \Mage\Adminhtml\Test\Block\Widget\Grid
     {
         /** @var CatalogProductSimple $product */
         $productConfig = $product->getDataConfig();
-        $productType = isset($productConfig['type_id']) ? ucfirst($productConfig['type_id']) : '';
-        $productGridClass = 'Enterprise\Rma\Test\Block\Adminhtml\Rma\NewRma\Tab\Items\Order\\' . $productType . 'Grid';
 
-        if (class_exists($productGridClass)) {
-            $productGrid = $this->blockFactory->create($productGridClass, ['element' => $this->_rootElement]);
-            $productGrid->selectItem($product);
+        if (isset($this->productsGrids[$productConfig['type_id']])) {
+            $this->blockFactory
+                ->create($this->productsGrids[$productConfig['type_id']], ['element' => $this->_rootElement])
+                ->selectItem($product);
         } else {
             $this->searchAndSelect(['name' => $product->getName()]);
         }

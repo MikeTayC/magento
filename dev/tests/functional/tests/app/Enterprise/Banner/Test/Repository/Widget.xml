@@ -25,8 +25,7 @@
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
     <repository class="Mage\Widget\Test\Repository\Widget">
         <dataset name="banner_rotator_non_anchor_categories">
             <field name="type" xsi:type="string">Banner Rotator</field>
@@ -43,9 +42,9 @@
             <field name="parameters" xsi:type="array">
                 <item name="display_mode" xsi:type="string">fixed</item>
                 <item name="types" xsi:type="array">
-                    <item name="0" xsi:type="string"></item>
+                    <item name="0" xsi:type="string" />
                 </item>
-                <item name="rotate" xsi:type="string"></item>
+                <item name="rotate" xsi:type="string" />
                 <item name="unique_id" xsi:type="string">hash for widget %isolation%</item>
             </field>
             <field name="package_theme" xsi:type="string">rwd/enterprise</field>
@@ -69,9 +68,9 @@
             <field name="parameters" xsi:type="array">
                 <item name="display_mode" xsi:type="string">fixed</item>
                 <item name="types" xsi:type="array">
-                    <item name="0" xsi:type="string"></item>
+                    <item name="0" xsi:type="string" />
                 </item>
-                <item name="rotate" xsi:type="string"></item>
+                <item name="rotate" xsi:type="string" />
                 <item name="unique_id" xsi:type="string">hash for widget %isolation%</item>
             </field>
             <field name="package_theme" xsi:type="string">rwd/enterprise</field>

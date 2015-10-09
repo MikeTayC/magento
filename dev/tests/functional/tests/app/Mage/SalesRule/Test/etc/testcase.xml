@@ -30,12 +30,19 @@
         <step name="createSalesRule" module="Mage_SalesRule" next="applySalesRuleOnFrontend"/>
         <step name="applySalesRuleOnFrontend" module="Mage_SalesRule" next="proceedToCheckout"/>
     </scenario>
+
     <scenario name="TestCreationForExpressCheckoutWithinPayPalButtonTest">
         <step name="createSalesRule" module="Mage_SalesRule" next="applySalesRuleOnFrontend"/>
         <step name="applySalesRuleOnFrontend" module="Mage_SalesRule" prev="addProductsToTheCart" next="checkoutWithPayPal"/>
     </scenario>
+
     <scenario name="CreateOrderFromBackendWithinOfflinePaymentMethodsTest" firstStep="setupConfiguration">
         <step name="createSalesRule" module="Mage_SalesRule" next="applySalesRuleOnBackend"/>
         <step name="applySalesRuleOnBackend" module="Mage_SalesRule" prev="addProducts" next="updateProductsData"/>
+    </scenario>
+
+    <scenario name="ReorderOrderEntityTest">
+        <step name="createSalesRule" module="Mage_SalesRule" next="applySalesRuleOnBackend" />
+        <step name="applySalesRuleOnBackend" module="Mage_SalesRule" next="fillBillingAddress" />
     </scenario>
 </config>

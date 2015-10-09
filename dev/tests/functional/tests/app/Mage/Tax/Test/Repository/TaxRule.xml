@@ -25,8 +25,7 @@
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
     <repository class="Mage\Tax\Test\Repository\TaxRule">
         <dataset name="for_all_states">
             <field name="code" xsi:type="string">TaxIdentifier%isolation%</field>
@@ -37,6 +36,7 @@
             </field>
             <field name="priority" xsi:type="string">0</field>
         </dataset>
+
         <dataset name="cross_border_tax_rule">
             <field name="code" xsi:type="string">TaxIdentifier%isolation%</field>
             <field name="tax_rate" xsi:type="array">
@@ -49,6 +49,7 @@
             <field name="priority" xsi:type="string">0</field>
             <field name="position" xsi:type="string">0</field>
         </dataset>
+
         <dataset name="customer_equals_store_rate">
             <field name="code" xsi:type="string">TaxIdentifier%isolation%</field>
             <field name="tax_rate" xsi:type="array">
@@ -60,6 +61,7 @@
             <field name="priority" xsi:type="string">0</field>
             <field name="position" xsi:type="string">0</field>
         </dataset>
+
         <dataset name="customer_greater_store_rate">
             <field name="code" xsi:type="string">TaxIdentifier%isolation%</field>
             <field name="tax_rate" xsi:type="array">
@@ -71,6 +73,7 @@
             <field name="priority" xsi:type="string">0</field>
             <field name="position" xsi:type="string">0</field>
         </dataset>
+
         <dataset name="customer_less_store_rate">
             <field name="code" xsi:type="string">TaxIdentifier%isolation%</field>
             <field name="tax_rate" xsi:type="array">
@@ -82,12 +85,45 @@
             <field name="priority" xsi:type="string">0</field>
             <field name="position" xsi:type="string">0</field>
         </dataset>
+
         <dataset name="us_tax_rule">
             <field name="code" xsi:type="string">TaxIdentifier%isolation%</field>
             <field name="tax_rate" xsi:type="array">
                 <item name="dataSet" xsi:type="array">
                     <item name="0" xsi:type="string">us_ca_rate_8_25</item>
                     <item name="1" xsi:type="string">us_ny_rate_8_375</item>
+                </item>
+            </field>
+            <field name="priority" xsi:type="string">0</field>
+            <field name="position" xsi:type="string">0</field>
+        </dataset>
+
+        <dataset name="tax_rule_default">
+            <field name="code" xsi:type="string">TaxIdentifier%isolation%</field>
+            <field name="tax_rate" xsi:type="array">
+                <item name="dataSet" xsi:type="array">
+                    <item name="0" xsi:type="string">US-CA-Rate_1</item>
+                </item>
+            </field>
+            <field name="tax_customer_class" xsi:type="array">
+                <item name="dataSet" xsi:type="array">
+                    <item name="0" xsi:type="string">Retail Customer</item>
+                </item>
+            </field>
+            <field name="tax_product_class" xsi:type="array">
+                <item name="dataSet" xsi:type="array">
+                    <item name="0" xsi:type="string">Taxable Goods</item>
+                </item>
+            </field>
+            <field name="priority" xsi:type="string">1</field>
+            <field name="position" xsi:type="string">1</field>
+        </dataset>
+
+        <dataset name="uk_tax_rule">
+            <field name="code" xsi:type="string">TaxIdentifier%isolation%</field>
+            <field name="tax_rate" xsi:type="array">
+                <item name="dataSet" xsi:type="array">
+                    <item name="0" xsi:type="string">uk-full-tax</item>
                 </item>
             </field>
             <field name="priority" xsi:type="string">0</field>

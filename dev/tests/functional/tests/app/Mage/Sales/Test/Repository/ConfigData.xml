@@ -25,43 +25,137 @@
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
     <repository class="Mage\Core\Test\Repository\ConfigData">
         <dataset name="enable_map_on_gesture">
-            <field path="sales/msrp/enabled" scope="sales" scope_id="1" label="Yes" xsi:type="string">1</field>
-            <field path="sales/msrp/apply_for_all" scope="sales" scope_id="1" label="Yes" xsi:type="string">1</field>
-            <field path="sales/msrp/display_price_type" scope="sales" scope_id="1" label="On Gesture" xsi:type="string">1</field>
+            <field name="sales/msrp/enabled" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Yes</item>
+                <item name="value" xsi:type="string">1</item>
+            </field>
+            <field name="sales/msrp/apply_for_all" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Yes</item>
+                <item name="value" xsi:type="string">1</item>
+            </field>
+            <field name="sales/msrp/display_price_type" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">On Gesture</item>
+                <item name="value" xsi:type="string">1</item>
+            </field>
         </dataset>
         <dataset name="enable_map_on_gesture_rollback">
-            <field path="sales/msrp/enabled" scope="sales" scope_id="1" label="No" xsi:type="string">0</field>
-            <field path="sales/msrp/apply_for_all" scope="sales" scope_id="1" label="No" xsi:type="string">0</field>
+            <field name="sales/msrp/enabled" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">No</item>
+                <item name="value" xsi:type="string" />
+            </field>
+            <field name="sales/msrp/apply_for_all" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">No</item>
+                <item name="value" xsi:type="string" />
+            </field>
         </dataset>
         <dataset name="enable_map_in_cart">
-            <field path="sales/msrp/enabled" scope="sales" scope_id="1" label="Yes" xsi:type="string">1</field>
-            <field path="sales/msrp/apply_for_all" scope="sales" scope_id="1" label="Yes" xsi:type="string">1</field>
-            <field path="sales/msrp/display_price_type" scope="sales" scope_id="1" label="In Cart" xsi:type="string">2</field>
+            <field name="sales/msrp/enabled" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Yes</item>
+                <item name="value" xsi:type="string">1</item>
+            </field>
+            <field name="sales/msrp/apply_for_all" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Yes</item>
+                <item name="value" xsi:type="string">1</item>
+            </field>
+            <field name="sales/msrp/display_price_type" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">In Cart</item>
+                <item name="value" xsi:type="string">2</item>
+            </field>
         </dataset>
         <dataset name="enable_map_in_cart_rollback">
-            <field path="sales/msrp/enabled" scope="sales" scope_id="1" label="No" xsi:type="string">0</field>
-            <field path="sales/msrp/apply_for_all" scope="sales" scope_id="1" label="No" xsi:type="string">0</field>
+            <field name="sales/msrp/enabled" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">No</item>
+                <item name="value" xsi:type="string" />
+            </field>
+            <field name="sales/msrp/apply_for_all" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">No</item>
+                <item name="value" xsi:type="string" />
+            </field>
         </dataset>
         <dataset name="enable_map_before_order">
-            <field path="sales/msrp/enabled" scope="sales" scope_id="1" label="Yes" xsi:type="string">1</field>
-            <field path="sales/msrp/apply_for_all" scope="sales" scope_id="1" label="Yes" xsi:type="string">1</field>
-            <field path="sales/msrp/display_price_type" scope="sales" scope_id="1" label="Before Order Confirmation" xsi:type="string">3</field>
+            <field name="sales/msrp/enabled" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Yes</item>
+                <item name="value" xsi:type="string">1</item>
+            </field>
+            <field name="sales/msrp/apply_for_all" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Yes</item>
+                <item name="value" xsi:type="string">1</item>
+            </field>
+            <field name="sales/msrp/display_price_type" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Before Order Confirmation</item>
+                <item name="value" xsi:type="string">3</item>
+            </field>
         </dataset>
         <dataset name="enable_map_before_order_rollback">
-            <field path="sales/msrp/enabled" scope="sales" scope_id="1" label="No" xsi:type="string">0</field>
-            <field path="sales/msrp/apply_for_all" scope="sales" scope_id="1" label="No" xsi:type="string">0</field>
+            <field name="sales/msrp/enabled" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">No</item>
+                <item name="value" xsi:type="string" />
+            </field>
+            <field name="sales/msrp/apply_for_all" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">No</item>
+                <item name="value" xsi:type="string" />
+            </field>
         </dataset>
         <dataset name="enableGiftMessages">
-            <field path="sales/gift_options/allow_order" scope="sales" scope_id="1" label="Yes" xsi:type="string">1</field>
-            <field path="sales/gift_options/allow_items" scope="sales" scope_id="1" label="Yes" xsi:type="string">1</field>
+            <field name="sales/gift_options/allow_order" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Yes</item>
+                <item name="value" xsi:type="string">1</item>
+            </field>
+            <field name="sales/gift_options/allow_items" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Yes</item>
+                <item name="value" xsi:type="string">1</item>
+            </field>
         </dataset>
         <dataset name="enableGiftMessages_rollback">
-            <field path="sales/gift_options/allow_order" scope="sales" scope_id="1" label="No" xsi:type="string">0</field>
-            <field path="sales/gift_options/allow_items" scope="sales" scope_id="1" label="No" xsi:type="string">0</field>
+            <field name="sales/gift_options/allow_order" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">No</item>
+                <item name="value" xsi:type="string" />
+            </field>
+            <field name="sales/gift_options/allow_items" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">No</item>
+                <item name="value" xsi:type="string" />
+            </field>
         </dataset>
     </repository>
 </config>

@@ -26,11 +26,11 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../vendor/magento/mtf/etc/pages.xsd">
-  <page name="CatalogCategoryIndex" area="Adminhtml" mca="catalog_category/index" module="Mage_Catalog">
-    <block name="treeCategories" class="Mage\Adminhtml\Test\Block\Catalog\Category\Tree" locator="[id='page:left']" strategy="css selector"/>
-    <block name="messagesBlock" class="Mage\Core\Test\Block\Messages" locator="#messages" strategy="css selector"/>
-    <block name="formPageActions" class="Mage\Adminhtml\Test\Block\Catalog\Category\Edit\PageActions" locator="#category-edit-container .content-header" strategy="css selector"/>
-    <block name="categoryForm" class="Mage\Adminhtml\Test\Block\Catalog\Category\Edit\CategoryForm" locator="#category-edit-container" strategy="css selector"/>
-    <block name="contentBlock" class="Mage\Adminhtml\Test\Block\Catalog\Category\Content" locator="#anchor-content" strategy="css selector"/>
-  </page>
+    <page name="CatalogCategoryIndex" area="Adminhtml" mca="catalog_category/index" module="Mage_Catalog">
+        <block name="treeCategories" class="Mage\Adminhtml\Test\Block\Catalog\Category\Tree" locator="[id='page:left']" strategy="css selector"/>
+        <block name="messagesBlock" class="Mage\Core\Test\Block\Messages" locator="#messages" strategy="css selector"/>
+        <block name="formPageActions" class="Mage\Adminhtml\Test\Block\FormPageActions" locator="#category-edit-container .content-header" strategy="css selector"/>
+        <block name="categoryForm" class="Mage\Adminhtml\Test\Block\Catalog\Category\Edit\CategoryForm" locator="#category-edit-container" strategy="css selector"/>
+        <block name="contentBlock" class="Mage\Adminhtml\Test\Block\Catalog\Category\Content" locator="#anchor-content" strategy="css selector"/>
+    </page>
 </config>

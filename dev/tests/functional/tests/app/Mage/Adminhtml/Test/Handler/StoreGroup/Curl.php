@@ -26,7 +26,8 @@
 
 namespace Mage\Adminhtml\Test\Handler\StoreGroup;
 
-use Magento\Mtf\Config;
+use Magento\Mtf\Config\DataInterface;
+use Magento\Mtf\System\Event\EventManagerInterface;
 use Magento\Mtf\Fixture\FixtureInterface;
 use Magento\Mtf\Util\Protocol\CurlInterface;
 use Magento\Mtf\Util\Protocol\CurlTransport;
@@ -49,15 +50,17 @@ class Curl extends AbstractCurl implements StoreGroupInterface
     protected $fixtureFactory;
 
     /**
-     * Constructor
-     *
      * @constructor
-     * @param Config $configuration
+     * @param DataInterface $configuration
+     * @param EventManagerInterface $eventManager
      * @param FixtureFactory $fixtureFactory
      */
-    public function __construct(Config $configuration, FixtureFactory $fixtureFactory)
-    {
-        parent::__construct($configuration);
+    public function __construct(
+        DataInterface $configuration,
+        EventManagerInterface $eventManager,
+        FixtureFactory $fixtureFactory
+    ) {
+        parent::__construct($configuration, $eventManager);
         $this->fixtureFactory = $fixtureFactory;
     }
 

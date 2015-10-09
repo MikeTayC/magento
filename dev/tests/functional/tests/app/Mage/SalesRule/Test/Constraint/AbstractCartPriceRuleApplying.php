@@ -153,9 +153,9 @@ abstract class AbstractCartPriceRuleApplying extends AbstractConstraint
      * @param Address $address
      * @param Browser $browser
      * @param array $productQuantity
-     * @param array $shipping
      * @param CatalogProductSimple $productForSalesRule1
      * @param CatalogProductSimple $productForSalesRule2
+     * @param array $shipping [optional]
      * @param int|null $isLoggedIn
      * @return void
      *
@@ -173,9 +173,9 @@ abstract class AbstractCartPriceRuleApplying extends AbstractConstraint
         Address $address,
         Browser $browser,
         array $productQuantity,
-        array $shipping,
         CatalogProductSimple $productForSalesRule1,
         CatalogProductSimple $productForSalesRule2,
+        array $shipping = [],
         $isLoggedIn = null
     ) {
         $this->checkoutCart = $checkoutCart;
@@ -193,7 +193,9 @@ abstract class AbstractCartPriceRuleApplying extends AbstractConstraint
         $this->addProductsToCart($productQuantity);
         if ($address->hasData('country_id')) {
             $this->checkoutCart->getShippingBlock()->fillEstimateShippingAndTax($address);
-            $this->checkoutCart->getShippingBlock()->selectShippingMethod($shipping);
+            if (!empty($shipping)) {
+                $this->checkoutCart->getShippingBlock()->selectShippingMethod($shipping);
+            }
         }
         if ($salesRule->getCouponCode()) {
             $this->checkoutCart->getDiscountCodesBlock()->applyCouponCode($salesRule->getCouponCode());
@@ -239,7 +241,7 @@ abstract class AbstractCartPriceRuleApplying extends AbstractConstraint
     protected function getTotals()
     {
         $totals = [];
-        $totals['subtotal'] =  $this->checkoutCart->getTotalsBlock()->getData('subtotal');
+        $totals['subtotal'] = $this->checkoutCart->getTotalsBlock()->getData('subtotal');
         $totals['grandTotal'] = $this->checkoutCart->getTotalsBlock()->getData('grand_total');
         if ($this->checkoutCart->getTotalsBlock()->isVisibleShippingPriceBlock()) {
             $shippingPrice = $this->checkoutCart->getTotalsBlock()->getData('shipping_price');

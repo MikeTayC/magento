@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Install
- * @copyright Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license http://www.magento.com/license/enterprise-edition
  */
 
@@ -28,7 +28,7 @@ class Mage_Install_Controller_Router_Install extends Mage_Core_Controller_Varien
 {
     /**
      * Check if current controller instance is allowed in current router.
-     * 
+     *
      * @param Mage_Core_Controller_Varien_Action $controllerInstance
      * @return boolean
      */

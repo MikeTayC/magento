@@ -31,6 +31,10 @@ namespace Mage\Catalog\Test\Constraint;
  */
 class AssertConfigurableProductPage extends AssertProductPage
 {
+    /* tags */
+    const SEVERITY = 'middle';
+    /* end tags */
+
     /**
      * Verify displayed product data on product page(front-end) equals passed from fixture:
      * 1. Product Name
@@ -57,42 +61,82 @@ class AssertConfigurableProductPage extends AssertProductPage
      */
     protected function verifyAttributes()
     {
-        $attributesData = $this->product->getConfigurableOptions()['attributes_data'];
-        $configurableOptions = [];
-        $formOptions = $this->productView->getOptions($this->product)['configurable_options'];
-
-        foreach ($attributesData as $attributeKey => $attributeData) {
-            $optionData = [
-                'title' => $attributeData['frontend_label'],
-                'type' => $attributeData['frontend_input'],
-                'is_require' => 'Yes'
-            ];
-
-            foreach ($attributeData['options'] as $option) {
-                $price = ('Percentage' == $option['price_type'])
-                    ? ($this->product->getPrice() * $option['price']) / 100
-                    : $option['price'];
-
-                $optionData['options'][] = [
-                    'title' => $option['label'],
-                    'price' => number_format($price, 2),
-                ];
-            }
-
-            $configurableOptions[$attributeData['frontend_label']] = $optionData;
-        }
-
-        // Sort data for compare
-        $configurableOptions = $this->sortDataByPath($configurableOptions, '::title');
-        foreach ($configurableOptions as $key => $configurableOption) {
-            $configurableOptions[$key] = $this->sortDataByPath($configurableOption, 'options::title');
-        }
-        $formOptions = $this->sortDataByPath($formOptions, '::title');
-        foreach ($formOptions as $key => $formOption) {
-            $formOptions[$key] = $this->sortDataByPath($formOption, 'options::title');
-        }
-
-        $errors = $this->verifyData($configurableOptions, $formOptions, true, false);
+        $formOptions = $this->sortOptions($this->productView->getOptions($this->product)['configurable_options']);
+        $fixtureOptions = $this->prepareFixtureOptions();
+        $errors = $this->verifyData($fixtureOptions, $formOptions, true, false);
         return empty($errors) ? null : $this->prepareErrors($errors, 'Error configurable options:');
+    }
+
+    /**
+     * Prepare fixture options data.
+     *
+     * @return array
+     */
+    protected function prepareFixtureOptions()
+    {
+        $configurableOptions = [];
+        $attributesData = $this->product->getConfigurableOptions()['attributes_data'];
+        $countAttributes = count($attributesData);
+        for ($i = 0; $i < $countAttributes; $i++) {
+            $attributeKey = 'attribute_key_' . $i;
+            $configurableOptions[$attributesData[$attributeKey]['frontend_label']] = [
+                'title' => $attributesData[$attributeKey]['frontend_label'],
+                'type' => $attributesData[$attributeKey]['frontend_input'],
+                'is_require' => 'Yes',
+                'options' => $this->getOptionsData($attributesData[$attributeKey]['options'])
+            ];
+        }
+
+        return $this->sortOptions($configurableOptions);
+    }
+
+    /**
+     * Get options data.
+     *
+     * @param array $options
+     * @return array
+     */
+    protected function getOptionsData(array $options)
+    {
+        $optionsData = [];
+        foreach ($options as $option) {
+            $optionsData[] = [
+                'title' => $option['label'],
+                'price' => $this->getOptionPrice($option)
+            ];
+        }
+
+        return $optionsData;
+    }
+
+    /**
+     * Options sort.
+     *
+     * @param array $options
+     * @return array
+     */
+    protected function sortOptions(array $options)
+    {
+        $options = $this->sortDataByPath($options, '::title');
+        foreach ($options as $key => $option) {
+            $options[$key] = $this->sortDataByPath($option, 'options::title');
+        }
+
+        return $options;
+    }
+
+    /**
+     * Get price for option.
+     *
+     * @param array $optionData
+     * @return string
+     */
+    protected function getOptionPrice(array $optionData)
+    {
+        $price = ('Percentage' == $optionData['price_type'])
+            ? ($this->product->getPrice() * $optionData['price']) / 100
+            : $optionData['price'];
+
+        return number_format($price, 2);
     }
 }

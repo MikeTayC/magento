@@ -26,8 +26,6 @@
 
 namespace Mage\Paypal\Test\TestCase;
 
-use Magento\Mtf\Fixture\FixtureFactory;
-
 /**
  * Preconditions:
  * 1. Create product.

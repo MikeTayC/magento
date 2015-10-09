@@ -27,6 +27,7 @@
 namespace Mage\Admin\Test\Constraint;
 
 use Mage\Admin\Test\Fixture\User;
+use Magento\Mtf\Client\Browser;
 use Magento\Mtf\Constraint\AbstractConstraint;
 use Mage\Adminhtml\Test\Page\Adminhtml\Dashboard;
 use Mage\Adminhtml\Test\Page\AdminAuthLogin;
@@ -49,24 +50,44 @@ class AssertUserSuccessLogin extends AbstractConstraint
      * @param User $user
      * @param AdminAuthLogin $adminAuth
      * @param Dashboard $dashboard
+     * @param Browser $browser
      * @param User $customAdmin
+     * @param array $install [optional]
      * @return void
      */
     public function processAssert(
         User $user,
         AdminAuthLogin $adminAuth,
         Dashboard $dashboard,
-        User $customAdmin = null
+        Browser $browser,
+        User $customAdmin = null,
+        $install = []
     ) {
         $adminUser = $customAdmin === null ? $user : $customAdmin;
         $adminPanelHeader = $dashboard->getAdminPanelHeader();
         if ($adminPanelHeader->isVisible()) {
             $adminPanelHeader->logOut();
         }
-
+        if (!$adminAuth->getLoginBlock()->isVisible()) {
+            $this->checkForInstallData($browser, $install);
+        }
         $adminAuth->getLoginBlock()->loginToAdminPanel($adminUser->getData());
 
         \PHPUnit_Framework_Assert::assertTrue($adminPanelHeader->isVisible(), 'Admin user was not logged in.');
+    }
+
+    /**
+     * Determines if assert is called after magento installation and performs assert precondition.
+     *
+     * @param Browser $browser
+     * @param array $install
+     * @return void
+     */
+    protected function checkForInstallData(Browser $browser, array $install)
+    {
+        isset($install['admin_frontname'])
+            ? $browser->open($_ENV['app_frontend_url'] . $install['admin_frontname'])
+            : $browser->open($_ENV['app_backend_url']);
     }
 
     /**

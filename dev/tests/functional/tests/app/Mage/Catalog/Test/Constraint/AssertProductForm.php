@@ -26,6 +26,7 @@
 
 namespace Mage\Catalog\Test\Constraint;
 
+use Mage\Catalog\Test\Fixture\CatalogCategory;
 use Magento\Mtf\Constraint\AbstractAssertForm;
 use Magento\Mtf\Fixture\InjectableFixture;
 use Mage\Catalog\Test\Page\Adminhtml\CatalogProduct;
@@ -82,6 +83,13 @@ class AssertProductForm extends AbstractAssertForm
     protected $catalogProductEdit;
 
     /**
+     * Product fixture.
+     *
+     * @var InjectableFixture
+     */
+    protected $product;
+
+    /**
      * Assert form data equals fixture data.
      *
      * @param InjectableFixture $product
@@ -94,6 +102,7 @@ class AssertProductForm extends AbstractAssertForm
         CatalogProduct $productGrid,
         CatalogProductEdit $productPage
     ) {
+        $this->product = $product;
         $this->catalogProductEdit = $productPage;
         $filter = ['sku' => $product->getSku()];
         $productGrid->open();
@@ -126,11 +135,48 @@ class AssertProductForm extends AbstractAssertForm
         if (!empty($this->specialArray)) {
             $data = $this->prepareSpecialPriceArray($data);
         }
+        if (isset($data['category_ids'])) {
+            $data['category_ids'] = $this->getFullPathCategories();
+        }
 
         foreach ($sortFields as $path) {
             $data = $this->sortDataByPath($data, $path);
         }
         return $data;
+    }
+
+    /**
+     * Get full path for all categories.
+     *
+     * @return array
+     */
+    protected function getFullPathCategories()
+    {
+        $result = [];
+        $categories = $this->product->getDataFieldConfig('category_ids')['source']->getCategories();
+        foreach ($categories as $key => $itemCategory) {
+            $fullPath = $this->prepareFullCategoryPath($itemCategory);
+            $result[$key] = implode('/', $fullPath);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Prepare category path.
+     *
+     * @param CatalogCategory $category
+     * @return array
+     */
+    protected function prepareFullCategoryPath(CatalogCategory $category)
+    {
+        $path = [];
+        $parentCategory = $category->getDataFieldConfig('parent_id')['source']->getParentCategory();
+
+        if ($parentCategory != null) {
+            $path = $this->prepareFullCategoryPath($parentCategory);
+        }
+        return array_filter(array_merge($path, [$category->getPath(), $category->getName()]));
     }
 
     /**

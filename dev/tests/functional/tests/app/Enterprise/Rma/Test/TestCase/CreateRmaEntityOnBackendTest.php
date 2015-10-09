@@ -108,11 +108,8 @@ class CreateRmaEntityOnBackendTest extends Injectable
      * @param RmaNew $rmaNew
      * @return void
      */
-    public function __inject(
-        RmaIndex $rmaIndex,
-        RmaChooseOrder $rmaChooseOrder,
-        RmaNew $rmaNew
-    ) {
+    public function __inject(RmaIndex $rmaIndex, RmaChooseOrder $rmaChooseOrder, RmaNew $rmaNew)
+    {
         $this->rmaIndex = $rmaIndex;
         $this->rmaChooseOrder = $rmaChooseOrder;
         $this->rmaNew = $rmaNew;

@@ -28,8 +28,8 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="../../../../../../vendor/magento/mtf/etc/fixture.xsd">
   <fixture name="catalogProductVirtual" module="Mage_Catalog" type="eav" entity_type="catalog_product" product_type="virtual" collection="Mage\Catalog\Model\Resource\Product\Collection" identifier="sku" repository_class="Mage\Catalog\Test\Repository\CatalogProductVirtual" handler_interface="Mage\Catalog\Test\Handler\CatalogProductVirtual\CatalogProductVirtualInterface" class="Mage\Catalog\Test\Fixture\CatalogProductVirtual">
     <dataset name="default">
-        <field name="name" xsi:type="string">Test simple product %isolation%</field>
-        <field name="sku" xsi:type="string">test_simple_sku_%isolation%</field>
+        <field name="name" xsi:type="string">Test virtual product %isolation%</field>
+        <field name="sku" xsi:type="string">test_virtual_sku_%isolation%</field>
         <field name="price" xsi:type="array">
             <item name="value" xsi:type="string">100.00</item>
         </field>
@@ -38,7 +38,12 @@
             <item name="is_in_stock" xsi:type="string">In Stock</item>
         </field>
         <field name="is_virtual" xsi:type="string">Yes</field>
-        <field name="url_key" xsi:type="string">test-simple-product-%isolation%</field>
+        <field name="url_key" xsi:type="string">test-virtual-product-%isolation%</field>
+      <field name="website_ids" xsi:type="array">
+        <item name="dataSets" xsi:type="array">
+          <item name="0" xsi:type="string">main_website</item>
+        </item>
+      </field>
     </dataset>
     <data_config>
         <item name="type_id" xsi:type="string">virtual</item>

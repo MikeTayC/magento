@@ -28,7 +28,8 @@ namespace Mage\Catalog\Test\Handler\ConfigurableProduct;
 
 use Mage\Catalog\Test\Handler\CatalogProductSimple\Curl as ProductCurl;
 use Magento\Mtf\Fixture\FixtureInterface;
-use Magento\Mtf\Config;
+use Magento\Mtf\Config\DataInterface;
+use Magento\Mtf\System\Event\EventManagerInterface;
 use Magento\Mtf\Fixture\FixtureFactory;
 use Mage\Catalog\Test\Fixture\ConfigurableProduct;
 use Magento\Mtf\Util\Protocol\CurlTransport\BackendDecorator;
@@ -50,12 +51,16 @@ class Curl extends ProductCurl implements ConfigurableProductInterface
 
     /**
      * @constructor
-     * @param Config $configuration
+     * @param DataInterface $configuration
+     * @param EventManagerInterface $eventManager
      * @param FixtureFactory $fixtureFactory
      */
-    public function __construct(Config $configuration, FixtureFactory $fixtureFactory)
-    {
-        parent::__construct($configuration);
+    public function __construct(
+        DataInterface $configuration,
+        EventManagerInterface $eventManager,
+        FixtureFactory $fixtureFactory
+    ) {
+        parent::__construct($configuration, $eventManager);
 
         $this->fixtureFactory = $fixtureFactory;
         $this->mappingData += [
@@ -136,11 +141,14 @@ class Curl extends ProductCurl implements ConfigurableProductInterface
 
         preg_match_all('/class="value-json" value="(.*)"/', $response, $tempResult);
         $valueIndexes = [];
-        foreach ($tempResult[1] as $index => $value) {
+        krsort($tempResult[1]);
+        $optionIndex = 0;
+        foreach ($tempResult[1] as $value) {
             $arrayResult = json_decode(str_replace('&quot;', '"', $value), true);
             foreach ($arrayResult as $key => $item) {
-                $valueIndexes['attribute_key_' . $key . ':' . 'option_key_' . $index] = $item['value_index'];
+                $valueIndexes['attribute_key_' . $key . ':' . 'option_key_' . $optionIndex] = $item['value_index'];
             }
+            $optionIndex++;
         }
 
         return $valueIndexes;

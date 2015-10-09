@@ -69,6 +69,13 @@ class Actions extends Block
     protected $orderCancelButton = '[onclick*="sales_order/cancel"]';
 
     /**
+     * Reorder button on the order page.
+     *
+     * @var string
+     */
+    protected $reorderButton = '[onclick*="sales_order_create/reorder/order_id"]';
+
+    /**
      * Check if action button is visible.
      *
      * @param string $buttonName
@@ -118,5 +125,15 @@ class Actions extends Block
     {
         $this->_rootElement->find($this->orderCancelButton)->click();
         $this->browser->acceptAlert();
+    }
+
+    /**
+     * Reorder order.
+     *
+     * @return void
+     */
+    public function reorder()
+    {
+        $this->_rootElement->find($this->reorderButton)->click();
     }
 }

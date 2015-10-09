@@ -26,16 +26,16 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/pages.xsd">
-  <page name="CheckoutOnepage" mca="checkout/onepage" module="Mage_Checkout">
-    <block name="loginBlock" class="Mage\Checkout\Test\Block\Onepage\Login" locator="#checkout-step-login" strategy="css selector"/>
-    <block name="billingBlock" class="Mage\Checkout\Test\Block\Onepage\Billing" locator="#checkout-step-billing" strategy="css selector"/>
-    <block name="shippingBlock" class="Mage\Checkout\Test\Block\Onepage\Shipping" locator="#checkout-step-shipping" strategy="css selector"/>
-    <block name="shippingMethodBlock" class="Mage\Checkout\Test\Block\Onepage\Shipping\Method" locator="#checkout-step-shipping_method" strategy="css selector"/>
-    <block name="paymentMethodsBlock" class="Mage\Checkout\Test\Block\Onepage\Payment\Methods" locator="#checkout-step-payment" strategy="css selector"/>
-    <block name="reviewBlock" class="Mage\Checkout\Test\Block\Onepage\Review" locator="#checkout-step-review" strategy="css selector"/>
-    <block name="payflowAdvancedForm" class="Mage\Paypal\Test\Block\Payflow\Advanced\Form" locator="#payflow-advanced-iframe" strategy="css selector"/>
-    <block name="payflowLinkForm" class="Mage\Paypal\Test\Block\Payflow\Link\Form" locator="#payflow-link-iframe" strategy="css selector"/>
-    <block name="hostedProForm" class="Mage\Paypal\Test\Block\Hosted\Pro\Form" locator="#hss-iframe" strategy="css selector"/>
-    <block name="authorizenetDirectpostForm" class="Mage\Authorizenet\Test\Block\Directpost\Form" locator="#co-directpost-form" strategy="css selector"/>
-  </page>
+    <page name="CheckoutOnepage" mca="checkout/onepage" module="Mage_Checkout">
+        <block name="loginBlock" class="Mage\Checkout\Test\Block\Onepage\Login" locator="#checkout-step-login" strategy="css selector"/>
+        <block name="billingBlock" class="Mage\Checkout\Test\Block\Onepage\Billing" locator="#checkout-step-billing" strategy="css selector"/>
+        <block name="shippingBlock" class="Mage\Checkout\Test\Block\Onepage\Shipping" locator="#checkout-step-shipping" strategy="css selector"/>
+        <block name="shippingMethodBlock" class="Mage\Checkout\Test\Block\Onepage\Shipping\Method" locator="#checkout-step-shipping_method" strategy="css selector"/>
+        <block name="paymentMethodsBlock" class="Mage\Checkout\Test\Block\Onepage\Payment\Methods" locator="#checkout-step-payment" strategy="css selector"/>
+        <block name="reviewBlock" class="Mage\Checkout\Test\Block\Onepage\Review" locator="#checkout-step-review" strategy="css selector"/>
+        <block name="payflowAdvancedForm" class="Mage\Paypal\Test\Block\Payflow\Advanced\Form" locator="#payflow-advanced-iframe" strategy="css selector"/>
+        <block name="payflowLinkForm" class="Mage\Paypal\Test\Block\Payflow\Link\Form" locator="#payflow-link-iframe" strategy="css selector"/>
+        <block name="hostedProForm" class="Mage\Paypal\Test\Block\Hosted\Pro\Form" locator="#hss-iframe" strategy="css selector"/>
+        <block name="authorizenetDirectpostForm" class="Mage\Authorizenet\Test\Block\Directpost\Form" locator="#co-directpost-form" strategy="css selector"/>
+    </page>
 </config>

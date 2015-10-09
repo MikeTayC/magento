@@ -37,7 +37,6 @@
         <variation name="AddGiftCardInShoppingCartTestVariation2">
             <data name="product" xsi:type="string">configurableProduct::default</data>
             <data name="discount" xsi:type="string">10.00</data>
-            <data name="issue" xsi:type="string">Bug: MPERF-6836</data>
             <constraint name="Enterprise\GiftCardAccount\Test\Constraint\AssertGiftCardSuccessAddMessage" />
             <constraint name="Enterprise\GiftCardAccount\Test\Constraint\AssertGiftCardDiscount" />
         </variation>

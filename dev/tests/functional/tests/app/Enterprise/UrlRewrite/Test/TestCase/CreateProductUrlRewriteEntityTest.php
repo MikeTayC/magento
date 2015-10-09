@@ -32,7 +32,6 @@ use Mage\Adminhtml\Test\Fixture\Store;
 use Mage\Adminhtml\Test\Page\Adminhtml\EditStore;
 use Enterprise\UrlRewrite\Test\Fixture\UrlRewrite;
 use Mage\Adminhtml\Test\Page\Adminhtml\StoreIndex;
-use Mage\Catalog\Test\Fixture\CatalogProductSimple;
 use Mage\Adminhtml\Test\Page\Adminhtml\DeleteStore;
 use Enterprise\UrlRewrite\Test\Page\Adminhtml\UrlRewriteEdit;
 use Enterprise\UrlRewrite\Test\Page\Adminhtml\UrlRewriteIndex;
@@ -169,31 +168,23 @@ class CreateProductUrlRewriteEntityTest extends Injectable
     /**
      * Create product URL Rewrite.
      *
-     * @param CatalogProductSimple $product
      * @param UrlRewrite $urlRewrite
-     * @return array
+     * @return void
      */
-    public function test(CatalogProductSimple $product, UrlRewrite $urlRewrite)
+    public function test(UrlRewrite $urlRewrite)
     {
         //Prepare data for tearDown
         $this->urlRewrite = $urlRewrite;
         //Precondition
-        $product->persist();
+        $product = $urlRewrite->getDataFieldConfig('target_path')['source']->getEntity();
         //Steps
-        $filter = [
-            'id' => $product->getId(),
-            'name' => $product->getName(),
-            'sku' => $product->getSku()
-        ];
         $this->urlRewriteIndex->open();
         $this->urlRewriteIndex->getGridPageActionBlock()->addNew();
         $this->urlRewriteSelect->getSelectTypeForm()->fill($urlRewrite);
-        $this->urlRewriteSelectTypeProduct->getProductGridBlock()->searchAndOpen($filter);
-        $this->urlRewriteSelectTypeProductCategory->getCategoryTreeBlock()->selectCategory($product->getCategoryIds());
+        $this->urlRewriteSelectTypeProduct->getProductGridBlock()->searchAndOpen(['id' => $product->getId()]);
+        $this->urlRewriteSelectTypeProductCategory->getCategoryTreeBlock()->skipCategorySelection();
         $this->urlRewriteEdit->getEditForm()->fill($urlRewrite);
         $this->urlRewriteEdit->getFormPageActions()->save();
-
-        return ['product' => $product];
     }
 
     /**

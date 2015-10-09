@@ -28,7 +28,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Mage\Wishlist\Test\TestCase\AddProductsToCartFromCustomerWishlistOnFrontendTest">
         <variation name="AddProductsToCartFromCustomerWishlistOnFrontendTestVariation1" method="test">
-            <data name="products" xsi:type="string">catalogProductSimple::product_100_dollar</data>
+            <data name="products" xsi:type="string">catalogProductSimple::default</data>
             <data name="qty" xsi:type="string">2</data>
             <data name="verifyData/0/qty" xsi:type="string">2</data>
             <constraint name="Mage\Checkout\Test\Constraint\AssertProductQtyInShoppingCart" />
@@ -48,30 +48,10 @@
             <constraint name="Mage\Checkout\Test\Constraint\AssertProductQtyInShoppingCart" />
             <constraint name="Mage\Wishlist\Test\Constraint\AssertProductsIsAbsentInWishlist" />
         </variation>
-        <variation name="AddProductsToCartFromCustomerWishlistOnFrontendTestVariation5" method="test">
-            <data name="products" xsi:type="string">downloadableProduct::with_two_separately_links</data>
-            <constraint name="Mage\Checkout\Test\Constraint\AssertProductQtyInShoppingCart" />
-            <constraint name="Mage\Wishlist\Test\Constraint\AssertProductsIsAbsentInWishlist" />
-        </variation>
         <variation name="AddProductsToCartFromCustomerWishlistOnFrontendTestVariation6" method="test">
             <data name="products" xsi:type="string">configurableProduct::default</data>
             <data name="qty" xsi:type="string">3</data>
             <data name="verifyData/0/qty" xsi:type="string">3</data>
-            <data name="issue" xsi:type="string">Bug: MPERF-6836</data>
-            <constraint name="Mage\Checkout\Test\Constraint\AssertProductQtyInShoppingCart" />
-            <constraint name="Mage\Wishlist\Test\Constraint\AssertProductsIsAbsentInWishlist" />
-        </variation>
-        <variation name="AddProductsToCartFromCustomerWishlistOnFrontendTestVariation7" method="test">
-            <data name="products" xsi:type="string">bundleProduct::bundle_dynamic_product</data>
-            <data name="qty" xsi:type="string">2</data>
-            <data name="verifyData/0/qty" xsi:type="string">2</data>
-            <constraint name="Mage\Checkout\Test\Constraint\AssertProductQtyInShoppingCart" />
-            <constraint name="Mage\Wishlist\Test\Constraint\AssertProductsIsAbsentInWishlist" />
-        </variation>
-        <variation name="AddProductsToCartFromCustomerWishlistOnFrontendTestVariation8" method="test">
-            <data name="products" xsi:type="string">bundleProduct::bundle_fixed_product</data>
-            <data name="qty" xsi:type="string">2</data>
-            <data name="verifyData/0/qty" xsi:type="string">2</data>
             <constraint name="Mage\Checkout\Test\Constraint\AssertProductQtyInShoppingCart" />
             <constraint name="Mage\Wishlist\Test\Constraint\AssertProductsIsAbsentInWishlist" />
         </variation>

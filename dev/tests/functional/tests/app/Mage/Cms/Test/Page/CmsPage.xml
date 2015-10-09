@@ -28,6 +28,6 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/pages.xsd">
     <page name="CmsPage" mca="cms/page" module="Mage_Cms">
         <block name="cmsPageContentBlock" class="Mage\Cms\Test\Block\Page" locator=".main-container" strategy="css selector"/>
-        <block name="templateBlock" class="Mage\Adminhtml\Test\Block\Template" locator="#loading-mask" strategy="css selector"/>
+        <block name="templateBlock" class="Mage\Adminhtml\Test\Block\Template" locator="#loading_mask_loader" strategy="css selector"/>
     </page>
 </config>

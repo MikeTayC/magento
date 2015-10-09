@@ -26,10 +26,47 @@
 
 namespace Enterprise\UrlRewrite\Test\Block\Adminhtml\UrlRedirect\Edit;
 
+use Enterprise\UrlRewrite\Test\Fixture\UrlRewrite;
+use Magento\Mtf\Client\Element\SimpleElement;
+use Magento\Mtf\Client\Locator;
+use Magento\Mtf\Fixture\FixtureInterface;
+
 /**
  * Url rewrite form.
  */
 class Form extends \Magento\Mtf\Block\Form
 {
-    //
+    /**
+     * Selector for store field.
+     *
+     * @var string
+     */
+    protected $store = '#store_id';
+
+    /**
+     * Fill the root form.
+     *
+     * @param FixtureInterface $urlRewrite
+     * @param SimpleElement|null $element
+     * @return $this
+     */
+    public function fill(FixtureInterface $urlRewrite, SimpleElement $element = null)
+    {
+        $this->fillStore($urlRewrite);
+        return parent::fill($urlRewrite);
+    }
+
+    /**
+     * Fill store.
+     *
+     * @param UrlRewrite $urlRewrite
+     * @return void
+     */
+    protected function fillStore(UrlRewrite $urlRewrite)
+    {
+        $storeField = $this->_rootElement->find($this->store, Locator::SELECTOR_CSS, 'selectstore');
+        if ($storeField->isVisible() && !$urlRewrite->hasData('store_id')) {
+            $storeField->setValue('Main Website/Main Website Store/Default Store View');
+        }
+    }
 }

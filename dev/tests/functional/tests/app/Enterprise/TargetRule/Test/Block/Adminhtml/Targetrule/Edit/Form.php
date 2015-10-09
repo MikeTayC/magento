@@ -26,14 +26,24 @@
 
 namespace Enterprise\TargetRule\Test\Block\Adminhtml\Targetrule\Edit;
 
+use Magento\Mtf\Client\Locator;
 use Magento\Mtf\Fixture\InjectableFixture;
 use Mage\Adminhtml\Test\Block\Widget\FormTabs;
+use Mage\Adminhtml\Test\Block\Widget\Tab;
+use Mage\Adminhtml\Test\Block\Template;
 
 /**
  * Target rule form on backend target rule page.
  */
 class Form extends FormTabs
 {
+    /**
+     * Backend abstract block selector.
+     *
+     * @var string
+     */
+    protected $templateBlock = './ancestor::body';
+
     /**
      * Fill form with tabs.
      *
@@ -70,5 +80,32 @@ class Form extends FormTabs
         }
 
         return $tabs;
+    }
+
+    /**
+     * Open tab.
+     *
+     * @param string $tabName
+     * @return Tab
+     */
+    public function openTab($tabName)
+    {
+        parent::openTab($tabName);
+        $this->getTemplateBlock()->waitLoader();
+
+        return $this;
+    }
+
+    /**
+     * Get backend abstract block.
+     *
+     * @return Template
+     */
+    protected function getTemplateBlock()
+    {
+        return $this->blockFactory->create(
+            'Mage\Adminhtml\Test\Block\Template',
+            ['element' => $this->_rootElement->find($this->templateBlock, Locator::SELECTOR_XPATH)]
+        );
     }
 }

@@ -27,6 +27,8 @@
 namespace Magento\Mtf\Util\Generate;
 
 /**
+ * Class Page.
+ *
  * Page classes generator.
  *
  * @internal
@@ -84,7 +86,8 @@ class Page extends AbstractGenerate
         }
 
         return $this->generateClass(
-            end($classNameParts), $this->configData->get($classDataKey)
+            end($classNameParts),
+            $this->configData->get($classDataKey)
         );
     }
 
@@ -99,13 +102,13 @@ class Page extends AbstractGenerate
     protected function generateClass($name, array $data)
     {
         $className = ucfirst($name);
-        $module =  str_replace('_', '/', $data['module']);
-        $folderPath = $module . '/Test/Page' . (empty($data['area']) ? '' : ('/' . $data['area']));
+        $module = str_replace('_', '/', $data['module']);
+        $area = empty($data['area']) ? null : $data['area'];
+        $folderPath = $module . '/Test/Page' . (($area === null) ? '' : ('/' . $area));
         $realFolderPath = MTF_BP . '/generated/' . $folderPath;
         $namespace = str_replace('/', '\\', $folderPath);
-        $pageType = str_replace($module, '', $folderPath);
-        $areaMtfPage = strpos($pageType, 'Adminhtml') === false ? 'FrontendPage' : 'BackendPage';
         $mca = isset($data['mca']) ? $data['mca'] : '';
+        $areaMtfPage = $this->getParentPage($folderPath, $mca, $area);
         $blocks = isset($data['block']) ? $data['block'] : [];
 
         $content = "<?php\n";
@@ -187,5 +190,28 @@ class Page extends AbstractGenerate
         $content .= $indent . "],\n";
 
         return $content;
+    }
+
+    /**
+     * Determine parent page class.
+     *
+     * @param string $folderPath
+     * @param string $mca
+     * @param string|null $area
+     * @return string
+     */
+    protected function getParentPage($folderPath, $mca, $area)
+    {
+        if (strpos($folderPath, 'Adminhtml') !== false && $area === 'Adminhtml') {
+            $areaMtfPage = 'BackendPage';
+        } else {
+            if (strpos($mca, 'http') === false) {
+                $areaMtfPage = 'FrontendPage';
+            } else {
+                $areaMtfPage = 'ExternalPage';
+            }
+        }
+
+        return $areaMtfPage;
     }
 }

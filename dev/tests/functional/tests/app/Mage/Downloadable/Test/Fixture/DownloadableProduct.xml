@@ -53,6 +53,11 @@
             <item name="preset" xsi:type="string">default</item>
         </field>
         <field name="url_key" xsi:type="string">downloadableproduct-%isolation%</field>
+        <field name="website_ids" xsi:type="array">
+            <item name="dataSets" xsi:type="array">
+                <item name="0" xsi:type="string">main_website</item>
+            </item>
+        </field>
     </dataset>
     <data_config>
         <item name="type_id" xsi:type="string">downloadable</item>

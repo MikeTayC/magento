@@ -74,6 +74,9 @@ class StoreId implements FixtureInterface
             $this->store = $store;
             $this->data = $store->getGroupId() . '/' . $store->getName();
         }
+        if (isset($data['data'])) {
+            $this->data = $data['data'];
+        }
     }
 
     /**

@@ -28,12 +28,18 @@
 <mapping strict="0">
     <fields>
         <allow_gift_options>
+            <selector>.//*/input[@id = 'allow_gift_messages']|.//*/input[@id= 'allow_gift_options']</selector>
+            <strategy>xpath</strategy>
             <input>checkbox</input>
         </allow_gift_options>
         <allow_gift_messages_for_order>
+            <selector>.//*/input[@id = 'allow_gift_messages_for_order']|.//*/input[@id= 'allow_gift_options_for_order']</selector>
+            <strategy>xpath</strategy>
             <input>checkbox</input>
         </allow_gift_messages_for_order>
         <allow_gift_options_for_items>
+            <selector>.//*/input[@id = 'allow_gift_messages_for_items']|.//*/input[@id= 'allow_gift_options_for_items']</selector>
+            <strategy>xpath</strategy>
             <input>checkbox</input>
         </allow_gift_options_for_items>
     </fields>

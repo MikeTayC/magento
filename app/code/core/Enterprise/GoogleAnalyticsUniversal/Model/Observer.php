@@ -71,12 +71,9 @@ class Enterprise_GoogleAnalyticsUniversal_Model_Observer
         }
 
         $block = $observer->getEvent()->getBlock();
-        if (!$block instanceof Enterprise_Banner_Block_Widget_Banner) {
-            return $this;
-        }
 
         /** @var Enterprise_GoogleAnalyticsUniversal_Block_List_Json $jsonBlock */
-        $jsonBlock = $block->getLayout()->getBlock('banner_impression');
+        $jsonBlock = Mage::app()->getLayout()->getBlock('banner_impression');
         if (is_object($jsonBlock)) {
             $jsonBlock->appendBannerBlock($block);
         }

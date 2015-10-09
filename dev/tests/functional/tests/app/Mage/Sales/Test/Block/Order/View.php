@@ -39,7 +39,7 @@ class View extends Block
      *
      * @var string
      */
-    protected $link = '//*[@id="order-info-tabs"]//a[text()="%s"]';
+    protected $link = '//a[text()="%s"]';
 
     /**
      * Open link by name.

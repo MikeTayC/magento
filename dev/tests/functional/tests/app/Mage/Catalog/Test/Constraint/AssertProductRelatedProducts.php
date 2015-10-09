@@ -65,8 +65,8 @@ class AssertProductRelatedProducts extends AbstractConstraint
         $browser->open($_ENV['app_frontend_url'] . $product->getUrlKey() . '.html');
         foreach ($promotedProducts as $promotedProduct) {
             \PHPUnit_Framework_Assert::assertTrue(
-                $catalogProductView->getRelatedProductBlock()->isRelatedProductVisible($promotedProduct),
-                'Product \'' . $promotedProduct->getName() . '\' is absent in related products.'
+                $catalogProductView->getRelatedProductBlock()->getItemBlock($promotedProduct)->isVisible(),
+                "Product {$promotedProduct->getName()} is absent in related products."
             );
         }
     }

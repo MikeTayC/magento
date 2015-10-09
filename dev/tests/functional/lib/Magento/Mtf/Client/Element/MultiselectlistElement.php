@@ -26,6 +26,8 @@
 
 namespace Magento\Mtf\Client\Element;
 
+use Magento\Mtf\Client\Locator;
+
 /**
  * Typified element class for Multiple Select List elements.
  */
@@ -55,4 +57,17 @@ class MultiselectlistElement extends MultiselectElement
 
         return $optionsValue;
     }
+
+    /**
+     * Check whether value is visible in the list.
+     *
+     * @param string $value
+     * @return bool
+     */
+    public function isValueVisible($value)
+    {
+        $option = $this->find(sprintf($this->optionByValue, $this->escapeQuotes($value)), Locator::SELECTOR_XPATH);
+        return $option->isVisible();
+    }
+
 }

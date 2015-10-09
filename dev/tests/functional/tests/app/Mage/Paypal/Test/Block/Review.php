@@ -26,12 +26,10 @@
 
 namespace Mage\Paypal\Test\Block;
 
-use Magento\Mtf\Block\Block;
-
 /**
  * Pay Pal sandbox review block.
  */
-class Review extends Block
+class Review extends AbstractReview
 {
     /**
      * Continue button selector.
@@ -52,7 +50,7 @@ class Review extends Block
      *
      * @var string
      */
-    protected $changeShipping = '[name="changeShipping"]';
+    protected $changeShipping = '.changeShipping';
 
     /**
      * Addresses block selector.
@@ -73,61 +71,7 @@ class Review extends Block
      *
      * @var string
      */
-    protected $loader = '.loader';
-
-    /**
-     * Click 'Continue' button.
-     *
-     * @return void
-     */
-    public function continueCheckout()
-    {
-        $this->_rootElement->find($this->continue)->click();
-    }
-
-    /**
-     * Log out from Pay Pal account.
-     *
-     * @return void
-     */
-    public function logOut()
-    {
-        $logoutButton = $this->_rootElement->find($this->logoutButton);
-        if ($logoutButton->isVisible()) {
-            $logoutButton->click();
-        }
-    }
-
-    /**
-     * Check change shipping button.
-     *
-     * @return bool
-     */
-    public function checkChangeShippingButton()
-    {
-        $this->waitLoader();
-        return $this->_rootElement->find($this->changeShipping)->isVisible();
-    }
-
-    /**
-     * Check for shipping notification.
-     *
-     * @return bool
-     */
-    protected function checkShippingNotification()
-    {
-        return $this->_rootElement->find($this->shipNotification)->isVisible();
-    }
-
-    /**
-     * Click change shipping button.
-     *
-     * @return void
-     */
-    public function clickChangeShippingButton()
-    {
-        $this->_rootElement->find($this->changeShipping)->click();
-    }
+    protected $loader = '#spinner .loader';
 
     /**
      * Get addresses block.
@@ -140,30 +84,5 @@ class Review extends Block
             'Mage\Paypal\Test\Block\Addresses',
             ['element' => $this->_rootElement->find($this->addresses)]
         );
-    }
-
-    /**
-     * Wait loader.
-     *
-     * @return void
-     */
-    public function waitLoader()
-    {
-        $this->waitForElementNotVisible($this->loader);
-    }
-
-    /**
-     * Check change address ability.
-     *
-     * @return bool
-     */
-    public function checkChangeAddressAbility()
-    {
-        if ($this->checkChangeShippingButton()) {
-            $this->clickChangeShippingButton();
-            return !$this->checkShippingNotification();
-        } else {
-            return false;
-        }
     }
 }

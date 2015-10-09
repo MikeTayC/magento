@@ -35,7 +35,7 @@ use Magento\Mtf\Constraint\AbstractConstraint;
 class AssertTaxRateSuccessSaveMessage extends AbstractConstraint
 {
     /* tags */
-    const SEVERITY = 'high';
+    const SEVERITY = 'low';
     /* end tags */
 
     /**

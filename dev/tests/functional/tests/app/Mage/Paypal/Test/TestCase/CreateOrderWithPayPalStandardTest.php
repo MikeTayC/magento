@@ -27,6 +27,7 @@
 namespace Mage\Paypal\Test\TestCase;
 
 use Magento\Mtf\Fixture\FixtureFactory;
+use Magento\Mtf\ObjectManager;
 use Magento\Mtf\TestCase\Scenario;
 
 /**
@@ -56,27 +57,26 @@ class CreateOrderWithPayPalStandardTest extends Scenario
     /**
      * Prepare environment for test.
      *
+     * @param FixtureFactory $fixtureFactory
      * @return void
      */
-    public function __prepare()
+    public function __prepare(FixtureFactory $fixtureFactory)
     {
         // Delete existing tax rules.
         $this->objectManager->create('Mage\Tax\Test\TestStep\DeleteAllTaxRulesStep')->run();
+
+        // Create US tax rule
+        $taxRule = $fixtureFactory->createByCode('taxRule', ['dataSet' => 'us_tax_rule']);
+        $taxRule->persist();
     }
 
     /**
      * Create order with PayPal standard test.
      *
-     * @param FixtureFactory $fixtureFactory
      * @return void
      */
-    public function test(FixtureFactory $fixtureFactory)
+    public function test()
     {
-        // Preconditions:
-        // Create US tax rule. @TODO: Move to __prepare() after implementing MAGETWO-29331.
-        $taxRule = $fixtureFactory->createByCode('taxRule', ['dataSet' => 'us_tax_rule']);
-        $taxRule->persist();
-
         $this->executeScenario();
     }
 
@@ -92,8 +92,15 @@ class CreateOrderWithPayPalStandardTest extends Scenario
             'Mage\Core\Test\TestStep\SetupConfigurationStep',
             ['configData' => $this->currentVariation['arguments']['configData'], 'rollback' => true]
         )->run();
+    }
 
-        // Delete existing tax rules. @TODO: Move to tearDownAfterClass() after implementing MAGETWO-29331
-        $this->objectManager->create('Mage\Tax\Test\TestStep\DeleteAllTaxRulesStep')->run();
+    /**
+     * Delete all tax rules after test.
+     *
+     * @return void
+     */
+    public static function tearDownAfterClass()
+    {
+        ObjectManager::getInstance()->create('Mage\Tax\Test\TestStep\DeleteAllTaxRulesStep')->run();
     }
 }

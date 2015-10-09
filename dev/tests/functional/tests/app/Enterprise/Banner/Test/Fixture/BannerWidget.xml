@@ -26,7 +26,7 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="../../../../../../vendor/magento/mtf/etc/fixture.xsd">
-    <fixture name="bannerWidget" handler_interface="Enterprise\Banner\Test\Handler\BannerWidget\BannerWidgetInterface" class="Enterprise\Banner\Test\Fixture\BannerWidget" extends="\Mage\Widget\Test\Fixture\Widget">
+    <fixture name="bannerWidget" module="Enterprise_Banner" handler_interface="Enterprise\Banner\Test\Handler\BannerWidget\BannerWidgetInterface" class="Enterprise\Banner\Test\Fixture\BannerWidget" extends="\Mage\Widget\Test\Fixture\Widget">
         <field name="layout" source="Enterprise\Banner\Test\Fixture\Widget\LayoutUpdates" group="layout_updates"/>
         <field name="widgetOptions" source="Enterprise\Banner\Test\Fixture\Widget\WidgetOptions" group="banner_options"/>
     </fixture>

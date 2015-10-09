@@ -28,10 +28,10 @@ namespace Mage\Checkout\Test\Block\Onepage;
 
 use Mage\Checkout\Test\Block\Onepage\Review\Items;
 use Mage\Checkout\Test\Block\Onepage\Review\Totals;
-use Mage\Payment\Test\Fixture\Cc;
 use Mage\Paypal\Test\Block\Form\Centinel;
 use Magento\Mtf\Client\Locator;
 use Magento\Mtf\Fixture\InjectableFixture;
+use Mage\Checkout\Test\Fixture\CheckoutAgreement;
 
 /**
  * One page checkout status review block.
@@ -74,6 +74,34 @@ class Review extends AbstractOnepage
     protected $centinelForm = '#centinel_authenticate_block .authentication';
 
     /**
+     * Iframe selector.
+     *
+     * @var string
+     */
+    protected $iFrameSelector = '#centinel_authenticate_iframe';
+
+    /**
+     * Body selector.
+     *
+     * @var string
+     */
+    protected $body = 'body';
+
+    /**
+     * Agreement locator.
+     *
+     * @var string
+     */
+    protected $agreement = './/div[contains(@id, "checkout-review-submit")]//label[.="%s"]';
+
+    /**
+     * Agreement checkbox locator.
+     *
+     * @var string
+     */
+    protected $agreementCheckbox = './/input[contains(@id, "agreement") and @title="%s"]';
+
+    /**
      * Get items product block.
      *
      * @param string|null $productType
@@ -113,30 +141,70 @@ class Review extends AbstractOnepage
     }
 
     /**
-     * Get alert text.
+     * Get verification response text.
      *
      * @return string
      */
-    protected function getAlertText()
+    public function getVerificationResponseText()
     {
-        $browser = $this->browser;
-        $this->browser->waitUntil(
-            function () use ($browser) {
-                return $browser->getAlertText() ? true : false;
-            });
-        $alertText = $this->browser->getAlertText();
-        $this->browser->acceptAlert();
+        $this->browser->switchToFrame(new Locator($this->iFrameSelector));
+        $responseText = $this->browser->find($this->body)->getText();
+        $this->browser->switchToFrame();
+        return $responseText;
+    }
+
+    /**
+     * Get alert massage.
+     *
+     * @return string
+     */
+    protected function getAlertMassage()
+    {
+        try {
+            $alertText = $this->browser->getAlertText();
+        } catch (\Exception $e) {
+            $alertText = '';
+        }
         return $alertText;
     }
 
     /**
-     * Click "Place order" button and get alert text.
+     * Set agreement.
+     *
+     * @param CheckoutAgreement $agreement
+     * @param string $value
+     * @return void
+     */
+    public function setAgreement(CheckoutAgreement $agreement, $value)
+    {
+        $agreementsInputSelector = sprintf($this->agreementCheckbox, $agreement->getCheckboxText());
+        $this->_rootElement->find($agreementsInputSelector, Locator::SELECTOR_XPATH, 'checkbox')->setValue($value);
+    }
+
+    /**
+     * Check agreement.
+     *
+     * @param CheckoutAgreement $agreement
+     * @return bool
+     */
+    public function checkAgreement(CheckoutAgreement $agreement)
+    {
+        return $this->_rootElement
+            ->find(sprintf($this->agreement, $agreement->getCheckboxText()), Locator::SELECTOR_XPATH)
+            ->isVisible();
+    }
+
+    /**
+     * Click continue button.
      *
      * @return string
      */
-    public function handleSubmittingOrderInformation()
+    public function clickContinue()
     {
         $this->_rootElement->find($this->continue)->click();
-        return $this->getAlertText();
+        $alertText = $this->getAlertMassage();
+        $this->waitLoader();
+
+        return $alertText;
     }
 }

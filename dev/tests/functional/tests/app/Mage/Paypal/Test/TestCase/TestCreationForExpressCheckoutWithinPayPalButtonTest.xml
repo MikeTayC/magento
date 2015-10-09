@@ -154,7 +154,7 @@
             <constraint name="Mage\Paypal\Test\Constraint\AssertTransaction" />
             <constraint name="Mage\Sales\Test\Constraint\AssertOrderGrandTotal" />
         </variation>
-        <variation name="TestCreationForExpressCheckoutWithinPayPalButtonTestVariation70" method="test">
+        <variation name="TestCreationForExpressCheckoutWithinPayPalButtonTestVariation8" method="test">
             <data name="description" xsi:type="string">With two product and taxes</data>
             <data name="products" xsi:type="string">catalogProductSimple::default,configurableProduct::default</data>
             <data name="taxRule" xsi:type="string">for_all_states</data>

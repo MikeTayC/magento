@@ -26,8 +26,8 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../vendor/magento/mtf/etc/pages.xsd">
-  <page name="UrlRewriteEdit" area="Adminhtml" mca="urlrewrite/edit" module="Enterprise_UrlRewrite">
-    <block name="editForm" class="Enterprise\UrlRewrite\Test\Block\Adminhtml\UrlRedirect\Edit\Form" locator="#edit_form" strategy="css selector"/>
-    <block name="formPageActions" class="Mage\Adminhtml\Test\Block\FormPageActions" locator=".form-buttons" strategy="css selector"/>
-  </page>
+    <page name="UrlRewriteEdit" area="Adminhtml" mca="urlrewrite/edit" module="Enterprise_UrlRewrite">
+        <block name="editForm" class="Enterprise\UrlRewrite\Test\Block\Adminhtml\UrlRedirect\Edit\Form" locator="#edit_form" strategy="css selector" />
+        <block name="formPageActions" class="Mage\Adminhtml\Test\Block\FormPageActions" locator=".form-buttons" strategy="css selector" />
+    </page>
 </config>

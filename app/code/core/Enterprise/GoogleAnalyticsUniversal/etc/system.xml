@@ -28,7 +28,7 @@
 
 <config>
     <sections>
-        <google translate="label" module="google_ga">
+        <google translate="label" module="enterprise_googleanalyticsuniversal">
             <groups>
                 <analytics translate="label">
                     <label>Google Analytics</label>

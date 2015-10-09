@@ -26,6 +26,8 @@
 
 namespace Mage\Adminhtml\Test\Block\Catalog\Product\Edit\Tab\Configurable;
 
+use Magento\Mtf\Client\Locator;
+
 /**
  * Configurable product grid.
  */
@@ -39,6 +41,13 @@ class Grid extends \Mage\Adminhtml\Test\Block\Widget\Grid
     protected $selectedItem = 'tbody tr .checkbox';
 
     /**
+     * 'Select All' link.
+     *
+     * @var string
+     */
+    protected $selectAll = 'thead input.checkbox';
+
+    /**
      * Initialize block elements.
      *
      * @var array
@@ -48,4 +57,14 @@ class Grid extends \Mage\Adminhtml\Test\Block\Widget\Grid
             'selector' => '#super_product_links_filter_sku'
         ]
     ];
+
+    /**
+     * Unselect all products.
+     *
+     * @return void
+     */
+    public function unselectAllProducts()
+    {
+        $this->_rootElement->find($this->selectAll, Locator::SELECTOR_CSS, 'checkbox')->setValue('No');
+    }
 }

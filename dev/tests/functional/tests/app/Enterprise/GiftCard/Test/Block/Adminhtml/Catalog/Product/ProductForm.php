@@ -26,7 +26,7 @@
 
 namespace Enterprise\GiftCard\Test\Block\Adminhtml\Catalog\Product;
 
-use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Fixture\FixtureInterface;
 use Magento\Mtf\Client\Element\SimpleElement as Element;
 use Mage\Catalog\Test\Fixture\CatalogCategory;
 
@@ -48,12 +48,12 @@ class ProductForm extends \Mage\Adminhtml\Test\Block\Catalog\Product\ProductForm
     /**
      * Fill the product form.
      *
-     * @param InjectableFixture $product
+     * @param FixtureInterface $product
      * @param Element|null $element [optional]
      * @param CatalogCategory|null $category [optional]
      * @return void
      */
-    public function fill(InjectableFixture $product, Element $element = null, CatalogCategory $category = null)
+    public function fill(FixtureInterface $product, Element $element = null, CatalogCategory $category = null)
     {
         $this->fillDefaultFields($product, $element, $category);
     }

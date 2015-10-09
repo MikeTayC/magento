@@ -41,7 +41,6 @@
         </variation>
         <variation name="DeleteProductEntityTestVariation3">
             <data name="products" xsi:type="string">configurableProduct::default</data>
-            <data name="issue" xsi:type="string">Bug: MPERF-6836</data>
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductsSuccessDeleteMessage" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductsNotInGrid" />
             <constraint name="Mage\Catalog\Test\Constraint\AssertProductsIsNotDisplayingOnFrontend" />

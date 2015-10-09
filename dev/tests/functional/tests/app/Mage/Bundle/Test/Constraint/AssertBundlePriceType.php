@@ -31,7 +31,6 @@ use Mage\Catalog\Test\Page\Product\CatalogProductView;
 use Mage\Checkout\Test\Page\CheckoutCart;
 use Magento\Mtf\Client\Browser;
 use Magento\Mtf\Constraint\AbstractConstraint;
-use Mage\Checkout\Test\Block\Cart\CartItem;
 
 /**
  * Assert that displayed price for bundle items on shopping cart page equals to passed from fixture.

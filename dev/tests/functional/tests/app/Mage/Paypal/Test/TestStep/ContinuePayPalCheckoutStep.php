@@ -30,6 +30,7 @@ use Mage\Checkout\Test\Page\CheckoutOnepageSuccess;
 use Mage\Paypal\Test\Fixture\PaypalCustomer;
 use Mage\Paypal\Test\Page\Paypal;
 use Magento\Mtf\TestStep\TestStepInterface;
+use Mage\Paypal\Test\Block\AbstractReview;
 
 /**
  * Continue Pay Pal checkout step.
@@ -58,6 +59,13 @@ class ContinuePayPalCheckoutStep implements TestStepInterface
     protected $customer;
 
     /**
+     * Review block.
+     *
+     * @var AbstractReview
+     */
+    protected $reviewBlock;
+
+    /**
      * @constructor
      * @param Paypal $paypalPage
      * @param CheckoutOnepageSuccess $checkoutOnepageSuccess
@@ -80,8 +88,11 @@ class ContinuePayPalCheckoutStep implements TestStepInterface
      */
     public function run()
     {
+        $this->reviewBlock = $this->paypalPage->getReviewBlock()->isVisible()
+            ? $this->paypalPage->getReviewBlock()
+            : $this->paypalPage->getOldReviewBlock();
         $this->selectCustomerAddress($this->customer);
-        $this->paypalPage->getReviewBlock()->continueCheckout();
+        $this->reviewBlock->continueCheckout();
         $successBlock = $this->checkoutOnepageSuccess->getSuccessBlock();
 
         return ['orderId' => $successBlock->isVisible() ? $successBlock->getGuestOrderId() : null];
@@ -95,12 +106,10 @@ class ContinuePayPalCheckoutStep implements TestStepInterface
      */
     protected function selectCustomerAddress(PaypalCustomer $customer)
     {
-        $reviewBlock = $this->paypalPage->getReviewBlock();
-
-        if ($reviewBlock->checkChangeAddressAbility()) {
+        if ($this->reviewBlock->checkChangeAddressAbility()) {
             $address = $customer->getDataFieldConfig('address')['source']->getAddresses()[0];
-            $reviewBlock->getAddressesBlock()->selectAddress($address);
-            $reviewBlock->waitLoader();
+            $this->reviewBlock->getAddressesBlock()->selectAddress($address);
+            $this->reviewBlock->waitLoader();
         }
     }
 }

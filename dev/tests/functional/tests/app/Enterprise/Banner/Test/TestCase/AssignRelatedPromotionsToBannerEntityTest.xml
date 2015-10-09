@@ -103,7 +103,6 @@
             <data name="prices/special" xsi:type="string">90</data>
             <data name="prices/regular" xsi:type="string">100</data>
             <data name="isCatalogRuleApplied" xsi:type="boolean">true</data>
-            <data name="issue" xsi:type="string">Bug: MPERF-6836</data>
             <constraint name="Mage\CatalogRule\Test\Constraint\AssertCatalogPriceRuleAppliedInCatalogPage"/>
             <constraint name="Mage\CatalogRule\Test\Constraint\AssertCatalogPriceRuleAppliedInProductPage"/>
             <constraint name="Mage\CatalogRule\Test\Constraint\AssertCatalogPriceRuleAppliedInShoppingCart"/>

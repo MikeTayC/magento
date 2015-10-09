@@ -26,7 +26,7 @@
 
 namespace Mage\Catalog\Test\Fixture\CatalogProductSimple;
 
-use Magento\Mtf\Config;
+use Magento\Mtf\Config\DataInterface;
 use Magento\Mtf\Fixture\FixtureFactory;
 use Magento\Mtf\Fixture\FixtureInterface;
 use Magento\Mtf\Util\Protocol\CurlInterface;
@@ -67,18 +67,18 @@ class TaxClass implements FixtureInterface
     /**
      * Configuration data.
      *
-     * @var Config
+     * @var DataInterface
      */
     protected $configuration;
 
     /**
      * @constructor
      * @param FixtureFactory $fixtureFactory
-     * @param Config $configuration
+     * @param DataInterface $configuration
      * @param array $params
      * @param array|string $data [optional]
      */
-    public function __construct(FixtureFactory $fixtureFactory, Config $configuration, array $params, $data = [])
+    public function __construct(FixtureFactory $fixtureFactory, DataInterface $configuration, array $params, $data = [])
     {
         $this->params = $params;
         $this->configuration = $configuration;

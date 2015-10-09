@@ -28,10 +28,13 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Mage\Sales\Test\TestCase\CreateOrderFromBackendWithinOfflinePaymentMethodsTest">
         <variation name="CreateOrderFromBackendWithinOfflinePaymentMethodsTestVariation2" method="test">
+            <data name="description" xsi:type="string">Create backend order with simple product for existing customer and apply gift card.</data>
             <data name="giftCardAccount" xsi:type="string">default</data>
+            <data name="grandTotal/giftCard" xsi:type="string">-100.00</data>
         </variation>
         <variation name="CreateOrderFromBackendWithinOfflinePaymentMethodsTestVariation3" method="test">
             <data name="giftCardAccount" xsi:type="string">default</data>
+            <data name="grandTotal/giftCard" xsi:type="string">-100.00</data>
         </variation>
     </testCase>
 </config>

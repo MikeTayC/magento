@@ -28,7 +28,8 @@ namespace Mage\Bundle\Test\Handler;
 
 use Mage\Bundle\Test\Fixture\BundleProduct;
 use Magento\Mtf\Fixture\FixtureInterface;
-use Magento\Mtf\Config;
+use Magento\Mtf\Config\DataInterface;
+use Magento\Mtf\System\Event\EventManagerInterface;
 use Magento\Mtf\Util\Protocol\CurlInterface;
 use Magento\Mtf\Util\Protocol\CurlTransport;
 use Magento\Mtf\Util\Protocol\CurlTransport\BackendDecorator;
@@ -58,11 +59,12 @@ class Curl extends \Mage\Catalog\Test\Handler\CatalogProductSimple\Curl implemen
 
     /**
      * @constructor
-     * @param Config $configuration
+     * @param DataInterface $configuration
+     * @param EventManagerInterface $eventManager
      */
-    public function __construct(Config $configuration)
+    public function __construct(DataInterface $configuration, EventManagerInterface $eventManager)
     {
-        parent::__construct($configuration);
+        parent::__construct($configuration, $eventManager);
 
         $this->mappingData += [
             'selection_can_change_qty' => [

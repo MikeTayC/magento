@@ -326,7 +326,7 @@ abstract class Grid extends GridPageActions
         $this->resetFilter();
         $this->prepareForSearch($filter);
         $this->_rootElement->find($this->searchButton, Locator::SELECTOR_CSS)->click();
-        $this->waitLoader();
+        $this->getTemplateBlock()->waitLoader();
     }
 
     /**
@@ -341,41 +341,8 @@ abstract class Grid extends GridPageActions
         $rowItem = $this->_rootElement->find($this->rowItem, Locator::SELECTOR_CSS);
         if ($rowItem->isVisible()) {
             $rowItem->find($this->editLink, Locator::SELECTOR_CSS)->click();
-            $this->waitForElement();
         } else {
             throw new \Exception('Searched item was not found.');
-        }
-    }
-
-    /**
-     * Wait loader.
-     *
-     * @return void
-     */
-    protected function waitLoader()
-    {
-        $browser = $this->browser;
-        $selector = $this->loader;
-        $browser->waitUntil(
-            function () use ($browser, $selector) {
-                $productSavedMessage = $browser->find($selector);
-                return $productSavedMessage->isVisible() == false ? true : null;
-            }
-        );
-        $this->getTemplateBlock()->waitLoader();
-    }
-
-    /**
-     * Method that waits for the configured selector using class attributes.
-     */
-    protected function waitForElement()
-    {
-        if (!empty($this->waitForSelector)) {
-            if ($this->waitForSelectorVisible) {
-                $this->getTemplateBlock()->waitForElementVisible($this->waitForSelector, $this->waitForSelectorType);
-            } else {
-                $this->getTemplateBlock()->waitForElementNotVisible($this->waitForSelector, $this->waitForSelectorType);
-            }
         }
     }
 
@@ -402,7 +369,7 @@ abstract class Grid extends GridPageActions
     public function resetFilter()
     {
         $this->_rootElement->find($this->resetButton, Locator::SELECTOR_CSS)->click();
-        $this->waitLoader();
+        $this->getTemplateBlock()->waitLoader();
     }
 
     /**
@@ -510,7 +477,7 @@ abstract class Grid extends GridPageActions
         $sortBlock = $this->_rootElement->find(sprintf($this->sortLink, $field, $sort));
         if ($sortBlock->isVisible()) {
             $sortBlock->click();
-            $this->waitLoader();
+            $this->getTemplateBlock()->waitLoader();
         }
     }
 
@@ -525,7 +492,7 @@ abstract class Grid extends GridPageActions
             return false;
         }
         $this->_rootElement->find($this->actionNextPage)->click();
-        $this->waitLoader();
+        $this->getTemplateBlock()->waitLoader();
         return true;
     }
 

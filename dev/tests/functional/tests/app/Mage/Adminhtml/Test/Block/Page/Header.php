@@ -60,6 +60,13 @@ class Header extends Block
     }
 
     /**
+     * First level menu items selector.
+     *
+     * @var string
+     */
+    protected $firstLevelMenuItem = 'li.parent.level0';
+
+    /**
      * Check navigation menu.
      *
      * @param string $name
@@ -87,5 +94,20 @@ class Header extends Block
         } catch (\Exception $e) {
             return false;
         }
+    }
+
+    /**
+     * Get first-level menu elements.
+     *
+     * @return array
+     */
+    public function getMenuFirstLevelItems()
+    {
+        $elements = $this->_rootElement->getElements($this->firstLevelMenuItem);
+        $items = [];
+        foreach ($elements as $element) {
+            $items[] = $element->getText();
+        }
+        return $items;
     }
 }

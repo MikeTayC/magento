@@ -27,11 +27,48 @@
 namespace Mage\Adminhtml\Test\Block\Cms\Page\Edit;
 
 use Mage\Adminhtml\Test\Block\Widget\FormTabs;
+use Mage\Cms\Test\Fixture\CmsPage;
+use Magento\Mtf\Client\Element\SimpleElement as Element;
+use Magento\Mtf\Client\Locator;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Backend Cms Page edit page.
  */
 class PageForm extends FormTabs
 {
-    //
+    /**
+     * Selector for store view field.
+     *
+     * @var string
+     */
+    protected $storeView = '#page_store_id';
+
+    /**
+     * Fill form with tabs.
+     *
+     * @param FixtureInterface $cms
+     * @param Element|null $element
+     * @return FormTabs
+     */
+    public function fill(FixtureInterface $cms, Element $element = null)
+    {
+        $this->fillStoreView($cms);
+        return parent::fill($cms, $element);
+    }
+
+    /**
+     * Fill store view.
+     *
+     * @param CmsPage $cms
+     * @return void
+     */
+    protected function fillStoreView(CmsPage $cms)
+    {
+        $this->openTab('page_information');
+        $storeViewField = $this->_rootElement->find($this->storeView, Locator::SELECTOR_CSS, 'multiselectgrouplist');
+        if($storeViewField->isVisible() && !$cms->hasData('store_id')) {
+            $storeViewField->setValue('All Store Views');
+        }
+    }
 }

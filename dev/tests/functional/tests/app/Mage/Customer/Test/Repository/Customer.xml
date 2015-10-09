@@ -25,8 +25,7 @@
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
     <repository class="Mage\Customer\Test\Repository\Customer">
         <dataset name="default">
             <field name="firstname" xsi:type="string">John</field>
@@ -38,6 +37,7 @@
             <field name="password" xsi:type="string">123123q</field>
             <field name="confirmation" xsi:type="string">123123q</field>
         </dataset>
+
         <dataset name="johndoe_unique">
             <field name="firstname" xsi:type="string">John</field>
             <field name="lastname" xsi:type="string">Doe%isolation%</field>
@@ -51,6 +51,7 @@
                 <item name="presets" xsi:type="string">US_address_NY</item>
             </field>
         </dataset>
+
         <dataset name="johndoe_unique_TX">
             <field name="firstname" xsi:type="string">John</field>
             <field name="lastname" xsi:type="string">Doe%isolation%</field>
@@ -62,6 +63,64 @@
             <field name="confirmation" xsi:type="string">123123q</field>
             <field name="address" xsi:type="array">
                 <item name="presets" xsi:type="string">US_address_TX</item>
+            </field>
+        </dataset>
+
+        <dataset name="johndoe_conditions">
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="group_id" xsi:type="array">
+                <item name="dataSet" xsi:type="string">Retailer</item>
+            </field>
+            <field name="email" xsi:type="string">JohnDoe_%isolation%@example.com</field>
+            <field name="password" xsi:type="string">123123q</field>
+            <field name="confirmation" xsi:type="string">123123q</field>
+            <field name="address" xsi:type="array">
+                <item name="presets" xsi:type="string">US_address_NY</item>
+            </field>
+            <field name="dob" xsi:type="string">01/01/1990</field>
+            <field name="gender" xsi:type="string">Male</field>
+        </dataset>
+        
+        <dataset name="customer_with_two_addresses">
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="group_id" xsi:type="array">
+                <item name="dataSet" xsi:type="string">General</item>
+            </field>
+            <field name="email" xsi:type="string">JohnDoe_%isolation%@example.com</field>
+            <field name="password" xsi:type="string">123123q</field>
+            <field name="confirmation" xsi:type="string">123123q</field>
+            <field name="address" xsi:type="array">
+                <item name="presets" xsi:type="string">US_address_NY,US_address_TX</item>
+            </field>
+        </dataset>
+
+        <dataset name="johndoe_with_addresses">
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="group_id" xsi:type="array">
+                <item name="dataSet" xsi:type="string">General</item>
+            </field>
+            <field name="email" xsi:type="string">JohnDoe_%isolation%@example.com</field>
+            <field name="password" xsi:type="string">123123q</field>
+            <field name="confirmation" xsi:type="string">123123q</field>
+            <field name="address" xsi:type="array">
+                <item name="presets" xsi:type="string">US_address</item>
+            </field>
+        </dataset>
+
+        <dataset name="uk_with_vat">
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="group_id" xsi:type="array">
+                <item name="dataSet" xsi:type="string">General</item>
+            </field>
+            <field name="email" xsi:type="string">JohnDoe_%isolation%@example.com</field>
+            <field name="password" xsi:type="string">123123q</field>
+            <field name="confirmation" xsi:type="string">123123q</field>
+            <field name="address" xsi:type="array">
+                <item name="presets" xsi:type="string">customer_UK_with_vat</item>
             </field>
         </dataset>
     </repository>

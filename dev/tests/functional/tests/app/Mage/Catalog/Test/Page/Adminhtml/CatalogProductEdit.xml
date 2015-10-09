@@ -26,8 +26,9 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../vendor/magento/mtf/etc/pages.xsd">
-  <page name="CatalogProductEdit" area="Adminhtml" mca="catalog_product/edit" module="Mage_Catalog">
-    <block name="productForm" class="Mage\Adminhtml\Test\Block\Catalog\Product\ProductForm" locator="[id='page:main-container']" strategy="css selector"/>
-    <block name="formPageActions" class="Mage\Adminhtml\Test\Block\Catalog\Product\FormPageActions" locator=".content-header" strategy="css selector"/>
-  </page>
+    <page name="CatalogProductEdit" area="Adminhtml" mca="catalog_product/edit" module="Mage_Catalog">
+        <block name="productForm" class="Mage\Adminhtml\Test\Block\Catalog\Product\ProductForm" locator="[id='page:main-container']" strategy="css selector"/>
+        <block name="formPageActions" class="Mage\Adminhtml\Test\Block\Catalog\Product\FormPageActions" locator=".content-header" strategy="css selector"/>
+        <block name="messagesBlock" class="Mage\Core\Test\Block\Messages" locator="#messages .messages" strategy="css selector"/>
+    </page>
 </config>

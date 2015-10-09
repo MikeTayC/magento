@@ -184,10 +184,7 @@ class CustomOptions extends Form
     protected function getListOptions()
     {
         $customOptions = [];
-        $context = $this->_rootElement->find(sprintf($this->optionsContext, 2), Locator::SELECTOR_XPATH)->isVisible()
-            ? $this->_rootElement->find(sprintf($this->optionsContext, 2), Locator::SELECTOR_XPATH)
-            : $this->_rootElement->find(sprintf($this->optionsContext, 1), Locator::SELECTOR_XPATH);
-
+        $context = $this->getOptionsContext();
         $count = 1;
         $optionElementTitle = $context->find(sprintf($this->optionElementTitle, $count), Locator::SELECTOR_XPATH);
         $optionElement = $context->find(sprintf($this->optionElement, $count), Locator::SELECTOR_XPATH);
@@ -200,6 +197,18 @@ class CustomOptions extends Form
             $optionElement = $context->find(sprintf($this->optionElement, $count), Locator::SELECTOR_XPATH);
         }
         return $customOptions;
+    }
+
+    /**
+     * Get options context.
+     *
+     * @return Element
+     */
+    protected function getOptionsContext()
+    {
+        return $this->_rootElement->find(sprintf($this->optionsContext, 2), Locator::SELECTOR_XPATH)->isVisible()
+            ? $this->_rootElement->find(sprintf($this->optionsContext, 2), Locator::SELECTOR_XPATH)
+            : $this->_rootElement->find(sprintf($this->optionsContext, 1), Locator::SELECTOR_XPATH);
     }
 
     /**

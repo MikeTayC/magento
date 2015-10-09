@@ -28,7 +28,7 @@ namespace Mage\Paypal\Test\Block;
 
 use Magento\Mtf\Block\Form;
 use Magento\Mtf\Client\Element\SimpleElement as Element;
-use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Login to Pay Pal account.
@@ -40,7 +40,7 @@ class Login extends Form
      *
      * @var string
      */
-    protected $submitButton = '[type="submit"][name="_eventId_submit"]';
+    protected $submitButton = '.loginBtn';
 
     /**
      * Loader selector.
@@ -62,11 +62,11 @@ class Login extends Form
     /**
      * Fill the root form.
      *
-     * @param InjectableFixture $customer
+     * @param FixtureInterface $customer
      * @param Element|null $element
      * @return $this
      */
-    public function fill(InjectableFixture $customer, Element $element = null)
+    public function fill(FixtureInterface $customer, Element $element = null)
     {
         $this->waitForElementNotVisible($this->loader);
         return parent::fill($customer, $element);

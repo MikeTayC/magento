@@ -67,7 +67,9 @@ class BundleGrid extends Grid
         }
 
         $this->searchAndSelect(['name' => $product->getName()]);
+        $this->getTemplateBlock()->waitLoader();
         $this->getSelectItemsBlock()->fill($labels);
+        $this->getTemplateBlock()->waitLoader();
     }
 
     /**

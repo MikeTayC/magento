@@ -30,7 +30,7 @@ use Mage\Adminhtml\Test\Block\Template;
 use Magento\Mtf\Block\Form;
 use Magento\Mtf\Block\BlockInterface;
 use Magento\Mtf\Client\Element\SimpleElement as Element;
-use Magento\Mtf\Client\Element\Locator;
+use Magento\Mtf\Client\Locator;
 use Magento\Mtf\Fixture\InjectableFixture;
 
 /**

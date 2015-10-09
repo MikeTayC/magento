@@ -27,7 +27,6 @@
 namespace Mage\Theme\Test\Block;
 
 use Magento\Mtf\Block\Block;
-use Magento\Mtf\Client\Element\SimpleElement as Element;
 
 /**
  * Page Links block.

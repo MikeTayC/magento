@@ -26,15 +26,18 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
-  <testCase name="Mage\Checkout\Test\TestCase\OnePageCheckoutTest">
-    <variation name="OnePageCheckoutTestVariation1" method="test">
-      <data name="giftCardAccount" xsi:type="string">default</data>
-    </variation>
-    <variation name="OnePageCheckoutTestVariation5" method="test">
-      <data name="giftCardAccount" xsi:type="string">default</data>
-    </variation>
-    <variation name="OnePageCheckoutTestVariation7" method="test">
-      <data name="giftCardAccount" xsi:type="string">default</data>
-    </variation>
-  </testCase>
+    <testCase name="Mage\Checkout\Test\TestCase\OnePageCheckoutTest">
+        <variation name="OnePageCheckoutTestVariation11" method="test">
+            <data name="giftCardAccount" xsi:type="string">default</data>
+            <data name="grandTotal/giftCard" xsi:type="string">-50</data>
+        </variation>
+        <variation name="OnePageCheckoutTestVariation51" method="test">
+            <data name="giftCardAccount" xsi:type="string">default</data>
+            <data name="grandTotal/giftCard" xsi:type="string">-100</data>
+        </variation>
+        <variation name="OnePageCheckoutTestVariation71" method="test">
+            <data name="giftCardAccount" xsi:type="string">default</data>
+            <data name="grandTotal/giftCard" xsi:type="string">-50</data>
+        </variation>
+    </testCase>
 </config>

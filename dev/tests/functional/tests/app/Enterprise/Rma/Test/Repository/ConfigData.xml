@@ -28,9 +28,24 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
     <repository class="Mage\Core\Test\Repository\ConfigData">
         <dataset name="rma_enable_on_frontend">
-            <field path="sales/enterprise_rma/enabled" scope="sales" scope_id="1" label="Yes" xsi:type="string">1</field>
-            <field path="sales/enterprise_rma/enabled_on_product" scope="sales" scope_id="1" label="Yes" xsi:type="string">1</field>
-            <field path="sales/enterprise_rma/use_store_address" scope="sales" scope_id="1" label="Yes" xsi:type="string">1</field>
+            <field name="sales/enterprise_rma/enabled" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Yes</item>
+                <item name="value" xsi:type="string">1</item>
+            </field>
+            <field name="sales/enterprise_rma/enabled_on_product" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Yes</item>
+                <item name="value" xsi:type="string">1</item>
+            </field>
+            <field name="sales/enterprise_rma/use_store_address" xsi:type="array">
+                <item name="scope" xsi:type="string">sales</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Yes</item>
+                <item name="value" xsi:type="string">1</item>
+            </field>
         </dataset>
     </repository>
 </config>

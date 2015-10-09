@@ -43,7 +43,7 @@ class AssertCategoryAbsenceOnFrontend extends AbstractConstraint
     /**
      * Message on the category page 404.
      */
-    const NOT_FOUND_MESSAGE = 'WE ARE SORRY, BUT THE PAGE YOU ARE LOOKING FOR CANNOT BE FOUND.';
+    const NOT_FOUND_MESSAGE = 'The page you requested was not found, and we have a fine guess why.';
 
     /**
      * Assert category is not present on frontend.
@@ -51,16 +51,19 @@ class AssertCategoryAbsenceOnFrontend extends AbstractConstraint
      * @param Browser $browser
      * @param CatalogCategoryView $categoryView
      * @param CatalogCategory $category
+     * @param string|null $notFoundMessage
      * @return void
      */
     public function processAssert(
         Browser $browser,
         CatalogCategoryView $categoryView,
-        CatalogCategory $category
+        CatalogCategory $category,
+        $notFoundMessage = null
     ) {
         $browser->open($_ENV['app_frontend_url'] . $category->getUrlKey() . '.html');
+        $notFoundMessage = ($notFoundMessage !== null) ? $notFoundMessage : self::NOT_FOUND_MESSAGE;
         \PHPUnit_Framework_Assert::assertContains(
-            self::NOT_FOUND_MESSAGE,
+            $notFoundMessage,
             $categoryView->getViewBlock()->getText(),
             'Category is present on frontend.'
         );

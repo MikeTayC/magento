@@ -39,7 +39,7 @@ class ActionsToolbar extends Block
      *
      * @var string
      */
-    protected $linkSelector = './/a[contains(@class, "action")]//span[contains(text(), "%s")]';
+    protected $linkSelector = '//a[contains(text(),"%s")]';
 
     /**
      * Click link on this page.

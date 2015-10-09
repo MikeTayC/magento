@@ -28,5 +28,6 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../vendor/magento/mtf/etc/pages.xsd">
     <page name="CatalogProductAttributeEdit" area="Adminhtml" mca="catalog_product_attribute/edit" module="Mage_Catalog">
         <block name="attributeForm" class="Mage\Adminhtml\Test\Block\Catalog\Product\Attribute\Edit\AttributeForm" locator="[id='page:main-container']" strategy="css selector"/>
+        <block name="pageActions" class="Mage\Adminhtml\Test\Block\FormPageActions" locator=".content-header" strategy="css selector"/>
     </page>
 </config>

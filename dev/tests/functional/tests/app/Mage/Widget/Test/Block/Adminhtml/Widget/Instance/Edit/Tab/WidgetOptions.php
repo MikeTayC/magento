@@ -48,7 +48,7 @@ class WidgetOptions extends Tab
      *
      * @var string
      */
-    protected $path = 'Magento\Widget\Test\Block\Adminhtml\Widget\Instance\Edit\Tab\WidgetOptionsType\\';
+    protected $path = 'Mage\Widget\Test\Block\Adminhtml\Widget\Instance\Edit\Tab\WidgetOptionsType\\';
 
     /**
      * Fill Widget options form.

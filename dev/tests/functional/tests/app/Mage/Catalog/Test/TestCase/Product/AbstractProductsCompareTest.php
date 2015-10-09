@@ -32,7 +32,6 @@ use Magento\Mtf\TestCase\Injectable;
 use Magento\Mtf\Fixture\FixtureFactory;
 use Mage\Customer\Test\Fixture\Customer;
 use Magento\Mtf\Fixture\InjectableFixture;
-use Magento\Mtf\Constraint\AbstractConstraint;
 use Mage\Customer\Test\Page\CustomerAccountLogin;
 use Mage\Catalog\Test\Page\Product\CatalogProductView;
 use Mage\Catalog\Test\Page\Product\CatalogProductCompare;

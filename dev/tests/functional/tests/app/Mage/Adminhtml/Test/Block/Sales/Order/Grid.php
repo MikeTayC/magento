@@ -58,5 +58,9 @@ class Grid extends \Mage\Adminhtml\Test\Block\Widget\Grid
             'selector' => 'select[name="status"]',
             'input' => 'select',
         ],
+        'purchased_from' => [
+            'selector' => 'select[name="store_id"]',
+            'input' => 'select',
+        ],
     ];
 }

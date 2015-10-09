@@ -114,6 +114,7 @@ class Enterprise_Banner_Block_Widget_Banner
         $this->_bannerResource  = Mage::getResourceSingleton('enterprise_banner/banner');
         $this->_currentStoreId  = Mage::app()->getStore()->getId();
         $this->_sessionInstance = Mage::getSingleton('core/session');
+        Mage::dispatchEvent('block_widget_banner_create_after', array('block' => $this));
     }
 
     /**

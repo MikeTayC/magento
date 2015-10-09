@@ -28,7 +28,6 @@ namespace Mage\Authorizenet\Test\TestStep;
 
 use Magento\Mtf\Fixture\FixtureFactory;
 use Mage\Checkout\Test\Page\CheckoutOnepage;
-use Mage\Checkout\Test\Page\CheckoutOnepageSuccess;
 use Magento\Mtf\TestStep\TestStepInterface;
 use Mage\Payment\Test\Fixture\Cc;
 

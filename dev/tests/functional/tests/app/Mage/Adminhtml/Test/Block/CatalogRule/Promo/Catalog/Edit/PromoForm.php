@@ -28,7 +28,7 @@ namespace Mage\Adminhtml\Test\Block\CatalogRule\Promo\Catalog\Edit;
 
 use Mage\Adminhtml\Test\Block\Widget\FormTabs;
 use Magento\Mtf\Client\Element\SimpleElement as Element;
-use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Form for creation of a Catalog Price Rule.
@@ -38,12 +38,12 @@ class PromoForm extends FormTabs
     /**
      * Fill form with tabs.
      *
-     * @param InjectableFixture $fixture
+     * @param FixtureInterface $fixture
      * @param Element $element
      * @param array $replace
      * @return $this|FormTabs
      */
-    public function fill(InjectableFixture $fixture, Element $element = null, array $replace = null)
+    public function fill(FixtureInterface $fixture, Element $element = null, array $replace = null)
     {
         $tabs = $this->getFieldsByTabs($fixture);
         if ($replace) {

@@ -49,4 +49,17 @@ class Form extends \Magento\Mtf\Block\Form
     {
         return $this->_rootElement->find($this->taxRate, Locator::SELECTOR_CSS, 'multiselectlist')->getAllValues();
     }
+
+    /**
+     * Check whether tax rate is visible in the list.
+     *
+     * @param string $value
+     * @return bool
+     */
+    public function isTaxRateAvailable($value)
+    {
+        return $this->_rootElement->find($this->taxRate, Locator::SELECTOR_CSS, 'multiselectlist')
+            ->isValueVisible($value);
+    }
+
 }

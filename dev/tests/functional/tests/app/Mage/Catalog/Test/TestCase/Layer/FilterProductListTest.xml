@@ -26,49 +26,48 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../vendor/magento/mtf/etc/variations.xsd">
-  <testCase name="Mage\Catalog\Test\TestCase\Layer\FilterProductListTest">
-    <variation name="FilterProductListTestVariation1" firstConstraint="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByPrice" method="test">
-      <data name="description" xsi:type="string">Filter by price</data>
-      <data name="products" xsi:type="string">downloadableProduct::with_two_separately_links,catalogProductSimple::50_dollar_product,catalogProductVirtual::order_default</data>
-      <data name="filterLink" xsi:type="string">$20.00</data>
-      <data name="searchProductsIndexes" xsi:type="string">0</data>
-      <constraint name="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByPrice"/>
-    </variation>
-    <variation name="FilterProductListTestVariation2" firstConstraint="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByPrice" method="test">
-      <data name="description" xsi:type="string">Filter by price</data>
-      <data name="products" xsi:type="string">catalogProductSimple::order_default,catalogProductSimple::50_dollar_product,catalogProductVirtual::order_default</data>
-      <data name="filterLink" xsi:type="string">$50.00</data>
-      <data name="searchProductsIndexes" xsi:type="string">1</data>
-      <constraint name="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByPrice"/>
-    </variation>
-    <variation name="FilterProductListTestVariation3" firstConstraint="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByPrice" method="test">
-      <data name="description" xsi:type="string">Filter by price</data>
-      <data name="products" xsi:type="string">groupedProduct::three_simple_products_without_category,catalogProductSimple::50_dollar_product,catalogProductSimple::50_dollar_product</data>
-      <data name="filterLink" xsi:type="string">$100.00</data>
-      <data name="searchProductsIndexes" xsi:type="string">0</data>
-      <constraint name="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByPrice"/>
-    </variation>
-    <variation name="FilterProductListTestVariation4" firstConstraint="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByPrice" method="test">
-      <data name="description" xsi:type="string">Filter by price</data>
-      <data name="products" xsi:type="string">bundleProduct::bundle_fixed_product,catalogProductSimple::50_dollar_product,catalogProductVirtual::order_default</data>
-      <data name="filterLink" xsi:type="string">$760.00</data>
-      <data name="searchProductsIndexes" xsi:type="string">0</data>
-      <constraint name="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByPrice"/>
-    </variation>
-    <variation name="FilterProductListTestVariation5" firstConstraint="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByPrice" method="test">
-      <data name="description" xsi:type="string">Filter by price</data>
-      <data name="products" xsi:type="string">catalogProductSimple::order_default,catalogProductVirtual::order_default_expensive,catalogProductVirtual::order_default</data>
-      <data name="filterLink" xsi:type="string">$1,000.00</data>
-      <data name="searchProductsIndexes" xsi:type="string">1</data>
-      <constraint name="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByPrice"/>
-    </variation>
-    <variation name="FilterProductListTestVariation6" firstConstraint="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByAttribute" method="test">
-      <data name="description" xsi:type="string">Filter by configurable attribute</data>
-      <data name="products" xsi:type="string">catalogProductSimple::order_default,catalogProductVirtual::order_default,configurableProduct::with_filterable_options</data>
-      <data name="filterLink" xsi:type="string">attribute_key_0::option_key_0</data>
-      <data name="searchProductsIndexes" xsi:type="string">2</data>
-      <data name="issue" xsi:type="string">Bug: MPERF-6836</data>
-      <constraint name="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByAttribute"/>
-    </variation>
-  </testCase>
+    <testCase name="Mage\Catalog\Test\TestCase\Layer\FilterProductListTest">
+        <variation name="FilterProductListTestVariation1" method="test">
+            <data name="description" xsi:type="string">Filter by price</data>
+            <data name="products" xsi:type="string">downloadableProduct::with_two_separately_links,catalogProductSimple::50_dollar_product,catalogProductVirtual::order_default</data>
+            <data name="filterLink" xsi:type="string">$20.00</data>
+            <data name="searchProductsIndexes" xsi:type="string">0</data>
+            <constraint name="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByPrice" />
+        </variation>
+        <variation name="FilterProductListTestVariation2" method="test">
+            <data name="description" xsi:type="string">Filter by price</data>
+            <data name="products" xsi:type="string">catalogProductSimple::order_default,catalogProductSimple::50_dollar_product,catalogProductVirtual::order_default</data>
+            <data name="filterLink" xsi:type="string">$50.00</data>
+            <data name="searchProductsIndexes" xsi:type="string">1</data>
+            <constraint name="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByPrice" />
+        </variation>
+        <variation name="FilterProductListTestVariation3" method="test">
+            <data name="description" xsi:type="string">Filter by price</data>
+            <data name="products" xsi:type="string">groupedProduct::three_simple_products_without_category,catalogProductSimple::50_dollar_product,catalogProductSimple::50_dollar_product</data>
+            <data name="filterLink" xsi:type="string">$100.00</data>
+            <data name="searchProductsIndexes" xsi:type="string">0</data>
+            <constraint name="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByPrice" />
+        </variation>
+        <variation name="FilterProductListTestVariation4" method="test">
+            <data name="description" xsi:type="string">Filter by price</data>
+            <data name="products" xsi:type="string">bundleProduct::bundle_fixed_product,catalogProductSimple::50_dollar_product,catalogProductVirtual::order_default</data>
+            <data name="filterLink" xsi:type="string">$760.00</data>
+            <data name="searchProductsIndexes" xsi:type="string">0</data>
+            <constraint name="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByPrice" />
+        </variation>
+        <variation name="FilterProductListTestVariation5" method="test">
+            <data name="description" xsi:type="string">Filter by price</data>
+            <data name="products" xsi:type="string">catalogProductSimple::order_default,catalogProductVirtual::order_default_expensive,catalogProductVirtual::order_default</data>
+            <data name="filterLink" xsi:type="string">$1,000.00</data>
+            <data name="searchProductsIndexes" xsi:type="string">1</data>
+            <constraint name="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByPrice" />
+        </variation>
+        <variation name="FilterProductListTestVariation6" method="test">
+            <data name="description" xsi:type="string">Filter by configurable attribute</data>
+            <data name="products" xsi:type="string">catalogProductSimple::order_default,catalogProductVirtual::order_default,configurableProduct::with_filterable_options</data>
+            <data name="filterLink" xsi:type="string">attribute_key_0::option_key_0</data>
+            <data name="searchProductsIndexes" xsi:type="string">2</data>
+            <constraint name="Mage\Catalog\Test\Constraint\AssertProductsVisibleOnCategoryPageShopByAttribute" />
+        </variation>
+    </testCase>
 </config>

@@ -33,7 +33,7 @@ use Mage\Shipping\Test\Page\Adminhtml\SalesShipmentView;
 use Magento\Mtf\Fixture\InjectableFixture;
 use Mage\Adminhtml\Test\Block\Shipping\View\Items;
 use Mage\Shipping\Test\Page\ShipmentView;
-use Magento\Mtf\Helper\Constraint\ProductHandler;
+use Mage\Catalog\Test\Constraint\ProductHandler;
 
 /**
  * Assert items represented in order's entity view page.
@@ -80,7 +80,7 @@ abstract class AbstractAssertItems extends AbstractAssertSales
      *
      * @var string
      */
-    protected $productHandlerPath = 'Magento\Mtf\Helper\Constraint\ProductHandler';
+    protected $productHandlerPath = 'Mage\Catalog\Test\Constraint\ProductHandler';
 
     /**
      * Assert products are represented on view page.

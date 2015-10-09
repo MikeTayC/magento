@@ -46,6 +46,13 @@ class FormPageActions extends \Mage\Adminhtml\Test\Block\FormPageActions
     protected $saveAndContinueButton = '[onclick*="saveAndContinueEdit"]';
 
     /**
+     * Selector for "Duplicate" button.
+     *
+     * @var string
+     */
+    protected $duplicateButton = 'button[onclick*="catalog_product/duplicate"]';
+
+    /**
      * Header floating css selector.
      *
      * @var string
@@ -73,19 +80,12 @@ class FormPageActions extends \Mage\Adminhtml\Test\Block\FormPageActions
     }
 
     /**
-     * Click on button.
+     * Click on "Duplicate" button.
      *
-     * @param string $buttonName
      * @return void
      */
-    protected function buttonClick($buttonName)
+    public function duplicate()
     {
-        $button = $this->_rootElement->find($this->{$buttonName . 'Button'});
-        if ($button->isVisible()) {
-            $button->click();
-        } else {
-            $this->browser->find($this->headerFloating . ' ' . $this->{$buttonName . 'Button'})->click();
-        }
-        $this->getTemplateBlock()->waitLoader();
+        $this->buttonClick('duplicate');
     }
 }

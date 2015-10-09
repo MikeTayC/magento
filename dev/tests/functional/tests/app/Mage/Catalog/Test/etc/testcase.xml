@@ -30,4 +30,13 @@
         <step name="createProductAttribute" module="Mage_Catalog" next="createProductTemplate" />
         <step name="createProductTemplate" module="Mage_Catalog" />
     </scenario>
+
+    <scenario name="UpdateConfigurableProductEntityTest" firstStep="createProduct">
+        <step name="createProduct" module="Mage_Catalog" next="openProductOnBackend">
+            <item name="product" value="configurableProduct::default"/>
+        </step>
+        <step name="openProductOnBackend" module="Mage_Catalog" next="updateConfigurableProduct"/>
+        <step name="updateConfigurableProduct" module="Mage_Catalog" next="saveProduct"/>
+        <step name="saveProduct" module="Mage_Catalog"/>
+    </scenario>
 </config>

@@ -29,6 +29,7 @@ namespace Mage\Payment\Test\TestStep;
 use Mage\Checkout\Test\Page\CheckoutOnepage;
 use Mage\Payment\Test\Fixture\Cc;
 use Magento\Mtf\TestStep\TestStepInterface;
+use Magento\Mtf\ObjectManager;
 
 /**
  * Fill 3D secure credit card validation.
@@ -63,12 +64,12 @@ class Fill3DSecureCreditCardValidationStep implements TestStepInterface
     /**
      * Fill 3D secure credit card validation.
      *
-     * @return array
+     * @return void
      */
     public function run()
     {
         $centinelForm = $this->checkoutOnepage->getReviewBlock()->getCentinelForm();
-        $centinelForm->fill($this->cc);
+        $centinelForm->fillCc($this->cc);
         $centinelForm->submitCode();
     }
 }

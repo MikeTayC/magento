@@ -81,6 +81,15 @@ class Items extends \Enterprise\Rma\Test\Block\Adminhtml\Rma\Edit\Tab\Items
     protected $templateBlock = './/ancestor::body';
 
     /**
+     * Products items classes.
+     *
+     * @var array
+     */
+    protected $productsItems = [
+        'bundle' => 'Enterprise\Rma\Test\Block\Adminhtml\Rma\NewRma\Tab\BundleItems'
+    ];
+
+    /**
      * Fill data to fields on tab.
      *
      * @param array $fields
@@ -164,12 +173,10 @@ class Items extends \Enterprise\Rma\Test\Block\Adminhtml\Rma\Edit\Tab\Items
         /** @var CatalogProductSimple $product */
         $product = $itemData['product'];
         $productConfig = $product->getDataConfig();
-        $productType = isset($productConfig['type_id']) ? ucfirst($productConfig['type_id']) : '';
-        $productItemsClass = 'Enterprise\Rma\Test\Block\Adminhtml\Rma\NewRma\Tab\\' . $productType . 'Items';
-
-        if (class_exists($productItemsClass)) {
-            $productGrid = $this->blockFactory->create($productItemsClass, ['element' => $this->_rootElement]);
-            $productGrid->fillItem($itemData);
+        if (isset($this->productsItems[$productConfig['type_id']])) {
+            $this->blockFactory
+                ->create($this->productsItems[$productConfig['type_id']], ['element' => $this->_rootElement])
+                ->fillItem($itemData);
         } else {
             unset($itemData['product']);
             $fields = $this->dataMapping($itemData);

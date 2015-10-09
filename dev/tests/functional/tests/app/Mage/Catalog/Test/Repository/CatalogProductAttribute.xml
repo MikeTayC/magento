@@ -25,8 +25,7 @@
  * @license http://www.magento.com/license/enterprise-edition
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
     <repository class="Mage\Catalog\Test\Repository\CatalogProductAttribute">
         <dataset name="attribute_type_dropdown">
             <field name="frontend_label" xsi:type="string">attribute_dropdown%isolation%</field>
@@ -37,6 +36,7 @@
                 <item name="preset" xsi:type="string">with_three_options</item>
             </field>
         </dataset>
+
         <dataset name="filterable_attribute">
             <field name="frontend_label" xsi:type="string">filterable_attribute%isolation%</field>
             <field name="attribute_code" xsi:type="string">filterable_attribute%isolation%</field>
@@ -46,6 +46,12 @@
             <field name="options" xsi:type="array">
                 <item name="preset" xsi:type="string">with_three_options</item>
             </field>
+        </dataset>
+
+        <dataset name="attribute_type_fpt">
+            <field name="frontend_label" xsi:type="string">fpt_%isolation%</field>
+            <field name="attribute_code" xsi:type="string">fpt_%isolation%</field>
+            <field name="frontend_input" xsi:type="string">Fixed Product Tax</field>
         </dataset>
     </repository>
 </config>

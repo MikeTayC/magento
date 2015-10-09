@@ -86,9 +86,11 @@ class OnePageCheckoutTest extends Scenario
     public function tearDown()
     {
         $this->customerAccountLogout->open();
-        $this->objectManager->create(
-            'Mage\Core\Test\TestStep\SetupConfigurationStep',
-            ['configData' => $this->currentVariation['arguments']['configData'], 'rollback' => true]
-        )->run();
+        if (isset($this->currentVariation['arguments']['configData'])) {
+            $this->objectManager->create(
+                'Mage\Core\Test\TestStep\SetupConfigurationStep',
+                ['configData' => $this->currentVariation['arguments']['configData'], 'rollback' => true]
+            )->run();
+        }
     }
 }

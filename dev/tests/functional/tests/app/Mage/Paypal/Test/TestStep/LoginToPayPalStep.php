@@ -29,6 +29,7 @@ namespace Mage\Paypal\Test\TestStep;
 use Mage\Paypal\Test\Fixture\PaypalCustomer;
 use Mage\Paypal\Test\Page\Paypal;
 use Magento\Mtf\TestStep\TestStepInterface;
+use Magento\Mtf\Client\Browser;
 
 /**
  * Login to Pay Pal step.
@@ -50,12 +51,28 @@ class LoginToPayPalStep implements TestStepInterface
     protected $customer;
 
     /**
+     * Browser.
+     *
+     * @var Browser
+     */
+    protected $browser;
+
+    /**
+     * Loader selector.
+     *
+     * @var string
+     */
+    protected $loader = '#spinner .loader';
+
+    /**
      * @constructor
+     * @param Browser $browser
      * @param Paypal $paypalPage
      * @param PaypalCustomer $paypalCustomer
      */
-    public function __construct(Paypal $paypalPage, PaypalCustomer $paypalCustomer)
+    public function __construct(Browser $browser, Paypal $paypalPage, PaypalCustomer $paypalCustomer)
     {
+        $this->browser = $browser;
         $this->paypalPage = $paypalPage;
         $this->customer = $paypalCustomer;
     }
@@ -67,11 +84,25 @@ class LoginToPayPalStep implements TestStepInterface
      */
     public function run()
     {
+        $browser = $this->browser;
+        $selector = $this->loader;
+        $browser->waitUntil(
+            function () use ($browser, $selector) {
+                $element = $browser->find($selector);
+                return $element->isVisible() == false ? true : null;
+            }
+        );
         /** Log out from previous session. */
-        $this->paypalPage->getReviewBlock()->logOut();
+        $reviewBlock = $this->paypalPage->getReviewBlock()->isVisible()
+            ? $this->paypalPage->getReviewBlock()
+            : $this->paypalPage->getOldReviewBlock();
+        $reviewBlock->logOut();
 
-        $payPalLoginBlock = $this->paypalPage->getLoginBlock();
+        $payPalLoginBlock = $this->paypalPage->getLoginBlock()->isVisible()
+            ? $this->paypalPage->getLoginBlock()
+            : $this->paypalPage->getOldLoginBlock();
         $payPalLoginBlock->fill($this->customer);
         $payPalLoginBlock->submit();
+        $reviewBlock->waitLoader();
     }
 }

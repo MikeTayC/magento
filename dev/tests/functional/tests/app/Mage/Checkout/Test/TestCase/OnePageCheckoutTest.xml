@@ -36,12 +36,11 @@
             <data name="customerPersist" xsi:type="string">no</data>
             <data name="shipping/shipping_service" xsi:type="string">-</data>
             <data name="shipping/shipping_method" xsi:type="string">-</data>
-            <data name="grandTotal" xsi:type="string">0.00</data>
-            <data name="payment/method" xsi:type="string">free</data>
+            <data name="grandTotal/base" xsi:type="string">50.00</data>
+            <data name="payment/method" xsi:type="string">checkmo</data>
             <data name="payment/po_number" xsi:type="string">-</data>
             <data name="status" xsi:type="string">Pending</data>
             <data name="orderButtonsAvailable" xsi:type="string">Back, Cancel, Send Email, Hold, Invoice, Edit</data>
-            <data name="configData" xsi:type="string">-</data>
             <constraint name="Mage\Checkout\Test\Constraint\AssertOrderSuccessPlacedMessage" />
             <constraint name="Mage\Sales\Test\Constraint\AssertOrderStatusIsCorrect" />
             <constraint name="Mage\Sales\Test\Constraint\AssertOrderButtonsAvailable" />
@@ -102,7 +101,6 @@
             <data name="payment/po_number" xsi:type="string">-</data>
             <data name="status" xsi:type="string">Pending</data>
             <data name="orderButtonsAvailable" xsi:type="string">Back, Reorder, Cancel, Send Email, Hold, Invoice, Ship, Edit</data>
-            <data name="configData" xsi:type="string">-</data>
             <constraint name="Mage\Checkout\Test\Constraint\AssertOrderSuccessPlacedMessage" />
             <constraint name="Mage\Sales\Test\Constraint\AssertOrderStatusIsCorrect" />
             <constraint name="Mage\Sales\Test\Constraint\AssertOrderButtonsAvailable" />
@@ -117,8 +115,8 @@
             <data name="customerPersist" xsi:type="string">no</data>
             <data name="shipping/shipping_service" xsi:type="string">-</data>
             <data name="shipping/shipping_method" xsi:type="string">-</data>
-            <data name="grandTotal" xsi:type="string">0.00</data>
-            <data name="payment/method" xsi:type="string">free</data>
+            <data name="grandTotal/base" xsi:type="string">100.00</data>
+            <data name="payment/method" xsi:type="string">checkmo</data>
             <data name="payment/po_number" xsi:type="string">-</data>
             <data name="status" xsi:type="string">Pending</data>
             <data name="orderButtonsAvailable" xsi:type="string">Back, Cancel, Send Email, Hold, Invoice, Edit</data>
@@ -157,8 +155,8 @@
             <data name="customerPersist" xsi:type="string">no</data>
             <data name="shipping/shipping_service" xsi:type="string">-</data>
             <data name="shipping/shipping_method" xsi:type="string">-</data>
-            <data name="grandTotal" xsi:type="string">0.00</data>
-            <data name="payment/method" xsi:type="string">free</data>
+            <data name="grandTotal/base" xsi:type="string">50.00</data>
+            <data name="payment/method" xsi:type="string">checkmo</data>
             <data name="payment/po_number" xsi:type="string">-</data>
             <data name="status" xsi:type="string">Pending</data>
             <data name="orderButtonsAvailable" xsi:type="string">Back, Cancel, Send Email, Hold, Invoice, Edit</data>
@@ -199,7 +197,26 @@
             <data name="grandTotal/base" xsi:type="string">55.00</data>
             <data name="payment/method" xsi:type="string">cashondelivery</data>
             <data name="status" xsi:type="string">Pending</data>
-            <data name="orderButtonsAvailable" xsi:type="string">Back, Reorder, Cancel, Send Notification, Hold, Invoice, Ship, Edit</data>
+            <data name="orderButtonsAvailable" xsi:type="string">Back, Reorder, Cancel, Hold, Invoice, Ship, Edit</data>
+            <data name="configData" xsi:type="string">cashondelivery</data>
+            <constraint name="Mage\Checkout\Test\Constraint\AssertOrderSuccessPlacedMessage" />
+            <constraint name="Mage\Sales\Test\Constraint\AssertOrderStatusIsCorrect" />
+            <constraint name="Mage\Sales\Test\Constraint\AssertOrderButtonsAvailable" />
+            <constraint name="Mage\Sales\Test\Constraint\AssertOrderGrandTotal" />
+        </variation>
+        <variation name="OnePageCheckoutTestVariation91">
+            <data name="description" xsi:type="string">Checkout by configurable product with special price.</data>
+            <data name="products" xsi:type="string">configurableProduct::default_with_special_price</data>
+            <data name="salesRule" xsi:type="string">active_sales_rule_for_all_groups</data>
+            <data name="customer/dataSet" xsi:type="string">default</data>
+            <data name="billingAddress/dataSet" xsi:type="string">customer_US</data>
+            <data name="checkoutMethod" xsi:type="string">login</data>
+            <data name="shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="shipping/shipping_method" xsi:type="string">Fixed</data>
+            <data name="grandTotal" xsi:type="string">62.00</data>
+            <data name="payment/method" xsi:type="string">cashondelivery</data>
+            <data name="status" xsi:type="string">Pending</data>
+            <data name="orderButtonsAvailable" xsi:type="string">Back, Reorder, Cancel, Hold, Invoice, Ship, Edit</data>
             <data name="configData" xsi:type="string">cashondelivery</data>
             <constraint name="Mage\Checkout\Test\Constraint\AssertOrderSuccessPlacedMessage" />
             <constraint name="Mage\Sales\Test\Constraint\AssertOrderStatusIsCorrect" />

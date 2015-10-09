@@ -30,9 +30,7 @@
         <variation name="DeleteCategoryEntityTestVariation3">
             <data name="category/dataSet" xsi:type="string">default_subcategory</data>
             <constraint name="Mage\Catalog\Test\Constraint\AssertCategorySuccessDeleteMessage" />
-            <constraint name="Mage\Catalog\Test\Constraint\AssertCategoryAbsenceOnBackend" />
             <constraint name="Enterprise\UrlRewrite\Test\Constraint\AssertUrlRewriteCategoryNotInGrid" />
-            <constraint name="Mage\Catalog\Test\Constraint\AssertCategoryAbsenceOnFrontend" />
         </variation>
     </testCase>
 </config>

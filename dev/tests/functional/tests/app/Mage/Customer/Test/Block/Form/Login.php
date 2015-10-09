@@ -43,6 +43,13 @@ class Login extends Form
     protected $loginButton = '#send2';
 
     /**
+     * Selector for 'Create an Account' button.
+     *
+     * @var string
+     */
+    protected $newAccount = 'a[href*="register"]';
+
+    /**
      * Login customer in the Frontend.
      *
      * @param Customer $customer
@@ -62,5 +69,15 @@ class Login extends Form
     public function submit()
     {
         $this->_rootElement->find($this->loginButton, Locator::SELECTOR_CSS)->click();
+    }
+
+    /**
+     * Click on 'Create an Account' button.
+     *
+     * @return void
+     */
+    public function createNewAccount()
+    {
+        $this->_rootElement->find($this->newAccount)->click();
     }
 }

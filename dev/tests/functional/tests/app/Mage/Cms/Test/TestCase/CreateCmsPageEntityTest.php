@@ -35,15 +35,13 @@ use Mage\Adminhtml\Test\Page\Adminhtml\EditStore;
 use Mage\Adminhtml\Test\Page\Adminhtml\DeleteStore;
 
 /**
- * Test Flow:
- *
  * Steps:
- * 1. Log in to Backend
- * 2. Navigate to CMS > Pages > Manage Content
- * 3. Click "Add New Page" button
- * 4. Fill data according to data set
- * 5. Click "Save Page" button
- * 6. Perform all assertions
+ * 1. Log in to Backend.
+ * 2. Navigate to CMS > Pages > Manage Content.
+ * 3. Click "Add New Page" button.
+ * 4. Fill data according to data set.
+ * 5. Click "Save Page" button.
+ * 6. Perform all assertions.
  *
  * @group CMS Content (PS)
  * @ZephyrId MPERF-6686

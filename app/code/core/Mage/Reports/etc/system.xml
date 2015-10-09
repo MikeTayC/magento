@@ -91,7 +91,6 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
-                            <comment>If set to "No" this option disables recently viewed products block and recently compared products block.</comment>
                         </enabled>
                     </fields>
                 </general>

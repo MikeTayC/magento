@@ -26,7 +26,6 @@
 
 namespace Mage\Checkout\Test\Block\Cart;
 
-use Magento\Mtf\Client\Locator;
 use Mage\Checkout\Test\Block\AbstractItem;
 
 /**
@@ -42,6 +41,27 @@ class CartItem extends AbstractItem
     protected $msrp = '.cart-msrp-unit';
 
     /**
+     * Selector for "Edit" button.
+     *
+     * @var string
+     */
+    protected $edit = '.action.edit';
+
+    /**
+     * 'Move to Wishlist' button.
+     *
+     * @var string
+     */
+    protected $wishlistButton = '[data-rwd-label="Qty"] .link-wishlist';
+
+    /**
+     * Selector for "Remove item" button.
+     *
+     * @var string
+     */
+    protected $removeItem = '.product-cart-remove .btn-remove';
+
+    /**
      * Check if MSRP text is visible.
      *
      * @return bool
@@ -49,5 +69,35 @@ class CartItem extends AbstractItem
     public function isMsrpVisible()
     {
         return $this->_rootElement->find($this->msrp)->isVisible();
+    }
+
+    /**
+     * Check that edit button visible.
+     *
+     * @return bool
+     */
+    public function isEditButtonVisible()
+    {
+        return $this->_rootElement->find($this->edit)->isVisible();
+    }
+
+    /**
+     * Click on move to wishlist button.
+     *
+     * @return void
+     */
+    public function moveToWishlist()
+    {
+        $this->_rootElement->find($this->wishlistButton)->click();
+    }
+
+    /**
+     * Remove product item from cart.
+     *
+     * @return void
+     */
+    public function removeItem()
+    {
+        $this->_rootElement->find($this->removeItem)->click();
     }
 }

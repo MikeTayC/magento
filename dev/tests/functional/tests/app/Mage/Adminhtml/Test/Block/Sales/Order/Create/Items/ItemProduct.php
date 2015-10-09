@@ -34,6 +34,32 @@ use Magento\Mtf\Block\Form;
 class ItemProduct extends Form
 {
     /**
+     * Actions for fields.
+     *
+     * @var array
+     */
+    protected $actions = [
+        'name' => 'getText',
+        'price' => 'getText',
+        'qty' => 'getValue',
+        'checkout_data' => 'getValue',
+    ];
+
+    /**
+     * Error message selector.
+     *
+     * @var string
+     */
+    protected $errorMessage = ".error";
+
+    /**
+     * Notice message selector.
+     *
+     * @var string
+     */
+    protected $noticeMessage = ".notice";
+
+    /**
      * Fill product options.
      *
      * @param array $options
@@ -43,4 +69,49 @@ class ItemProduct extends Form
        $mapping = $this->dataMapping($options);
        $this->_fill($mapping);
    }
+
+    /**
+     * Get data item products.
+     *
+     * @param array $fields
+     * @param string $currency [optional]
+     * @return array
+     */
+    public function getCheckoutData(array $fields, $currency = '$')
+    {
+        $result = [];
+        $data = $this->dataMapping($fields);
+        foreach ($data as $key => $item) {
+            if (!isset($item['value'])) {
+                $result[$key] = $this->getCheckoutData($item);
+                continue;
+            }
+            $value = $this->_rootElement->find($item['selector'], $item['strategy'], $item['input'])
+                ->{$this->actions[$key]}();
+
+            $result[$key] = str_replace($currency, '', trim($value));
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get error message.
+     *
+     * @return string
+     */
+    public function getErrorMessage()
+    {
+        return $this->_rootElement->find($this->errorMessage)->getText();
+    }
+
+    /**
+     * Get notice message.
+     *
+     * @return string
+     */
+    public function getNoticeMessage()
+    {
+        return $this->_rootElement->find($this->noticeMessage)->getText();
+    }
 }

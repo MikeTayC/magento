@@ -51,11 +51,11 @@ class AssertOrderGrandTotal extends AbstractConstraint
     public function processAssert(SalesOrderIndex $salesOrder, SalesOrderView $salesOrderView, $grandTotal, $orderId)
     {
         $salesOrder->open()->getSalesOrderGrid()->searchAndOpen(['id' => $orderId]);
+        $expected = number_format(is_array($grandTotal) ? array_sum($grandTotal) : $grandTotal, 2);
+        $actual = $salesOrderView->getOrderForm()->getTabElement('information')->getOrderTotalsBlock()
+            ->getData('grand_total');
 
-        \PHPUnit_Framework_Assert::assertEquals(
-            number_format(is_array($grandTotal) ? array_sum($grandTotal) : $grandTotal, 2),
-            $salesOrderView->getOrderForm()->getTabElement('information')->getOrderTotalsBlock()->getData('grand_total')
-        );
+        \PHPUnit_Framework_Assert::assertEquals($expected, $actual, "Expected: $expected; Actual: $actual");
     }
 
     /**

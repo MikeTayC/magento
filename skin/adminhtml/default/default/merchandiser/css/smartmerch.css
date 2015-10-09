@@ -23,36 +23,36 @@
  * @license http://www.magento.com/license/enterprise-edition
  */
 .attribute-map .form-list td.value input.input-text{
-	width:150px;
+    width:150px;
 }
 .attribute-map .fieldset{
-	padding:7px;
+    padding:7px;
 }
 #category_info_tabs_smartmerch_content .box-left, #category_info_tabs_smartmerch_content .box-right{
-	width:49%;
+    width:49%;
 }
 #category_info_tabs_smartmerch_content .fieldset{
-	margin-bottom:20px;
+    margin-bottom:20px;
 }
 #category_info_tabs_smartmerch_content .sort-logic td{
-	padding:3px !important;
+    padding:3px !important;
 }
 #row_smartmerch_attributes .label {
    display: none;
 }
 button span span{
-	background-image:none !important;
-	padding:0px !important;
+    background-image:none !important;
+    padding:0px !important;
 }
 #merchnadiser_attributes_fieldset table.full-width{
-	width:98%;
+    width:98%;
 }
 #merchnadiser_attributes_fieldset .full-width td{
-	width:auto;
+    width:auto;
 }
 #merchnadiser_attributes_fieldset .full-width td .input-text {
-	width:90%;
+    width:90%;
 }
 .mer-mode{
-	padding:5px;
+    padding:5px;
 }

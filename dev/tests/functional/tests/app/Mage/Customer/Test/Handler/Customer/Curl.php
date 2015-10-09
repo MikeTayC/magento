@@ -50,13 +50,18 @@ class Curl extends AbstractCurl implements CustomerInterface
      */
     protected $mappingData = [
         'country_id' => [
-            'United States' => 'US'
+            'United States' => 'US',
+            'United Kingdom' => 'GB'
         ],
         'region_id' => [
             'California' => 12,
             'New York' => 43,
             'Texas' => 57,
-        ]
+        ],
+        'gender' => [
+          'Male' => 1,
+          'Female' => 2
+        ],
     ];
 
     /**
@@ -73,7 +78,22 @@ class Curl extends AbstractCurl implements CustomerInterface
             'dob',
             'taxvat',
             'gender'
-        ]
+        ],
+        'customerbalance' => [
+          'amount_delta'
+        ],
+    ];
+
+    /**
+     * Array of fields are needing to be updated via updateCustomer() method.
+     *
+     * @var array
+     */
+    protected $updatingFields = [
+        'address',
+        'dob',
+        'gender',
+        'amount_delta'
     ];
 
     /**
@@ -85,7 +105,6 @@ class Curl extends AbstractCurl implements CustomerInterface
      */
     public function persist(FixtureInterface $customer = null)
     {
-        $address = [];
         $result = [];
         /** @var Customer $customer */
         $url = $_ENV['app_frontend_url'] . 'customer/account/createpost/?nocookie=true';
@@ -93,8 +112,7 @@ class Curl extends AbstractCurl implements CustomerInterface
         $data['group_id'] = $this->getCustomerGroup($customer);
 
         if ($customer->hasData('address')) {
-            $address = $customer->getAddress();
-            unset($data['address']);
+            $data['address'] = http_build_query($data['address']);
         }
 
         $curl = new CurlTransport();
@@ -108,12 +126,28 @@ class Curl extends AbstractCurl implements CustomerInterface
         $result['id'] = $this->getCustomerId($customer->getEmail());
         $data['customer_id'] = $result['id'];
 
-        if (!empty($address)) {
-            $data['address'] = $address;
-            $this->addAddress($data);
+        if ($this->checkForUpdateData($data)) {
+            parse_str($data['address'], $data['address']);
+            $this->updateCustomer($data);
         }
 
         return $result;
+    }
+
+    /**
+     * Check if customer needs to update data during curl creation.
+     *
+     * @param array $data
+     * @return bool
+     */
+    protected function checkForUpdateData(array $data)
+    {
+        foreach ($data as $key => $field) {
+            if (in_array($key, $this->updatingFields)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -149,13 +183,13 @@ class Curl extends AbstractCurl implements CustomerInterface
     }
 
     /**
-     * Add addresses in to customer account.
+     * Update customer account.
      *
      * @param array $data
      * @return void
      * @throws \Exception
      */
-    protected function addAddress(array $data)
+    protected function updateCustomer(array $data)
     {
         $curlData = [];
         $url = $_ENV['app_backend_url'] . 'customer/save';

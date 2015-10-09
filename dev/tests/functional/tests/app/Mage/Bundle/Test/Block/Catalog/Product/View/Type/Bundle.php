@@ -27,7 +27,6 @@
 namespace Mage\Bundle\Test\Block\Catalog\Product\View\Type;
 
 use Mage\Bundle\Test\Fixture\BundleProduct;
-use Mage\Catalog\Test\Page\Product\CatalogProductView;
 use Magento\Mtf\Block\Block;
 use Magento\Mtf\Client\Element\SimpleElement as Element;
 use Magento\Mtf\Client\Locator;

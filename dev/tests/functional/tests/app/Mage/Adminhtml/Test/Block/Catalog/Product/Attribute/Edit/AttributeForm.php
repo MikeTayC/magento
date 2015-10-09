@@ -26,8 +26,7 @@
 
 namespace Mage\Adminhtml\Test\Block\Catalog\Product\Attribute\Edit;
 
-use Magento\Mtf\Client\Locator;
-use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Fixture\FixtureInterface;
 use Mage\Adminhtml\Test\Block\Widget\FormTabs;
 use Magento\Mtf\Client\Element\SimpleElement as Element;
 
@@ -46,14 +45,14 @@ class AttributeForm extends FormTabs
     /**
      * Get data of the tabs.
      *
-     * @param InjectableFixture|null $fixture
+     * @param FixtureInterface|null $fixture
      * @param Element|null $element
      * @return array
      *
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getData(InjectableFixture $fixture = null, Element $element = null)
+    public function getData(FixtureInterface $fixture = null, Element $element = null)
     {
         $data = [];
         if ($fixture === null) {
@@ -76,11 +75,11 @@ class AttributeForm extends FormTabs
     /**
      * Fill form with tabs.
      *
-     * @param InjectableFixture $fixture
+     * @param FixtureInterface $fixture
      * @param Element|null $element
      * @return FormTabs
      */
-    public function fill(InjectableFixture $fixture, Element $element = null)
+    public function fill(FixtureInterface $fixture, Element $element = null)
     {
         $tabs = $this->getFieldsByTabs($fixture);
 

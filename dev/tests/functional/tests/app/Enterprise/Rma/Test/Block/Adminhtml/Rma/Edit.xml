@@ -41,7 +41,7 @@
                     <strategy>xpath</strategy>
                 </order_id>
                 <customer_name>
-                    <selector>.//*[@class="form-list"]//tr[3]/td[2]/a</selector>
+                    <selector>.//*[@class="form-list"]//tr[3]/td[2]</selector>
                     <strategy>xpath</strategy>
                 </customer_name>
                 <customer_email>

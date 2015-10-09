@@ -37,7 +37,6 @@
             <data name="targetRule/data/use_customer_segment" xsi:type="string">All</data>
             <data name="targetRule/data/conditions_serialized" xsi:type="string">[Category|is|%category_1%]</data>
             <data name="targetRule/data/actions_serialized" xsi:type="string">[Category|is|Constant Value|%category_2%]</data>
-            <data name="issue" xsi:type="string">Unskip after done MTA-1375</data>
             <constraint name="Enterprise\TargetRule\Test\Constraint\AssertTargetRuleSuccessSaveMessage"/>
             <constraint name="Enterprise\TargetRule\Test\Constraint\AssertTargetRuleInGrid"/>
             <constraint name="Enterprise\TargetRule\Test\Constraint\AssertTargetRuleForm"/>
@@ -56,7 +55,6 @@
             <data name="targetRule/data/use_customer_segment" xsi:type="string">All</data>
             <data name="targetRule/data/conditions_serialized" xsi:type="string">[Attribute Set|is|Default][Category|is|%category_1%]</data>
             <data name="targetRule/data/actions_serialized" xsi:type="string">[Attribute Set|is|Matched Product Attribute Set][Category|is|Constant Value|%category_2%]</data>
-            <data name="issue" xsi:type="string">Unskip after done MTA-1375</data>
             <constraint name="Enterprise\TargetRule\Test\Constraint\AssertTargetRuleSuccessSaveMessage"/>
             <constraint name="Enterprise\TargetRule\Test\Constraint\AssertTargetRuleInGrid"/>
             <constraint name="Enterprise\TargetRule\Test\Constraint\AssertTargetRuleForm"/>
@@ -75,7 +73,6 @@
             <data name="targetRule/data/use_customer_segment" xsi:type="string">All</data>
             <data name="targetRule/data/conditions_serialized" xsi:type="string">[Category|is|%category_1%]</data>
             <data name="targetRule/data/actions_serialized" xsi:type="string">[Category|is|Constant Value|%category_2%]</data>
-            <data name="issue" xsi:type="string">Unskip after done MTA-1375</data>
             <constraint name="Enterprise\TargetRule\Test\Constraint\AssertTargetRuleSuccessSaveMessage"/>
             <constraint name="Enterprise\TargetRule\Test\Constraint\AssertTargetRuleInGrid"/>
             <constraint name="Enterprise\TargetRule\Test\Constraint\AssertTargetRuleForm"/>
@@ -95,7 +92,6 @@
             </data>
             <data name="targetRule/data/conditions_serialized" xsi:type="string">[Category|is|%category_1%]</data>
             <data name="targetRule/data/actions_serialized" xsi:type="string">[Category|is|Constant Value|%category_2%]</data>
-            <data name="issue" xsi:type="string">Unskip after done MTA-1375</data>
             <constraint name="Enterprise\TargetRule\Test\Constraint\AssertTargetRuleSuccessSaveMessage"/>
             <constraint name="Enterprise\TargetRule\Test\Constraint\AssertTargetRuleInGrid"/>
             <constraint name="Enterprise\TargetRule\Test\Constraint\AssertTargetRuleForm"/>

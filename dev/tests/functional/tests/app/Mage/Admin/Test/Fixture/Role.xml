@@ -61,7 +61,7 @@
         <field name="current_password" is_required="0" group="role-info">
             <default_value xsi:type="null" />
         </field>
-        <field name="gws_store_groups" is_required="0">
+        <field name="gws_store_groups" is_required="0" source="Mage\Admin\Test\Fixture\Role\GwsStoreGroups">
             <default_value xsi:type="null" />
         </field>
         <field name="all" group="role-resources" />

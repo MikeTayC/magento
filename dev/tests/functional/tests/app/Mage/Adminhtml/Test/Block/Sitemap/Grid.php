@@ -26,6 +26,8 @@
 
 namespace Mage\Adminhtml\Test\Block\Sitemap;
 
+use Magento\Mtf\Client\Locator;
+
 /**
  * Sitemap grid.
  */
@@ -43,5 +45,25 @@ class Grid extends \Mage\Adminhtml\Test\Block\Widget\Grid
         'sitemap_path' => [
             'selector' => '#sitemapGrid_filter_sitemap_path',
         ],
+        'sitemap_id' => [
+            'selector' => '#sitemapGrid_filter_sitemap_id',
+        ],
     ];
+
+    /**
+     * Locator link for Google in grid.
+     *
+     * @var string
+     */
+    protected $linkForGoogle = ".//td/a[contains(.,'.xml')]";
+
+    /**
+     * Get link for Google.
+     *
+     * @return string
+     */
+    public function getLinkForGoogle()
+    {
+        return $this->_rootElement->find($this->linkForGoogle, Locator::SELECTOR_XPATH)->getText();
+    }
 }

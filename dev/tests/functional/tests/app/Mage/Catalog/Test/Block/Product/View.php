@@ -111,6 +111,13 @@ class View extends AbstractConfigureBlock
     protected $addToWishlist = '.link-wishlist';
 
     /**
+     * Css selector for 'Update Wishlist' button.
+     *
+     * @var string
+     */
+    protected $updateWishlist = '[href*="wishlist/index/updateItemOptions"]';
+
+    /**
      * Messages block locator.
      *
      * @var string
@@ -123,6 +130,13 @@ class View extends AbstractConfigureBlock
      * @var string
      */
     protected $clickAddToCompare = '.link-compare';
+
+    /**
+     * Selector for custom information tab's title.
+     *
+     * @var string
+     */
+    protected $customInformationTab = '//ul/li/span[text()="%s"]';
 
     /**
      * Get block price.
@@ -145,6 +159,18 @@ class View extends AbstractConfigureBlock
      */
     public function addToCart(InjectableFixture $product)
     {
+        $this->configureProduct($product);
+        $this->clickAddToCart();
+    }
+
+    /**
+     * Configure product.
+     *
+     * @param InjectableFixture $product
+     * @return void
+     */
+    protected function configureProduct(InjectableFixture $product)
+    {
         /** @var CatalogProductSimple $product */
         $checkoutData = $product->getCheckoutData();
         if (isset($checkoutData['options'])) {
@@ -153,7 +179,6 @@ class View extends AbstractConfigureBlock
         if (isset($checkoutData['qty'])) {
             $this->setQty($checkoutData['qty']);
         }
-        $this->clickAddToCart();
     }
 
     /**
@@ -310,12 +335,20 @@ class View extends AbstractConfigureBlock
      */
     public function addToWishlist(InjectableFixture $product)
     {
-        $checkoutData = $product->getCheckoutData();
-        $this->fillOptions($product);
-        if (isset($checkoutData['qty'])) {
-            $this->setQty($checkoutData['qty']);
-        }
+        $this->configureProduct($product);
         $this->clickAddToWishlist();
+    }
+
+    /**
+     * Update product in Wishlist.
+     *
+     * @param InjectableFixture $product
+     * @return void
+     */
+    public function updateWishlist(InjectableFixture $product)
+    {
+        $this->configureProduct($product);
+        $this->clickUpdateWishlist();
     }
 
     /**
@@ -326,6 +359,16 @@ class View extends AbstractConfigureBlock
     public function clickAddToWishlist()
     {
         $this->_rootElement->find($this->addToWishlist)->click();
+    }
+
+    /**
+     * Click "Update Wishlist" button.
+     *
+     * @return void
+     */
+    protected function clickUpdateWishlist()
+    {
+        $this->_rootElement->find($this->updateWishlist)->click();
     }
 
     /**
@@ -342,5 +385,16 @@ class View extends AbstractConfigureBlock
         );
         $this->_rootElement->find($this->clickAddToCompare, Locator::SELECTOR_CSS)->click();
         $messageBlock->waitSuccessMessage();
+    }
+
+    /**
+     * Open custom information tab.
+     *
+     * @param string $tabName
+     * @return void
+     */
+    public function openCustomInformationTab($tabName)
+    {
+        $this->_rootElement->find(sprintf($this->customInformationTab, $tabName), Locator::SELECTOR_XPATH)->click();
     }
 }

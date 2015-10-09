@@ -36,6 +36,13 @@ use Mage\Customer\Test\Fixture\Address;
 class CustomerForm extends FormTabs
 {
     /**
+     * Customer groups selector.
+     *
+     * @var string
+     */
+    protected $customerGroupsSelector = "[name='account[group_id]']";
+
+    /**
      * Fill Customer forms on tabs by customer, addresses data.
      *
      * @param Customer $customer
@@ -72,5 +79,15 @@ class CustomerForm extends FormTabs
         }
 
         return $data;
+    }
+
+    /**
+     * Get customer groups.
+     *
+     * @return array
+     */
+    public function getCustomerGroups()
+    {
+        return explode("\n", $this->_rootElement->find($this->customerGroupsSelector)->getText());
     }
 }

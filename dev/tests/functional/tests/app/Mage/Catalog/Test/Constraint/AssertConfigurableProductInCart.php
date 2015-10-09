@@ -38,6 +38,10 @@ use Magento\Mtf\Fixture\InjectableFixture;
  */
 class AssertConfigurableProductInCart extends AssertProductInCart
 {
+    /* tags */
+    const SEVERITY = 'low';
+    /* end tags */
+
     /**
      * Assertion that the product is correctly displayed in cart.
      *
@@ -54,9 +58,7 @@ class AssertConfigurableProductInCart extends AssertProductInCart
         CheckoutCart $checkoutCart
     ) {
         $browser->open($_ENV['app_frontend_url'] . $product->getUrlKey() . '.html');
-
         $catalogProductView->getViewBlock()->addToCart($product);
-
         $checkoutData = $product->getCheckoutData();
         $price = $checkoutCart->getCartBlock()->getCartItem($product)->getCartItemTypePrice('price');
         \PHPUnit_Framework_Assert::assertEquals(

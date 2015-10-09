@@ -27,7 +27,6 @@
 namespace Mage\Catalog\Test\Block\Category;
 
 use Magento\Mtf\Block\Block;
-use Magento\Mtf\Client\Locator;
 
 /**
  * Category view block on the category page.

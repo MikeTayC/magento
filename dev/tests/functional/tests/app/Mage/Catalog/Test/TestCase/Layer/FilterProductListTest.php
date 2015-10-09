@@ -27,6 +27,7 @@
 namespace Mage\Catalog\Test\TestCase\Layer;
 
 use Magento\Mtf\Fixture\FixtureFactory;
+use Magento\Mtf\ObjectManager;
 use Magento\Mtf\TestCase\Injectable;
 use Mage\Catalog\Test\Fixture\CatalogCategory;
 
@@ -75,7 +76,7 @@ class FilterProductListTest extends Injectable
     public function test($products)
     {
         // Precondition
-        $this->setupConfigData();//TODO after fix issue with tier down after move to __prepare()
+        $this->setupConfigData();
         return $this->createProducts($products);
     }
 
@@ -121,6 +122,19 @@ class FilterProductListTest extends Injectable
         $this->objectManager->create(
             'Mage\Core\Test\TestStep\SetupConfigurationStep',
             ['configData' => 'manual_layered_navigation_mysql', 'rollback' => $rollback]
+        )->run();
+    }
+
+    /**
+     * Rollback configuration after test.
+     *
+     * @return void
+     */
+    public static function tearDownAfterClass()
+    {
+        ObjectManager::getInstance()->create(
+            'Mage\Core\Test\TestStep\SetupConfigurationStep',
+            ['configData' => 'manual_layered_navigation_mysql', 'rollback' => true]
         )->run();
     }
 }

@@ -26,58 +26,51 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
-  <testCase name="Mage\Cms\Test\TestCase\CreateCmsPageEntityTest">
-    <variation name="CreateCmsPageEntityTestVariation1" firstConstraint="Mage\Cms\Test\Constraint\AssertCmsPageSuccessSaveMessage" method="test">
-      <data name="cms/data/title" xsi:type="string">NewCmsPage%isolation%</data>
-      <data name="cms/data/identifier" xsi:type="string">new_cms_page%isolation%</data>
-      <data name="cms/data/is_active" xsi:type="string">Published</data>
-      <data name="cms/data/under_version_control" xsi:type="string">No</data>
-      <data name="cms/data/content_heading" xsi:type="string">cms_page_text_content_heading%isolation%</data>
-      <data name="cms/data/content/content" xsi:type="string">cms_page_text_content%isolation%</data>
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageSuccessSaveMessage" next="Mage\Cms\Test\Constraint\AssertCmsPageForm"/>
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageForm" next="Mage\Cms\Test\Constraint\AssertCmsPageInGrid" prev="Mage\Cms\Test\Constraint\AssertCmsPageSuccessSaveMessage"/>
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageInGrid" next="Mage\Cms\Test\Constraint\AssertCmsPagePreview" prev="Mage\Cms\Test\Constraint\AssertCmsPageForm"/>
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPagePreview" prev="Mage\Cms\Test\Constraint\AssertCmsPageInGrid"/>
-    </variation>
-    <variation name="CreateCmsPageEntityTestVariation2" firstConstraint="Mage\Cms\Test\Constraint\AssertCmsPageSuccessSaveMessage" method="test">
-      <data name="cms/data/title" xsi:type="string">NewCmsPage%isolation%</data>
-      <data name="cms/data/identifier" xsi:type="string">new_cms_page%isolation%</data>
-      <data name="cms/data/is_active" xsi:type="string">Disabled</data>
-      <data name="cms/data/under_version_control" xsi:type="string">No</data>
-      <data name="cms/data/content_heading" xsi:type="string">cms_page_text_content_heading%isolation%</data>
-      <data name="cms/data/content/content" xsi:type="string">cms_page_text_content%isolation%</data>
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageSuccessSaveMessage" next="Mage\Cms\Test\Constraint\AssertCmsPageForm"/>
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageForm" next="Mage\Cms\Test\Constraint\AssertCmsPageInGrid" prev="Mage\Cms\Test\Constraint\AssertCmsPageSuccessSaveMessage"/>
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageInGrid" next="Mage\Cms\Test\Constraint\AssertCmsPageDisabledOnFrontend" prev="Mage\Cms\Test\Constraint\AssertCmsPageForm"/>
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageDisabledOnFrontend" prev="Mage\Cms\Test\Constraint\AssertCmsPageInGrid"/>
-    </variation>
-    <variation name="CreateCmsPageEntityTestVariation3" firstConstraint="Mage\Cms\Test\Constraint\AssertCmsPageSuccessSaveMessage" method="test">
-      <data name="cms/data/title" xsi:type="string">NewCmsPage%isolation%</data>
-      <data name="cms/data/identifier" xsi:type="string">new_cms_page%isolation%</data>
-      <data name="cms/data/store_id/dataSet/0" xsi:type="string">custom</data>
-      <data name="cms/data/is_active" xsi:type="string">Published</data>
-      <data name="cms/data/under_version_control" xsi:type="string">No</data>
-      <data name="cms/data/content_heading" xsi:type="string">cms_page_text_content_heading%isolation%</data>
-      <data name="cms/data/content/content" xsi:type="string">cms_page_text_content%isolation%</data>
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageSuccessSaveMessage" next="Mage\Cms\Test\Constraint\AssertCmsPageForm"/>
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageForm" next="Mage\Cms\Test\Constraint\AssertCmsPageInGrid" prev="Mage\Cms\Test\Constraint\AssertCmsPageSuccessSaveMessage"/>
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageInGrid" next="Mage\Cms\Test\Constraint\AssertCmsPagePreview" prev="Mage\Cms\Test\Constraint\AssertCmsPageForm"/>
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPagePreview" next="Mage\Cms\Test\Constraint\AssertCmsPageDisabledOnUnassignedStoreView" prev="Mage\Cms\Test\Constraint\AssertCmsPageInGrid"/>
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageDisabledOnUnassignedStoreView" prev="Mage\Cms\Test\Constraint\AssertCmsPagePreview"/>
-    </variation>
-    <variation name="CreateCmsPageEntityTestVariation4">
-      <data name="cms/data/title" xsi:type="string">NewCmsPage%isolation%</data>
-      <data name="cms/data/identifier" xsi:type="string">new_cms_page%isolation%</data>
-      <data name="cms/data/is_active" xsi:type="string">Published</data>
-      <data name="cms/data/under_version_control" xsi:type="string">No</data>
-      <data name="cms/data/content_heading" xsi:type="string">cms_page_text_content_heading%isolation%</data>
-      <data name="cms/data/content/content" xsi:type="string">cms_page_text_content%isolation%</data>
-      <data name="cms/data/content/widget/preset" xsi:type="string">default</data>
-      <data name="cms/data/content/variable" xsi:type="string">General Contact Name</data>
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageSuccessSaveMessage" />
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageForm" />
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageInGrid" />
-      <constraint name="Mage\Cms\Test\Constraint\AssertCmsPagePreview" />
-    </variation>
-  </testCase>
+    <testCase name="Mage\Cms\Test\TestCase\CreateCmsPageEntityTest">
+        <variation name="CreateCmsPageEntityTestVariation1" method="test">
+            <data name="cms/data/title" xsi:type="string">NewCmsPage%isolation%</data>
+            <data name="cms/data/identifier" xsi:type="string">new_cms_page%isolation%</data>
+            <data name="cms/data/content_heading" xsi:type="string">cms_page_text_content_heading%isolation%</data>
+            <data name="cms/data/content/content" xsi:type="string">cms_page_text_content%isolation%</data>
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageSuccessSaveMessage" />
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageForm" />
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageInGrid" />
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPagePreview" />
+        </variation>
+        <variation name="CreateCmsPageEntityTestVariation2" method="test">
+            <data name="cms/data/title" xsi:type="string">NewCmsPage%isolation%</data>
+            <data name="cms/data/identifier" xsi:type="string">new_cms_page%isolation%</data>
+            <data name="cms/data/is_active" xsi:type="string">Disabled</data>
+            <data name="cms/data/content_heading" xsi:type="string">cms_page_text_content_heading%isolation%</data>
+            <data name="cms/data/content/content" xsi:type="string">cms_page_text_content%isolation%</data>
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageSuccessSaveMessage" />
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageForm" />
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageInGrid" />
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageDisabledOnFrontend" />
+        </variation>
+        <variation name="CreateCmsPageEntityTestVariation3" method="test">
+            <data name="cms/data/title" xsi:type="string">NewCmsPage%isolation%</data>
+            <data name="cms/data/identifier" xsi:type="string">new_cms_page%isolation%</data>
+            <data name="cms/data/store_id/dataSet/0" xsi:type="string">custom</data>
+            <data name="cms/data/content_heading" xsi:type="string">cms_page_text_content_heading%isolation%</data>
+            <data name="cms/data/content/content" xsi:type="string">cms_page_text_content%isolation%</data>
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageSuccessSaveMessage" />
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageForm" />
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageInGrid" />
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPagePreview" />
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageDisabledOnUnassignedStoreView" />
+        </variation>
+        <variation name="CreateCmsPageEntityTestVariation4">
+            <data name="cms/data/title" xsi:type="string">NewCmsPage%isolation%</data>
+            <data name="cms/data/identifier" xsi:type="string">new_cms_page%isolation%</data>
+            <data name="cms/data/content_heading" xsi:type="string">cms_page_text_content_heading%isolation%</data>
+            <data name="cms/data/content/content" xsi:type="string">cms_page_text_content%isolation%</data>
+            <data name="cms/data/content/widget/preset" xsi:type="string">default</data>
+            <data name="cms/data/content/variable" xsi:type="string">General Contact Name</data>
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageSuccessSaveMessage" />
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageForm" />
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPageInGrid" />
+            <constraint name="Mage\Cms\Test\Constraint\AssertCmsPagePreview" />
+        </variation>
+    </testCase>
 </config>

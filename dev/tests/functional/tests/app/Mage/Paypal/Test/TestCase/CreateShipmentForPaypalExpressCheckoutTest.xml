@@ -177,7 +177,6 @@
             <data name="verifyData/totalQtyOrdered/shipments/0/total_qty_from" xsi:type="string">2</data>
             <data name="verifyData/totalQtyOrdered/shipments/0/total_qty_to" xsi:type="string">2</data>
             <data name="status" xsi:type="string">Processing</data>
-            <data name="issue" xsi:type="string">Bug: MPERF-6836</data>
             <constraint name="Mage\Shipping\Test\Constraint\AssertShipmentSuccessCreateMessage" />
             <constraint name="Mage\Shipping\Test\Constraint\AssertShipmentInShipmentsTab" />
             <constraint name="Mage\Shipping\Test\Constraint\AssertShipmentInShipmentsGrid" />

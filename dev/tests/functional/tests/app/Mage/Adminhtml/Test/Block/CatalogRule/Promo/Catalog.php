@@ -27,7 +27,6 @@
 namespace Mage\Adminhtml\Test\Block\CatalogRule\Promo;
 
 use Mage\Adminhtml\Test\Block\Widget\Grid;
-use Magento\Mtf\Client\Element\SimpleElement as Element;
 
 /**
  * Backend catalog price rule grid.

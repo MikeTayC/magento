@@ -27,8 +27,7 @@
 namespace Mage\Sales\Test\Block\Widget\Guest;
 
 use Mage\Customer\Test\Fixture\Customer;
-use Magento\Mtf\Client\Locator;
-use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Fixture\FixtureInterface;
 use Magento\Mtf\Client\Element\SimpleElement;
 use Mage\Sales\Test\Fixture\Order;
 
@@ -54,12 +53,12 @@ class Form extends \Magento\Mtf\Block\Form
     /**
      * Fill the form.
      *
-     * @param InjectableFixture $fixture
+     * @param FixtureInterface $fixture
      * @param SimpleElement|null $element
      * @param bool $isSearchByEmail [optional]
      * @return $this
      */
-    public function fill(InjectableFixture $fixture, SimpleElement $element = null, $isSearchByEmail = true)
+    public function fill(FixtureInterface $fixture, SimpleElement $element = null, $isSearchByEmail = true)
     {
         $data = $this->prepareData($fixture, $isSearchByEmail);
 
@@ -73,11 +72,11 @@ class Form extends \Magento\Mtf\Block\Form
     /**
      * Prepare data.
      *
-     * @param InjectableFixture $fixture
+     * @param FixtureInterface $fixture
      * @param $isSearchByEmail
      * @return array
      */
-    protected function prepareData(InjectableFixture $fixture, $isSearchByEmail)
+    protected function prepareData(FixtureInterface $fixture, $isSearchByEmail)
     {
         /** @var Order $fixture */
         /** @var Customer $customer */

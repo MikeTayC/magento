@@ -30,7 +30,12 @@ use Magento\Mtf\Fixture\FixtureFactory;
 use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
- * Source rma items.
+ * Source for rma items field.
+ *
+ * Data keys:
+ *  - products (array of products fixtures)
+ *  - presets (name preset's)
+ *  - data (data for field)
  */
 class Items implements FixtureInterface
 {
@@ -49,18 +54,27 @@ class Items implements FixtureInterface
     protected $data;
 
     /**
+     * Array of products' fixtures.
+     *
+     * @var array
+     */
+    protected $products;
+
+    /**
      * @constructor
      * @param FixtureFactory $fixtureFactory
      * @param array $params
-     * @param array $data
+     * @param array $data [optional]
      */
     public function __construct(FixtureFactory $fixtureFactory, array $params, array $data = [])
     {
         $this->params = $params;
-
         $this->data = isset($data['presets']) ? $this->getPreset($data['presets']) : [];
         if (isset($data['data'])) {
             $this->data = array_replace_recursive($this->data, $data['data']);
+        }
+        if (isset($data['products'])) {
+            $this->products = $data['products'];
         }
     }
 
@@ -93,6 +107,16 @@ class Items implements FixtureInterface
     public function getDataConfig()
     {
         return $this->params;
+    }
+
+    /**
+     * Get array of products' fixtures.
+     *
+     * @return array
+     */
+    public function getProducts()
+    {
+        return $this->products;
     }
 
     /**

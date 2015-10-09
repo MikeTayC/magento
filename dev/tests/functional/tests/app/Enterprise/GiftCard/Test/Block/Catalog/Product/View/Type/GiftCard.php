@@ -28,7 +28,7 @@ namespace Enterprise\GiftCard\Test\Block\Catalog\Product\View\Type;
 
 use Magento\Mtf\Block\Form;
 use Magento\Mtf\Client\Locator;
-use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Fixture\FixtureInterface;
 use Magento\Mtf\Client\Element\SimpleElement;
 use Enterprise\GiftCard\Test\Fixture\GiftCardProduct;
 
@@ -198,11 +198,11 @@ class GiftCard extends Form
     /**
      * Fill the GiftCard options.
      *
-     * @param InjectableFixture $product
+     * @param FixtureInterface $product
      * @param SimpleElement|null $element
      * @return $this
      */
-    public function fill(InjectableFixture $product, SimpleElement $element = null)
+    public function fill(FixtureInterface $product, SimpleElement $element = null)
     {
         $checkoutGiftCardOptions = $this->getCheckoutGiftCardOptions($product);
         $mapping = $this->dataMapping($checkoutGiftCardOptions);

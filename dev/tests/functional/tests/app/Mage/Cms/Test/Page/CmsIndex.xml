@@ -35,7 +35,6 @@
     <block name="headerBlock" class="Mage\Page\Test\Block\Html\Header" locator=".header-language-background" strategy="css selector"/>
     <block name="currencyBlock" class="Mage\Directory\Test\Block\Currency\Switcher" locator=".currency-switcher" strategy="css selector"/>
     <block name="cmsPageBlock" class="Mage\Cms\Test\Block\Page" locator=".main-container" strategy="css selector"/>
-    <block name="widgetView" class="Mage\Widget\Test\Block\WidgetView" locator=".widget" strategy="css selector"/>
     <block name="compareBlock" class="Mage\Catalog\Test\Block\Product\ProductList\Compare" locator=".block-compare" strategy="css selector"/>
   </page>
 </config>

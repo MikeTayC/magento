@@ -27,8 +27,10 @@
 namespace Mage\Adminhtml\Test\Block\CatalogRule\Promo\Catalog\Edit;
 
 use Mage\Adminhtml\Test\Block\Widget\FormTabs;
+use Mage\CatalogRule\Test\Fixture\CatalogRule;
 use Magento\Mtf\Client\Element\SimpleElement as Element;
-use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Client\Locator;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Form for creation of a Catalog Price Rule.
@@ -36,20 +38,42 @@ use Magento\Mtf\Fixture\InjectableFixture;
 class Form extends FormTabs
 {
     /**
+     * Selector for website field.
+     *
+     * @var string
+     */
+    protected $website = '#rule_website_ids';
+
+    /**
      * Fill form with tabs.
      *
-     * @param InjectableFixture $fixture
+     * @param FixtureInterface $catalogPriceRule
      * @param Element $element [optional]
      * @param array $replace [optional]
      * @return void
      */
-    public function fill(InjectableFixture $fixture, Element $element = null, array $replace = null)
+    public function fill(FixtureInterface $catalogPriceRule, Element $element = null, array $replace = null)
     {
-        $tabs = $this->getFieldsByTabs($fixture);
+        $tabs = $this->getFieldsByTabs($catalogPriceRule);
         if ($replace) {
             $tabs = $this->prepareData($tabs, $replace);
         }
+        $this->fillWebsites($catalogPriceRule);
         $this->fillTabs($tabs, $element);
+    }
+
+    /**
+     * Fill website.
+     *
+     * @param CatalogRule $catalogPriceRule
+     * @return void
+     */
+    protected function fillWebsites(CatalogRule $catalogPriceRule)
+    {
+        $websiteField = $this->_rootElement->find($this->website, Locator::SELECTOR_CSS, 'multiselectlist');
+        if ($websiteField->isVisible() && !$catalogPriceRule->hasData('website_ids')) {
+            $websiteField->setValue('Main Website');
+        }
     }
 
     /**

@@ -45,7 +45,7 @@ class AssertCmsPageForm extends AbstractAssertForm
      *
      * @var array
      */
-    protected $skippedFields = ['content'];
+    protected $skippedFields = ['content', 'page_id'];
 
     /**
      * Assert that displayed CMS page data on edit page equals passed from fixture.

@@ -92,7 +92,7 @@ class AssertRmaOnFrontendForCustomer extends AbstractAssertRmaOnFrontend
         $this->customer = $this->order->getDataFieldConfig('customer_id')['source']->getCustomer();
         $this->productHandlerClass = $this->getProductHandlerClass();
         $this->login();
-        $cmsIndex->getTopLinksBlock()->openAccount();
+        $cmsIndex->getTopLinksBlock()->openAccountLink('My Account');
         $customerAccountIndex->getAccountNavigationBlock()->openNavigationItem('My Returns');
         $this->assertRmaStatus($rma);
         $rmaReturnHistory->getRmaHistory()->getItemRow($rma)->open();

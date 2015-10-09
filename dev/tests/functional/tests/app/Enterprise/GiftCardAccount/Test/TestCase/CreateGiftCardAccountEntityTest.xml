@@ -33,7 +33,7 @@
       <data name="giftCardAccount/data/website_id/dataSet" xsi:type="string">main_website</data>
       <data name="giftCardAccount/data/balance" xsi:type="string">102.00</data>
       <data name="giftCardAccount/data/date_expires" xsi:type="string">7/7/2024</data>
-      <data name="issue" xsi:type="string">Bug: MPERF-5573</data>
+      <data name="issue" xsi:type="string">Bug: MPERF-5573: Gift card time zone stored in different timezone than store</data>
       <constraint name="Enterprise\GiftCardAccount\Test\Constraint\AssertGiftCardAccountSaveMessage" next="Enterprise\GiftCardAccount\Test\Constraint\AssertGiftCardAccountInGrid"/>
       <constraint name="Enterprise\GiftCardAccount\Test\Constraint\AssertGiftCardAccountInGrid" next="Enterprise\GiftCardAccount\Test\Constraint\AssertGiftCardAccountForm" prev="Enterprise\GiftCardAccount\Test\Constraint\AssertGiftCardAccountSaveMessage"/>
       <constraint name="Enterprise\GiftCardAccount\Test\Constraint\AssertGiftCardAccountForm" next="Enterprise\GiftCardAccount\Test\Constraint\AssertGiftCardAccountUsableInCartOnFrontend" prev="Enterprise\GiftCardAccount\Test\Constraint\AssertGiftCardAccountInGrid"/>

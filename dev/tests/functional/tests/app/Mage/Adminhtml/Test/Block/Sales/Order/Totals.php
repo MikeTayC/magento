@@ -26,8 +26,6 @@
 
 namespace Mage\Adminhtml\Test\Block\Sales\Order;
 
-use Magento\Mtf\Client\Locator;
-
 /**
  * Order totals block.
  */

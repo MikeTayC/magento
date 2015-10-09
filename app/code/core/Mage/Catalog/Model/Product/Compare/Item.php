@@ -28,7 +28,6 @@
 /**
  * Catalog Compare Item Model
  *
- * @method Mage_Catalog_Model_Resource_Product_Compare_Item _getResource()
  * @method Mage_Catalog_Model_Resource_Product_Compare_Item getResource()
  * @method Mage_Catalog_Model_Product_Compare_Item setVisitorId(int $value)
  * @method Mage_Catalog_Model_Product_Compare_Item setCustomerId(int $value)
