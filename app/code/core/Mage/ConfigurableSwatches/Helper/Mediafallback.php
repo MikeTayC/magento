@@ -43,14 +43,6 @@ class Mage_ConfigurableSwatches_Helper_Mediafallback extends Mage_Core_Helper_Ab
     public function attachConfigurableProductChildrenAttributeMapping(array $parentProducts, $storeId)
     {
         $listSwatchAttr = Mage::helper('configurableswatches/productlist')->getSwatchAttribute();
-        $swatchAttributeIds = Mage::helper('configurableswatches')->getSwatchAttributeIds();
-        if ($listSwatchAttr->getId()) {
-            $swatchAttributeIds[] = $listSwatchAttr->getId();
-        }
-
-        if (empty($swatchAttributeIds)) {
-            return;
-        }
 
         $parentProductIds = array();
         /* @var $parentProduct Mage_Catalog_Model_Product */
@@ -61,7 +53,6 @@ class Mage_ConfigurableSwatches_Helper_Mediafallback extends Mage_Core_Helper_Ab
         $configAttributes = Mage::getResourceModel('configurableswatches/catalog_product_attribute_super_collection')
             ->addParentProductsFilter($parentProductIds)
             ->attachEavAttributes()
-            ->addFieldToFilter('eav_attributes.attribute_id', array('in' => $swatchAttributeIds))
             ->setStoreId($storeId)
         ;
 
@@ -69,11 +60,6 @@ class Mage_ConfigurableSwatches_Helper_Mediafallback extends Mage_Core_Helper_Ab
         foreach ($configAttributes as $attribute) {
             $optionLabels += $attribute->getOptionLabels();
         }
-
-        // normalize to all lower case before we start using them
-        $optionLabels = array_map(function ($value) {
-            return array_map('Mage_ConfigurableSwatches_Helper_Data::normalizeKey', $value);
-        }, $optionLabels);
 
         foreach ($parentProducts as $parentProduct) {
             $mapping = array();
@@ -98,6 +84,11 @@ class Mage_ConfigurableSwatches_Helper_Mediafallback extends Mage_Core_Helper_Ab
                     if (!isset($optionLabels[$optionId][0])) {
                         continue;
                     }
+
+                    // normalize to all lower case before we start using them
+                    $optionLabels = array_map(function ($value) {
+                        return array_map('Mage_ConfigurableSwatches_Helper_Data::normalizeKey', $value);
+                    }, $optionLabels);
 
                     // using default value as key unless store-specific label is present
                     $optionLabel = $optionLabels[$optionId][0];

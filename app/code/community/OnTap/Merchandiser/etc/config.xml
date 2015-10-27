@@ -175,13 +175,13 @@
     </adminhtml>
     <admin>
         <routers>
-            <merchandiser>
-                <use>admin</use>
+            <adminhtml>
                 <args>
-                    <module>OnTap_Merchandiser</module>
-                    <frontName>merchandiser</frontName>
+                    <modules>
+                        <ontap_merchandiser after="Mage_Adminhtml">OnTap_Merchandiser_Adminhtml</ontap_merchandiser>
+                    </modules>
                 </args>
-            </merchandiser>
+            </adminhtml>
         </routers>
     </admin>
     <crontab>

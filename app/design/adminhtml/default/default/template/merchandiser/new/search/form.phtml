@@ -34,7 +34,7 @@
     $isRuled = $helper->isCurrentCategoryRuled($categoryId);
 ?>
 
-<form id="search_mini_form" action="<?php echo Mage::helper("adminhtml")->getUrl('merchandiser/adminhtml/search') ?>" method="get" onsubmit="submitMerchandiserSearch(this); return false;">
+<form id="search_mini_form" action="<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/merchandiser/search') ?>" method="get" onsubmit="submitMerchandiserSearch(this); return false;">
     <div class="form-search">
         <input id="search" type="text" name="q" value="<?php echo $this->helper('catalogsearch')->getEscapedQueryText() ?>" class="input-text" />
         <input id="store_id" type="hidden" name="store_id" value="<?php echo $this->getRequest()->getParam('store_id') ?>" />

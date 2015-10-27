@@ -44,7 +44,7 @@
             </block>
         </reference>
     </adminhtml_catalog_category_edit>
-    <merchandiser_adminhtml_index>
+    <adminhtml_merchandiser_index>
         <reference name="root">
             <action method="setTemplate">
                 <template>merchandiser/empty.phtml</template>
@@ -83,8 +83,8 @@
                 <block type="merchandiser/category_list" name="merchandiser.category.list" template="merchandiser/new/category/list.phtml" />
             </block>
         </reference>
-    </merchandiser_adminhtml_index>
-    <merchandiser_adminhtml_search>
+    </adminhtml_merchandiser_index>
+    <adminhtml_merchandiser_search>
         <reference name="root">
             <action method="setTemplate">
                 <template>merchandiser/new/search.phtml</template>
@@ -94,7 +94,7 @@
             <block type="merchandiser/search_result" name="search_result_list" template="merchandiser/new/search/search-list.phtml">
                 </block>
         </reference>
-    </merchandiser_adminhtml_search>
+    </adminhtml_merchandiser_search>
     <adminhtml_system_config_edit>
         <reference name="head">
             <action method="addCss">

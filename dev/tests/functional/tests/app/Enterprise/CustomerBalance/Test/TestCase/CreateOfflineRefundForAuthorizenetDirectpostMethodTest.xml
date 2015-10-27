@@ -51,7 +51,7 @@
             <data name="verifyData/item_balance_change" xsi:type="string">200.00</data>
             <data name="verifyData/item_balance" xsi:type="string">200.00</data>
             <data name="status" xsi:type="string">Closed</data>
-            <data name="issue" xsi:type="string">Unskip after done TOOL-4060</data>
+            <data name="tag" xsi:type="string">payment_method:authorize_net_dp</data>
             <constraint name="Mage\Sales\Test\Constraint\AssertCreditMemoSuccessCreateMessage" />
             <constraint name="Mage\Sales\Test\Constraint\AssertCreditMemoInCreditMemosGrid" />
             <constraint name="Mage\Sales\Test\Constraint\AssertCreditMemoInCreditMemosTab" />

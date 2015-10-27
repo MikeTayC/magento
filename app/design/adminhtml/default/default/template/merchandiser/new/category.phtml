@@ -78,7 +78,7 @@
         </form>
     </div>
 
-    <form action="<?php echo Mage::helper('adminhtml')->getUrl('merchandiser/adminhtml/updatePosition') ?>" method="post" id="move_bottom_form">
+    <form action="<?php echo Mage::helper('adminhtml')->getUrl('adminhtml/merchandiser/updatePosition') ?>" method="post" id="move_bottom_form">
         <input type="hidden" name="cat" value="<?php echo $catId ?>" />
         <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey() ?>" />
         <input type="hidden" id="mer_prods" name="prods" value="" />

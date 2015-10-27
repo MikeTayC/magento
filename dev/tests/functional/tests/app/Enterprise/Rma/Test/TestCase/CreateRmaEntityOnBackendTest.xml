@@ -56,6 +56,19 @@
             <constraint name="Enterprise\Rma\Test\Constraint\AssertRmaConfigurableForm" />
             <constraint name="Enterprise\Rma\Test\Constraint\AssertRmaConfigurableOnFrontendForCustomer" />
         </variation>
+        <variation name="CreateRmaEntityOnBackendTestVariation3">
+            <data name="rma/data/order_id/dataSet" xsi:type="string">bundle_fixed</data>
+            <data name="rma/data/items/data/0/qty_requested" xsi:type="string">1</data>
+            <data name="rma/data/items/data/0/reason" xsi:type="string">Out of Service</data>
+            <data name="rma/data/items/data/0/condition" xsi:type="string">Unopened</data>
+            <data name="rma/data/items/data/0/resolution" xsi:type="string">Store Credit</data>
+            <data name="rma/data/contact_email" xsi:type="string">test%isolation%@example.com</data>
+            <data name="rma/data/comment/comment" xsi:type="string">comments %isolation%</data>
+            <data name="rma/data/comment/is_visible_on_front" xsi:type="string">Yes</data>
+            <data name="rma/data/status" xsi:type="string">Pending</data>
+            <constraint name="Enterprise\Rma\Test\Constraint\AssertRmaInGrid" />
+            <constraint name="Enterprise\Rma\Test\Constraint\AssertRmaBundleOnFrontendForCustomer" />
+        </variation>
         <variation name="CreateRmaEntityOnBackendTestVariation4">
             <data name="rma/data/order_id/dataSet" xsi:type="string">default</data>
             <data name="rma/data/items/data/0/qty_requested" xsi:type="string">1</data>
