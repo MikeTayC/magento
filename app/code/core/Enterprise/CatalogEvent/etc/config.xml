@@ -28,7 +28,7 @@
 <config>
     <modules>
         <Enterprise_CatalogEvent>
-            <version>1.11.0.0</version>
+            <version>1.11.1.0</version>
         </Enterprise_CatalogEvent>
     </modules>
     <global>

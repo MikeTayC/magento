@@ -215,7 +215,7 @@ class Enterprise_Rma_Model_Resource_Item extends Mage_Eav_Model_Entity_Abstract
             )
             ->addFieldToFilter('order_id', $orderId)
             ->addFieldToFilter('product_type', array("in" => $this->_aviableProductTypes))
-            ->addFieldToFilter('(qty_shipped - qty_returned)', array("gt" => 0));
+            ->addAvailableFilter();
 
         return $collection;
     }

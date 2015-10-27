@@ -173,7 +173,7 @@ class OnTap_Merchandiser_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getProductinfoUrl()
     {
-        return Mage::helper("adminhtml")->getUrl('merchandiser/adminhtml/getproductinfo', array(
+        return Mage::helper("adminhtml")->getUrl('adminhtml/merchandiser/getproductinfo', array(
             '_secure' => Mage::app()->getFrontController()->getRequest()->isSecure(),
         ));
     }

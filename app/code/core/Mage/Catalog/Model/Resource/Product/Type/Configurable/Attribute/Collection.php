@@ -262,9 +262,9 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable_Attribute_Collection
 
                     if (array_key_exists($optionValue, $optionsByValue)) {
                         // If option available in associated product
-                        if (!isset($unsortedValues[$item->getId() . ':' . $optionValue])) {
+                        if (!isset($values[$item->getId() . ':' . $optionValue])) {
                             // If option not added, we will add it.
-                            $unsortedValues[$item->getId() . ':' . $optionValue] = array(
+                            $values[$item->getId() . ':' . $optionValue] = array(
                                 'product_super_attribute_id' => $item->getId(),
                                 'value_index'                => $optionValue,
                                 'label'                      => $optionsByValue[$optionValue],
@@ -275,12 +275,6 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable_Attribute_Collection
                                 'use_default_value'          => true
                             );
                         }
-                    }
-                }
-                foreach ($options as $option) {
-                    $optionKey = $item->getId() . ':' . $option['value'];
-                    if (isset($unsortedValues[$optionKey]) && !isset($values[$optionKey])) {
-                        $values[$optionKey] = $unsortedValues[$optionKey];
                     }
                 }
             }

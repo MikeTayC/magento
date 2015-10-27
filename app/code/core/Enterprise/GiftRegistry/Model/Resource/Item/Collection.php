@@ -75,7 +75,7 @@ class Enterprise_GiftRegistry_Model_Resource_Item_Collection extends Mage_Core_M
     public function addProductFilter($productId)
     {
         if ((int)$productId > 0) {
-            $this->addFieldToFilter('product_id ', (int)$productId);
+            $this->addFieldToFilter('product_id', (int)$productId);
         }
         return $this;
     }

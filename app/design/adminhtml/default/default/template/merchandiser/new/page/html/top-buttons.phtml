@@ -72,7 +72,7 @@
     </button>
 </div>
 
-<form action="<?php echo Mage::helper('adminhtml')->getUrl('merchandiser/adminhtml/downloadskus') ?>" method="POST" id="downloadskuform">
+<form action="<?php echo Mage::helper('adminhtml')->getUrl('adminhtml/merchandiser/downloadskus') ?>" method="POST" id="downloadskuform">
     <input type="hidden" value="" id="downloadskus"  name="product_ids" />
     <input type="hidden" value="<?php echo Mage::getSingleton('core/session')->getFormKey() ?>" name="form_key" />
 </form>
@@ -114,13 +114,13 @@
                 jQuery('#dimwindow').show();
                 jQuery('#spinner2').show();
                 var f = $('product-refresh-form');
-                f.action='<?php echo $this->getUrl('merchandiser/adminhtml/moveInStockToTheTop') ?>';
+                f.action='<?php echo $this->getUrl('adminhtml/merchandiser/moveInStockToTheTop') ?>';
                 f.submit();
             }
 
             function submitMerchandiserSelect(form) {
                 var f = $('product-refresh-form');
-                f.action='<?php echo $this->getUrl('merchandiser/adminhtml/changeColumn') ?>';
+                f.action='<?php echo $this->getUrl('adminhtml/merchandiser/changeColumn') ?>';
                 f.submit();
             }
 
@@ -128,7 +128,7 @@
                 jQuery('#dimwindow').show();
                 jQuery('#spinner2').show();
                 var f = $('product-refresh-form');
-                f.action='<?php echo $this->getUrl('merchandiser/adminhtml/orderByCreatedDate') ?>';
+                f.action='<?php echo $this->getUrl('adminhtml/merchandiser/orderByCreatedDate') ?>';
                 f.submit();
             }
 
@@ -136,7 +136,7 @@
                 jQuery('#dimwindow').show();
                 jQuery('#spinner2').show();
                 var f = $('product-refresh-form');
-                f.action='<?php echo $this->getUrl('merchandiser/adminhtml/processAction') ?>';
+                f.action='<?php echo $this->getUrl('adminhtml/merchandiser/processAction') ?>';
                 f.submit();
             }
 
@@ -207,7 +207,7 @@
         jQuery.ajax({
             type: "get",
             data: { store_front: storefront} ,
-            url:"<?php echo Mage::helper('adminhtml')->getUrl("merchandiser/adminhtml/storefront") ?>",
+            url:"<?php echo Mage::helper('adminhtml')->getUrl("adminhtml/merchandiser/storefront") ?>",
             success:function(result){
             }
         });
